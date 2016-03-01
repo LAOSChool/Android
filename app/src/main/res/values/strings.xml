@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">LAOSchool</string>
+    <!--title screen-->
+    <string name="title_activity_home">Home</string>
+    <string name="title_screen_message">Message</string>
+    <string name="title_screen_rollup">Roll Up</string>
+    <string name="title_screen_exam_results">Exam results</string>
+    <string name="title_screen_schedule">Schedule</string>
+    <string name="title_screen_information">Information</string>
+    <string name="title_activity_screen_login">Lao school</string>
+    <string name="action_create_message">Create message</string>
+    <string name="title_screen_school_record_by_year">School record by year</string>
+    <string name="title_screen_profile">Profile</string>
+    <string name="title_screen_school_information">School information</string>
+    <string name="title_screen_create_message">Create message</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_send_message">Send</string>
+    <string name="title_screen_select_list_student">Select list student</string>
+    <string name="title_screen_mark_score_student">Mark Score Student</string>
+    <string name="title_screen_setting">Setting</string>
+    <string name="title_screen_list_teacher">List teacher</string>
+</resources>
