@@ -3,5 +3,8 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="background_home_screen_tab" >#3F51B5</color>
+    <color name="background_home_screen_tab">#3F51B5</color>
+    <color name="text_title_tab_indicator">@android:color/white</color>
+    <color name="color_tab_selected">#FF4081</color>
+    <color name="color_tab_unselected">#3F51B5</color>
 </resources>
