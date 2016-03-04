@@ -2,7 +2,6 @@ package com.laoschool.screen;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -36,7 +35,8 @@ public class HomeActivity extends AppCompatActivity implements
         ScreenCreateMessage.IScreenCreateMessage,
         ScreenSelectListStudent.IScreenListStudent,
         ScreenExamResults.IScreenExamResults,
-        ScreenAnnouncements.IScreenAnnouncements {
+        ScreenAnnouncements.IScreenAnnouncements,
+        ScreenAttended.IScreenAttended {
     private static final String TAG = "HomeScreen";
 
     private TabHost mTabHost;
@@ -46,6 +46,7 @@ public class HomeActivity extends AppCompatActivity implements
     private int currentPosition = 0;
     int containerId;
     private String currentRole;
+    private int beforePosition;
 
     public enum Role {
         student, teacher;
@@ -426,8 +427,13 @@ public class HomeActivity extends AppCompatActivity implements
             super.onBackPressed();
         } else if (currentPage > LaoSchoolShared.POSITION_SCREEN_MORE_4) {
             if (currentPage == LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_9) {
-                //back to tab message
-                _gotoPage(LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
+                if (beforePosition == LaoSchoolShared.POSITION_SCREEN_MESSAGE_0) {
+                    //back to tab message
+                    _gotoPage(LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
+                } else {
+                    //back to tab attender
+                    _gotoPage(LaoSchoolShared.POSITION_SCREEN_ATTENDED_2);
+                }
                 getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
             } else if (currentPage == LaoSchoolShared.POSITION_SCREEN_LIST_STUDENT_10) {
                 //back to tab create message
@@ -489,6 +495,7 @@ public class HomeActivity extends AppCompatActivity implements
 
     @Override
     public void _gotoScreenCreateMessage() {
+        beforePosition = LaoSchoolShared.POSITION_SCREEN_MESSAGE_0;
         _gotoPage(LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_9);
     }
 
@@ -541,5 +548,11 @@ public class HomeActivity extends AppCompatActivity implements
     @Override
     public void gotoScreenAnnouncementDetails() {
         _gotoPage(LaoSchoolShared.POSITION_SCREEN_ANNOUNCEMENT_DETAILS_15);
+    }
+
+    @Override
+    public void gotoCreateMessageFormScreenAttended() {
+        beforePosition = LaoSchoolShared.POSITION_SCREEN_ATTENDED_2;
+        _gotoPage(LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_9);
     }
 }

@@ -1,6 +1,7 @@
 package com.laoschool.screen;
 
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -24,12 +25,24 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
         // Required empty public constructor
     }
 
+    public interface IScreenAttended {
+        void gotoCreateMessageFormScreenAttended();
+    }
+
+    private IScreenAttended iScreenAttended;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.screen_attenden, container, false);
+        View view = inflater.inflate(R.layout.screen_attenden, container, false);
+        view.findViewById(R.id.btnCreateMessge).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                iScreenAttended.gotoCreateMessageFormScreenAttended();
+            }
+        });
+        return view;
     }
 
     @Override
@@ -63,5 +76,11 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
     @Override
     public void onResumeFragment() {
 
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        iScreenAttended= (IScreenAttended) activity;
     }
 }
