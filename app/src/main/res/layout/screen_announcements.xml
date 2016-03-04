@@ -2,10 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.laoschool.screen.ScreenMessage">
+    tools:context="com.laoschool.screen.ScreenAnnouncements">
 
     <!-- TODO: Update blank fragment layout -->
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="wrap_content"
@@ -15,16 +14,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/title_screen_message"
+            android:text="@string/title_screen_announcements"
             android:layout_gravity="center" />
 
-        <TextView
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="goto Message details"
-            android:id="@+id/messagedetails"
-            android:singleLine="true" />
+            android:text="New Button"
+            android:id="@+id/announcementdetails" />
     </LinearLayout>
 
 </FrameLayout>

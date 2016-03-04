@@ -3,10 +3,10 @@
     <!--title screen-->
     <string name="title_activity_home">Home</string>
     <string name="title_screen_message">Message</string>
-    <string name="title_screen_rollup">Roll Up</string>
+    <string name="title_screen_attended">Attended</string>
     <string name="title_screen_exam_results">Exam results</string>
     <string name="title_screen_schedule">Schedule</string>
-    <string name="title_screen_information">Information</string>
+    <string name="title_screen_more">More</string>
     <string name="title_activity_screen_login">Lao school</string>
     <string name="action_create_message">Create message</string>
     <string name="title_screen_school_record_by_year">School record by year</string>
@@ -19,4 +19,11 @@
     <string name="title_screen_mark_score_student">Mark Score Student</string>
     <string name="title_screen_setting">Setting</string>
     <string name="title_screen_list_teacher">List teacher</string>
+
+    <string name="title_screen_announcements">Announcements</string>
+    <string name="hello_blank_fragment">Hello</string>
+    <string name="tite_screen_login_help">Login help</string>
+    <string name="title_screen_forgot_pasword">Forgot password</string>
+    <string name="title_screen_announcement_details">Announcement details</string>
+    <string name="title_screen_message_details">Message details</string>
 </resources>
