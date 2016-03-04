@@ -52,7 +52,7 @@ public class ScreenListTeacher extends Fragment implements FragmentLifecycle {
 
     }
 
-    public static Fragment instantiate(int containerId) {
+    public static Fragment instantiate(int containerId, String currentRole) {
         return new ScreenListTeacher();
     }
 }

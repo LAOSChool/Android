@@ -34,7 +34,7 @@ public class ScreenSelectListStudent extends Fragment implements FragmentLifecyc
 
 
     interface IScreenListStudent {
-        void gotoCreateMessage();
+        void goBackScreenCreateMessage();
     }
 
     private IScreenListStudent iScreenListStudent;
@@ -63,7 +63,7 @@ public class ScreenSelectListStudent extends Fragment implements FragmentLifecyc
 
     }
 
-    public static Fragment instantiate(int containerId) {
+    public static Fragment instantiate(int containerId, String currentRole) {
         ScreenSelectListStudent fragment = new ScreenSelectListStudent();
         Bundle args = new Bundle();
         args.putInt(LaoSchoolShared.CONTAINER_ID, containerId);
@@ -76,12 +76,12 @@ public class ScreenSelectListStudent extends Fragment implements FragmentLifecyc
         int id = item.getItemId();
         switch (id) {
             case R.id.action_done:
-                String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_8);
+                String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_9);
                 Log.d(getString(R.string.title_screen_select_list_student), "-TAG Screen Create Message:" + tag);
                 ScreenCreateMessage screenCreateMessage = (ScreenCreateMessage) getActivity().getSupportFragmentManager().findFragmentByTag(tag);
                 if (screenCreateMessage != null) {
                     screenCreateMessage.setTestMessage("selected list on List Student");
-                    iScreenListStudent.gotoCreateMessage();
+                    iScreenListStudent.goBackScreenCreateMessage();
                 } else {
                    // Toast.makeText(getActivity(), "Get Create Message null", Toast.LENGTH_SHORT).show();
                 }

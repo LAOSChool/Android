@@ -55,7 +55,7 @@ public class ScreenSchoolRecordByYear extends Fragment implements FragmentLifecy
 
     }
 
-    public static Fragment instantiate(int containerId) {
+    public static Fragment instantiate(int containerId, String currentRole) {
         return new ScreenSchoolRecordByYear();
     }
 }

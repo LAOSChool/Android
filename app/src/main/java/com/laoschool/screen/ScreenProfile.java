@@ -50,7 +50,7 @@ public class ScreenProfile extends Fragment implements FragmentLifecycle {
 
     }
 
-    public static Fragment instantiate(int containerId) {
+    public static Fragment instantiate(int containerId, String currentRole) {
         return new ScreenProfile();
     }
 }

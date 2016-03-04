@@ -54,7 +54,7 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle{
 
     }
 
-    public static Fragment instantiate(int containerId) {
+    public static Fragment instantiate(int containerId, String currentRole) {
         ScreenSchedule screenSchedule=new ScreenSchedule();
 
         return screenSchedule;
