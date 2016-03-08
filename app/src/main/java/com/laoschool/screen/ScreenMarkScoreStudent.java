@@ -54,7 +54,7 @@ public class ScreenMarkScoreStudent extends Fragment implements FragmentLifecycl
             containerId = getArguments().getInt(LaoSchoolShared.CONTAINER_ID);
             Log.d(getString(R.string.title_screen_mark_score_student), "-Container Id:" + containerId);
 
-//            String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_EXAM_RESULTS_2);
+//            String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_EXAM_RESULTS_5);
 //            Log.d(getString(R.string.title_screen_select_list_student), "-TAG Screen Exam Results:" + tag);
 
 
@@ -82,7 +82,7 @@ public class ScreenMarkScoreStudent extends Fragment implements FragmentLifecycl
 
     @Override
     public void onResumeFragment() {
-        String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_EXAM_RESULTS_2);
+        String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_EXAM_RESULTS_5);
         ScreenExamResults screenExamResults = (ScreenExamResults) ((HomeActivity) getActivity()).getSupportFragmentManager().findFragmentByTag(tag);
         if (screenExamResults != null)
             setDataMessage(screenExamResults.getData());
@@ -97,7 +97,7 @@ public class ScreenMarkScoreStudent extends Fragment implements FragmentLifecycl
     }
 
 
-    public static Fragment instantiate(int containerId) {
+    public static Fragment instantiate(int containerId, String currentRole) {
         ScreenMarkScoreStudent fragment = new ScreenMarkScoreStudent();
         Bundle args = new Bundle();
         args.putInt(LaoSchoolShared.CONTAINER_ID, containerId);

@@ -1,6 +1,7 @@
 package com.laoschool.screen;
 
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -17,10 +18,19 @@ import com.laoschool.view.FragmentLifecycle;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ScreenRollUp extends Fragment implements FragmentLifecycle {
-    int containerId;
+public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
 
-    public ScreenRollUp() {
+
+    private int containerId;
+    private String announcementId;
+
+    public interface IScreenAnnouncements {
+        void gotoScreenAnnouncementDetails();
+    }
+
+    private IScreenAnnouncements iScreenAnnouncements;
+
+    public ScreenAnnouncements() {
         // Required empty public constructor
     }
 
@@ -29,7 +39,15 @@ public class ScreenRollUp extends Fragment implements FragmentLifecycle {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.screen_rollup, container, false);
+        View view = inflater.inflate(R.layout.screen_announcements, container, false);
+        view.findViewById(R.id.announcementdetails).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setAnnouncementId("1000");
+                iScreenAnnouncements.gotoScreenAnnouncementDetails();
+            }
+        });
+        return view;
     }
 
     @Override
@@ -38,21 +56,17 @@ public class ScreenRollUp extends Fragment implements FragmentLifecycle {
         setHasOptionsMenu(true);
         if (getArguments() != null) {
             containerId = getArguments().getInt(LaoSchoolShared.CONTAINER_ID);
-            Log.d(getString(R.string.title_screen_rollup), "-Container Id:" + containerId);
+            Log.d(getString(R.string.title_screen_attended), "-Container Id:" + containerId);
         }
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        //set display menu item
-//        menu.findItem(R.id.action_create_message).setVisible(false);
-//        menu.findItem(R.id.action_cancel).setVisible(false);
-//        menu.findItem(R.id.action_send_message).setVisible(false);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    public static Fragment instantiate(int containerId) {
-        ScreenRollUp fragment = new ScreenRollUp();
+    public static Fragment instantiate(int containerId, String currentRole) {
+        ScreenAnnouncements fragment = new ScreenAnnouncements();
         Bundle args = new Bundle();
         args.putInt(LaoSchoolShared.CONTAINER_ID, containerId);
         fragment.setArguments(args);
@@ -67,5 +81,19 @@ public class ScreenRollUp extends Fragment implements FragmentLifecycle {
     @Override
     public void onResumeFragment() {
 
+    }
+
+    public String getAnnouncementId() {
+        return announcementId;
+    }
+
+    public void setAnnouncementId(String announcementId) {
+        this.announcementId = announcementId;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        iScreenAnnouncements = (IScreenAnnouncements) activity;
     }
 }

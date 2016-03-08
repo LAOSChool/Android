@@ -15,10 +15,10 @@ import com.laoschool.view.FragmentLifecycle;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ScreenInformation extends Fragment implements FragmentLifecycle {
+public class ScreenMore extends Fragment implements FragmentLifecycle {
 
 
-    public ScreenInformation() {
+    public ScreenMore() {
         // Required empty public constructor
     }
 
@@ -27,7 +27,7 @@ public class ScreenInformation extends Fragment implements FragmentLifecycle {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.screen_information, container, false);
+        return inflater.inflate(R.layout.screen_more, container, false);
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,8 +51,8 @@ public class ScreenInformation extends Fragment implements FragmentLifecycle {
 
     }
 
-    public static Fragment instantiate(int containerId) {
-        ScreenInformation screenInformation=new ScreenInformation();
-        return screenInformation;
+    public static Fragment instantiate(int containerId, String currentRole) {
+        ScreenMore screenMore =new ScreenMore();
+        return screenMore;
     }
 }

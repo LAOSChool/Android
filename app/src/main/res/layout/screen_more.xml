@@ -2,61 +2,69 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.laoschool.screen.ScreenInformation">
+    tools:context=".screen.ScreenMore">
 
     <!-- TODO: Update blank fragment layout -->
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center">
+        android:layout_gravity="center"
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/title_screen_information"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:text="@string/title_screen_more" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Go to School Record"
             android:id="@+id/button6"
-            android:layout_gravity="center_horizontal"
-            android:onClick="gotoSchoolRecord" />
-
-        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Go to infomation school"
+            android:layout_gravity="center_horizontal"
+            android:onClick="gotoSchoolRecord"
+            android:text="Go to School Record" />
+
+        <Button
+            android:id="@+id/button11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:onClick="gotoExamResult"
+            android:text="Go to Exam Results" />
+
+        <Button
             android:id="@+id/button7"
-            android:layout_gravity="center_horizontal"
-            android:onClick="gotoInformationSchool" />
-
-        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Go to list teacher"
+            android:layout_gravity="center_horizontal"
+            android:onClick="gotoInformationSchool"
+            android:text="Go to infomation school" />
+
+        <Button
             android:id="@+id/button8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:onClick="gotoListTeacher" />
+            android:onClick="gotoListTeacher"
+            android:text="Go to list teacher" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Go to Profile"
             android:id="@+id/button9"
-            android:layout_gravity="center"
-            android:onClick="gotoProfile" />
-
-        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Go to Setting"
-            android:id="@+id/button10"
             android:layout_gravity="center"
-            android:onClick="gotoSetting" />
+            android:onClick="gotoProfile"
+            android:text="Go to Profile" />
+
+        <Button
+            android:id="@+id/button10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:onClick="gotoSetting"
+            android:text="Go to Setting" />
     </LinearLayout>
 
 </FrameLayout>

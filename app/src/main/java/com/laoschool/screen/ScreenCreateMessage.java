@@ -93,7 +93,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
         inflater.inflate(R.menu.menu_screen_create_message, menu);
     }
 
-    public static Fragment instantiate(int containerId) {
+    public static Fragment instantiate(int containerId, String currentRole) {
         ScreenCreateMessage fragment = new ScreenCreateMessage();
         Bundle args = new Bundle();
         args.putInt(LaoSchoolShared.CONTAINER_ID, containerId);

@@ -30,7 +30,7 @@ public class ScreenSetting extends Fragment implements FragmentLifecycle{
         return inflater.inflate(R.layout.screen_setting, container, false);
     }
 
-    public static Fragment instantiate(int containerId) {
+    public static Fragment instantiate(int containerId, String currentRole) {
         return new ScreenSetting();
     }
     @Override

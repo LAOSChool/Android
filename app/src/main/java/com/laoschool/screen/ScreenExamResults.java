@@ -51,7 +51,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         view.findViewById(R.id.btnGotoMarkScore).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_MARK_SCORE_STUDENT_10);
+                String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_MARK_SCORE_STUDENT_11);
                 Log.d(getString(R.string.title_screen_exam_results), tag);
                 setData("Hello " + getString(R.string.title_screen_mark_score_student));
                 iScreenExamResults.sendData("Hello " + getString(R.string.title_screen_mark_score_student));
@@ -93,7 +93,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         iScreenExamResults = (IScreenExamResults) activity;
     }
 
-    public static Fragment instantiate(int containerId) {
+    public static Fragment instantiate(int containerId, String currentRole) {
         ScreenExamResults fragment = new ScreenExamResults();
         Bundle args = new Bundle();
         args.putInt(LaoSchoolShared.CONTAINER_ID, containerId);
