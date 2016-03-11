@@ -44,8 +44,8 @@ public class LaoSchoolShared {
 
     public static View createTabIndicator(LayoutInflater inflater, TabHost tabHost, int textResource, int iconResource) {
         View tabIndicator = inflater.inflate(R.layout.view_tab_indicator, tabHost.getTabWidget(), false);
-        ((TextView) tabIndicator.findViewById(R.id.txtUserName)).setText(textResource);
-        ((ImageView) tabIndicator.findViewById(R.id.icon)).setImageResource(iconResource);
+        ((TextView) tabIndicator.findViewById(R.id.tab_indicator_title)).setText(textResource);
+        ((ImageView) tabIndicator.findViewById(R.id.tab_indicator_icon)).setImageResource(iconResource);
         return tabIndicator;
     }
     public static Drawable getDraweble(Context context, int id) {
