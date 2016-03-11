@@ -1,5 +1,9 @@
 package com.laoschool.shared;
 
+import android.annotation.TargetApi;
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -32,6 +36,7 @@ public class LaoSchoolShared {
 
     public static final String ROLE_TEARCHER = "teacher";
     public static final String ROLE_STUDENT = "student";
+    public static final String ROLE = "role";
 
     public static String makeFragmentTag(int containerViewId, long id) {
         return "android:switcher:" + containerViewId + ":" + id;
@@ -39,9 +44,25 @@ public class LaoSchoolShared {
 
     public static View createTabIndicator(LayoutInflater inflater, TabHost tabHost, int textResource, int iconResource) {
         View tabIndicator = inflater.inflate(R.layout.view_tab_indicator, tabHost.getTabWidget(), false);
-        ((TextView) tabIndicator.findViewById(R.id.title)).setText(textResource);
+        ((TextView) tabIndicator.findViewById(R.id.txtUserName)).setText(textResource);
         ((ImageView) tabIndicator.findViewById(R.id.icon)).setImageResource(iconResource);
         return tabIndicator;
+    }
+    public static Drawable getDraweble(Context context, int id) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return getDrawableGreater21(context, id);
+        } else {
+            return getDrawableUnder20(context, id);
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private static Drawable getDrawableGreater21(Context context, int id) {
+        return context.getDrawable(id);
+    }
+
+    private static Drawable getDrawableUnder20(Context context, int id) {
+        return context.getResources().getDrawable(id);
     }
 
 
