@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">@color/colorLaosRed</color>
+    <!--#3F51B5-->
+    <color name="colorPrimaryDark">#B71C1C</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="background_home_screen_tab">#3F51B5</color>
+    <color name="background_home_screen_tab">@color/colorPrimary</color>
     <color name="text_title_tab_indicator">@android:color/white</color>
-    <color name="color_tab_selected">#FF4081</color>
-    <color name="color_tab_unselected">#3F51B5</color>
+    <color name="color_tab_selected">@color/colorLaosBlue</color>
+    <color name="color_tab_unselected">@color/colorPrimary</color>
+
+    <color name="textColorSubHeader">@color/colorLaosBlue</color>
+    <color name="colorLaosRed">#FFCE1126</color>
+    <color name="colorLaosBlue">#FF002868</color>
+    <color name="color_text">#000000</color>
+
+    <color name="color_divider">#E0E0E0</color>
+
 </resources>
