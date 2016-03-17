@@ -30,4 +30,6 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:22.2.1'
 
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
+
+    compile project(':volley')
 }
