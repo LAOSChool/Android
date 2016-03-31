@@ -136,7 +136,7 @@ public class HomeActivity extends AppCompatActivity implements
         } else if (intent.getAction().equals(LaoSchoolShared.ROLE_STUDENT)) {
             return LaoSchoolShared.ROLE_STUDENT;
         } else {
-            return "";
+            return LaoSchoolShared.ROLE_STUDENT;
         }
     }
 
