@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "C:\\My_Data\\Android Project\\Android\\app\\build\\intermediates\\res\\merged\\debug\\menu\\menu_screen_create_message.xml",
+        "source": "C:\\My_Data\\Android Project\\Android\\app\\src\\main\\res\\menu\\menu_screen_create_message.xml"
+    },
+    {
+        "merged": "C:\\My_Data\\Android Project\\Android\\app\\build\\intermediates\\res\\merged\\debug\\menu\\menu_screen_message.xml",
+        "source": "C:\\My_Data\\Android Project\\Android\\app\\src\\main\\res\\menu\\menu_screen_message.xml"
+    },
+    {
+        "merged": "C:\\My_Data\\Android Project\\Android\\app\\build\\intermediates\\res\\merged\\debug\\menu\\menu_screen_list_student.xml",
+        "source": "C:\\My_Data\\Android Project\\Android\\app\\src\\main\\res\\menu\\menu_screen_list_student.xml"
+    }
+]
