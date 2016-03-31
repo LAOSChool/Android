@@ -37,11 +37,6 @@ public class ScreenSchoolInformation extends Fragment implements FragmentLifecyc
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        //set display menu item
-//        menu.findItem(R.id.action_create_message).setVisible(false);
-//        menu.findItem(R.id.action_cancel).setVisible(false);
-//        menu.findItem(R.id.action_send_message).setVisible(false);
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -54,7 +49,7 @@ public class ScreenSchoolInformation extends Fragment implements FragmentLifecyc
 
     }
 
-    public static Fragment instantiate(int containerId) {
+    public static Fragment instantiate(int containerId, String currentRole) {
         return new ScreenSchoolInformation();
     }
 }

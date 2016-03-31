@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:paddingLeft="4dp"
+    android:paddingRight="4dp">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tab_indicator_icon"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/ic_message_black_18dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/title_screen_announcements"
+        android:id="@+id/tab_indicator_title"
+        android:layout_gravity="center_horizontal"
+        android:singleLine="true"
+        android:textSize="8sp"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/text_title_tab_indicator" />
+</LinearLayout>

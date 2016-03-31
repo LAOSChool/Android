@@ -1,0 +1,62 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".screen.ScreenFinalResultsStudent"
+    android:orientation="vertical"
+    android:background="#ffffff">
+
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:id="@+id/cbxTermScreenFinalResultsStudent"
+        android:spinnerMode="dialog" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#ebebeb"
+        android:orientation="vertical"></LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="vertical"
+        android:paddingBottom="8dp"
+        android:paddingRight="16dp"
+        android:paddingTop="4dp">
+
+        <Button
+            android:id="@+id/btnShowDetailsScreenFinalResultsStudent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/colorLaosRed"
+            android:text="Show information"
+            android:textColor="#ffffff" />
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#ebebeb"
+        android:orientation="vertical"></LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/mResultsScreenRecordStudent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/mResultsInfomationScreenRecordStudent"></LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/mRecyclerViewResultsDetailsScreenFinalResultsStudent" />
+    </LinearLayout>
+</LinearLayout>

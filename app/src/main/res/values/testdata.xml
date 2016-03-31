@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="listTeacher">
+        <!--<item>@string/row_header_title</item>-->
+        <!--<item>@string/row_line</item>-->
+        <item>Nguyen thi anh</item>
+        <item>Nguyen thi Lan anh</item>
+        <item>Nguyen thi Bang</item>
+        <item>Nguyen thi Xuan</item>
+        <item>Nguyen thi Binh</item>
+        <item>Nguyen van ban</item>
+        <item>Nguyen van cam</item>
+        <item>Nguyen van ha</item>
+    </string-array>
+
+
+    <string-array name="termTest">
+        <item>@string/selected</item>
+        <item>Term 1 2013-2014</item>
+        <item>Term 2 2013-2014</item>
+        <item>Term 1 2014-2015</item>
+        <item>Term 2 2014-2015</item>
+        <item>Term 1 2015-2016</item>
+        <item>Term 2 2015-2016</item>
+    </string-array>
+
+    <string-array name="classTest">
+        <item>@string/selected</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+    <string-array name="subjectTest">
+        <item>@string/selected</item>
+        <item>Math</item>
+        <item>History</item>
+        <item>Laboratory Science</item>
+        <item>College</item>
+    </string-array>
+
+    <string-array name="subjects">
+        <item>Geography</item>
+
+        <item>Ancient Civilizations</item>
+
+        <item>Medieval and Renaissance</item>
+
+        <item>U.S. History and Government</item>
+
+        <item>French / Spanish / Latin</item>
+
+        <item> Computer Science or Lab</item>
+
+        <item>Art</item>
+
+        <item>Home Economics</item>
+
+        <item>Woodshop</item>
+
+        <item>Metal Shop</item>
+
+        <item>Business Technology</item>
+
+        <item>Instrumental Music</item>
+
+        <item>Band</item>
+
+        <item>Choir</item>
+
+        <item>Drama</item>
+
+        <item>Physical Education</item>
+
+        <item>Sports</item>
+
+        <item>Special Education Day Class</item>
+
+        <item>Resource Program</item>
+
+        <item>Speech Therapy</item>
+
+        <item>Occupational Therapy</item>
+    </string-array>
+    <string-array name="subjects1">
+
+        <item> Language Arts</item>
+
+        <item> Mathematics</item>
+
+        <item>Science</item>
+
+        <item> Health</item>
+
+        <item>Handwriting</item>
+
+        <item> Physical Education (P.E.)</item>
+
+        <item>Art</item>
+
+        <item>Music</item>
+
+        <item>Instrumental Music – specific instrument</item>
+
+        <item>Movement or Eurythmy</item>
+
+        <item> Handwork or handcrafts</item>
+
+        <item>Life Lab or gardening</item>
+
+        <item>Dramatics</item>
+
+        <item>Dance</item>
+
+        <item>Spanish or other foreign language</item>
+
+        <item>Leadership</item>
+    </string-array>
+    <string-array name="subjects2">
+
+        <item>Special Education Day Class</item>
+
+        <item>Resource Program</item>
+
+        <item>Speech</item>
+
+        <item>Adaptive P.E.</item>
+
+        <item>Occupational Therapy</item>
+
+        <item>Middle School Subjects</item>
+
+        <item>CORE – core subjects class</item>
+
+        <item>Reading</item>
+
+        <item>Language arts</item>
+
+        <item>Speech and Debate</item>
+
+        <item>English</item>
+
+        <item>Basic Math</item>
+
+        <item>Pre-algebra</item>
+
+        <item>Consumer Math</item>
+
+        <item>Algebra</item>
+
+        <item>Geometry</item>
+
+        <item>Honors Math in Algebra or Geometry</item>
+
+        <item>Life Science</item>
+
+        <item>Earth Science</item>
+
+        <item>Physical Science</item>
+
+        <item>Health</item>
+
+        <item>Social Studies</item>
+
+
+    </string-array>
+    <string name="selected">Selected</string>
+</resources>

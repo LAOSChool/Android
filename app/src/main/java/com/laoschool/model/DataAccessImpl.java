@@ -29,8 +29,8 @@ public class DataAccessImpl implements DataAccessInterface{
     private RequestQueue mRequestQueue;
     private static Context mCtx;
 
-    private static final String api_key = "TEST_API_KEY";
-    private static final String auth_key = "";
+    private static String api_key = "TEST_API_KEY";
+    private static String auth_key;
 
     final String HOST = "https://192.168.0.202:9443/laoschoolws/api/";
 
@@ -85,8 +85,9 @@ public class DataAccessImpl implements DataAccessInterface{
 
                 @Override
                 protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                    String auth_key = response.headers.get("auth_key");
-                    callback.onSuccess(auth_key);
+                    String key = response.headers.get("auth_key");
+                    auth_key = key;
+                    callback.onSuccess(key);
                     return super.parseNetworkResponse(response);
                 }
         };
