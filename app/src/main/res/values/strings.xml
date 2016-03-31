@@ -9,7 +9,7 @@
     <string name="title_screen_more">More</string>
     <string name="title_activity_screen_login">Lao school</string>
     <string name="action_create_message">Create message</string>
-    <string name="title_screen_school_record_by_year">School record by year</string>
+    <string name="title_screen_final_results_student">Final results</string>
     <string name="title_screen_profile">Profile</string>
     <string name="title_screen_school_information">School information</string>
     <string name="title_screen_create_message">Create message</string>
@@ -26,4 +26,47 @@
     <string name="title_screen_forgot_pasword">Forgot password</string>
     <string name="title_screen_announcement_details">Announcement details</string>
     <string name="title_screen_message_details">Message details</string>
+    <string name="action_log_out">Logout</string>
+    <string name="row_line" translatable="false">line</string>
+    <string name="setting_change_language">Change language</string>
+    <string name="row_sub_header">sub header</string>
+    <string name="action_search">Search</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_done_mark_score">Done</string>
+    <string name="hint_search_exam_resutls">Search student</string>
+    <string name="action_sort_by">Sort by</string>
+
+
+    <string-array name="more_teacher">
+        <item>@string/row_sub_header</item>
+        <item>@string/title_screen_school_information</item>
+        <item>@string/row_line</item>
+        <item>@string/title_screen_exam_results</item>
+        <item>@string/row_line</item>
+        <item>@string/title_screen_list_teacher</item>
+        <item>@string/row_line</item>
+        <item>@string/title_screen_setting</item>
+        <item>@string/row_line</item>
+        <item>@string/action_log_out</item>
+        <item>@string/row_line</item>
+    </string-array>
+
+    <string-array name="more_student">
+        <item>@string/title_screen_school_information</item>
+        <item>@string/row_line</item>
+        <item>@string/title_screen_final_results_student</item>
+        <item>@string/row_line</item>
+        <item>@string/title_screen_exam_results</item>
+        <item>@string/row_line</item>
+        <item>@string/title_screen_list_teacher</item>
+        <item>@string/row_line</item>
+        <item>@string/title_screen_setting</item>
+        <item>@string/row_line</item>
+        <item>@string/action_log_out</item>
+        <item>@string/row_line</item>
+    </string-array>
+
+    <string-array name="settings">
+        <item>@string/setting_change_language</item>
+    </string-array>
 </resources>

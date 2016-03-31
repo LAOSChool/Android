@@ -2,13 +2,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.laoschool.screen.ScreenListTeacher">
+    tools:context="com.laoschool.screen.ScreenListTeacher"
+    android:background="#EBEBEB">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/title_screen_list_teacher"
-        android:layout_gravity="center" />
 
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/mRecylerViewScreenListTeacher"
+        android:layout_gravity="center"
+        android:background="#ffffff" />
 </FrameLayout>
