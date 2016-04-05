@@ -26,6 +26,10 @@ import java.util.Vector;
 
 import com.laoschool.R;
 import com.laoschool.adapter.PagerAdapter;
+import com.laoschool.entities.User;
+import com.laoschool.model.AsyncCallback;
+import com.laoschool.model.DataAccessImpl;
+import com.laoschool.model.DataAccessInterface;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
 import com.laoschool.view.ViewpagerDisableSwipeLeft;
@@ -126,8 +130,6 @@ public class HomeActivity extends AppCompatActivity implements
         }
         // Intialise ViewPager
         this.intialiseViewPager(currentRole);
-
-
     }
 
     private String _getRoleByInten(Intent intent) {
@@ -161,25 +163,28 @@ public class HomeActivity extends AppCompatActivity implements
         containerId = mViewPager.getId();
 
         List<Fragment> fragments = new Vector<Fragment>();
+
         fragments.add(ScreenMessage.instantiate(containerId, currentRole));
 
         fragments.add(ScreenAnnouncements.instantiate(containerId, currentRole));
 
-        fragments.add(ScreenAttended.instantiate(containerId, currentRole));
+        fragments.add(ScreenExamResults.instantiate(containerId, currentRole));
 
-        fragments.add(ScreenSchedule.instantiate(containerId, currentRole));
+        fragments.add(ScreenAttended.instantiate(containerId, currentRole));
 
         fragments.add(ScreenMore.instantiate(containerId, currentRole));
 
-        fragments.add(ScreenExamResults.instantiate(containerId, currentRole));
+
+
+        fragments.add(ScreenCreateMessage.instantiate(containerId, currentRole));
+
+        fragments.add(ScreenSchedule.instantiate(containerId, currentRole));
 
         fragments.add(ScreenFinalResultsStudent.instantiate(containerId, currentRole));
 
         fragments.add(ScreenSchoolInformation.instantiate(containerId, currentRole));
 
         fragments.add(ScreenListTeacher.instantiate(containerId, currentRole));
-
-        fragments.add(ScreenCreateMessage.instantiate(containerId, currentRole));
 
         fragments.add(ScreenSelectListStudent.instantiate(containerId, currentRole));
 
@@ -203,7 +208,7 @@ public class HomeActivity extends AppCompatActivity implements
         getSupportActionBar().setTitle(R.string.title_screen_message);
 
         // Default to first tab
-        this.mTabHost.setCurrentTab(LaoSchoolShared.POSITION_SCREEN_MORE_4);
+        this.mTabHost.setCurrentTab(LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
     }
 
     /**
@@ -236,6 +241,17 @@ public class HomeActivity extends AppCompatActivity implements
         HomeActivity.AddTab(this, this.mTabHost, tabSpecAnnouncemen, (tabInfo = new TabInfo(getString(R.string.title_screen_announcements), ScreenMessage.class, args)));
         this.mapTabInfo.put(tabInfo.tag, tabInfo);
 
+
+        //Add tab mark score
+        TabHost.TabSpec tabSpecSchedule = this.mTabHost.newTabSpec(getString(R.string.title_screen_exam_results));
+
+        View tabIncatorSchedule = LaoSchoolShared.createTabIndicator(getLayoutInflater(), mTabHost, R.string.title_screen_exam_results, R.drawable.ic_date_range_white_24dp);
+        tabIncatorSchedule.setLayoutParams(new LinearLayout.LayoutParams(widthTabIndicator, ViewGroup.LayoutParams.WRAP_CONTENT));
+        tabSpecSchedule.setIndicator(tabIncatorSchedule);
+        HomeActivity.AddTab(this, this.mTabHost, tabSpecSchedule, (tabInfo = new TabInfo(getString(R.string.title_screen_exam_results), ScreenExamResults.class, args)));
+        this.mapTabInfo.put(tabInfo.tag, tabInfo);
+
+
         //add tab attended
         TabHost.TabSpec tabSpecAttended = this.mTabHost.newTabSpec(getString(R.string.title_screen_attended));
         View tabIncatorAttended = LaoSchoolShared.createTabIndicator(getLayoutInflater(), mTabHost, R.string.title_screen_attended, R.drawable.ic_event_available_white_24dp);
@@ -244,14 +260,6 @@ public class HomeActivity extends AppCompatActivity implements
         HomeActivity.AddTab(this, this.mTabHost, tabSpecAttended, (tabInfo = new TabInfo(getString(R.string.title_screen_attended), ScreenAttended.class, args)));
         this.mapTabInfo.put(tabInfo.tag, tabInfo);
 
-        //Add tab schedule
-        TabHost.TabSpec tabSpecSchedule = this.mTabHost.newTabSpec(getString(R.string.title_screen_schedule));
-
-        View tabIncatorSchedule = LaoSchoolShared.createTabIndicator(getLayoutInflater(), mTabHost, R.string.title_screen_schedule, R.drawable.ic_schedule_white_24dp);
-        tabIncatorSchedule.setLayoutParams(new LinearLayout.LayoutParams(widthTabIndicator, ViewGroup.LayoutParams.WRAP_CONTENT));
-        tabSpecSchedule.setIndicator(tabIncatorSchedule);
-        HomeActivity.AddTab(this, this.mTabHost, tabSpecSchedule, (tabInfo = new TabInfo(getString(R.string.title_screen_schedule), ScreenSchedule.class, args)));
-        this.mapTabInfo.put(tabInfo.tag, tabInfo);
 
         //Add tab more
         TabHost.TabSpec tabSpecMore = this.mTabHost.newTabSpec(getString(R.string.title_screen_more));
@@ -310,37 +318,36 @@ public class HomeActivity extends AppCompatActivity implements
             case LaoSchoolShared.POSITION_SCREEN_ANNOUNCEMENTS_1:
                 _setTitleandShowButtonBack(R.string.title_screen_announcements, null, DisplayButtonHome.hide);
                 break;
-            case LaoSchoolShared.POSITION_SCREEN_ATTENDED_2:
+            case LaoSchoolShared.POSITION_SCREEN_EXAM_RESULTS_2:
+                _setTitleandShowButtonBack(R.string.title_screen_exam_results, null, DisplayButtonHome.hide);
+                break;
+            case LaoSchoolShared.POSITION_SCREEN_ATTENDED_3:
                 _setTitleandShowButtonBack(R.string.title_screen_attended, null, DisplayButtonHome.hide);
-                break;
-            case LaoSchoolShared.POSITION_SCREEN_EXAM_RESULTS_5:
-                _setTitleandShowButtonBack(R.string.title_screen_exam_results, null, DisplayButtonHome.show);
-                break;
-            case LaoSchoolShared.POSITION_SCREEN_SCHEDULE_3:
-                _setTitleandShowButtonBack(R.string.title_screen_schedule, null, DisplayButtonHome.hide);
                 break;
             case LaoSchoolShared.POSITION_SCREEN_MORE_4:
                 _setTitleandShowButtonBack(R.string.title_screen_more, null, DisplayButtonHome.hide);
                 break;
-            case LaoSchoolShared.POSITION_SCREEN_SCHOOL_RECORD_YEAR_6:
-                _setTitleandShowButtonBack(R.string.title_screen_final_results_student, null, DisplayButtonHome.show);
-                break;
-            case LaoSchoolShared.POSITION_SCREEN_SCHOOL_INFORMATION_7:
-                _setTitleandShowButtonBack(R.string.title_screen_school_information, null, DisplayButtonHome.show);
-                break;
-            case LaoSchoolShared.POSITION_SCREEN_LIST_TEACHER_8:
-                _setTitleandShowButtonBack(R.string.title_screen_list_teacher, null, DisplayButtonHome.show);
-                break;
-            case LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_9:
+            case LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5:
                 _setTitleandShowButtonBack(R.string.title_screen_create_message, null, DisplayButtonHome.show);
                 getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_36dp);
+                break;
+            case LaoSchoolShared.POSITION_SCREEN_SCHEDULE_6:
+                _setTitleandShowButtonBack(R.string.title_screen_schedule, null, DisplayButtonHome.show);
+                break;
+            case LaoSchoolShared.POSITION_SCREEN_SCHOOL_RECORD_YEAR_7:
+                _setTitleandShowButtonBack(R.string.title_screen_final_results_student, null, DisplayButtonHome.show);
+                break;
+            case LaoSchoolShared.POSITION_SCREEN_SCHOOL_INFORMATION_8:
+                _setTitleandShowButtonBack(R.string.title_screen_school_information, null, DisplayButtonHome.show);
+                break;
+            case LaoSchoolShared.POSITION_SCREEN_LIST_TEACHER_9:
+                _setTitleandShowButtonBack(R.string.title_screen_list_teacher, null, DisplayButtonHome.show);
                 break;
             case LaoSchoolShared.POSITION_SCREEN_LIST_STUDENT_10:
                 _setTitleandShowButtonBack(R.string.title_screen_select_list_student, null, DisplayButtonHome.show);
                 break;
             case LaoSchoolShared.POSITION_SCREEN_MARK_SCORE_STUDENT_11:
-                _setTitleandShowButtonBack(R.string.title_screen_mark_score_student, null, DisplayButtonHome.show);
-                getSupportActionBar().setTitle(R.string.title_screen_mark_score_student);
+                _setTitleandShowButtonBack(R.string.title_screen_mark_score_student, null, DisplayButtonHome.hide);
                 break;
             case LaoSchoolShared.POSITION_SCREEN_SETTING_12:
                 _setTitleandShowButtonBack(R.string.title_screen_setting, null, DisplayButtonHome.show);
@@ -438,26 +445,26 @@ public class HomeActivity extends AppCompatActivity implements
             //Exit app
             super.onBackPressed();
         } else if (currentPage > LaoSchoolShared.POSITION_SCREEN_MORE_4) {
-            if (currentPage == LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_9) {
+            if (currentPage == LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5) {
                 if (beforePosition == LaoSchoolShared.POSITION_SCREEN_MESSAGE_0) {
                     //back to tab message
                     _gotoPage(LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
                 } else {
                     //back to tab attender
-                    _gotoPage(LaoSchoolShared.POSITION_SCREEN_ATTENDED_2);
+                    _gotoPage(LaoSchoolShared.POSITION_SCREEN_ATTENDED_3);
                 }
                 getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
             } else if (currentPage == LaoSchoolShared.POSITION_SCREEN_LIST_STUDENT_10) {
                 //back to tab create message
-                _gotoPage(LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_9);
-                String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_9);
+                _gotoPage(LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
+                String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
                 ScreenCreateMessage screenCreateMessage = (ScreenCreateMessage) getSupportFragmentManager().findFragmentByTag(tag);
                 if (screenCreateMessage != null) {
                     screenCreateMessage.setTestMessage(null);
                 }
             } else if (currentPage == LaoSchoolShared.POSITION_SCREEN_MARK_SCORE_STUDENT_11) {
                 //back to tab exam
-                _gotoPage(LaoSchoolShared.POSITION_SCREEN_EXAM_RESULTS_5);
+                _gotoPage(LaoSchoolShared.POSITION_SCREEN_EXAM_RESULTS_2);
                 getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
             } else if (currentPage == LaoSchoolShared.POSITION_SCREEN_MESSAGE_DETAILS_14) {
                 //back to tab Message
@@ -466,9 +473,9 @@ public class HomeActivity extends AppCompatActivity implements
                 //back to tab Message
                 _gotoPage(LaoSchoolShared.POSITION_SCREEN_ANNOUNCEMENTS_1);
             } else if (currentPage == LaoSchoolShared.POSITION_SCREEN_PROFILE_13) {
-                if (beforePosition == LaoSchoolShared.POSITION_SCREEN_LIST_TEACHER_8) {
+                if (beforePosition == LaoSchoolShared.POSITION_SCREEN_LIST_TEACHER_9) {
                     //back to tab message
-                    _gotoPage(LaoSchoolShared.POSITION_SCREEN_LIST_TEACHER_8);
+                    _gotoPage(LaoSchoolShared.POSITION_SCREEN_LIST_TEACHER_9);
                 } else {
                     //back to tab attender
                     _gotoPage(LaoSchoolShared.POSITION_SCREEN_MORE_4);
@@ -481,6 +488,9 @@ public class HomeActivity extends AppCompatActivity implements
             //_gotoPage(currentPage - 1);
             super.onBackPressed();
         }
+        //Hide key board
+        LaoSchoolShared.hideSoftKeyboard(this);
+
     }
 
     @Override
@@ -503,21 +513,21 @@ public class HomeActivity extends AppCompatActivity implements
 
 
     public void gotoSchoolRecord(View view) {
-        _gotoPage(LaoSchoolShared.POSITION_SCREEN_SCHOOL_RECORD_YEAR_6);
+        _gotoPage(LaoSchoolShared.POSITION_SCREEN_SCHOOL_RECORD_YEAR_7);
     }
 
     public void gotoInformationSchool(View view) {
-        _gotoPage(LaoSchoolShared.POSITION_SCREEN_SCHOOL_INFORMATION_7);
+        _gotoPage(LaoSchoolShared.POSITION_SCREEN_SCHOOL_INFORMATION_8);
     }
 
     public void gotoListTeacher(View view) {
-        _gotoPage(LaoSchoolShared.POSITION_SCREEN_LIST_TEACHER_8);
+        _gotoPage(LaoSchoolShared.POSITION_SCREEN_LIST_TEACHER_9);
     }
 
     @Override
     public void _gotoScreenCreateMessage() {
         beforePosition = LaoSchoolShared.POSITION_SCREEN_MESSAGE_0;
-        _gotoPage(LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_9);
+        _gotoPage(LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
     }
 
     @Override
@@ -527,7 +537,7 @@ public class HomeActivity extends AppCompatActivity implements
 
     @Override
     public void goBackScreenCreateMessage() {
-        _gotoPage(LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_9);
+        _gotoPage(LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
     }
 
     public void gotoProfile(View view) {
@@ -539,11 +549,11 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     public void gotoExamResult(View view) {
-        _gotoPage(LaoSchoolShared.POSITION_SCREEN_EXAM_RESULTS_5);
+        _gotoPage(LaoSchoolShared.POSITION_SCREEN_EXAM_RESULTS_2);
     }
 
     void _gotoPage(int position) {
-        this.mViewPager.setCurrentItem(position);
+        this.mViewPager.setCurrentItem(position,false);
     }
 
     @Override
@@ -573,19 +583,19 @@ public class HomeActivity extends AppCompatActivity implements
 
     @Override
     public void gotoCreateMessageFormScreenAttended() {
-        beforePosition = LaoSchoolShared.POSITION_SCREEN_ATTENDED_2;
-        _gotoPage(LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_9);
+        beforePosition = LaoSchoolShared.POSITION_SCREEN_ATTENDED_3;
+        _gotoPage(LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
     }
 
 
     @Override
     public void gotoListTearcherformMore() {
-        _gotoPage(LaoSchoolShared.POSITION_SCREEN_LIST_TEACHER_8);
+        _gotoPage(LaoSchoolShared.POSITION_SCREEN_LIST_TEACHER_9);
     }
 
     @Override
     public void gotoSchoolInformationformMore() {
-        _gotoPage(LaoSchoolShared.POSITION_SCREEN_SCHOOL_INFORMATION_7);
+        _gotoPage(LaoSchoolShared.POSITION_SCREEN_SCHOOL_INFORMATION_8);
     }
 
     @Override
@@ -595,7 +605,7 @@ public class HomeActivity extends AppCompatActivity implements
 
     @Override
     public void logoutApplication() {
-        //_gotoPage(LaoSchoolShared.POSITION_SCREEN_LIST_TEACHER_8);
+        //_gotoPage(LaoSchoolShared.POSITION_SCREEN_LIST_TEACHER_9);
     }
 
     @Override
@@ -606,19 +616,19 @@ public class HomeActivity extends AppCompatActivity implements
 
     @Override
     public void gotoExamResultsformMore() {
-        _gotoPage(LaoSchoolShared.POSITION_SCREEN_EXAM_RESULTS_5);
+        _gotoPage(LaoSchoolShared.POSITION_SCREEN_EXAM_RESULTS_2);
     }
 
     @Override
     public void gotoSchoolRecordbyYearformMore() {
-        _gotoPage(LaoSchoolShared.POSITION_SCREEN_SCHOOL_RECORD_YEAR_6);
+        _gotoPage(LaoSchoolShared.POSITION_SCREEN_SCHOOL_RECORD_YEAR_7);
     }
 
     public String selectedTeacher;
 
     @Override
     public void gotoScreenTeacherDetailsformScreenListTeacher(String s) {
-        beforePosition = LaoSchoolShared.POSITION_SCREEN_LIST_TEACHER_8;
+        beforePosition = LaoSchoolShared.POSITION_SCREEN_LIST_TEACHER_9;
         selectedTeacher = s;
         _gotoPage(LaoSchoolShared.POSITION_SCREEN_PROFILE_13);
         _setTitleandShowButtonBack(-1, s, DisplayButtonHome.show);
@@ -636,7 +646,17 @@ public class HomeActivity extends AppCompatActivity implements
     @Override
     public void doneMarkScoreStudent() {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
-        _gotoPage(LaoSchoolShared.POSITION_SCREEN_EXAM_RESULTS_5);
+        _gotoPage(LaoSchoolShared.POSITION_SCREEN_EXAM_RESULTS_2);
 
+    }
+
+    @Override
+    public void goBackToMessage() {
+        onBackPressed();
+    }
+
+    @Override
+    public void gotoScheduleformMore() {
+        _gotoPage(LaoSchoolShared.POSITION_SCREEN_SCHEDULE_6);
     }
 }

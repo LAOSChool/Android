@@ -3,7 +3,6 @@ package com.laoschool.screen;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -48,7 +47,7 @@ public class ScreenProfile extends Fragment implements FragmentLifecycle {
         if (fromPosition > -1) {
             if (fromPosition == LaoSchoolShared.POSITION_SCREEN_MORE_4) {
                 inflater.inflate(R.menu.menu_screen_profile, menu);
-            } else if (fromPosition == LaoSchoolShared.POSITION_SCREEN_LIST_TEACHER_8) {
+            } else if (fromPosition == LaoSchoolShared.POSITION_SCREEN_LIST_TEACHER_9) {
 
             }
         }else {
@@ -69,7 +68,7 @@ public class ScreenProfile extends Fragment implements FragmentLifecycle {
             fromPosition = activity.beforePosition;
             if (fromPosition == LaoSchoolShared.POSITION_SCREEN_MORE_4) {
 
-            } else if (fromPosition == LaoSchoolShared.POSITION_SCREEN_LIST_TEACHER_8) {
+            } else if (fromPosition == LaoSchoolShared.POSITION_SCREEN_LIST_TEACHER_9) {
                 Toast.makeText(activity, activity.selectedTeacher, Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
