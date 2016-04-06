@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.laoschool.R;
+import com.laoschool.screen.login.ScreenLogin;
 
 public class SplashScreen extends AppCompatActivity {
 

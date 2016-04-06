@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.laoschool.R;
@@ -36,13 +37,14 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
 
 
     private static final String CURRENT_ROLE = "current_role";
+    private static final String TAG = "ScreenCreateMessage";
     private int containerId;
     private String testMessage;
     private String currentRole;
     private Context context;
-
+    private DataAccessInterface service;
     EditText txtTitle;
-    TextInputLayout inputLayoutTitle;
+    //TextInputLayout inputLayoutTitle;
 
 
     public void setTestMessage(String testMessage) {
@@ -100,7 +102,19 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
     private View _defineCreateMessageStudent(LayoutInflater inflater, ViewGroup container) {
         View view = inflater.inflate(R.layout.screen_create_message_student, container, false);
         txtTitle = (EditText) view.findViewById(R.id.txtMessageTitleStudent);
-        inputLayoutTitle = (TextInputLayout) view.findViewById(R.id.input_layout_message_title_student);
+        final TextView txtMessageTo = (TextView) view.findViewById(R.id.txtMessageTo);
+        service.getUserById(LaoSchoolShared.myProfile.getEclass().getHead_teacher_id(), new AsyncCallback<User>() {
+            @Override
+            public void onSuccess(User result) {
+                txtMessageTo.setText(result.getFullname());
+            }
+
+            @Override
+            public void onFailure(String message) {
+
+            }
+        });
+        //inputLayoutTitle = (TextInputLayout) view.findViewById(R.id.input_layout_message_title_student);
 
 //        Log.d("Create Message:", "-Tag:" + getTag());
         view.findViewById(R.id.btnGetStudent).setOnClickListener(new View.OnClickListener() {
@@ -114,11 +128,11 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
 
     private boolean validateMessageTitle() {
         if (txtTitle.getText().toString().trim().isEmpty()) {
-            inputLayoutTitle.setError(getString(R.string.err_msg_input_message_title));
+            //inputLayoutTitle.setError(getString(R.string.err_msg_input_message_title));
             requestFocus(txtTitle);
             return false;
         } else {
-            inputLayoutTitle.setErrorEnabled(false);
+            //inputLayoutTitle.setErrorEnabled(false);
         }
         return true;
     }
@@ -134,6 +148,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         this.context = getActivity();
+        service = DataAccessImpl.getInstance(context);
         if (getArguments() != null) {
             containerId = getArguments().getInt(LaoSchoolShared.CONTAINER_ID);
             currentRole = getArguments().getString(CURRENT_ROLE);
@@ -182,19 +197,40 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
             return;
         }
 
-        //call API Send Message
-        final DataAccessInterface service = DataAccessImpl.getInstance(context);
-        Message message=new Message();
-        //message.setContent();
 
-        Toast.makeText(context, "Send Message", Toast.LENGTH_SHORT).show();
+        Message message = new Message();
+
+        message.setContent(txtTitle.getText().toString());
+        message.setChannel(1);
+        message.setOther("khong co gi");
+        message.setFrom_usr_id(LaoSchoolShared.myProfile.getId());
+        message.setTo_usr_id(LaoSchoolShared.myProfile.getEclass().getHead_teacher_id());
+        message.setClass_id(LaoSchoolShared.myProfile.getEclass().getId());
+
+        service.createMessage(message, new AsyncCallback<Message>() {
+            @Override
+            public void onSuccess(Message result) {
+                Log.d(TAG, "Message results:" + result.toJson());
+                Toast.makeText(context, "Send Message", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(String message) {
+                Toast.makeText(context, "Send Message Fails", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "Create messsage error:" + message);
+            }
+
+
+        });
+
+
         iScreenCreateMessage.goBackToMessage();
         _resetForm();
     }
 
     private void _resetForm() {
         txtTitle.getText().clear();
-        inputLayoutTitle.setErrorEnabled(false);
+        //inputLayoutTitle.setErrorEnabled(false);
         txtTitle.clearFocus();
     }
 }
