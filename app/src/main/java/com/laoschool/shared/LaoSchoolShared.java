@@ -20,11 +20,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.laoschool.R;
+import com.laoschool.entities.User;
 
 /**
  * Created by Hue on 3/1/2016.
  */
 public class LaoSchoolShared {
+    public static User myProfile;
+
     public static final String CONTAINER_ID = "container_id";
     public static final int POSITION_SCREEN_MESSAGE_0 = 0;
     public static final int POSITION_SCREEN_ANNOUNCEMENTS_1 = 1;

@@ -5,8 +5,6 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Date;
-
 /**
  * Created by Tran An on 11/03/2016.
  */
@@ -32,10 +30,12 @@ public class User {
 
     UserDetail user_detail;
 
+    Class eclass;
+
     public User() {
     }
 
-    public User(int id, String sso_id, String password, String fullname, String nickname, String state, int school_id, String roles, UserDetail userDetail) {
+    public User(int id, String sso_id, String password, String fullname, String nickname, String state, int school_id, String roles, UserDetail userDetail, Class eclass) {
         this.id = id;
         this.sso_id = sso_id;
         this.password = password;
@@ -45,6 +45,7 @@ public class User {
         this.school_id = school_id;
         this.roles = roles;
         this.user_detail = userDetail;
+        this.eclass = eclass;
     }
 
     public int getId() {
@@ -115,22 +116,60 @@ public class User {
         return user_detail;
     }
 
-    public void setUserDetail(UserDetail userDetail) {
-        this.user_detail = userDetail;
-    }
+    public void setUserDetail(UserDetail userDetail) { this.user_detail = userDetail; }
+
+    public Class getEclass() { return eclass; }
+
+    public void setEclass(Class eclass) { this.eclass = eclass; }
 
     public String toJson() {
         Gson gson = new Gson();
-        String jsonString = "{\"" + Entity_Name + "\":" + gson.toJson(this) + "}";
+        String jsonString = gson.toJson(this);
         return jsonString;
     }
 
     public static User fromJson(String jsonString) {
+        Gson gson = new Gson();
+        User user = gson.fromJson(jsonString, User.class);
+        return user;
+    }
+
+    public static User parseFromJson(String jsonString) {
+        User user = new User();
         try {
-            JSONObject json = new JSONObject(jsonString);
-            JSONObject object = json.getJSONObject(Entity_Name);
-            Gson gson = new Gson();
-            User user = gson.fromJson(object.toString(), User.class);
+            JSONObject mainObject = new JSONObject(jsonString);
+            user.setId(mainObject.getInt("id"));
+            user.setSso_id(mainObject.getString("sso_id"));
+            user.setFullname(mainObject.getString("fullname"));
+            user.setNickname(mainObject.getString("nickname"));
+            user.setState(mainObject.getString("state"));
+            user.setSchool_id(mainObject.getInt("school_id"));
+            user.setRoles(mainObject.getString("roles"));
+            // User detail
+            UserDetail userDetail = new UserDetail();
+            userDetail.setAddr1(mainObject.getString("addr1"));
+            userDetail.setAddr2(mainObject.getString("addr2"));
+            userDetail.setPhone(mainObject.getString("phone"));
+            userDetail.setExt(mainObject.getString("ext"));
+            userDetail.setPhoto(mainObject.getString("photo"));
+            userDetail.setBirthday(mainObject.getString("birthday"));
+            userDetail.setGender(mainObject.getString("gender"));
+            userDetail.setEmail(mainObject.getString("email"));
+            // Class
+            JSONObject eclassObj = mainObject.getJSONObject("eclass");
+            Class eclass = new Class();
+            eclass.setId(eclassObj.getInt("id"));
+            eclass.setSchool_id(eclassObj.getInt("school_id"));
+            eclass.setTitle(eclassObj.getString("title"));
+            eclass.setLocation(eclassObj.getString("location"));
+            eclass.setTerm(eclassObj.getInt("term"));
+            eclass.setYears(eclassObj.getString("years"));
+            eclass.setStart_dt(eclassObj.getString("start_dt"));
+            eclass.setEnd_dt(eclassObj.getString("end_dt"));
+            eclass.setHead_teacher_id(eclassObj.getInt("head_teacher_id"));
+            // Return user
+            user.setUserDetail(userDetail);
+            user.setEclass(eclass);
             return user;
         } catch (JSONException e) {
             e.printStackTrace();

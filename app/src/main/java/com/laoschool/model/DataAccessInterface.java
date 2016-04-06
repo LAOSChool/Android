@@ -1,6 +1,7 @@
 package com.laoschool.model;
 
 import com.laoschool.entities.*;
+import com.laoschool.entities.Class;
 
 import java.util.List;
 
@@ -137,7 +138,7 @@ public interface DataAccessInterface {
      * @param filter_sts (optional)
      * @param callback return list of messages if success,
      */
-    public void getMessages(int filter_class_id, int filter_from_user_id, String filter_from_dt, String filter_to_dt, int filter_to_user_id, int filter_channel, int filter_sts, AsyncCallback<List<Message>> callback);
+    public void getMessages(String filter_class_id, String filter_from_user_id, String filter_from_dt, String filter_to_dt, String filter_to_user_id, String filter_channel, String filter_sts, AsyncCallback<List<Message>> callback);
 
     /**
      * Get Message for a specific Message ID
@@ -183,5 +184,5 @@ public interface DataAccessInterface {
      * @param class_id
      * @param callback return the class if success,
      */
-    public void getClassById(int class_id, AsyncCallback<com.laoschool.entities.Class> callback);
+    public void getClassById(int class_id, AsyncCallback<Class> callback);
 }

@@ -152,20 +152,13 @@ public class Message {
 
     public String toJson() {
         Gson gson = new Gson();
-        String jsonString = "{\"" + Entity_Name + "\":" + gson.toJson(this) + "}";
+        String jsonString = gson.toJson(this);
         return jsonString;
     }
 
     public static Message fromJson(String jsonString) {
-        try {
-            JSONObject json = new JSONObject(jsonString);
-            JSONObject object = json.getJSONObject(Entity_Name);
-            Gson gson = new Gson();
-            Message message = gson.fromJson(object.toString(), Message.class);
-            return message;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
+        Gson gson = new Gson();
+        Message message = gson.fromJson(jsonString, Message.class);
+        return message;
     }
 }

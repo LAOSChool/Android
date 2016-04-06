@@ -13,9 +13,6 @@ import com.android.volley.NetworkResponse;
 import com.laoschool.entities.*;
 import com.laoschool.entities.Class;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,13 +27,14 @@ public class DataAccessImpl implements DataAccessInterface{
     private static Context mCtx;
 
     private static String api_key = "TEST_API_KEY";
-    private static String auth_key;
+    private static String auth_key = "";
 
     final String HOST = "https://192.168.0.202:9443/laoschoolws/api/";
 
     private DataAccessImpl(Context context) {
         mCtx = context;
         mRequestQueue = getRequestQueue();
+        HttpsTrustManager.allowAllSSL();
     }
 
     private RequestQueue getRequestQueue() {
@@ -59,7 +57,6 @@ public class DataAccessImpl implements DataAccessInterface{
     public void login(final String sso_id, final String password, final AsyncCallback<String> callback) {
         // Request a string response from the provided URL.
         String url = HOST + "login";
-        HttpsTrustManager.allowAllSSL();
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -70,7 +67,7 @@ public class DataAccessImpl implements DataAccessInterface{
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        callback.onFailure(error);
+                        callback.onFailure(error.toString());
                     }
                 }
         ) {
@@ -101,13 +98,65 @@ public class DataAccessImpl implements DataAccessInterface{
     }
 
     @Override
-    public void getUserProfile(AsyncCallback<User> callback) {
+    public void getUserProfile(final AsyncCallback<User> callback) {
+        // Request a string response from the provided URL.
+        String url = HOST + "users/myprofile";
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        User user = User.parseFromJson(response);
+                        callback.onSuccess(user);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        callback.onFailure(error.toString());
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", auth_key);
+                return params;
+            }
+        };
 
+        mRequestQueue.add(stringRequest);
     }
 
     @Override
-    public void getUserById(int user_id, AsyncCallback<User> callback) {
+    public void getUserById(int user_id, final AsyncCallback<User> callback) {
+        // Request a string response from the provided URL.
+        String url = HOST + "users/" + user_id;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        User user = User.parseFromJson(response);
+                        callback.onSuccess(user);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        callback.onFailure(error.toString());
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", auth_key);
+                return params;
+            }
+        };
 
+        mRequestQueue.add(stringRequest);
     }
 
     @Override
@@ -156,8 +205,55 @@ public class DataAccessImpl implements DataAccessInterface{
     }
 
     @Override
-    public void getMessages(int filter_class_id, int filter_from_user_id, String filter_from_dt, String filter_to_dt, int filter_to_user_id, int filter_channel, int filter_sts, AsyncCallback<List<Message>> callback) {
+    public void getMessages(final String filter_class_id, final String filter_from_user_id, final String filter_from_dt,
+                            final String filter_to_dt, final String filter_to_user_id, final String filter_channel,
+                            final String filter_sts, final AsyncCallback<List<Message>> callback) {
+        // Request a string response from the provided URL.
+        String url = HOST + "messages";
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
 
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        callback.onFailure(error.toString());
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", auth_key);
+                return params;
+            }
+
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String, String> params = new HashMap<String, String>();
+                if(filter_class_id != null)
+                    params.put("filter_class_id", String.valueOf(filter_class_id));
+                if(filter_from_user_id != null)
+                    params.put("filter_class_id", String.valueOf(filter_from_user_id));
+                if(filter_from_dt != null)
+                    params.put("filter_class_id", String.valueOf(filter_from_dt));
+                if(filter_to_dt != null)
+                    params.put("filter_class_id", String.valueOf(filter_to_dt));
+                if(filter_to_user_id != null)
+                    params.put("filter_class_id", String.valueOf(filter_to_user_id));
+                if(filter_channel != null)
+                    params.put("filter_class_id", String.valueOf(filter_channel));
+                if(filter_sts != null)
+                    params.put("filter_class_id", String.valueOf(filter_sts));
+                return params;
+            }
+        };
+
+        mRequestQueue.add(stringRequest);
     }
 
     @Override
@@ -166,8 +262,41 @@ public class DataAccessImpl implements DataAccessInterface{
     }
 
     @Override
-    public void createMessage(Message message, AsyncCallback<Message> callback) {
+    public void createMessage(final Message message, final AsyncCallback<Message> callback) {
+        // Request a string response from the provided URL.
+        String url = HOST + "messages/create";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Message m = Message.fromJson(response);
+                        callback.onSuccess(m);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        callback.onFailure(error.toString());
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", auth_key);
+                params.put("Content-Type", "application/json");
+                return params;
+            }
 
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                String httpPostBody = message.toJson();
+                return httpPostBody.getBytes();
+            }
+        };
+
+        mRequestQueue.add(stringRequest);
     }
 
     @Override

@@ -26,6 +26,9 @@ import java.util.Vector;
 
 import com.laoschool.R;
 import com.laoschool.adapter.PagerAdapter;
+
+import com.laoschool.entities.Message;
+
 import com.laoschool.entities.User;
 import com.laoschool.model.AsyncCallback;
 import com.laoschool.model.DataAccessImpl;
@@ -54,6 +57,8 @@ public class HomeActivity extends AppCompatActivity implements
     int containerId;
     private String currentRole;
     public int beforePosition;
+
+    private DataAccessInterface service;
 
     public enum Role {
         student, teacher;
@@ -130,6 +135,24 @@ public class HomeActivity extends AppCompatActivity implements
         }
         // Intialise ViewPager
         this.intialiseViewPager(currentRole);
+
+
+        service = DataAccessImpl.getInstance(this.getApplicationContext());
+        getUserProfile();
+    }
+
+    private void getUserProfile() {
+        service.getUserProfile(new AsyncCallback<User>() {
+            @Override
+            public void onSuccess(User result) {
+                LaoSchoolShared.myProfile = result;
+            }
+
+            @Override
+            public void onFailure(String message) {
+                System.out.println(message);
+            }
+        });
     }
 
     private String _getRoleByInten(Intent intent) {
