@@ -7,6 +7,6 @@ public interface AsyncCallback<T> {
 
     void onSuccess(T result);
 
-    void onFailure(Throwable caught);
+    void onFailure(String message);
 }
 

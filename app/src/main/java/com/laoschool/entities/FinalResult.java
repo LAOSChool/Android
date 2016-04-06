@@ -231,20 +231,13 @@ public class FinalResult {
 
     public String toJson() {
         Gson gson = new Gson();
-        String jsonString = "{\"" + Entity_Name + "\":" + gson.toJson(this) + "}";
+        String jsonString = gson.toJson(this);
         return jsonString;
     }
 
     public static FinalResult fromJson(String jsonString) {
-        try {
-            JSONObject json = new JSONObject(jsonString);
-            JSONObject object = json.getJSONObject(Entity_Name);
-            Gson gson = new Gson();
-            FinalResult finalResult = gson.fromJson(object.toString(), FinalResult.class);
-            return finalResult;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
+        Gson gson = new Gson();
+        FinalResult finalResult = gson.fromJson(jsonString, FinalResult.class);
+        return finalResult;
     }
 }

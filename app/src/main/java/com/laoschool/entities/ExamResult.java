@@ -187,20 +187,13 @@ public class ExamResult {
 
     public String toJson() {
         Gson gson = new Gson();
-        String jsonString = "{\"" + Entity_Name + "\":" + gson.toJson(this) + "}";
+        String jsonString = gson.toJson(this);
         return jsonString;
     }
 
     public static ExamResult fromJson(String jsonString) {
-        try {
-            JSONObject json = new JSONObject(jsonString);
-            JSONObject object = json.getJSONObject(Entity_Name);
-            Gson gson = new Gson();
-            ExamResult examResult = gson.fromJson(object.toString(), ExamResult.class);
-            return examResult;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
+        Gson gson = new Gson();
+        ExamResult examResult = gson.fromJson(jsonString, ExamResult.class);
+        return examResult;
     }
 }

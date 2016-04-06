@@ -154,20 +154,13 @@ public class Attendance {
 
     public String toJson() {
         Gson gson = new Gson();
-        String jsonString = "{\"" + Entity_Name + "\":" + gson.toJson(this) + "}";
+        String jsonString = gson.toJson(this);
         return jsonString;
     }
 
     public static Attendance fromJson(String jsonString) {
-        try {
-            JSONObject json = new JSONObject(jsonString);
-            JSONObject object = json.getJSONObject(Entity_Name);
-            Gson gson = new Gson();
-            Attendance attendance = gson.fromJson(object.toString(), Attendance.class);
-            return attendance;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
+        Gson gson = new Gson();
+        Attendance attendance = gson.fromJson(jsonString, Attendance.class);
+        return attendance;
     }
 }

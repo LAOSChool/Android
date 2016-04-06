@@ -26,6 +26,11 @@ import java.util.Vector;
 
 import com.laoschool.R;
 import com.laoschool.adapter.PagerAdapter;
+import com.laoschool.entities.Message;
+import com.laoschool.entities.User;
+import com.laoschool.model.AsyncCallback;
+import com.laoschool.model.DataAccessImpl;
+import com.laoschool.model.DataAccessInterface;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
 import com.laoschool.view.ViewpagerDisableSwipeLeft;
@@ -50,6 +55,8 @@ public class HomeActivity extends AppCompatActivity implements
     int containerId;
     private String currentRole;
     public int beforePosition;
+
+    private DataAccessInterface service;
 
     public enum Role {
         student, teacher;
@@ -127,7 +134,22 @@ public class HomeActivity extends AppCompatActivity implements
         // Intialise ViewPager
         this.intialiseViewPager(currentRole);
 
+        service = DataAccessImpl.getInstance(this.getApplicationContext());
+        getUserProfile();
+    }
 
+    private void getUserProfile() {
+        service.getUserProfile(new AsyncCallback<User>() {
+            @Override
+            public void onSuccess(User result) {
+                LaoSchoolShared.myProfile = result;
+            }
+
+            @Override
+            public void onFailure(String message) {
+                System.out.println(message);
+            }
+        });
     }
 
     private String _getRoleByInten(Intent intent) {
@@ -136,7 +158,7 @@ public class HomeActivity extends AppCompatActivity implements
         } else if (intent.getAction().equals(LaoSchoolShared.ROLE_STUDENT)) {
             return LaoSchoolShared.ROLE_STUDENT;
         } else {
-            return "";
+            return LaoSchoolShared.ROLE_STUDENT;
         }
     }
 

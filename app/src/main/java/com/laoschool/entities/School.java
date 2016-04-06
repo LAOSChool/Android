@@ -209,20 +209,13 @@ public class School {
 
     public String toJson() {
         Gson gson = new Gson();
-        String jsonString = "{\"" + Entity_Name + "\":" + gson.toJson(this) + "}";
+        String jsonString = gson.toJson(this);
         return jsonString;
     }
 
     public static School fromJson(String jsonString) {
-        try {
-            JSONObject json = new JSONObject(jsonString);
-            JSONObject object = json.getJSONObject(Entity_Name);
-            Gson gson = new Gson();
-            School school = gson.fromJson(object.toString(), School.class);
-            return school;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
+        Gson gson = new Gson();
+        School school = gson.fromJson(jsonString, School.class);
+        return school;
     }
 }

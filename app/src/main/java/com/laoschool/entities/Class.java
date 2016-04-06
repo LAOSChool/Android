@@ -5,8 +5,6 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Date;
-
 /**
  * Created by Tran An on 11/03/2016.
  */
@@ -38,10 +36,12 @@ public class Class {
 
     int sts;
 
+    int head_teacher_id;
+
     public Class() {
     }
 
-    public Class(int id, int school_id, String title, String location, int term, String years, String start_dt, String end_dt, int class_type, int grade_type, int fee, int sts) {
+    public Class(int id, int school_id, String title, String location, int term, String years, String start_dt, String end_dt, int class_type, int grade_type, int fee, int sts, int head_teacher_id) {
         this.id = id;
         this.school_id = school_id;
         this.title = title;
@@ -54,6 +54,7 @@ public class Class {
         this.grade_type = grade_type;
         this.fee = fee;
         this.sts = sts;
+        this.head_teacher_id = head_teacher_id;
     }
 
     public int getId() {
@@ -152,22 +153,19 @@ public class Class {
         this.sts = sts;
     }
 
+    public int getHead_teacher_id() { return head_teacher_id; }
+
+    public void setHead_teacher_id(int head_teacher_id) { this.head_teacher_id = head_teacher_id; }
+
     public String toJson() {
         Gson gson = new Gson();
-        String jsonString = "{\"" + Entity_Name + "\":" + gson.toJson(this) + "}";
+        String jsonString = gson.toJson(this);
         return jsonString;
     }
 
     public static Class fromJson(String jsonString) {
-        try {
-            JSONObject json = new JSONObject(jsonString);
-            JSONObject object = json.getJSONObject(Entity_Name);
-            Gson gson = new Gson();
-            Class aclass = gson.fromJson(object.toString(), Class.class);
-            return aclass;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
+        Gson gson = new Gson();
+        Class aclass = gson.fromJson(jsonString, Class.class);
+        return aclass;
     }
 }

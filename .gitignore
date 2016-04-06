@@ -4,4 +4,6 @@ build
 app/build
 app.iml
 local.properties
+doc
+Android.iml
 *~

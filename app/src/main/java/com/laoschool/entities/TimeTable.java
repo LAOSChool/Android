@@ -110,20 +110,13 @@ public class TimeTable {
 
     public String toJson() {
         Gson gson = new Gson();
-        String jsonString = "{\"" + Entity_Name + "\":" + gson.toJson(this) + "}";
+        String jsonString = gson.toJson(this);
         return jsonString;
     }
 
     public static TimeTable fromJson(String jsonString) {
-        try {
-            JSONObject json = new JSONObject(jsonString);
-            JSONObject object = json.getJSONObject(Entity_Name);
-            Gson gson = new Gson();
-            TimeTable timetable = gson.fromJson(object.toString(), TimeTable.class);
-            return timetable;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
+        Gson gson = new Gson();
+        TimeTable timetable = gson.fromJson(jsonString, TimeTable.class);
+        return timetable;
     }
 }
