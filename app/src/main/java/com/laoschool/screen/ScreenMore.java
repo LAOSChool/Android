@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.laoschool.R;
 import com.laoschool.adapter.RecyclerViewScreenMoreAdapter;
@@ -36,6 +37,7 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
     private Context context;
     private int containerId;
     private String currentRole;
+    private boolean checkConn;
 
     public ScreenMore() {
         // Required empty public constructor
@@ -67,72 +69,88 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
     }
 
     private View _defineScreenMorebyRole(LayoutInflater inflater, ViewGroup container) {
+//        boolean checkConn = LaoSchoolShared.checkConn(context);
+//        Log.d(TAG, "-checkConn:" + checkConn);
         if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
             return _defineSrceenMoreTeacher(inflater, container);
         } else {
             return _defineSrceenMoreStudent(inflater, container);
         }
+//        if (checkConn) {
+//        } else {
+//            return inflater.inflate(R.layout.view_connection_error, container, false);
+//        }
+
     }
 
     private View _defineSrceenMoreStudent(LayoutInflater inflater, ViewGroup container) {
-        View view = inflater.inflate(R.layout.screen_more_student, container, false);
-        //
-        LinearLayout mDetaislUser = (LinearLayout) view.findViewById(R.id.mDetaislUser);
-        TextView txtStudentName = (TextView) view.findViewById(R.id.txtUserNameScreenMoreStudent);
-        TextView txtSchoolName = (TextView) view.findViewById(R.id.txtUserNameScreenMoreStudent);
-        TextView txtTerm = (TextView) view.findViewById(R.id.txtTermScreenMoreStudent);
-        RecyclerView mRecylerViewFunctionMore = (RecyclerView) view.findViewById(R.id.mRecylerViewFunctionMore);
+        try {
 
-        //Handler goto detaisl
-        mDetaislUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                iScreenMore.gotoDetailsUser();
-            }
-        });
+            View view = inflater.inflate(R.layout.screen_more_student, container, false);
+            //
+            LinearLayout mDetaislUser = (LinearLayout) view.findViewById(R.id.mDetaislUser);
+            TextView txtStudentName = (TextView) view.findViewById(R.id.txtUserNameScreenMoreStudent);
+            TextView txtSchoolName = (TextView) view.findViewById(R.id.txtUserNameScreenMoreStudent);
+            TextView txtTerm = (TextView) view.findViewById(R.id.txtTermScreenMoreStudent);
+            RecyclerView mRecylerViewFunctionMore = (RecyclerView) view.findViewById(R.id.mRecylerViewFunctionMore);
 
-        //init adapte
-        List<String> more_student = Arrays.asList(getResources().getStringArray(R.array.more_student));
-        RecyclerViewScreenMoreAdapter adapter = new RecyclerViewScreenMoreAdapter(this, more_student);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 1);
+            //Handler goto detaisl
+            mDetaislUser.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    iScreenMore.gotoDetailsUser();
+                }
+            });
 
-        //set adapter
-        mRecylerViewFunctionMore.setLayoutManager(gridLayoutManager);
-        mRecylerViewFunctionMore.setAdapter(adapter);
-        return view;
+            //init adapte
+            List<String> more_student = Arrays.asList(getResources().getStringArray(R.array.more_student));
+            RecyclerViewScreenMoreAdapter adapter = new RecyclerViewScreenMoreAdapter(this, more_student);
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 1);
+
+            //set adapter
+            mRecylerViewFunctionMore.setLayoutManager(gridLayoutManager);
+            mRecylerViewFunctionMore.setAdapter(adapter);
+            return view;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private View _defineSrceenMoreTeacher(LayoutInflater inflater, ViewGroup container) {
-        View view = inflater.inflate(R.layout.screen_more_teacher, container, false);
-        //
-        LinearLayout mDetaislUser = (LinearLayout) view.findViewById(R.id.mDetaislUser);
-        TextView txtUserName = (TextView) view.findViewById(R.id.txtUserNameScreenMoreTeacher);
-        TextView txtSchoolName = (TextView) view.findViewById(R.id.txtSchoolNameScreenMoreTeacher);
-        TextView txtContactPhone = (TextView) view.findViewById(R.id.txtContactPhoneScreenMoreTeacher);
-        RecyclerView mRecylerViewFunctionMore = (RecyclerView) view.findViewById(R.id.mRecylerViewFunctionMore);
+        try {
+            View view = inflater.inflate(R.layout.screen_more_teacher, container, false);
+            //
+            LinearLayout mDetaislUser = (LinearLayout) view.findViewById(R.id.mDetaislUser);
+            TextView txtUserName = (TextView) view.findViewById(R.id.txtUserNameScreenMoreTeacher);
+            TextView txtSchoolName = (TextView) view.findViewById(R.id.txtSchoolNameScreenMoreTeacher);
+            TextView txtContactPhone = (TextView) view.findViewById(R.id.txtContactPhoneScreenMoreTeacher);
+            RecyclerView mRecylerViewFunctionMore = (RecyclerView) view.findViewById(R.id.mRecylerViewFunctionMore);
 
-        Typeface roboto = Typeface.createFromAsset(context.getAssets(),
-                "font/Roboto-Regular.ttf"); //use this.getAssets if you are calling from an Activity
-        txtUserName.setTypeface(roboto);
+            Typeface roboto = Typeface.createFromAsset(context.getAssets(),
+                    "font/Roboto-Regular.ttf"); //use this.getAssets if you are calling from an Activity
+            txtUserName.setTypeface(roboto);
 
 
-        //Handler goto detaisl
-        mDetaislUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                iScreenMore.gotoDetailsUser();
-            }
-        });
+            //Handler goto detaisl
+            mDetaislUser.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    iScreenMore.gotoDetailsUser();
+                }
+            });
 
-        //init adapte
-        final List<String> more_teacher = Arrays.asList(getResources().getStringArray(R.array.more_teacher));
-        RecyclerViewScreenMoreAdapter adapter = new RecyclerViewScreenMoreAdapter(this, more_teacher);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 1);
+            //init adapte
+            final List<String> more_teacher = Arrays.asList(getResources().getStringArray(R.array.more_teacher));
+            RecyclerViewScreenMoreAdapter adapter = new RecyclerViewScreenMoreAdapter(this, more_teacher);
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 1);
 
-        //set adapter
-        mRecylerViewFunctionMore.setLayoutManager(gridLayoutManager);
-        mRecylerViewFunctionMore.setAdapter(adapter);
-        return view;
+            //set adapter
+            mRecylerViewFunctionMore.setLayoutManager(gridLayoutManager);
+            mRecylerViewFunctionMore.setAdapter(adapter);
+            return view;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
@@ -141,6 +159,11 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
         setHasOptionsMenu(true);
         this.context = getActivity();
         if (getArguments() != null) {
+            checkConn = LaoSchoolShared.checkConn(context);
+            Log.d(TAG, "-checkConn:" + checkConn);
+//            if (checkConn) {
+//
+//            }
             containerId = getArguments().getInt(LaoSchoolShared.CONTAINER_ID);
             currentRole = getArguments().getString(CURRENT_ROLE);
             Log.d(TAG, "-Container Id:" + containerId);
@@ -156,12 +179,32 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
 
     @Override
     public void onPauseFragment() {
-
+        try {
+            boolean checkConn = LaoSchoolShared.checkConn(context);
+            Log.d(TAG, "onPauseFragment -checkConn:" + checkConn);
+            if (checkConn) {
+                Toast.makeText(context, "Connection ok!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, "Connection fails!", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            LaoSchoolShared.showErrorOccurred(context, "onResumeFragment", e);
+        }
     }
 
     @Override
     public void onResumeFragment() {
-
+        try {
+            boolean checkConn = LaoSchoolShared.checkConn(context);
+            Log.d(TAG, "onResumeFragment -checkConn:" + checkConn);
+            if (checkConn) {
+                Toast.makeText(context, "Connection ok!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, "Connection fails!", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            LaoSchoolShared.showErrorOccurred(context, "onResumeFragment", e);
+        }
     }
 
     public static Fragment instantiate(int containerId, String currentRole) {
