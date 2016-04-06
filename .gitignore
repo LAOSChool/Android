@@ -6,4 +6,8 @@ app.iml
 local.properties
 doc
 Android.iml
+gradle/
+gradlew
+gradlew.bat
+volley/
 *~
