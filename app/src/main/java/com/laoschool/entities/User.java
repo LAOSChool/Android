@@ -2,8 +2,12 @@ package com.laoschool.entities;
 
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Tran An on 11/03/2016.
@@ -32,10 +36,12 @@ public class User {
 
     Class eclass;
 
+    List<Class> classes;
+
     public User() {
     }
 
-    public User(int id, String sso_id, String password, String fullname, String nickname, String state, int school_id, String roles, UserDetail userDetail, Class eclass) {
+    public User(int id, String sso_id, String password, String fullname, String nickname, String state, int school_id, String roles, UserDetail userDetail, Class eclass, List<Class> classes) {
         this.id = id;
         this.sso_id = sso_id;
         this.password = password;
@@ -46,6 +52,7 @@ public class User {
         this.roles = roles;
         this.user_detail = userDetail;
         this.eclass = eclass;
+        this.classes = classes;
     }
 
     public int getId() {
@@ -116,11 +123,17 @@ public class User {
         return user_detail;
     }
 
-    public void setUserDetail(UserDetail userDetail) { this.user_detail = userDetail; }
+    public void setUserDetail(UserDetail userDetail) {
+        this.user_detail = userDetail;
+    }
 
-    public Class getEclass() { return eclass; }
+    public Class getEclass() {
+        return eclass;
+    }
 
-    public void setEclass(Class eclass) { this.eclass = eclass; }
+    public void setEclass(Class eclass) {
+        this.eclass = eclass;
+    }
 
     public String toJson() {
         Gson gson = new Gson();
@@ -156,24 +169,42 @@ public class User {
             userDetail.setGender(mainObject.getString("gender"));
             userDetail.setEmail(mainObject.getString("email"));
             // Class
-            JSONObject eclassObj = mainObject.getJSONObject("eclass");
-            Class eclass = new Class();
-            eclass.setId(eclassObj.getInt("id"));
-            eclass.setSchool_id(eclassObj.getInt("school_id"));
-            eclass.setTitle(eclassObj.getString("title"));
-            eclass.setLocation(eclassObj.getString("location"));
-            eclass.setTerm(eclassObj.getInt("term"));
-            eclass.setYears(eclassObj.getString("years"));
-            eclass.setStart_dt(eclassObj.getString("start_dt"));
-            eclass.setEnd_dt(eclassObj.getString("end_dt"));
-            eclass.setHead_teacher_id(eclassObj.getInt("head_teacher_id"));
-            // Return user
+            JSONArray classarray = mainObject.getJSONArray("classes");
+            List<Class> classes = new ArrayList<Class>();
+            for (int i = 0; i < classarray.length(); i++) {
+                JSONObject eclassObj = classarray.getJSONObject(i);
+                Class eclass = new Class();
+                eclass.setId(eclassObj.getInt("id"));
+                eclass.setSchool_id(eclassObj.getInt("school_id"));
+                eclass.setTitle(eclassObj.getString("title"));
+                eclass.setLocation(eclassObj.getString("location"));
+                eclass.setTerm(eclassObj.getInt("term"));
+                eclass.setYears(eclassObj.getString("years"));
+                eclass.setStart_dt(eclassObj.getString("start_dt"));
+                eclass.setEnd_dt(eclassObj.getString("end_dt"));
+                eclass.setHead_teacher_id(eclassObj.getInt("head_teacher_id"));
+                classes.add(eclass);
+            }
+
+            //user.setEclass(eclass);
             user.setUserDetail(userDetail);
-            user.setEclass(eclass);
+            user.setClasses(classes);
+            if (classes.size() > 0)
+                user.setEclass(classes.get(0));
+            // Return user
             return user;
         } catch (JSONException e) {
             e.printStackTrace();
-            return null;
+            return user;
         }
     }
+
+    public List<Class> getClasses() {
+        return classes;
+    }
+
+    public void setClasses(List<Class> classes) {
+        this.classes = classes;
+    }
+
 }
