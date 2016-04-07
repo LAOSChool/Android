@@ -20,7 +20,11 @@ public class Message {
 
     int from_usr_id;
 
+    String from_user_name;
+
     int to_usr_id;
+
+    String to_user_name;
 
     String content;
 
@@ -36,22 +40,40 @@ public class Message {
 
     String other;
 
+    int msg_type_id;
+
+    int imp_flg;
+
+    String title;
+
+    String schoolName;
+
+    String messageType;
+
+
     public Message() {
     }
 
-    public Message(int id, int school_id, int class_id, int from_usr_id, int to_usr_id, String content, int channel, int is_sent, String sent_dt, int is_read, String read_dt, String other) {
-        this.id = id;
-        this.school_id = school_id;
-        this.class_id = class_id;
-        this.from_usr_id = from_usr_id;
-        this.to_usr_id = to_usr_id;
-        this.content = content;
+    public Message(int channel, int class_id, String content, String from_user_name, int from_usr_id, int id, int imp_flg, int is_read, int is_sent, String messageType, int msg_type_id, String other, String read_dt, int school_id, String schoolName, String sent_dt, String title, String to_user_name, int to_usr_id) {
         this.channel = channel;
-        this.is_sent = is_sent;
-        this.sent_dt = sent_dt;
+        this.class_id = class_id;
+        this.content = content;
+        this.from_user_name = from_user_name;
+        this.from_usr_id = from_usr_id;
+        this.id = id;
+        this.imp_flg = imp_flg;
         this.is_read = is_read;
-        this.read_dt = read_dt;
+        this.is_sent = is_sent;
+        this.messageType = messageType;
+        this.msg_type_id = msg_type_id;
         this.other = other;
+        this.read_dt = read_dt;
+        this.school_id = school_id;
+        this.schoolName = schoolName;
+        this.sent_dt = sent_dt;
+        this.title = title;
+        this.to_user_name = to_user_name;
+        this.to_usr_id = to_usr_id;
     }
 
     public int getId() {
@@ -148,6 +170,62 @@ public class Message {
 
     public void setOther(String other) {
         this.other = other;
+    }
+
+    public String getFrom_user_name() {
+        return from_user_name;
+    }
+
+    public void setFrom_user_name(String from_user_name) {
+        this.from_user_name = from_user_name;
+    }
+
+    public int getImp_flg() {
+        return imp_flg;
+    }
+
+    public void setImp_flg(int imp_flg) {
+        this.imp_flg = imp_flg;
+    }
+
+    public String getMessageType() {
+        return messageType;
+    }
+
+    public void setMessageType(String messageType) {
+        this.messageType = messageType;
+    }
+
+    public int getMsg_type_id() {
+        return msg_type_id;
+    }
+
+    public void setMsg_type_id(int msg_type_id) {
+        this.msg_type_id = msg_type_id;
+    }
+
+    public String getSchoolName() {
+        return schoolName;
+    }
+
+    public void setSchoolName(String schoolName) {
+        this.schoolName = schoolName;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getTo_user_name() {
+        return to_user_name;
+    }
+
+    public void setTo_user_name(String to_user_name) {
+        this.to_user_name = to_user_name;
     }
 
     public String toJson() {
