@@ -82,7 +82,7 @@ public class ScreenMarkScoreStudent extends Fragment implements FragmentLifecycl
             containerId = getArguments().getInt(LaoSchoolShared.CONTAINER_ID);
             Log.d(getString(R.string.title_screen_mark_score_student), "-Container Id:" + containerId);
 
-//            String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_EXAM_RESULTS_5);
+//            String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_EXAM_RESULTS_2);
 //            Log.d(getString(R.string.title_screen_select_list_student), "-TAG Screen Exam Results:" + tag);
 
 

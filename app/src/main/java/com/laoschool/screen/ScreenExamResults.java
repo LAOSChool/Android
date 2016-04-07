@@ -35,6 +35,7 @@ import com.laoschool.adapter.RecylerViewScreenExamResultsAdapter;
 import com.laoschool.adapter.RecylerViewScreenExamResultsStudentTabAdapter;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
+import com.laoschool.view.ViewpagerDisableSwipeLeft;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -147,9 +148,11 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
 
     private View _defineScreenExamResultsDetailForStudent(LayoutInflater inflater, ViewGroup container) {
         View view = inflater.inflate(R.layout.screen_exam_results_student, container, false);
-        ViewPager mViewPageScreenExamResultsStudent = (ViewPager) view.findViewById(R.id.mViewPageScreenExamResultsStudent);
+        ViewpagerDisableSwipeLeft mViewPageScreenExamResultsStudent = (ViewpagerDisableSwipeLeft) view.findViewById(R.id.mViewPageScreenExamResultsStudent);
         //
         //ScorePageAdapter scorePageAdapter = new ScorePageAdapter(context, Arrays.asList("Term 1", "Term 2", "Total"));
+
+        mViewPageScreenExamResultsStudent.setAllowedSwipeDirection(HomeActivity.SwipeDirection.none);
 
         ExamScorePagerAdapter sampleFragmentPagerAdapter = new ExamScorePagerAdapter(getFragmentManager(), Arrays.asList("Term 1", "Term 2", "Total"));
         mViewPageScreenExamResultsStudent.setAdapter(sampleFragmentPagerAdapter);
@@ -158,6 +161,8 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
         // Attach the view pager to the tab strip
         tabsStrip.setViewPager(mViewPageScreenExamResultsStudent);
+
+
 
         return view;
     }

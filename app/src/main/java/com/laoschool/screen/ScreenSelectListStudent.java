@@ -76,7 +76,7 @@ public class ScreenSelectListStudent extends Fragment implements FragmentLifecyc
         int id = item.getItemId();
         switch (id) {
             case R.id.action_done:
-                String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_9);
+                String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
                 Log.d(getString(R.string.title_screen_select_list_student), "-TAG Screen Create Message:" + tag);
                 ScreenCreateMessage screenCreateMessage = (ScreenCreateMessage) getActivity().getSupportFragmentManager().findFragmentByTag(tag);
                 if (screenCreateMessage != null) {

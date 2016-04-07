@@ -12,13 +12,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".screen.login.ScreenLogin"
-            android:label="@string/title_activity_screen_login"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity
             android:name=".screen.HomeActivity"
             android:label="@string/title_activity_home"
             android:theme="@style/HomeScreen" />
+        <activity
+            android:name=".screen.login.ScreenLogin"
+            android:label="@string/title_activity_screen_login"
+            android:theme="@style/AppTheme.NoActionBar"
+             />
         <activity
             android:name=".screen.SplashScreen"
             android:theme="@style/AppTheme.NoActionBar">

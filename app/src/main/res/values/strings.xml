@@ -16,7 +16,7 @@
     <string name="action_cancel">Cancel</string>
     <string name="action_send_message">Send</string>
     <string name="title_screen_select_list_student">Select list student</string>
-    <string name="title_screen_mark_score_student">Mark Score Student</string>
+    <string name="title_screen_mark_score_student">Mark Score</string>
     <string name="title_screen_setting">Setting</string>
     <string name="title_screen_list_teacher">List teacher</string>
 
@@ -35,13 +35,22 @@
     <string name="action_done_mark_score">Done</string>
     <string name="hint_search_exam_resutls">Search student</string>
     <string name="action_sort_by">Sort by</string>
+    <string name="hint_message_subject">Subject</string>
+    <string name="hint_message_content">Conten</string>
+
+    <string name="err_msg_input_message_title">Enter message title</string>
+    <string name="err_msg_input_message_conten">Enter message conten</string>
+    <string name="err_msg_create_message">Create message fails</string>
+
+    <string name="action_set_chanel_create_message">SMS</string>
+    <string name="msg_create_message_sucessfully">Create message sucessfully</string>
 
 
     <string-array name="more_teacher">
         <item>@string/row_sub_header</item>
         <item>@string/title_screen_school_information</item>
         <item>@string/row_line</item>
-        <item>@string/title_screen_exam_results</item>
+        <item>@string/title_screen_schedule</item>
         <item>@string/row_line</item>
         <item>@string/title_screen_list_teacher</item>
         <item>@string/row_line</item>
@@ -56,7 +65,7 @@
         <item>@string/row_line</item>
         <item>@string/title_screen_final_results_student</item>
         <item>@string/row_line</item>
-        <item>@string/title_screen_exam_results</item>
+        <item>@string/title_screen_schedule</item>
         <item>@string/row_line</item>
         <item>@string/title_screen_list_teacher</item>
         <item>@string/row_line</item>

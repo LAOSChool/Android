@@ -98,6 +98,8 @@ public class RecyclerViewScreenMoreAdapter extends RecyclerView.Adapter<Recycler
                             iScreenMore.gotoSchoolRecordbyYearformMore();
                         } else if (title.equals(context.getString(R.string.title_screen_exam_results))) {
                             iScreenMore.gotoExamResultsformMore();
+                        }else if (title.equals(context.getString(R.string.title_screen_schedule))) {
+                            iScreenMore.gotoScheduleformMore();
                         }
                     }
                 });
