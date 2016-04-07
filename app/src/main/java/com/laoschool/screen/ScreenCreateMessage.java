@@ -4,10 +4,7 @@ package com.laoschool.screen;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,8 +41,15 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
     private String currentRole;
     private Context context;
     private DataAccessInterface service;
-    EditText txtTitle;
-    //TextInputLayout inputLayoutTitle;
+
+    //Student
+    private EditText txtMessageTitleStudent;
+    private EditText txtMessageContentStudent;
+    private CheckBox cbSendSmsStudent;
+
+    //Teacher
+    private EditText txtMessageTitleTeacher;
+    private EditText txtMessageContentTeacher;
 
 
     public void setTestMessage(String testMessage) {
@@ -96,43 +101,50 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
 
     private View _defineCreateMessageTeacher(LayoutInflater inflater, ViewGroup container) {
         View view = inflater.inflate(R.layout.screen_create_message_tearcher, container, false);
+        txtMessageTitleTeacher = (EditText) view.findViewById(R.id.txtMessageTitleTeacher);
+        txtMessageContentTeacher = (EditText) view.findViewById(R.id.txtMessageContentTeacher);
         return view;
     }
 
     private View _defineCreateMessageStudent(LayoutInflater inflater, ViewGroup container) {
         View view = inflater.inflate(R.layout.screen_create_message_student, container, false);
-        txtTitle = (EditText) view.findViewById(R.id.txtMessageTitleStudent);
+        txtMessageTitleStudent = (EditText) view.findViewById(R.id.txtMessageTitleStudent);
+        txtMessageContentStudent = (EditText) view.findViewById(R.id.txtMessageContentStudent);
         final TextView txtMessageTo = (TextView) view.findViewById(R.id.txtMessageTo);
-        service.getUserById(LaoSchoolShared.myProfile.getEclass().getHead_teacher_id(), new AsyncCallback<User>() {
-            @Override
-            public void onSuccess(User result) {
-                txtMessageTo.setText(result.getFullname());
-            }
+        cbSendSmsStudent = (CheckBox) view.findViewById(R.id.cbSendSmsStudent);
+        try {
+            service.getUserById(LaoSchoolShared.myProfile.getEclass().getHead_teacher_id(), new AsyncCallback<User>() {
+                @Override
+                public void onSuccess(User result) {
+                    txtMessageTo.setText(result.getFullname());
+                }
 
-            @Override
-            public void onFailure(String message) {
+                @Override
+                public void onFailure(String message) {
 
-            }
-        });
-        //inputLayoutTitle = (TextInputLayout) view.findViewById(R.id.input_layout_message_title_student);
-
-//        Log.d("Create Message:", "-Tag:" + getTag());
-        view.findViewById(R.id.btnGetStudent).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                iScreenCreateMessage.gotoListStudent();
-            }
-        });
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(context, "Server null", Toast.LENGTH_SHORT).show();
+        }
         return view;
     }
 
-    private boolean validateMessageTitle() {
-        if (txtTitle.getText().toString().trim().isEmpty()) {
-            //inputLayoutTitle.setError(getString(R.string.err_msg_input_message_title));
-            requestFocus(txtTitle);
+    private boolean validateMessageTitle(EditText edit) {
+        if (edit.getText().toString().trim().isEmpty()) {
+            requestFocus(edit);
+            Toast.makeText(context, R.string.err_msg_input_message_title, Toast.LENGTH_SHORT).show();
             return false;
-        } else {
-            //inputLayoutTitle.setErrorEnabled(false);
+        }
+        return true;
+    }
+
+    private boolean validateMessageConten(EditText edit) {
+        if (edit.getText().toString().trim().isEmpty()) {
+            requestFocus(edit);
+            Toast.makeText(context, R.string.err_msg_input_message_conten, Toast.LENGTH_SHORT).show();
+            return false;
         }
         return true;
     }
@@ -140,6 +152,9 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
     private void requestFocus(View view) {
         if (view.requestFocus()) {
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+            //show soft keyboard
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
         }
     }
 
@@ -164,6 +179,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         //set display menu item
         inflater.inflate(R.menu.menu_screen_create_message, menu);
+
     }
 
     public static Fragment instantiate(int containerId, String currentRole) {
@@ -186,51 +202,72 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
         int id = item.getItemId();
         switch (id) {
             case R.id.action_send_message:
-                _submitForm();
+                _submitForm(currentRole);
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void _submitForm() {
-        if (!validateMessageTitle()) {
-            return;
+    private void _submitForm(String currentRole) {
+        if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
+            if (!validateMessageTitle(txtMessageTitleTeacher)) {
+                return;
+            }
+            if (!validateMessageConten(txtMessageContentTeacher)) {
+                return;
+            }
+        } else {
+            if (!validateMessageTitle(txtMessageTitleStudent)) {
+                return;
+            }
+            if (!validateMessageConten(txtMessageContentStudent)) {
+                return;
+            }
+            if (LaoSchoolShared.myProfile.getEclass() != null) {
+                Message message = new Message();
+
+                message.setTitle(txtMessageTitleStudent.getText().toString());
+                message.setContent(txtMessageContentStudent.getText().toString());
+                message.setChannel(cbSendSmsStudent.isChecked() ? 0 : 1);
+
+                message.setFrom_usr_id(LaoSchoolShared.myProfile.getId());
+                message.setTo_usr_id(LaoSchoolShared.myProfile.getEclass().getHead_teacher_id());
+                message.setClass_id(LaoSchoolShared.myProfile.getEclass().getId());
+
+
+                service.createMessage(message, new AsyncCallback<Message>() {
+                    @Override
+                    public void onSuccess(Message result) {
+                        Log.d(TAG, "Message results:" + result.toJson());
+                        Toast.makeText(context, R.string.msg_create_message_sucessfully, Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(String message) {
+                        Toast.makeText(context, R.string.err_msg_create_message, Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "Create messsage error:" + message);
+                    }
+                });
+            } else {
+                Toast.makeText(context, "Send message error", Toast.LENGTH_SHORT).show();
+            }
         }
-
-
-        Message message = new Message();
-
-        message.setContent(txtTitle.getText().toString());
-        message.setChannel(1);
-        message.setOther("khong co gi");
-        message.setFrom_usr_id(LaoSchoolShared.myProfile.getId());
-        message.setTo_usr_id(LaoSchoolShared.myProfile.getEclass().getHead_teacher_id());
-        message.setClass_id(LaoSchoolShared.myProfile.getEclass().getId());
-
-        service.createMessage(message, new AsyncCallback<Message>() {
-            @Override
-            public void onSuccess(Message result) {
-                Log.d(TAG, "Message results:" + result.toJson());
-                Toast.makeText(context, "Send Message", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFailure(String message) {
-                Toast.makeText(context, "Send Message Fails", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "Create messsage error:" + message);
-            }
-
-
-        });
-
-
-        iScreenCreateMessage.goBackToMessage();
         _resetForm();
+        iScreenCreateMessage.goBackToMessage();
     }
 
     private void _resetForm() {
-        txtTitle.getText().clear();
-        //inputLayoutTitle.setErrorEnabled(false);
-        txtTitle.clearFocus();
+        if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
+            txtMessageTitleTeacher.getText().clear();
+            txtMessageContentTeacher.getText().clear();
+            txtMessageTitleTeacher.clearFocus();
+            txtMessageContentTeacher.clearFocus();
+        } else {
+            txtMessageTitleStudent.getText().clear();
+            txtMessageContentStudent.getText().clear();
+            txtMessageTitleStudent.clearFocus();
+            txtMessageContentStudent.clearFocus();
+            cbSendSmsStudent.setChecked(false);
+        }
     }
 }

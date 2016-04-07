@@ -44,12 +44,28 @@ public class ScreenLogin extends AppCompatActivity {
                     @Override
                     public void onFailure(String message) {
                         System.out.println(message);
-                        if(message.contains("TimeoutError"))
+                        if (message.contains("TimeoutError"))
                             Toast.makeText(thiz, "No internet connection", Toast.LENGTH_SHORT).show();
                         else
                             Toast.makeText(thiz, "Wrong username or password", Toast.LENGTH_SHORT).show();
                     }
                 });
+            }
+        });
+        service.login("khiemph", "1234567890", new AsyncCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                goToHomeScreen();
+            }
+
+            @Override
+            public void onFailure(String message) {
+                goToHomeScreen();
+                System.out.println(message);
+                if (message.contains("TimeoutError"))
+                    Toast.makeText(thiz, "No internet connection", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(thiz, "Wrong username or password", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -68,7 +84,7 @@ public class ScreenLogin extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop () {
+    protected void onStop() {
         super.onStop();
     }
 

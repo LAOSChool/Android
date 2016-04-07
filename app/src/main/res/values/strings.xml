@@ -37,7 +37,13 @@
     <string name="action_sort_by">Sort by</string>
     <string name="hint_message_subject">Subject</string>
     <string name="hint_message_content">Conten</string>
+
     <string name="err_msg_input_message_title">Enter message title</string>
+    <string name="err_msg_input_message_conten">Enter message conten</string>
+    <string name="err_msg_create_message">Create message fails</string>
+
+    <string name="action_set_chanel_create_message">SMS</string>
+    <string name="msg_create_message_sucessfully">Create message sucessfully</string>
 
 
     <string-array name="more_teacher">
