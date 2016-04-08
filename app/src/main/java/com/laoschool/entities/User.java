@@ -135,6 +135,14 @@ public class User {
         this.eclass = eclass;
     }
 
+    public List<Class> getClasses() {
+        return classes;
+    }
+
+    public void setClasses(List<Class> classes) {
+        this.classes = classes;
+    }
+
     public String toJson() {
         Gson gson = new Gson();
         String jsonString = gson.toJson(this);
@@ -199,12 +207,6 @@ public class User {
         }
     }
 
-    public List<Class> getClasses() {
-        return classes;
-    }
 
-    public void setClasses(List<Class> classes) {
-        this.classes = classes;
-    }
 
 }

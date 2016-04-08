@@ -1,6 +1,7 @@
 package com.laoschool.model;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -13,6 +14,7 @@ import com.android.volley.NetworkResponse;
 import com.laoschool.entities.*;
 import com.laoschool.entities.Class;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,12 +63,13 @@ public class DataAccessImpl implements DataAccessInterface{
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
+                        Log.d("Service/login()", response);
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        Log.e("Service/login()", error.toString());
                         callback.onFailure(error.toString());
                     }
                 }
@@ -105,6 +108,7 @@ public class DataAccessImpl implements DataAccessInterface{
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        Log.d("Service/getUserProfile()", response);
                         User user = User.parseFromJson(response);
                         callback.onSuccess(user);
                     }
@@ -112,6 +116,7 @@ public class DataAccessImpl implements DataAccessInterface{
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        Log.e("Service/getUserProfile()", error.toString());
                         callback.onFailure(error.toString());
                     }
                 }
@@ -136,6 +141,7 @@ public class DataAccessImpl implements DataAccessInterface{
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        Log.d("Service/getUserById()", response);
                         User user = User.parseFromJson(response);
                         callback.onSuccess(user);
                     }
@@ -143,6 +149,7 @@ public class DataAccessImpl implements DataAccessInterface{
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        Log.e("Service/getUserById()", error.toString());
                         callback.onFailure(error.toString());
                     }
                 }
@@ -214,12 +221,15 @@ public class DataAccessImpl implements DataAccessInterface{
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
+                        Log.d("Service/getMessage()", response);
+                        ListMessages messages = ListMessages.fromJson(response);
+                        callback.onSuccess(messages.getList());
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        Log.e("Service/getMessage()", error.toString());
                         callback.onFailure(error.toString());
                     }
                 }
@@ -235,19 +245,19 @@ public class DataAccessImpl implements DataAccessInterface{
             @Override
             protected Map<String,String> getParams(){
                 Map<String, String> params = new HashMap<String, String>();
-                if(filter_class_id != null)
+                if(!filter_class_id.trim().isEmpty())
                     params.put("filter_class_id", String.valueOf(filter_class_id));
-                if(filter_from_user_id != null)
+                if(!filter_from_user_id.trim().isEmpty())
                     params.put("filter_class_id", String.valueOf(filter_from_user_id));
-                if(filter_from_dt != null)
+                if(!filter_from_dt.trim().isEmpty())
                     params.put("filter_class_id", String.valueOf(filter_from_dt));
-                if(filter_to_dt != null)
+                if(!filter_to_dt.trim().isEmpty())
                     params.put("filter_class_id", String.valueOf(filter_to_dt));
-                if(filter_to_user_id != null)
+                if(!filter_to_user_id.trim().isEmpty())
                     params.put("filter_class_id", String.valueOf(filter_to_user_id));
-                if(filter_channel != null)
+                if(!filter_channel.trim().isEmpty())
                     params.put("filter_class_id", String.valueOf(filter_channel));
-                if(filter_sts != null)
+                if(!filter_sts.trim().isEmpty())
                     params.put("filter_class_id", String.valueOf(filter_sts));
                 return params;
             }
@@ -269,6 +279,7 @@ public class DataAccessImpl implements DataAccessInterface{
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        Log.d("Service/createMessage()", response);
                         Message m = Message.fromJson(response);
                         callback.onSuccess(m);
                     }
@@ -276,6 +287,7 @@ public class DataAccessImpl implements DataAccessInterface{
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        Log.e("Service/createMessage()", error.toString());
                         callback.onFailure(error.toString());
                     }
                 }

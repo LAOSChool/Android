@@ -1,16 +1,35 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.laoschool.screen.ScreenMessage">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.laoschool.screen.ScreenMessage"
+    android:orientation="vertical">
 
     <!-- TODO: Update blank fragment layout -->
+    <com.astuetz.PagerSlidingTabStrip
+        android:id="@+id/tabs"
+        app:pstsShouldExpand="true"
+        app:pstsTextAllCaps="true"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:textColor="#ffffff"
+        app:pstsIndicatorColor ="@color/colorLaosBlue"
+        app:pstsDividerColor="@color/colorLaosBlue"
+        android:background="@color/colorLaosRed" />
+
+    <com.laoschool.view.ViewpagerDisableSwipeLeft
+        android:id="@+id/messageViewPage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tabs"/>
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center">
+        android:layout_gravity="center"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
@@ -27,4 +46,4 @@
             android:singleLine="true" />
     </LinearLayout>
 
-</FrameLayout>
+</LinearLayout>

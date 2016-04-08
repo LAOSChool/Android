@@ -52,7 +52,7 @@ public class ScreenLogin extends AppCompatActivity {
                 });
             }
         });
-        service.login("khiemph", "1234567890", new AsyncCallback<String>() {
+        service.login("tranan", "1234567890", new AsyncCallback<String>() {
             @Override
             public void onSuccess(String result) {
                 goToHomeScreen();
