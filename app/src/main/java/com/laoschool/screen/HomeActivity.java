@@ -16,8 +16,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.HashMap;
@@ -198,7 +200,6 @@ public class HomeActivity extends AppCompatActivity implements
         fragments.add(ScreenMore.instantiate(containerId, currentRole));
 
 
-
         fragments.add(ScreenCreateMessage.instantiate(containerId, currentRole));
 
         fragments.add(ScreenSchedule.instantiate(containerId, currentRole));
@@ -249,8 +250,8 @@ public class HomeActivity extends AppCompatActivity implements
 
         //AddTab message
         TabHost.TabSpec tabSpecMessage = this.mTabHost.newTabSpec(getString(R.string.title_screen_message));
-        View tabIncatorMessage = LaoSchoolShared.createTabIndicator(getLayoutInflater(), mTabHost, R.string.title_screen_message, R.drawable.ic_message_white_24dp);
-        tabIncatorMessage.setBackgroundColor(getResources().getColor(R.color.color_tab_selected));
+        View tabIncatorMessage = LaoSchoolShared.createTabIndicator(getLayoutInflater(), mTabHost, R.string.title_screen_message, R.drawable.ic_message_red_lao_24dp);
+        ((TextView) (tabIncatorMessage.findViewById(R.id.tab_indicator_title))).setTextColor(getResources().getColor(R.color.colorLaosRed));
         tabIncatorMessage.setLayoutParams(new LinearLayout.LayoutParams(widthTabIndicator, ViewGroup.LayoutParams.WRAP_CONTENT));
         tabSpecMessage.setIndicator(tabIncatorMessage);
         HomeActivity.AddTab(this, this.mTabHost, tabSpecMessage, (tabInfo = new TabInfo(getString(R.string.title_screen_message), ScreenMessage.class, args)));
@@ -258,7 +259,7 @@ public class HomeActivity extends AppCompatActivity implements
 
         //Add tab announcemen
         TabHost.TabSpec tabSpecAnnouncemen = this.mTabHost.newTabSpec(getString(R.string.title_screen_announcements));
-        View tabIncatorAnnouncemen = LaoSchoolShared.createTabIndicator(getLayoutInflater(), mTabHost, R.string.title_screen_announcements, R.drawable.ic_announcement_white_24dp);
+        View tabIncatorAnnouncemen = LaoSchoolShared.createTabIndicator(getLayoutInflater(), mTabHost, R.string.title_screen_announcements, R.drawable.ic_announcement_gray_24dp);
         tabIncatorAnnouncemen.setLayoutParams(new LinearLayout.LayoutParams(widthTabIndicator, ViewGroup.LayoutParams.WRAP_CONTENT));
         tabSpecAnnouncemen.setIndicator(tabIncatorAnnouncemen);
         HomeActivity.AddTab(this, this.mTabHost, tabSpecAnnouncemen, (tabInfo = new TabInfo(getString(R.string.title_screen_announcements), ScreenMessage.class, args)));
@@ -268,7 +269,7 @@ public class HomeActivity extends AppCompatActivity implements
         //Add tab mark score
         TabHost.TabSpec tabSpecSchedule = this.mTabHost.newTabSpec(getString(R.string.title_screen_exam_results));
 
-        View tabIncatorSchedule = LaoSchoolShared.createTabIndicator(getLayoutInflater(), mTabHost, R.string.title_screen_exam_results, R.drawable.ic_date_range_white_24dp);
+        View tabIncatorSchedule = LaoSchoolShared.createTabIndicator(getLayoutInflater(), mTabHost, R.string.title_screen_exam_results, R.drawable.ic_date_range_gray_24dp);
         tabIncatorSchedule.setLayoutParams(new LinearLayout.LayoutParams(widthTabIndicator, ViewGroup.LayoutParams.WRAP_CONTENT));
         tabSpecSchedule.setIndicator(tabIncatorSchedule);
         HomeActivity.AddTab(this, this.mTabHost, tabSpecSchedule, (tabInfo = new TabInfo(getString(R.string.title_screen_exam_results), ScreenExamResults.class, args)));
@@ -277,7 +278,7 @@ public class HomeActivity extends AppCompatActivity implements
 
         //add tab attended
         TabHost.TabSpec tabSpecAttended = this.mTabHost.newTabSpec(getString(R.string.title_screen_attended));
-        View tabIncatorAttended = LaoSchoolShared.createTabIndicator(getLayoutInflater(), mTabHost, R.string.title_screen_attended, R.drawable.ic_event_available_white_24dp);
+        View tabIncatorAttended = LaoSchoolShared.createTabIndicator(getLayoutInflater(), mTabHost, R.string.title_screen_attended, R.drawable.ic_event_available_gray_24dp);
         tabIncatorAttended.setLayoutParams(new LinearLayout.LayoutParams(widthTabIndicator, ViewGroup.LayoutParams.WRAP_CONTENT));
         tabSpecAttended.setIndicator(tabIncatorAttended);
         HomeActivity.AddTab(this, this.mTabHost, tabSpecAttended, (tabInfo = new TabInfo(getString(R.string.title_screen_attended), ScreenAttended.class, args)));
@@ -286,7 +287,7 @@ public class HomeActivity extends AppCompatActivity implements
 
         //Add tab more
         TabHost.TabSpec tabSpecMore = this.mTabHost.newTabSpec(getString(R.string.title_screen_more));
-        View tabIncatorMore = LaoSchoolShared.createTabIndicator(getLayoutInflater(), mTabHost, R.string.title_screen_more, R.drawable.ic_more_horiz_white_24dp);
+        View tabIncatorMore = LaoSchoolShared.createTabIndicator(getLayoutInflater(), mTabHost, R.string.title_screen_more, R.drawable.ic_more_horiz_gray_24dp);
         tabIncatorMore.setLayoutParams(new LinearLayout.LayoutParams(widthTabIndicator, ViewGroup.LayoutParams.WRAP_CONTENT));
         tabSpecMore.setIndicator(tabIncatorMore);
         HomeActivity.AddTab(this, this.mTabHost, tabSpecMore, (tabInfo = new TabInfo(getString(R.string.title_screen_more), ScreenMore.class, args)));
@@ -325,11 +326,48 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     public void setTabColor(TabHost tabhost) {
+        switch (tabhost.getCurrentTab()) {
+            case 0:
+                ((ImageView) tabhost.getTabWidget().getChildAt(0).findViewById(R.id.tab_indicator_icon)).setImageDrawable(LaoSchoolShared.getDraweble(this, R.drawable.ic_message_red_lao_24dp));
+                ((ImageView) tabhost.getTabWidget().getChildAt(1).findViewById(R.id.tab_indicator_icon)).setImageDrawable(LaoSchoolShared.getDraweble(this, R.drawable.ic_announcement_gray_24dp));
+                ((ImageView) tabhost.getTabWidget().getChildAt(2).findViewById(R.id.tab_indicator_icon)).setImageDrawable(LaoSchoolShared.getDraweble(this, R.drawable.ic_date_range_gray_24dp));
+                ((ImageView) tabhost.getTabWidget().getChildAt(3).findViewById(R.id.tab_indicator_icon)).setImageDrawable(LaoSchoolShared.getDraweble(this, R.drawable.ic_event_available_gray_24dp));
+                ((ImageView) tabhost.getTabWidget().getChildAt(4).findViewById(R.id.tab_indicator_icon)).setImageDrawable(LaoSchoolShared.getDraweble(this, R.drawable.ic_more_horiz_gray_24dp));
+                break;
+            case 1:
+                ((ImageView) tabhost.getTabWidget().getChildAt(0).findViewById(R.id.tab_indicator_icon)).setImageDrawable(LaoSchoolShared.getDraweble(this, R.drawable.ic_message_gray_24dp));
+                ((ImageView) tabhost.getTabWidget().getChildAt(1).findViewById(R.id.tab_indicator_icon)).setImageDrawable(LaoSchoolShared.getDraweble(this, R.drawable.ic_announcement_red_lao_24dp));
+                ((ImageView) tabhost.getTabWidget().getChildAt(2).findViewById(R.id.tab_indicator_icon)).setImageDrawable(LaoSchoolShared.getDraweble(this, R.drawable.ic_date_range_gray_24dp));
+                ((ImageView) tabhost.getTabWidget().getChildAt(3).findViewById(R.id.tab_indicator_icon)).setImageDrawable(LaoSchoolShared.getDraweble(this, R.drawable.ic_event_available_gray_24dp));
+                ((ImageView) tabhost.getTabWidget().getChildAt(4).findViewById(R.id.tab_indicator_icon)).setImageDrawable(LaoSchoolShared.getDraweble(this, R.drawable.ic_more_horiz_gray_24dp));
+                break;
+            case 2:
+                ((ImageView) tabhost.getTabWidget().getChildAt(0).findViewById(R.id.tab_indicator_icon)).setImageDrawable(LaoSchoolShared.getDraweble(this, R.drawable.ic_message_gray_24dp));
+                ((ImageView) tabhost.getTabWidget().getChildAt(1).findViewById(R.id.tab_indicator_icon)).setImageDrawable(LaoSchoolShared.getDraweble(this, R.drawable.ic_announcement_gray_24dp));
+                ((ImageView) tabhost.getTabWidget().getChildAt(2).findViewById(R.id.tab_indicator_icon)).setImageDrawable(LaoSchoolShared.getDraweble(this, R.drawable.ic_date_range_red_lao_24dp));
+                ((ImageView) tabhost.getTabWidget().getChildAt(3).findViewById(R.id.tab_indicator_icon)).setImageDrawable(LaoSchoolShared.getDraweble(this, R.drawable.ic_event_available_gray_24dp));
+                ((ImageView) tabhost.getTabWidget().getChildAt(4).findViewById(R.id.tab_indicator_icon)).setImageDrawable(LaoSchoolShared.getDraweble(this, R.drawable.ic_more_horiz_gray_24dp));
+                break;
+            case 3:
+                ((ImageView) tabhost.getTabWidget().getChildAt(0).findViewById(R.id.tab_indicator_icon)).setImageDrawable(LaoSchoolShared.getDraweble(this, R.drawable.ic_message_gray_24dp));
+                ((ImageView) tabhost.getTabWidget().getChildAt(1).findViewById(R.id.tab_indicator_icon)).setImageDrawable(LaoSchoolShared.getDraweble(this, R.drawable.ic_announcement_gray_24dp));
+                ((ImageView) tabhost.getTabWidget().getChildAt(2).findViewById(R.id.tab_indicator_icon)).setImageDrawable(LaoSchoolShared.getDraweble(this, R.drawable.ic_date_range_gray_24dp));
+                ((ImageView) tabhost.getTabWidget().getChildAt(3).findViewById(R.id.tab_indicator_icon)).setImageDrawable(LaoSchoolShared.getDraweble(this, R.drawable.ic_event_available_red_lao_24dp));
+                ((ImageView) tabhost.getTabWidget().getChildAt(4).findViewById(R.id.tab_indicator_icon)).setImageDrawable(LaoSchoolShared.getDraweble(this, R.drawable.ic_more_horiz_gray_24dp));
+                break;
+            case 4:
+                ((ImageView) tabhost.getTabWidget().getChildAt(0).findViewById(R.id.tab_indicator_icon)).setImageDrawable(LaoSchoolShared.getDraweble(this, R.drawable.ic_message_gray_24dp));
+                ((ImageView) tabhost.getTabWidget().getChildAt(1).findViewById(R.id.tab_indicator_icon)).setImageDrawable(LaoSchoolShared.getDraweble(this, R.drawable.ic_announcement_gray_24dp));
+                ((ImageView) tabhost.getTabWidget().getChildAt(2).findViewById(R.id.tab_indicator_icon)).setImageDrawable(LaoSchoolShared.getDraweble(this, R.drawable.ic_date_range_gray_24dp));
+                ((ImageView) tabhost.getTabWidget().getChildAt(3).findViewById(R.id.tab_indicator_icon)).setImageDrawable(LaoSchoolShared.getDraweble(this, R.drawable.ic_event_available_gray_24dp));
+                ((ImageView) tabhost.getTabWidget().getChildAt(4).findViewById(R.id.tab_indicator_icon)).setImageDrawable(LaoSchoolShared.getDraweble(this, R.drawable.ic_more_horiz_red_lao_24dp));
+                break;
+        }
         for (int i = 0; i < tabhost.getTabWidget().getChildCount(); i++) {
-            tabhost.getTabWidget().getChildAt(i).setBackgroundColor(getResources().getColor(R.color.color_tab_unselected));//unselected
+            ((TextView) tabhost.getTabWidget().getChildAt(i).findViewById(R.id.tab_indicator_title)).setTextColor(getResources().getColor(android.R.color.darker_gray));//un selected
 
         }
-        tabhost.getTabWidget().getChildAt(tabhost.getCurrentTab()).setBackgroundColor(getResources().getColor(R.color.color_tab_selected)); // selected
+        ((TextView) tabhost.getTabWidget().getChildAt(mTabHost.getCurrentTab()).findViewById(R.id.tab_indicator_title)).setTextColor((getResources().getColor(R.color.colorLaosRed))); // selected
     }
 
     private void _changeTitleActionBar(int pos) {
@@ -576,7 +614,7 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     void _gotoPage(int position) {
-        this.mViewPager.setCurrentItem(position,false);
+        this.mViewPager.setCurrentItem(position, false);
     }
 
     @Override
