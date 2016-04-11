@@ -25,7 +25,7 @@
     <string name="tite_screen_login_help">Login help</string>
     <string name="title_screen_forgot_pasword">Forgot password</string>
     <string name="title_screen_announcement_details">Announcement details</string>
-    <string name="title_screen_message_details">Message details</string>
+    <string name="title_screen_message_details"></string>
     <string name="action_log_out">Logout</string>
     <string name="row_line" translatable="false">line</string>
     <string name="setting_change_language">Change language</string>
@@ -44,6 +44,7 @@
 
     <string name="action_set_chanel_create_message">SMS</string>
     <string name="msg_create_message_sucessfully">Create message sucessfully</string>
+    <string name="err_msg_network_disconnect">Network disconnect</string>
 
 
     <string-array name="more_teacher">

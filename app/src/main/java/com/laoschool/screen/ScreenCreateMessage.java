@@ -125,7 +125,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                 }
             });
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             Toast.makeText(context, "Server null", Toast.LENGTH_SHORT).show();
         }
         return view;
@@ -223,33 +223,42 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
             if (!validateMessageConten(txtMessageContentStudent)) {
                 return;
             }
-            if (LaoSchoolShared.myProfile.getEclass() != null) {
-                Message message = new Message();
+            if (LaoSchoolShared.checkConn(context)) {
+                if (LaoSchoolShared.myProfile != null) {
+                    if (LaoSchoolShared.myProfile.getEclass() != null) {
+                        Message message = new Message();
 
-                message.setTitle(txtMessageTitleStudent.getText().toString());
-                message.setContent(txtMessageContentStudent.getText().toString());
-                message.setChannel(cbSendSmsStudent.isChecked() ? 0 : 1);
+                        message.setTitle(txtMessageTitleStudent.getText().toString());
+                        message.setContent(txtMessageContentStudent.getText().toString());
+                        message.setChannel(cbSendSmsStudent.isChecked() ? 0 : 1);
 
-                message.setFrom_usr_id(LaoSchoolShared.myProfile.getId());
-                message.setTo_usr_id(LaoSchoolShared.myProfile.getEclass().getHead_teacher_id());
-                message.setClass_id(LaoSchoolShared.myProfile.getEclass().getId());
+                        message.setFrom_usr_id(LaoSchoolShared.myProfile.getId());
+                        message.setTo_usr_id(LaoSchoolShared.myProfile.getEclass().getHead_teacher_id());
+                        message.setClass_id(LaoSchoolShared.myProfile.getEclass().getId());
 
+                        service.createMessage(message, new AsyncCallback<Message>() {
+                            @Override
+                            public void onSuccess(Message result) {
+                                Log.d(TAG, "Message results:" + result.toJson());
+                                Toast.makeText(context, R.string.msg_create_message_sucessfully, Toast.LENGTH_SHORT).show();
+                                //TODO save local
+                            }
 
-                service.createMessage(message, new AsyncCallback<Message>() {
-                    @Override
-                    public void onSuccess(Message result) {
-                        Log.d(TAG, "Message results:" + result.toJson());
-                        Toast.makeText(context, R.string.msg_create_message_sucessfully, Toast.LENGTH_SHORT).show();
-                    }
+                            @Override
+                            public void onFailure(String message) {
+                                Toast.makeText(context, R.string.err_msg_create_message, Toast.LENGTH_SHORT).show();
+                                Log.d(TAG, R.string.err_msg_create_message + ":" + message);
+                            }
+                        });
 
-                    @Override
-                    public void onFailure(String message) {
+                    } else {
                         Toast.makeText(context, R.string.err_msg_create_message, Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, "Create messsage error:" + message);
                     }
-                });
+                } else {
+                    Toast.makeText(context, R.string.err_msg_create_message, Toast.LENGTH_SHORT).show();
+                }
             } else {
-                Toast.makeText(context, "Send message error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.err_msg_network_disconnect, Toast.LENGTH_SHORT).show();
             }
         }
         _resetForm();
