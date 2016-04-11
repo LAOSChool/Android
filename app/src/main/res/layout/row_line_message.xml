@@ -1,16 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="#ffffff"
-    android:layout_marginBottom="2dp">
+    android:layout_marginBottom="2dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="8dp"
+    android:paddingTop="8dp"
+   >
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView3"
+        android:src="@drawable/ic_flag_black_24dp"
+        android:layout_alignTop="@+id/imageView4"
+        android:layout_toLeftOf="@+id/imageView4"
+        android:layout_toStartOf="@+id/imageView4" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView4"
+        android:src="@drawable/ic_keyboard_arrow_right_black_24dp"
+        android:layout_above="@+id/txbSender"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
-        android:id="@+id/txbTitle" />
+        android:id="@+id/txbTitle"
+        android:textColor="#000000"
+        android:textSize="20sp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -18,12 +43,22 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
         android:id="@+id/txbContent"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:layout_below="@+id/txbTitle"
+        android:layout_alignLeft="@+id/txbTitle"
+        android:layout_alignStart="@+id/txbTitle"
+        android:layout_toLeftOf="@+id/imageView3"
+        android:layout_toStartOf="@+id/imageView3" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
-        android:id="@+id/txbSender" />
-</LinearLayout>
+        android:id="@+id/txbSender"
+        android:layout_below="@+id/txbContent"
+        android:layout_alignLeft="@+id/txbContent"
+        android:layout_alignStart="@+id/txbContent" />
+
+
+</RelativeLayout>

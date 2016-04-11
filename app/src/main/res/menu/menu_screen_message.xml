@@ -5,5 +5,5 @@
         android:id="@+id/action_create_message"
         android:title="@string/action_create_message"
         app:showAsAction="always"
-        android:icon="@android:drawable/ic_menu_edit"/>
+        android:icon="@drawable/ic_mode_edit_white_24dp"/>
 </menu>
