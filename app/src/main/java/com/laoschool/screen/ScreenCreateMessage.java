@@ -25,6 +25,7 @@ import com.laoschool.entities.User;
 import com.laoschool.model.AsyncCallback;
 import com.laoschool.model.DataAccessImpl;
 import com.laoschool.model.DataAccessInterface;
+import com.laoschool.model.sqlite.CRUDMessage;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
 
@@ -50,6 +51,9 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
     //Teacher
     private EditText txtMessageTitleTeacher;
     private EditText txtMessageContentTeacher;
+
+    //dbsql
+    CRUDMessage crudMessage;
 
 
     public void setTestMessage(String testMessage) {
@@ -164,6 +168,8 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
         setHasOptionsMenu(true);
         this.context = getActivity();
         service = DataAccessImpl.getInstance(context);
+        crudMessage = new CRUDMessage(context);
+
         if (getArguments() != null) {
             containerId = getArguments().getInt(LaoSchoolShared.CONTAINER_ID);
             currentRole = getArguments().getString(CURRENT_ROLE);
@@ -241,7 +247,8 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                             public void onSuccess(Message result) {
                                 Log.d(TAG, "Message results:" + result.toJson());
                                 Toast.makeText(context, R.string.msg_create_message_sucessfully, Toast.LENGTH_SHORT).show();
-                                //TODO save local
+                                // save local
+                                crudMessage.addMessage(result);
                             }
 
                             @Override
