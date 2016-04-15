@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 
 import com.laoschool.R;
 
@@ -14,6 +16,11 @@ import com.laoschool.R;
  */
 public class ScreenLoginHelp extends Fragment {
 
+    ScreenLogin containerz;
+
+    public void setContainer(ScreenLogin container) {
+        this.containerz = container;
+    }
 
     public ScreenLoginHelp() {
         // Required empty public constructor
@@ -23,8 +30,19 @@ public class ScreenLoginHelp extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.screen_login_help, container, false);
+        View view = inflater.inflate(R.layout.screen_login_help, container, false);
+
+        RelativeLayout header = (RelativeLayout) view.findViewById(R.id.header);
+        ImageButton btnBack = (ImageButton) view.findViewById(R.id.btnBack);
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                containerz.switchToScreenLoginMain();
+            }
+        });
+
+        return view;
     }
 
 }

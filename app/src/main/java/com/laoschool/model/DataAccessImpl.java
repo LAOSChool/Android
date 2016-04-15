@@ -31,6 +31,7 @@ public class DataAccessImpl implements DataAccessInterface{
     private static String api_key = "TEST_API_KEY";
     private static String auth_key = "";
 
+    final String LOGIN_HOST = "https://192.168.0.202:9443/laoschoolws/";
     final String HOST = "https://192.168.0.202:9443/laoschoolws/api/";
 
     private DataAccessImpl(Context context) {
@@ -55,10 +56,14 @@ public class DataAccessImpl implements DataAccessInterface{
         return mInstance;
     }
 
+    public static void setAuthKey(String auth_key) {
+        DataAccessImpl.auth_key = auth_key;
+    }
+
     @Override
     public void login(final String sso_id, final String password, final AsyncCallback<String> callback) {
         // Request a string response from the provided URL.
-        String url = HOST + "login";
+        String url = LOGIN_HOST + "login";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -88,8 +93,47 @@ public class DataAccessImpl implements DataAccessInterface{
                     String key = response.headers.get("auth_key");
                     auth_key = key;
                     callback.onSuccess(key);
+                    Log.d("Service/login()", "auth_key = " + key);
                     return super.parseNetworkResponse(response);
                 }
+        };
+
+        mRequestQueue.add(stringRequest);
+    }
+
+    @Override
+    public void forgotPass(final String sso_id, final String phone, final AsyncCallback<String> callback) {
+        // Request a string response from the provided URL.
+        String url = LOGIN_HOST + "forgot_pass";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("Service/forgotPass()", response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Service/forgotPass()", error.toString());
+                        callback.onFailure(error.toString());
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                return params;
+            }
+
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("sso_id", sso_id);
+                params.put("phone", phone);
+                return params;
+            }
         };
 
         mRequestQueue.add(stringRequest);
@@ -108,7 +152,7 @@ public class DataAccessImpl implements DataAccessInterface{
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("Service/getUserProfile()", response);
+                        Log.d("Service/gUserProfile()", response);
                         User user = User.parseFromJson(response);
                         callback.onSuccess(user);
                     }
@@ -116,7 +160,7 @@ public class DataAccessImpl implements DataAccessInterface{
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("Service/getUserProfile()", error.toString());
+                        Log.e("Service/gUserProfile()", error.toString());
                         callback.onFailure(error.toString());
                     }
                 }

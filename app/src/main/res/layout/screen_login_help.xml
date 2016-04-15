@@ -4,10 +4,29 @@
     android:layout_height="match_parent"
     tools:context="com.laoschool.screen.login.ScreenLoginHelp">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/tite_screen_login_help" />
+        android:layout_height="50dp"
+        android:background="@color/colorLaosRed"
+        android:id="@+id/header">
+        <ImageButton
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnBack"
+            android:src="@drawable/abc_ic_ab_back_mtrl_am_alpha"
+            android:background="@color/colorLaosRed"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentTop="true" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Help"
+            android:layout_toRightOf="@+id/btnBack"
+            android:layout_toEndOf="@+id/btnBack"
+            android:textColor="@color/background_home_screen_tab"
+            android:textStyle="bold"
+            android:layout_marginTop="15dp" />
+   </RelativeLayout>
 
 </FrameLayout>

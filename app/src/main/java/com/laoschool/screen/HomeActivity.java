@@ -138,9 +138,10 @@ public class HomeActivity extends AppCompatActivity implements
         // Intialise ViewPager
         this.intialiseViewPager(currentRole);
 
-
         service = DataAccessImpl.getInstance(this.getApplicationContext());
-        getUserProfile();
+
+        if(LaoSchoolShared.myProfile == null)
+            getUserProfile();
     }
 
     private void getUserProfile() {

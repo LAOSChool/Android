@@ -20,6 +20,14 @@ public interface DataAccessInterface {
      */
     public void login(String sso_id, String password, AsyncCallback<String> callback);
 
+    /**
+     * User  change login password himself
+     * @param sso_id
+     * @param phone
+     * @param callback return <b>Success</b> if ok,
+     */
+    public void forgotPass(String sso_id, String phone, AsyncCallback<String> callback);
+
     //----- User -----//
 
     /**
