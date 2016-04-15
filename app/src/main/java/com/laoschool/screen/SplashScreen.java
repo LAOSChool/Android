@@ -188,6 +188,7 @@ public class SplashScreen extends AppCompatActivity {
                 Intent intent = new Intent(SplashScreen.this, HomeActivity.class);
                 intent.setAction(result.getRoles());
                 startActivity(intent);
+                finish();
             }
 
             @Override

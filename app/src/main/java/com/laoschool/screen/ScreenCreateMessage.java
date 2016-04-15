@@ -47,11 +47,12 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
     private EditText txtMessageTitleStudent;
     private EditText txtMessageContentStudent;
     private CheckBox cbSendSmsStudent;
+    TextView txtMessageTo;
 
     //Teacher
     private EditText txtMessageTitleTeacher;
-    private EditText txtMessageContentTeacher;
 
+    private EditText txtMessageContentTeacher;
     //dbsql
     CRUDMessage crudMessage;
 
@@ -114,7 +115,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
         View view = inflater.inflate(R.layout.screen_create_message_student, container, false);
         txtMessageTitleStudent = (EditText) view.findViewById(R.id.txtMessageTitleStudent);
         txtMessageContentStudent = (EditText) view.findViewById(R.id.txtMessageContentStudent);
-        final TextView txtMessageTo = (TextView) view.findViewById(R.id.txtMessageTo);
+        txtMessageTo = (TextView) view.findViewById(R.id.txtConversionMessageTo);
         cbSendSmsStudent = (CheckBox) view.findViewById(R.id.cbSendSmsStudent);
         try {
             service.getUserById(LaoSchoolShared.myProfile.getEclass().getHead_teacher_id(), new AsyncCallback<User>() {
@@ -157,7 +158,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
         if (view.requestFocus()) {
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
             //show soft keyboard
-            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
         }
     }
@@ -232,7 +233,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
             if (LaoSchoolShared.checkConn(context)) {
                 if (LaoSchoolShared.myProfile != null) {
                     if (LaoSchoolShared.myProfile.getEclass() != null) {
-                        Message message = new Message();
+                        final Message message = new Message();
 
                         message.setTitle(txtMessageTitleStudent.getText().toString());
                         message.setContent(txtMessageContentStudent.getText().toString());
@@ -240,7 +241,10 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
 
                         message.setFrom_usr_id(LaoSchoolShared.myProfile.getId());
                         message.setTo_usr_id(LaoSchoolShared.myProfile.getEclass().getHead_teacher_id());
+                        message.setFrom_user_name(LaoSchoolShared.myProfile.getFullname());
+                        message.setTo_user_name(txtMessageTo.getText().toString());
                         message.setClass_id(LaoSchoolShared.myProfile.getEclass().getId());
+                        message.setSchool_id(LaoSchoolShared.myProfile.getSchool_id());
 
                         service.createMessage(message, new AsyncCallback<Message>() {
                             @Override
@@ -249,27 +253,32 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                                 Toast.makeText(context, R.string.msg_create_message_sucessfully, Toast.LENGTH_SHORT).show();
                                 // save local
                                 crudMessage.addMessage(result);
+                                _resetForm();
+                                iScreenCreateMessage.goBackToMessage();
                             }
 
                             @Override
-                            public void onFailure(String message) {
+                            public void onFailure(String message1) {
                                 Toast.makeText(context, R.string.err_msg_create_message, Toast.LENGTH_SHORT).show();
-                                Log.d(TAG, R.string.err_msg_create_message + ":" + message);
+                                Log.d(TAG, R.string.err_msg_create_message + ":" + message1);
+                                _resetForm();
+                                iScreenCreateMessage.goBackToMessage();
                             }
                         });
 
                     } else {
                         Toast.makeText(context, R.string.err_msg_create_message, Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, R.string.err_msg_create_message + "_1");
+
                     }
                 } else {
                     Toast.makeText(context, R.string.err_msg_create_message, Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, R.string.err_msg_create_message + "_2");
                 }
             } else {
                 Toast.makeText(context, R.string.err_msg_network_disconnect, Toast.LENGTH_SHORT).show();
             }
         }
-        _resetForm();
-        iScreenCreateMessage.goBackToMessage();
     }
 
     private void _resetForm() {

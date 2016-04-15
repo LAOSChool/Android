@@ -46,7 +46,8 @@ public class ScreenLoginMain extends Fragment {
 
     ScreenLogin container;
 
-    public ScreenLoginMain() {}
+    public ScreenLoginMain() {
+    }
 
     public void setContainer(ScreenLogin container) {
         this.container = container;
@@ -72,11 +73,11 @@ public class ScreenLoginMain extends Fragment {
         final Button buttonLogin = (Button) view.findViewById(R.id.btnLogin);
         final ImageButton btnQuestion = (ImageButton) view.findViewById(R.id.btnQuestion);
         final TextView btnFogetPass = (TextView) view.findViewById(R.id.btnFogetPass);
-        final ImageView imgForgotPass = (ImageView) view.findViewById(R.id.imgForgotPass);
+        //final ImageView imgForgotPass = (ImageView) view.findViewById(R.id.imgForgotPass);
 
         int color = Color.parseColor("#ffffff"); //The color u want
         btnQuestion.setColorFilter(color);
-        imgForgotPass.setColorFilter(color);
+       // imgForgotPass.setColorFilter(color);
 
 //        btnFogetPass.setPaintFlags(btnFogetPass.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 //        btnFogetPass.setText("Forgot password?");
@@ -122,7 +123,7 @@ public class ScreenLoginMain extends Fragment {
         try {
             KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
             keyStore.load(null);
-            KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry)keyStore.getEntry(LaoSchoolShared.KEY_STORE_ALIAS, null);
+            KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore.getEntry(LaoSchoolShared.KEY_STORE_ALIAS, null);
             RSAPublicKey publicKey = (RSAPublicKey) privateKeyEntry.getCertificate().getPublicKey();
             String encrypt_auth_key = LaoSchoolShared.encrypt(auth_key, publicKey);
 
@@ -177,6 +178,7 @@ public class ScreenLoginMain extends Fragment {
         Intent intent = new Intent(this.getActivity(), HomeActivity.class);
         intent.setAction(LaoSchoolShared.ROLE_STUDENT);
         startActivity(intent);
+        this.getActivity().finish();
     }
 
 }

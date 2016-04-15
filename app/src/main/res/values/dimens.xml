@@ -3,7 +3,7 @@
     <dimen name="activity_horizontal_margin">0dp</dimen>
     <dimen name="activity_vertical_margin">0dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
-    <dimen name="height_tab">50dp</dimen>
+    <dimen name="height_tab">48dp</dimen>
     <dimen name="sub_header_font_size">14sp</dimen>
     <dimen name="height_one_line">48dp</dimen>
     <dimen name="height_three_line">88dp</dimen>

@@ -146,7 +146,7 @@ public interface DataAccessInterface {
      * @param filter_sts (optional)
      * @param callback return list of messages if success,
      */
-    public void getMessages(String filter_class_id, String filter_from_user_id, String filter_from_dt, String filter_to_dt, String filter_to_user_id, String filter_channel, String filter_sts, AsyncCallback<List<Message>> callback);
+    public void getMessages(String filter_class_id, String filter_from_user_id, String filter_from_dt, String filter_to_dt, String filter_to_user_id, String filter_channel, String filter_sts,String filter_from_id, AsyncCallback<List<Message>> callback);
 
     /**
      * Get Message for a specific Message ID

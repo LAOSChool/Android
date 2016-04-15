@@ -14,6 +14,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TabHost;
@@ -23,9 +24,9 @@ import android.widget.Toast;
 import com.laoschool.R;
 import com.laoschool.entities.User;
 
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.security.KeyStore;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ import java.util.ArrayList;
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
-import javax.crypto.SecretKey;
+
 
 /**
  * Created by Hue on 3/1/2016.

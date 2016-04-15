@@ -2,143 +2,141 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.laoschool.screen.login.ScreenLoginMain">
+    tools:context="com.laoschool.screen.login.ScreenLoginMain"
+    android:background="@color/colorLaosRed">
 
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/scrollView"
-        android:background="@color/colorLaosRed">
+        android:background="@color/colorLaosRed"
+        android:visibility="gone">
 
-        <LinearLayout
-            android:orientation="vertical"
+
+    </ScrollView>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true"
+        android:background="@color/colorLaosRed"
+        android:paddingTop="40dp"
+        android:paddingBottom="40dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="LaoSchool"
+            android:id="@+id/textView2"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/background_home_screen_tab"
+            android:textSize="25dp"
+            android:textStyle="bold" />
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal|top"
-            android:descendantFocusability="beforeDescendants"
-            android:focusableInTouchMode="true" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="LaoSchool"
-                android:id="@+id/textView2"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="50dp"
-                android:layout_marginBottom="0dp"
-                android:textColor="@color/background_home_screen_tab"
-                android:textSize="25dp"
-                android:textStyle="bold"/>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Username"
-                    android:id="@+id/textView3"
-                    android:layout_marginTop="30dp"
-                    android:layout_marginLeft="10dp"
-                    android:textColor="@color/background_home_screen_tab"
-                    android:textSize="15dp"/>
-
-                <ImageButton
-                    android:layout_width="45dp"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/btnQuestion"
-                    android:src="@drawable/ic_help_outline_black_24dp"
-                    android:layout_alignBottom="@+id/textView3"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"
-                    android:clickable="true"
-                    android:background="@color/colorLaosRed" />
-            </RelativeLayout>
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:inputType="textPersonName"
-                android:ems="10"
-                android:id="@+id/txbUserName"
-                android:layout_marginTop="10dp"
-                android:paddingLeft="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/shape"/>
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Password"
-                android:id="@+id/textView4"
-                android:layout_marginTop="20dp"
-                android:layout_marginLeft="10dp"
-                android:textColor="@color/background_home_screen_tab"
-                android:textSize="15dp"/>
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:inputType="textPassword"
-                android:ems="10"
-                android:id="@+id/txbPassword"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:paddingLeft="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/shape"/>
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:text="Sign In"
-                android:id="@+id/btnLogin"
-                android:layout_gravity="center"
-                android:onClick="login"
-                android:visibility="visible"
+                android:text="Username"
+                android:id="@+id/textView3"
                 android:layout_marginTop="30dp"
+                android:layout_marginLeft="10dp"
                 android:textColor="@color/background_home_screen_tab"
-                android:background="@drawable/button_login_shape"
-                android:layout_marginBottom="15dp" />
+                android:textSize="15dp"
+                android:visibility="gone" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="45dp">
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnQuestion"
+                android:src="@drawable/ic_help_outline_black_24dp"
+                android:layout_alignBottom="@+id/textView3"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:clickable="true"
+                android:background="@color/colorLaosRed" />
+        </RelativeLayout>
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/imgForgotPass"
-                    android:src="@drawable/ic_mood_bad_black_24dp"
-                    android:layout_alignTop="@+id/btnFogetPass"
-                    android:layout_toLeftOf="@+id/btnFogetPass"
-                    android:layout_toStartOf="@+id/btnFogetPass"
-                    android:layout_marginRight="19dp"
-                    android:layout_marginEnd="10dp" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/txbUserName"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="10dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/shape"
+            android:hint="Username"
+            android:layout_marginBottom="10dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Forgot password"
-                    android:id="@+id/btnFogetPass"
-                    android:layout_gravity="center_horizontal"
-                    android:textColor="@color/background_home_screen_tab"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginRight="91dp"
-                    android:layout_marginEnd="110dp" />
-            </RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Password"
+            android:id="@+id/textView4"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/background_home_screen_tab"
+            android:textSize="15dp"
+            android:visibility="gone" />
 
-        </LinearLayout>
-    </ScrollView>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:id="@+id/txbPassword"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="10dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/shape"
+            android:hint="Password" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="Sign In"
+            android:id="@+id/btnLogin"
+            android:layout_gravity="center"
+            android:onClick="login"
+            android:visibility="visible"
+            android:layout_marginTop="30dp"
+            android:textColor="@color/background_home_screen_tab"
+            android:background="@drawable/button_login_shape"
+            android:layout_marginBottom="15dp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Forgotten password?"
+                android:id="@+id/btnFogetPass"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@color/background_home_screen_tab"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true" />
+        </RelativeLayout>
+
+    </LinearLayout>
 
 </FrameLayout>
