@@ -10,6 +10,7 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.internal.view.ContextThemeWrapper;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,11 +23,26 @@ import android.widget.Toast;
 import com.laoschool.R;
 import com.laoschool.entities.User;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.security.KeyStore;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.util.ArrayList;
+
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.SecretKey;
+
 /**
  * Created by Hue on 3/1/2016.
  */
 public class LaoSchoolShared {
+
     public static User myProfile;
+    public static final String SHARED_PREFERENCES_TAG = "com.laoshcool.app";
+    public static final String KEY_STORE_ALIAS = "LAOSCHOOL_KEY";
 
     public static final String CONTAINER_ID = "container_id";
     public static final int POSITION_SCREEN_MESSAGE_0 = 0;
@@ -48,8 +64,8 @@ public class LaoSchoolShared {
     public static final int POSITION_SCREEN_MESSAGE_DETAILS_14 = 14;
     public static final int POSITION_SCREEN_ANNOUNCEMENT_DETAILS_15 = 15;
 
-    public static final String ROLE_TEARCHER = "teacher";
-    public static final String ROLE_STUDENT = "student";
+    public static final String ROLE_TEARCHER = "TEACHER";
+    public static final String ROLE_STUDENT = "STUDENT";
     public static final String ROLE = "role";
     private static final String TAG = "LaoSchoolShared";
 
@@ -144,6 +160,53 @@ public class LaoSchoolShared {
                 .getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus()
                 .getWindowToken(), 0);
+    }
+
+    public static String encrypt(String plainText, RSAPublicKey publicKey)
+            throws Exception {
+        try {
+            Cipher input = Cipher.getInstance("RSA/ECB/PKCS1Padding", "AndroidOpenSSL");
+            input.init(Cipher.ENCRYPT_MODE, publicKey);
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            CipherOutputStream cipherOutputStream = new CipherOutputStream(
+                    outputStream, input);
+            cipherOutputStream.write(plainText.getBytes("UTF-8"));
+            cipherOutputStream.close();
+
+            byte [] vals = outputStream.toByteArray();
+            return (Base64.encodeToString(vals, Base64.DEFAULT));
+        } catch (Exception e) {
+            Log.e(TAG, Log.getStackTraceString(e));
+            return "";
+        }
+    }
+
+    public static String decrypt(String encryptedText, RSAPrivateKey privateKey)
+            throws Exception {
+        try {
+            Cipher output = Cipher.getInstance("RSA/ECB/PKCS1Padding", "AndroidOpenSSL");
+            output.init(Cipher.DECRYPT_MODE, privateKey);
+
+            CipherInputStream cipherInputStream = new CipherInputStream(
+                    new ByteArrayInputStream(Base64.decode(encryptedText, Base64.DEFAULT)), output);
+            ArrayList<Byte> values = new ArrayList<>();
+            int nextByte;
+            while ((nextByte = cipherInputStream.read()) != -1) {
+                values.add((byte)nextByte);
+            }
+
+            byte[] bytes = new byte[values.size()];
+            for(int i = 0; i < bytes.length; i++) {
+                bytes[i] = values.get(i).byteValue();
+            }
+
+            String finalText = new String(bytes, 0, bytes.length, "UTF-8");
+            return (finalText);
+        } catch (Exception e) {
+            Log.e(TAG, Log.getStackTraceString(e));
+            return "";
+        }
     }
 
 }
