@@ -73,14 +73,14 @@ public class ScreenLoginMain extends Fragment {
         final Button buttonLogin = (Button) view.findViewById(R.id.btnLogin);
         final ImageButton btnQuestion = (ImageButton) view.findViewById(R.id.btnQuestion);
         final TextView btnFogetPass = (TextView) view.findViewById(R.id.btnFogetPass);
-        //final ImageView imgForgotPass = (ImageView) view.findViewById(R.id.imgForgotPass);
+//      final ImageView imgForgotPass = (ImageView) view.findViewById(R.id.imgForgotPass);
 
         int color = Color.parseColor("#ffffff"); //The color u want
         btnQuestion.setColorFilter(color);
-       // imgForgotPass.setColorFilter(color);
+//      imgForgotPass.setColorFilter(color);
 
-//        btnFogetPass.setPaintFlags(btnFogetPass.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-//        btnFogetPass.setText("Forgot password?");
+//      btnFogetPass.setPaintFlags(btnFogetPass.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+//      btnFogetPass.setText("Forgot password?");
 
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -89,7 +89,6 @@ public class ScreenLoginMain extends Fragment {
                 service.login(userName, password, new AsyncCallback<String>() {
                     @Override
                     public void onSuccess(String result) {
-                        cryptoAuthKey(result);
                         goToHomeScreen();
                     }
 
@@ -117,34 +116,6 @@ public class ScreenLoginMain extends Fragment {
         });
 
         return view;
-    }
-
-    private void cryptoAuthKey(String auth_key) {
-        try {
-            KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
-            keyStore.load(null);
-            KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore.getEntry(LaoSchoolShared.KEY_STORE_ALIAS, null);
-            RSAPublicKey publicKey = (RSAPublicKey) privateKeyEntry.getCertificate().getPublicKey();
-            String encrypt_auth_key = LaoSchoolShared.encrypt(auth_key, publicKey);
-
-            SharedPreferences prefs = thiz.getActivity().getSharedPreferences(
-                    LaoSchoolShared.SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
-            prefs.edit().putString("auth_key", encrypt_auth_key).apply();
-
-//          System.out.println(encrypt_auth_key);
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (CertificateException e) {
-            e.printStackTrace();
-        } catch (UnrecoverableEntryException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     protected void autoLogin() {

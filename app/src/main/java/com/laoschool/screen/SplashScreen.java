@@ -150,27 +150,7 @@ public class SplashScreen extends AppCompatActivity {
             startLogin();
         }
         else {
-            try {
-                KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry)keyStore.getEntry(LaoSchoolShared.KEY_STORE_ALIAS, null);
-                RSAPrivateKey privateKey = (RSAPrivateKey) privateKeyEntry.getPrivateKey();
-                String decode_auth_key = LaoSchoolShared.decrypt(auth_key, privateKey);
-
-//                System.out.println("Decode_Auth_Key = " + decode_auth_key);
-                DataAccessImpl.setAuthKey(decode_auth_key);
-                getUserProfile();
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-                startLogin();
-            } catch (UnrecoverableEntryException e) {
-                e.printStackTrace();
-                startLogin();
-            } catch (KeyStoreException e) {
-                e.printStackTrace();
-                startLogin();
-            } catch (Exception e) {
-                e.printStackTrace();
-                startLogin();
-            }
+           getUserProfile();
         }
     }
 

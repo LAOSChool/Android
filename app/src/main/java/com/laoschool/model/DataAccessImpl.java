@@ -1,6 +1,7 @@
 package com.laoschool.model;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
@@ -16,10 +17,19 @@ import com.android.volley.NetworkResponse;
 import com.google.gson.JsonObject;
 import com.laoschool.entities.*;
 import com.laoschool.entities.Class;
+import com.laoschool.shared.LaoSchoolShared;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableEntryException;
+import java.security.cert.CertificateException;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +45,6 @@ public class DataAccessImpl implements DataAccessInterface {
     private static Context mCtx;
 
     private static String api_key = "TEST_API_KEY";
-    private static String auth_key = "";
 
     final String LOGIN_HOST = "https://192.168.0.202:9443/laoschoolws/";
     final String HOST = "https://192.168.0.202:9443/laoschoolws/api/";
@@ -62,8 +71,50 @@ public class DataAccessImpl implements DataAccessInterface {
         return mInstance;
     }
 
-    public static void setAuthKey(String auth_key) {
-        DataAccessImpl.auth_key = auth_key;
+    private String getAuthKey() {
+        SharedPreferences prefs = mCtx.getSharedPreferences(
+                LaoSchoolShared.SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
+        String auth_key = prefs.getString("auth_key", null);
+        try {
+            KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
+            keyStore.load(null);
+            KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry)keyStore.getEntry(LaoSchoolShared.KEY_STORE_ALIAS, null);
+            RSAPrivateKey privateKey = (RSAPrivateKey) privateKeyEntry.getPrivateKey();
+            String decode_auth_key = LaoSchoolShared.decrypt(auth_key, privateKey);
+
+            return decode_auth_key;
+        } catch (KeyStoreException e) {e.printStackTrace();
+        } catch (CertificateException e) {e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {e.printStackTrace();
+        } catch (UnrecoverableEntryException e) {e.printStackTrace();
+        } catch (IOException e) {e.printStackTrace();
+        } catch (Exception e) {e.printStackTrace();}
+
+        return auth_key;
+    }
+
+    private void saveAuthKey(String auth_key) {
+        try {
+            KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
+            keyStore.load(null);
+            KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore.getEntry(LaoSchoolShared.KEY_STORE_ALIAS, null);
+            RSAPublicKey publicKey = (RSAPublicKey) privateKeyEntry.getCertificate().getPublicKey();
+            String encrypt_auth_key = LaoSchoolShared.encrypt(auth_key, publicKey);
+
+            SharedPreferences prefs = mCtx.getSharedPreferences(
+                    LaoSchoolShared.SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
+            prefs.edit().putString("auth_key", encrypt_auth_key).apply();
+            return;
+        } catch (KeyStoreException e) {e.printStackTrace();
+        } catch (IOException e) {e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {e.printStackTrace();
+        } catch (CertificateException e) {e.printStackTrace();
+        } catch (UnrecoverableEntryException e) {e.printStackTrace();
+        } catch (Exception e) {e.printStackTrace();}
+
+        SharedPreferences prefs = mCtx.getSharedPreferences(
+                LaoSchoolShared.SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
+        prefs.edit().putString("auth_key", auth_key).apply();
     }
 
     @Override
@@ -98,9 +149,9 @@ public class DataAccessImpl implements DataAccessInterface {
             @Override
             protected Response<String> parseNetworkResponse(NetworkResponse response) {
                 String key = response.headers.get("auth_key");
-                auth_key = key;
-                callback.onSuccess(key);
-                Log.d("Service/login()", "auth_key = " + key);
+                saveAuthKey(key);
+                callback.onSuccess("the key has been encrypt");
+                Log.d("Service/login()", "auth_key = the key has been encrypt");
                 return super.parseNetworkResponse(response);
             }
 
@@ -177,7 +228,7 @@ public class DataAccessImpl implements DataAccessInterface {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("api_key", api_key);
-                params.put("auth_key", auth_key);
+                params.put("auth_key", getAuthKey());
                 return params;
             }
         };
@@ -210,7 +261,7 @@ public class DataAccessImpl implements DataAccessInterface {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("api_key", api_key);
-                params.put("auth_key", auth_key);
+                params.put("auth_key", getAuthKey());
                 return params;
             }
         };
@@ -299,18 +350,20 @@ public class DataAccessImpl implements DataAccessInterface {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("api_key", api_key);
-                params.put("auth_key", auth_key);
+                params.put("auth_key", getAuthKey());
                 return params;
             }
 
 
         };
-        Log.d("Service/getMessage()", "URL:" + stringRequest.getUrl());
-        mRequestQueue.add(stringRequest);
 
+//      Log.d("Service/getMessage()", "URL:" + stringRequest.getUrl());
+        mRequestQueue.add(stringRequest);
     }
 
-    private String _makeUrlgetMessages(String filter_class_id, String filter_from_user_id, String filter_from_dt, String filter_to_dt, String filter_to_user_id, String filter_channel, String filter_sts, String filter_from_id) {
+    private String _makeUrlgetMessages(String filter_class_id, String filter_from_user_id, String filter_from_dt,
+                                       String filter_to_dt, String filter_to_user_id, String filter_channel,
+                                       String filter_sts, String filter_from_id) {
         int _filter_class_id = 0, _filter_from_user_id = 0, _filter_from_dt = 0,
                 _filter_to_dt = 0, _filter_to_user_id = 0, _filter_channel = 0,
                 _filter_sts = 0, _filter_from_id = 0;
@@ -409,8 +462,7 @@ public class DataAccessImpl implements DataAccessInterface {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("api_key", api_key);
-                params.put("auth_key", auth_key);
-                params.put("Content-Type", "application/json");
+                params.put("auth_key", getAuthKey());
                 return params;
             }
 
