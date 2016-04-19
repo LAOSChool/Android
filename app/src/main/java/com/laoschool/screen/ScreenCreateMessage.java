@@ -63,9 +63,12 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
 
     @Override
     public void onPauseFragment() {
-        Log.d(getString(R.string.title_screen_create_message), "onPauseFragment()");
-        //Toast.makeText(getActivity(), "onPauseFragment():" + getString(R.string.title_screen_create_message), Toast.LENGTH_SHORT).show();
-        _resetForm();
+        try {
+            Log.d(getString(R.string.title_screen_create_message), "onPauseFragment()");
+            //Toast.makeText(getActivity(), "onPauseFragment():" + getString(R.string.title_screen_create_message), Toast.LENGTH_SHORT).show();
+            _resetForm();
+        } catch (Exception e) {
+        }
     }
 
     @Override
