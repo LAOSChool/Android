@@ -2,6 +2,9 @@ package com.laoschool.entities;
 
 import com.google.gson.Gson;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
 
 /**
@@ -59,5 +62,6 @@ public class ListMessages {
         Gson gson = new Gson();
         ListMessages messages = gson.fromJson(jsonString, ListMessages.class);
         return messages;
+
     }
 }

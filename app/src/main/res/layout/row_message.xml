@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffffff"
+        android:orientation="vertical"
+        android:paddingBottom="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="8dp">
+
+
+        <TextView
+            android:id="@+id/txbSender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/txbTitle"
+            android:layout_alignParentTop="true"
+            android:layout_alignStart="@+id/txbTitle"
+            android:layout_toLeftOf="@+id/imgFlagMessage"
+            android:layout_toStartOf="@+id/imgFlagMessage"
+            android:text="Sender"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txbTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="Title"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            android:layout_below="@+id/txbSender"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="56dp"
+            android:layout_toLeftOf="@+id/imgFlagMessage"
+            android:layout_toStartOf="@+id/imgFlagMessage" />
+
+        <TextView
+            android:id="@+id/txbContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/txbTitle"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignRight="@+id/txbTitle"
+            android:layout_below="@+id/txbTitle"
+            android:layout_marginLeft="56dp"
+            android:singleLine="true"
+            android:text="Conten"
+            android:textColor="@color/color_messsage_read"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/txtDateSend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="16dp"
+            android:singleLine="true"
+            android:text="Date"
+            android:textColor="#2962FF"
+            android:textSize="12sp" />
+
+        <ImageView
+            android:id="@+id/imgUserAvata"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_account_circle_black_36dp" />
+
+        <ImageView
+            android:id="@+id/imgFlagMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_flag_black_24dp"
+            android:layout_alignBottom="@+id/txbContent"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/color_divider"/>
+</LinearLayout>

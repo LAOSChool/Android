@@ -26,7 +26,7 @@
                 android:text="To" />
 
             <TextView
-                android:id="@+id/txtMessageTo"
+                android:id="@+id/txtConversionMessageTo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="72dp" />

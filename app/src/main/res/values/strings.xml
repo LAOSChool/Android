@@ -45,6 +45,8 @@
     <string name="action_set_chanel_create_message">SMS</string>
     <string name="msg_create_message_sucessfully">Create message sucessfully</string>
     <string name="err_msg_network_disconnect">Network disconnect</string>
+    <string name="hint_input_messsage">Write a message</string>
+    <string name="action_view_profile">View Profile</string>
 
 
     <string-array name="more_teacher">

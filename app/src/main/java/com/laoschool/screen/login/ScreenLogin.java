@@ -2,6 +2,7 @@ package com.laoschool.screen.login;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.graphics.Color;
@@ -24,14 +25,17 @@ import com.laoschool.shared.LaoSchoolShared;
 public class ScreenLogin extends AppCompatActivity {
 
     ScreenLoginMain screenLoginMain = new ScreenLoginMain();
-//  ScreenFogotPassword screenFogotPassword = new ScreenFogotPassword();
+    //  ScreenFogotPassword screenFogotPassword = new ScreenFogotPassword();
     ScreenLoginHelp screenLoginHelp = new ScreenLoginHelp();
+    private Context thiz;
+    private DataAccessImpl service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.screen_login);
-
+        this.thiz = this;
+        service = DataAccessImpl.getInstance(this.getApplicationContext());
         screenLoginMain.setContainer(this);
 //      screenFogotPassword.setContainer(this);
         screenLoginHelp.setContainer(this);
@@ -53,6 +57,14 @@ public class ScreenLogin extends AppCompatActivity {
         fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right);
         fragmentTransaction.replace(R.id.container, screenLoginMain);
         fragmentTransaction.commit();
+    }
+
+    public void goToHomeScreen() {
+        Intent intent = new Intent(this, HomeActivity.class);
+        intent.setAction(LaoSchoolShared.ROLE_STUDENT);
+        startActivity(intent);
+        finish();
+
     }
 
     public void switchToScreenFogotPassword() {
