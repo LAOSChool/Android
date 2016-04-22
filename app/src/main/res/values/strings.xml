@@ -36,7 +36,7 @@
     <string name="hint_search_exam_resutls">Search student</string>
     <string name="action_sort_by">Sort by</string>
     <string name="hint_message_subject">Subject</string>
-    <string name="hint_message_content">Conten</string>
+    <string name="hint_message_content">Content</string>
 
     <string name="err_msg_input_message_title">Enter message title</string>
     <string name="err_msg_input_message_conten">Enter message conten</string>

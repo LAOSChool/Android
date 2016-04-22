@@ -21,6 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.laoschool.R;
@@ -172,13 +173,13 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//        switch (id) {
-//            case R.id.action_create_message:
-//                iScreenMessage._gotoScreenCreateMessage();
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_create_message:
+                iScreenMessage._gotoScreenCreateMessage();
 //                Toast.makeText(getActivity(), "create message", Toast.LENGTH_SHORT).show();
-//                return true;
-//        }
+                return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -259,7 +260,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         private void _getListMessageFormServer() {
             Log.d(TAG, "MessageListFragment:_getListMessageFormServer() position=" + position);
             int form_id = -1;
-            if (position == 0) {
+            if (position == 0 || position == 1) {
                 //get max from id
                 if (mRecyclerListMessage.getAdapter() != null) {
                     ListMessageAdapter listMessageAdapter = (ListMessageAdapter) mRecyclerListMessage.getAdapter();
@@ -267,13 +268,13 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
                 }
             }
             final String classID = "";
-            final String fromUserID = ((position == 1) ? String.valueOf(LaoSchoolShared.myProfile.getId()) : "");
+            final String fromUserID = ((position == 2) ? String.valueOf(LaoSchoolShared.myProfile.getId()) : "");
             final String fromDate = "";
-            final String toUserID = ((position == 0) ? String.valueOf(LaoSchoolShared.myProfile.getId()) : "");
+            final String toUserID = ((position == 0 || position == 1) ? String.valueOf(LaoSchoolShared.myProfile.getId()) : "");
             final String toDate = "";
             final String channel = "";
             final String status = "";
-            final String fromID = ((position == 0) && (form_id > -1) ? String.valueOf(form_id) : "");
+            final String fromID = ((position == 0 || position == 1) && (form_id > -1) ? String.valueOf(form_id) : "");
             service.getMessages(
                     classID//classID
                     , fromUserID//from user ID
@@ -320,20 +321,30 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         private void _getListMessageFormLocalData() {
             List<Message> messagesForUser = new ArrayList<>();
             if (LaoSchoolShared.myProfile != null) {
-                messagesForUser = crudMessage.getListMessagesForUser((position == 0) ? Message.MessageColumns.COLUMN_NAME_TO_USR_ID : Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0);
+                messagesForUser = crudMessage.getListMessagesForUser((position == 0 || position == 1) ? Message.MessageColumns.COLUMN_NAME_TO_USR_ID : Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0);
                 Log.d(TAG, "MessageListFragment:getListMessagesForUser size=" + messagesForUser.size());
             }
-            _setListMessage(messagesForUser, position);
 
+            _setListMessage(messagesForUser, position);
         }
 
         private void _setListMessage(final List<Message> messages, final int position) {
             try {
+                //Filter unread message
+                if(position == 1) {
+                    for(Message message: messages) {
+                        if (LaoSchoolShared.myProfile != null)
+                            if (LaoSchoolShared.myProfile.getId() != message.getFrom_usr_id())
+                                if(message.getIs_read() == 1) {
+                                    messages.remove(message);
+                                }
+                    }
+                }
                 final ListMessageAdapter listMessageAdapter = new ListMessageAdapter(mRecyclerListMessage, thiz, messages);
                 listMessageAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
                     @Override
                     public void onLoadMore() {
-                        int countMessageFormLocal = crudMessage.getMessagesCountFormUser((position == 0) ? Message.MessageColumns.COLUMN_NAME_TO_USR_ID : Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId());
+                        int countMessageFormLocal = crudMessage.getMessagesCountFormUser((position == 0 || position == 1) ? Message.MessageColumns.COLUMN_NAME_TO_USR_ID : Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId());
                         if (messages.size() < countMessageFormLocal) {
                             Log.d(TAG, "Load More");
                             messages.add(null);
@@ -350,7 +361,6 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
             } catch (Exception e) {
                 Log.e(TAG, "MessageListFragment:_setListMessage():" + e.getMessage());
             }
-
         }
 
         private void _loadMoreData(final List<Message> messages, final ListMessageAdapter listMessageAdapter, final int position) {
@@ -368,7 +378,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
 
                     List<Message> messagesForUser = new ArrayList<>();
                     if (LaoSchoolShared.myProfile != null) {
-                        messagesForUser = crudMessage.getListMessagesForUser((position == 0) ? Message.MessageColumns.COLUMN_NAME_TO_USR_ID : Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId(), 30, messages.size());
+                        messagesForUser = crudMessage.getListMessagesForUser((position == 0 || position == 1) ? Message.MessageColumns.COLUMN_NAME_TO_USR_ID : Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId(), 30, messages.size());
                         Log.d(TAG, "MessageListFragment:getListMessagesForUser size=" + messages.size());
                     }
                     messages.addAll(messagesForUser);
@@ -388,22 +398,28 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return (position == 0) ? "Inbox" : "Send";
+            if(position == 0)
+                return "Inbox";
+            else if(position == 1)
+                return "Unread";
+            else
+                return "Send";
         }
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
 
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
                 return MessageListFragment.newInstance(0);
-            } else {
+            } else if(position == 1){
                 return MessageListFragment.newInstance(1);
+            } else {
+                return MessageListFragment.newInstance(2);
             }
-
         }
 
         public int getItemPosition(Object object) {
