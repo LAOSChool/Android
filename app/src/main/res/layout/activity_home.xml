@@ -68,7 +68,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:layout_weight="0"
                 android:fadingEdge="none"
-                android:background="@color/colorLaosRed"></TabWidget>
+                android:background="@color/color_tab_widget"></TabWidget>
         </LinearLayout>
     </TabHost>
 

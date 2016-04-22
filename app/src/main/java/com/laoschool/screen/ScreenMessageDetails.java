@@ -172,8 +172,8 @@ public class ScreenMessageDetails extends Fragment implements FragmentLifecycle 
 
 
                 imgPiorityMessageDetails.setColorFilter(message.getImp_flg() == 1 ?
-                        screenMessage.getActivity().getResources().getColor(R.color.colorLaosRed)
-                        : screenMessage.getActivity().getResources().getColor(R.color.color_messsage_read));
+                        screenMessage.getActivity().getResources().getColor(R.color.colorDefault)
+                        : screenMessage.getActivity().getResources().getColor(R.color.colorStar));
                 imgUserSentMessageAvata.setColorFilter(screenMessage.getActivity().getResources().getColor(R.color.color_messsage_tilte_not_read));
 
                 txtFormUserNameMessageDetails.setText(message.getFrom_user_name());

@@ -1,8 +1,10 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.laoschool.screen.login.ScreenLoginMain"
+    android:id="@+id/container"
     android:background="@color/colorLaosRed">
 
     <ScrollView
@@ -11,8 +13,6 @@
         android:id="@+id/scrollView"
         android:background="@color/colorLaosRed"
         android:visibility="gone">
-
-
     </ScrollView>
 
     <LinearLayout
@@ -21,21 +21,24 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:descendantFocusability="beforeDescendants"
-        android:focusableInTouchMode="true"
         android:background="@color/colorLaosRed"
-        android:paddingTop="40dp"
-        android:paddingBottom="40dp">
+        android:paddingTop="0dp"
+        android:paddingBottom="80dp"
+        android:id="@+id/layoutContent"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="LaoSchool"
-            android:id="@+id/textView2"
+            android:id="@+id/logo"
             android:layout_gravity="center_horizontal"
             android:textColor="@color/background_home_screen_tab"
-            android:textSize="25dp"
-            android:textStyle="bold" />
+            android:textSize="30dp"
+            android:textStyle="bold"
+            android:paddingBottom="70dp"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -80,7 +83,10 @@
             android:layout_marginRight="16dp"
             android:background="@drawable/shape"
             android:hint="Username"
-            android:layout_marginBottom="10dp" />
+            android:layout_marginBottom="10dp"
+            android:textSize="14dp"
+            android:drawableLeft="@drawable/ic_person_black_18dp"
+            android:drawablePadding="5dp"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -91,7 +97,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginLeft="10dp"
             android:textColor="@color/background_home_screen_tab"
-            android:textSize="15dp"
+            android:textSize="14dp"
             android:visibility="gone" />
 
         <EditText
@@ -106,7 +112,10 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:background="@drawable/shape"
-            android:hint="Password" />
+            android:hint="Password"
+            android:textSize="13dp"
+            android:drawableLeft="@drawable/ic_vpn_key_black_18dp"
+            android:drawablePadding="5dp"/>
 
         <Button
             android:layout_width="wrap_content"
@@ -119,24 +128,29 @@
             android:layout_marginTop="30dp"
             android:textColor="@color/background_home_screen_tab"
             android:background="@drawable/button_login_shape"
-            android:layout_marginBottom="15dp" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="45dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Forgotten password?"
-                android:id="@+id/btnFogetPass"
-                android:layout_gravity="center_horizontal"
-                android:textColor="@color/background_home_screen_tab"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true" />
-        </RelativeLayout>
+            android:layout_marginBottom="15dp"
+            android:textSize="12dp"
+            android:textStyle="bold"/>
 
     </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="40dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Forgotten password?"
+            android:id="@+id/btnFogetPass"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/background_home_screen_tab"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:textSize="15dp" />
+    </RelativeLayout>
 
 </FrameLayout>

@@ -10,14 +10,14 @@
     <com.astuetz.PagerSlidingTabStrip
         android:id="@+id/tabs"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@color/background_material_light"
-        android:textColor="@color/colorLaosBlue"
-        app:pstsDividerColor="@color/colorLaosRed"
-        app:pstsIndicatorColor="@color/colorLaosBlue"
-        app:pstsIndicatorHeight="4dp"
+        android:layout_height="30dp"
+        android:background="@color/colorLaosRed"
+        android:textColor="@color/abc_primary_text_disable_only_material_dark"
+        app:pstsDividerColor="#ffffff"
+        app:pstsIndicatorColor="#7E57C2"
+        app:pstsIndicatorHeight="3dp"
         app:pstsShouldExpand="true"
-        app:pstsTextAllCaps="true" />
+        app:pstsTextAllCaps="false" />
 
     <com.laoschool.view.ViewpagerDisableSwipeLeft
         android:id="@+id/messageViewPage"
@@ -58,6 +58,7 @@
         android:layout_marginEnd="15dp"
         android:layout_marginRight="15dp"
         android:src="@drawable/ic_mode_edit_white_24dp"
-        app:backgroundTint="@color/colorLaosRed" />
+        app:backgroundTint="@color/colorLaosRed"
+        android:visibility="gone" />
 
 </RelativeLayout>

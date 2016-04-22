@@ -11,13 +11,18 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,6 +73,9 @@ public class ScreenLoginMain extends Fragment {
         View view = inflater.inflate(R.layout.screen_login_conten, container, false);
         LaoSchoolShared.myProfile = null;
 
+        final FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.container);
+        final LinearLayout layoutContent = (LinearLayout) view.findViewById(R.id.layoutContent);
+        final TextView logo = (TextView) view.findViewById(R.id.logo);
         final EditText txbUserName = (EditText) view.findViewById(R.id.txbUserName);
         final EditText txbPassword = (EditText) view.findViewById(R.id.txbPassword);
         final Button buttonLogin = (Button) view.findViewById(R.id.btnLogin);
@@ -111,7 +119,49 @@ public class ScreenLoginMain extends Fragment {
 
         btnQuestion.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                InputMethodManager imm = (InputMethodManager)thiz.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 goToHelpScreen();
+            }
+        });
+
+        frameLayout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight,
+                                       int oldBottom) {
+                // its possible that the layout is not complete in which case
+                // we will get all zero values for the positions, so ignore the event
+                if (left == 0 && top == 0 && right == 0 && bottom == 0) {
+                    return;
+                }
+
+                // Do what you need to do with the height/width since they are now set
+                if (bottom < oldBottom) {
+                    layoutContent.setGravity(Gravity.START);
+                    layoutContent.setPadding(0, 30, 0, 0);
+                    logo.setPadding(0, 0, 0, 0);
+                    btnFogetPass.setVisibility(View.INVISIBLE);
+                    return;
+                } else if (bottom > oldBottom) {
+                    layoutContent.setGravity(Gravity.CENTER);
+                    layoutContent.setPadding(0, 0, 0, 90);
+                    logo.setPadding(0, 0, 0, 70);
+                    btnFogetPass.setVisibility(View.VISIBLE);
+                    return;
+                }
+            }
+        });
+
+        frameLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    frameLayout.requestFocus();
+                    InputMethodManager imm = (InputMethodManager) thiz.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+                return true;
             }
         });
 
