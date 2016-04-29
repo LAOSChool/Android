@@ -72,7 +72,7 @@ public interface DataAccessInterface {
      *
      * @param callback return list attendances if success,
      */
-    public void getAttendances(AsyncCallback<List<Attendance>> callback);
+    public void getAttendances(String filter_class_id, String filter_user_id, AsyncCallback<List<Attendance>> callback);
 
     /**
      * Get attendance for a specific ID

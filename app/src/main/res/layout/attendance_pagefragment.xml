@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fragmentBackground">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:gravity="top"
+        android:background="#ffffff"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Số tiết nghỉ : 4"
+            android:id="@+id/txbTotalAbsent"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Có lý do: 2"
+            android:id="@+id/txbTotalExcused"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Không lý do: 2"
+            android:id="@+id/txbTotalNoExcused"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="#ffffff">
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="6">
+
+            <TableRow>
+                <TextView
+                    android:text="Ngày"
+                    android:paddingLeft="20dip"
+                    android:paddingTop="10dip"
+                    android:paddingRight="20dip"
+                    android:paddingBottom="10dip"
+                    android:textSize="13sp"
+                    android:textStyle="bold"/>
+                <View android:layout_width="1dp"
+                    android:background="@color/text_title_tab_indicator"
+                    android:layout_height="match_parent"
+                    android:paddingTop="2dp"/>
+                <TextView
+                    android:text="Tiết"
+                    android:gravity="left"
+                    android:padding="10dip"
+                    android:textSize="13sp"
+                    android:textStyle="bold"/>
+                <View android:layout_width="1dp"
+                    android:background="@color/text_title_tab_indicator"
+                    android:layout_height="match_parent"
+                    android:paddingTop="2dp"/>
+                <TextView
+                    android:text="Bộ Môn"
+                    android:gravity="left"
+                    android:padding="10dip"
+                    android:textSize="13sp"
+                    android:textStyle="bold"/>
+                <View android:layout_width="1dp"
+                    android:background="@color/text_title_tab_indicator"
+                    android:layout_height="match_parent"
+                    android:paddingTop="2dp"/>
+                <TextView
+                    android:text="Lý do"
+                    android:gravity="left"
+                    android:padding="10dip"
+                    android:textSize="13sp"
+                    android:textStyle="bold"/>
+            </TableRow>
+
+            <View android:layout_width="match_parent"
+                android:background="@color/text_title_tab_indicator"
+                android:layout_height="1dp" />
+
+            <TableRow>
+                <TextView
+                    android:text="10-02"
+                    android:paddingLeft="20dip"
+                    android:paddingTop="10dip"
+                    android:paddingRight="20dip"
+                    android:paddingBottom="10dip"
+                    android:textSize="13sp"/>
+                <View android:layout_width="1dp"
+                    android:background="@color/text_title_tab_indicator"
+                    android:layout_height="match_parent"
+                    android:paddingTop="2dp"/>
+                <TextView
+                    android:text="1"
+                    android:gravity="center"
+                    android:padding="10dip"
+                    android:textSize="13sp"/>
+                <View android:layout_width="1dp"
+                    android:background="@color/text_title_tab_indicator"
+                    android:layout_height="match_parent"
+                    android:paddingTop="2dp"/>
+                <TextView
+                    android:text="Toan"
+                    android:gravity="center"
+                    android:padding="10dip"
+                    android:textSize="13sp"/>
+                <View android:layout_width="1dp"
+                    android:background="@color/text_title_tab_indicator"
+                    android:layout_height="match_parent"
+                    android:paddingTop="2dp"/>
+                <TextView
+                    android:text="Xin nghi om"
+                    android:gravity="left"
+                    android:padding="10dip"
+                    android:textSize="13sp"/>
+            </TableRow>
+
+            <TableRow>
+                <TextView
+                    android:text="30-10"
+                    android:paddingLeft="20dip"
+                    android:paddingTop="10dip"
+                    android:paddingRight="20dip"
+                    android:paddingBottom="10dip"
+                    android:textSize="13sp"/>
+                <View android:layout_width="1dp"
+                    android:background="@color/text_title_tab_indicator"
+                    android:layout_height="match_parent"
+                    android:paddingTop="2dp"/>
+                <TextView
+                    android:text="2"
+                    android:gravity="center"
+                    android:padding="10dip"
+                    android:textSize="13sp"/>
+                <View android:layout_width="1dp"
+                    android:background="@color/text_title_tab_indicator"
+                    android:layout_height="match_parent"
+                    android:paddingTop="2dp"/>
+                <TextView
+                    android:text="Van"
+                    android:gravity="center"
+                    android:padding="10dip"
+                    android:textSize="13sp"/>
+                <View android:layout_width="1dp"
+                    android:background="@color/text_title_tab_indicator"
+                    android:layout_height="match_parent"
+                    android:paddingTop="2dp"/>
+                <TextView
+                    android:text="Ko co ly do"
+                    android:gravity="left"
+                    android:padding="10dip"
+                    android:textSize="13sp"/>
+            </TableRow>
+
+        </TableLayout>
+    </LinearLayout>
+</LinearLayout>

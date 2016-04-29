@@ -2,22 +2,19 @@ package com.laoschool.entities;
 
 import com.google.gson.Gson;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.List;
 
 /**
- * Created by Tran An on 08/04/2016.
+ * Created by Tran An on 4/29/2016.
  */
-public class ListMessages {
+public class ListAttendance {
 
     int total_count;
     int from_row;
     int to_row;
-    List<Message> list;
+    List<Attendance> list;
 
-    public ListMessages() {
+    public ListAttendance() {
     }
 
     public int getTotal_count() {
@@ -44,11 +41,11 @@ public class ListMessages {
         this.to_row = to_row;
     }
 
-    public List<Message> getList() {
+    public List<Attendance> getList() {
         return list;
     }
 
-    public void setList(List<Message> list) {
+    public void setList(List<Attendance> list) {
         this.list = list;
     }
 
@@ -58,9 +55,9 @@ public class ListMessages {
         return jsonString;
     }
 
-    public static ListMessages fromJson(String jsonString) {
+    public static ListAttendance fromJson(String jsonString) {
         Gson gson = new Gson();
-        ListMessages messages = gson.fromJson(jsonString, ListMessages.class);
-        return messages;
+        ListAttendance attendances = gson.fromJson(jsonString, ListAttendance.class);
+        return attendances;
     }
 }

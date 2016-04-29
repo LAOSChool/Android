@@ -8,6 +8,7 @@ import android.util.Log;
 import android.util.LruCache;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -38,7 +39,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -208,13 +212,25 @@ public class DataAccessImpl implements DataAccessInterface {
                     @Override
                     public void onResponse(String response) {
                         Log.d("Service/forgotPass()", response);
+                        callback.onSuccess(response.toString());
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Service/forgotPass()", error.toString());
-                        callback.onFailure(error.toString());
+                        try {
+                            if(error.networkResponse != null) {
+                                String responseBody = new String(error.networkResponse.data, "utf-8");
+                                JSONObject jsonObject = new JSONObject(responseBody);
+                                String developerMessage = jsonObject.getString("developerMessage");
+                                callback.onFailure(developerMessage);
+                            }
+                            else
+                                callback.onFailure(error.toString());
+                        } catch ( JSONException e ) {
+                            callback.onFailure(error.toString());
+                        } catch (UnsupportedEncodingException e){}
                     }
                 }
         ) {
@@ -234,6 +250,11 @@ public class DataAccessImpl implements DataAccessInterface {
             }
         };
 
+        //Set a retry policy in case of SocketTimeout & ConnectionTimeout Exceptions.
+        //Volley does retry for you if you have specified the policy.
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(30000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         mRequestQueue.add(stringRequest);
     }
 
@@ -360,8 +381,41 @@ public class DataAccessImpl implements DataAccessInterface {
     }
 
     @Override
-    public void getAttendances(AsyncCallback<List<Attendance>> callback) {
+    public void getAttendances(String filter_class_id, String filter_user_id, final AsyncCallback<List<Attendance>> callback) {
+        // Request a string response from the provided URL.
+        String url = HOST + "attendances";
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url.trim(),
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            Log.d("Service/getAttendance()", response);
+                            ListAttendance attendanceList = ListAttendance.fromJson(response);
+                            callback.onSuccess(attendanceList.getList());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Service/getAttendance()", error.toString());
+                        callback.onFailure(error.toString());
+                    }
+                }
 
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", getAuthKey());
+                return params;
+            }
+        };
+
+        mRequestQueue.add(stringRequest);
     }
 
     @Override
@@ -452,8 +506,6 @@ public class DataAccessImpl implements DataAccessInterface {
                 params.put("auth_key", getAuthKey());
                 return params;
             }
-
-
         };
 
 //      Log.d("Service/getMessage()", "URL:" + stringRequest.getUrl());
