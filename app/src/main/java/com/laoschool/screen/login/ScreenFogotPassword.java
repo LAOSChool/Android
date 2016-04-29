@@ -1,6 +1,8 @@
 package com.laoschool.screen.login;
 
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -81,20 +83,36 @@ public class ScreenFogotPassword extends Fragment {
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                textbBox.requestFocus();
+                InputMethodManager imm = (InputMethodManager) thiz.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
                 String sso_id = txbUserName.getText().toString();
                 String phone = txbPhoneNumber.getText().toString();
 
-                Toast.makeText(thiz.getActivity(), "Your request has been send", Toast.LENGTH_SHORT).show();
+                final ProgressDialog ringProgressDialog = ProgressDialog.show(thiz.getActivity(), "Please wait ...", "Sending your request ...", true);
+
+//                AlertDialog.Builder builder1 = new AlertDialog.Builder(thiz.getActivity());
+//                builder1.setMessage("Your password has been reset !");
+//                builder1.setCancelable(true);
+//                final AlertDialog alert11 = builder1.create();
 
                 service.forgotPass(sso_id, phone, new AsyncCallback<String>() {
                     @Override
                     public void onSuccess(String result) {
-                        Toast.makeText(thiz.getActivity(), "Your password has been reset", Toast.LENGTH_SHORT).show();
+                        ringProgressDialog.dismiss();
+                        Toast.makeText(thiz.getActivity(), "Your password has been reset !", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onFailure(String message) {
-                        Toast.makeText(thiz.getActivity(), "Wrong username or phone number", Toast.LENGTH_SHORT).show();
+                        ringProgressDialog.dismiss();
+                        if(message.contains("sso_id"))
+                            Toast.makeText(thiz.getActivity(), "Username not exist !", Toast.LENGTH_SHORT).show();
+                        else if(message.contains("phone"))
+                            Toast.makeText(thiz.getActivity(), "Phone number not match with username !", Toast.LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(thiz.getActivity(), message, Toast.LENGTH_SHORT).show();
                     }
                 });
             }

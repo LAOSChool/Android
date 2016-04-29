@@ -33,5 +33,6 @@
     <color name="colorDefault">#808080</color>
     <color name="colorWhite">@android:color/white</color>
     <color name="colorStar">#FFD54F</color>
+    <color name="fragmentBackground">#E0E0E0</color>
 
 </resources>

@@ -3,7 +3,7 @@
     <!--title screen-->
     <string name="title_activity_home">Home</string>
     <string name="title_screen_message">Message</string>
-    <string name="title_screen_attended">Attended</string>
+    <string name="title_screen_attended">Attendance</string>
     <string name="title_screen_exam_results">Exam results</string>
     <string name="title_screen_schedule">Schedule</string>
     <string name="title_screen_more">More</string>
