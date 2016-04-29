@@ -3,9 +3,14 @@ package com.laoschool.screen;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 
 
@@ -24,20 +29,27 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
 import com.laoschool.R;
+import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.adapter.PagerAdapter;
 
 import com.laoschool.entities.Message;
 
 import com.laoschool.entities.User;
 import com.laoschool.model.AsyncCallback;
-import com.laoschool.model.DataAccessImpl;
 import com.laoschool.model.DataAccessInterface;
-import com.laoschool.model.sqlite.DatabaseHandler;
+import com.laoschool.model.sqlite.DataAccessImage;
+import com.laoschool.model.sqlite.DataAccessMessage;
+import com.laoschool.screen.ScreenCreateAnnouncement.IScreenCreateAnnouncement;
 import com.laoschool.screen.login.ScreenLogin;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
@@ -52,7 +64,8 @@ public class HomeActivity extends AppCompatActivity implements
         ScreenAttended.IScreenAttended,
         ScreenMore.IScreenMore,
         ScreenListTeacher.IScreenListTeacher,
-        ScreenMarkScoreStudent.IScreenMarkScoreStudent {
+        ScreenMarkScoreStudent.IScreenMarkScoreStudent,
+        IScreenCreateAnnouncement {
     private static final String TAG = "HomeScreen";
 
     private TabHost mTabHost;
@@ -135,19 +148,7 @@ public class HomeActivity extends AppCompatActivity implements
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //defineRole form inten
-        currentRole = LaoSchoolShared.ROLE_STUDENT;
-
-        this.initialiseTabHost(savedInstanceState);
-        this.thiz = this;
-        if (savedInstanceState != null) {
-            mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab")); //set the tab as per the saved state
-        }
-        this.savedInstanceState = savedInstanceState;
-
-        service = DataAccessImpl.getInstance(this.getApplicationContext());
-        //init db
-        DatabaseHandler databaseHandler = new DatabaseHandler(this);
+        service = LaoSchoolSingleton.getInstance().getDataAccessService();
         if (LaoSchoolShared.myProfile == null) {
             getUserProfile();
         } else {
@@ -157,6 +158,7 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     private void _startHome() {
+        currentRole = LaoSchoolShared.myProfile.getRoles();
         initialiseTabHost(savedInstanceState);
         if (savedInstanceState != null) {
             mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab")); //set the tab as per the saved state
@@ -245,7 +247,9 @@ public class HomeActivity extends AppCompatActivity implements
 
         fragments.add(ScreenMessageDetails.instantiate(containerId, currentRole));
 
-        fragments.add(ScreenAnnouncementDetails.instantiate(containerId, currentRole));
+        fragments.add(ScreenAnnouncementsDetails.instantiate(containerId, currentRole));
+
+        fragments.add(ScreenCreateAnnouncement.instantiate(containerId, currentRole));
 
         this.mPagerAdapter = new PagerAdapter(super.getSupportFragmentManager(), fragments);
 
@@ -430,6 +434,10 @@ public class HomeActivity extends AppCompatActivity implements
             case LaoSchoolShared.POSITION_SCREEN_ANNOUNCEMENT_DETAILS_15:
                 _setTitleandShowButtonBack(R.string.title_screen_announcement_details, null, DisplayButtonHome.show);
                 break;
+            case LaoSchoolShared.POSITION_SCREEN_CREATE_ANNOUNCEMENT_16:
+                _setTitleandShowButtonBack(-1, "", DisplayButtonHome.show);
+                getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_36dp);
+                break;
             default:
                 _setTitleandShowButtonBack(R.string.title_screen_message, null, DisplayButtonHome.hide);
         }
@@ -555,6 +563,8 @@ public class HomeActivity extends AppCompatActivity implements
                     //back to tab attender
                     _gotoPage(LaoSchoolShared.POSITION_SCREEN_MORE_4);
                 }
+            } else if (currentPage == LaoSchoolShared.POSITION_SCREEN_CREATE_ANNOUNCEMENT_16) {
+                _gotoPage(LaoSchoolShared.POSITION_SCREEN_ANNOUNCEMENTS_1);
             } else {
                 //back to tab information
                 _gotoPage(LaoSchoolShared.POSITION_SCREEN_MORE_4);
@@ -656,7 +666,7 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void gotoScreenAnnouncementDetails() {
+    public void gotoScreenAnnouncementDetails(Message notificaiton) {
         _gotoPage(LaoSchoolShared.POSITION_SCREEN_ANNOUNCEMENT_DETAILS_15);
     }
 
@@ -688,6 +698,11 @@ public class HomeActivity extends AppCompatActivity implements
         SharedPreferences.Editor editor = mySPrefs.edit();
         editor.remove("auth_key");
         editor.apply();
+
+        //clear cache data
+        DataAccessMessage.deleteTable();
+        DataAccessImage.deleteTable();
+
         //
         Intent intent = new Intent(this, ScreenLogin.class);
         startActivity(intent);
@@ -753,5 +768,19 @@ public class HomeActivity extends AppCompatActivity implements
         Intent intent = new Intent(this, ScreenLogin.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void _gotoCreateAnnouncement() {
+        _gotoPage(LaoSchoolShared.POSITION_SCREEN_CREATE_ANNOUNCEMENT_16);
+    }
+
+    @Override
+    public void _goBackAnnocements() {
+        onBackPressed();
+    }
+
+    public void logout(View view) {
+        logoutApplication();
     }
 }

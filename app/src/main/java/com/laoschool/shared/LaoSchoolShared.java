@@ -4,17 +4,18 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.internal.view.ContextThemeWrapper;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TabHost;
@@ -22,6 +23,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.laoschool.R;
+import com.laoschool.entities.Image;
+import com.laoschool.entities.Message;
 import com.laoschool.entities.User;
 
 
@@ -41,11 +44,14 @@ import javax.crypto.CipherOutputStream;
  */
 public class LaoSchoolShared {
 
+    public static final int SELECT_PHOTO = 100;
+    public static final int SELECT_CAMERA = 101;
     public static User myProfile;
     public static final String SHARED_PREFERENCES_TAG = "com.laoshcool.app";
     public static final String KEY_STORE_ALIAS = "LAOSCHOOL_KEY";
 
     public static final String CONTAINER_ID = "container_id";
+    public static final String CURRENT_ROLE = "current_role";
     public static final int POSITION_SCREEN_MESSAGE_0 = 0;
     public static final int POSITION_SCREEN_ANNOUNCEMENTS_1 = 1;
     public static final int POSITION_SCREEN_EXAM_RESULTS_2 = 2;
@@ -64,6 +70,7 @@ public class LaoSchoolShared {
     public static final int POSITION_SCREEN_PROFILE_13 = 13;
     public static final int POSITION_SCREEN_MESSAGE_DETAILS_14 = 14;
     public static final int POSITION_SCREEN_ANNOUNCEMENT_DETAILS_15 = 15;
+    public static final int POSITION_SCREEN_CREATE_ANNOUNCEMENT_16 = 16;
 
     public static final String ROLE_TEARCHER = "TEACHER";
     public static final String ROLE_STUDENT = "STUDENT";
@@ -144,7 +151,7 @@ public class LaoSchoolShared {
         }
     }
 
-    public static void showDialogConnectionInternetFails(Context context){
+    public static void showDialogConnectionInternetFails(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Connection error");
 
@@ -175,7 +182,7 @@ public class LaoSchoolShared {
             cipherOutputStream.write(plainText.getBytes("UTF-8"));
             cipherOutputStream.close();
 
-            byte [] vals = outputStream.toByteArray();
+            byte[] vals = outputStream.toByteArray();
             return (Base64.encodeToString(vals, Base64.DEFAULT));
         } catch (Exception e) {
             Log.e(TAG, Log.getStackTraceString(e));
@@ -194,11 +201,11 @@ public class LaoSchoolShared {
             ArrayList<Byte> values = new ArrayList<>();
             int nextByte;
             while ((nextByte = cipherInputStream.read()) != -1) {
-                values.add((byte)nextByte);
+                values.add((byte) nextByte);
             }
 
             byte[] bytes = new byte[values.size()];
-            for(int i = 0; i < bytes.length; i++) {
+            for (int i = 0; i < bytes.length; i++) {
                 bytes[i] = values.get(i).byteValue();
             }
 
@@ -210,4 +217,72 @@ public class LaoSchoolShared {
         }
     }
 
+    public static Message parseMessageFormSql(Cursor cursor) {
+        Message message = new Message();
+
+        message.setId(cursor.getInt(Message.MessageColumns.COLUMN_NAME_ID_INDEX_0));
+
+        message.setSchool_id(cursor.getInt(Message.MessageColumns.COLUMN_NAME_SCHOOL_ID_INDEX_1));
+        message.setClass_id(cursor.getInt(Message.MessageColumns.COLUMN_NAME_CLASS_ID_INDEX_2));
+        message.setFrom_usr_id(cursor.getInt(Message.MessageColumns.COLUMN_NAME_FROM_USR_ID_INDEX_3));
+        message.setFrom_user_name(cursor.getString(Message.MessageColumns.COLUMN_NAME_FROM_USER_NAME_INDEX_4));
+        message.setTo_usr_id(cursor.getInt(Message.MessageColumns.COLUMN_NAME_TO_USR_ID_INDEX_5));
+        message.setTo_user_name(cursor.getString(Message.MessageColumns.COLUMN_NAME_TO_USER_NAME_INDEX_6));
+        message.setContent(cursor.getString(Message.MessageColumns.COLUMN_NAME_CONTENT_INDEX_7));
+        message.setMsg_type_id(cursor.getInt(Message.MessageColumns.COLUMN_NAME_MSG_TYPE_ID_INDEX_8));
+        message.setChannel(cursor.getInt(Message.MessageColumns.COLUMN_NAME_CHANNEL_INDEX_9));
+        message.setIs_sent(cursor.getInt(Message.MessageColumns.COLUMN_NAME_IS_SENT_INDEX_10));
+        message.setIs_read(cursor.getInt(Message.MessageColumns.COLUMN_NAME_IS_READ_INDEX_12));
+        message.setSent_dt(cursor.getString(Message.MessageColumns.COLUMN_NAME_SENT_DT_INDEX_11));
+
+        message.setRead_dt(cursor.getString(Message.MessageColumns.COLUMN_NAME_READ_DT_INDEX_13));
+
+        message.setImp_flg(cursor.getInt(Message.MessageColumns.COLUMN_NAME_IMP_FLG_INDEX_14));
+        message.setOther(cursor.getString(Message.MessageColumns.COLUMN_NAME_OTHER_INDEX_16));
+        message.setTitle(cursor.getString(Message.MessageColumns.COLUMN_NAME_TITLE_INDEX_15));
+        message.setCc_list(cursor.getString(Message.MessageColumns.COLUMN_NAME_CC_LIST_INDEX_17));
+        message.setSchoolName(cursor.getString(Message.MessageColumns.COLUMN_NAME_SCHOOL_NAME_INDEX_18));
+        message.setMessageType(cursor.getString(Message.MessageColumns.COLUMN_NAME_MESSAGE_TYPE_INDEX_19));
+        message.setClienId(cursor.getInt(Message.MessageColumns.COLUMN_NAME_CLIENT_ID_INDEX_20));
+        message.setType(cursor.getInt(Message.MessageColumns.COLUMN_NAME_TYPE_INDEX_21));
+        message.setTask_id(cursor.getInt(Message.MessageColumns.COLUMN_NAME_TASK_ID_INDEX_22));
+        message.setFrm_user_photo(cursor.getString(Message.MessageColumns.COLUMN_NAME_FRM_USER_PHOTO_INDEX_23));
+        //message.setFile_url(cursor.getString(Message.MessageColumns.COLUMN_NAME_FILE_URL_INDEX_22));
+        //Log.d(TAG,message.toString());
+        return message;
+    }
+
+    public static String getPath(Context context,Uri uri) {
+        // just some safety built in
+        if (uri == null) {
+            // TODO perform some logging or show user feedback
+            return null;
+        }
+        // try to retrieve the image from the media store first
+        // this will only work for images selected from gallery
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
+        if (cursor != null) {
+            int column_index = cursor
+                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        }
+        // this is our fallback here
+        return uri.getPath();
+    }
+
+    public static Image parseImageFormSql(Cursor cursor) {
+        Image image=new Image();
+        image.setId(cursor.getInt(Image.ImageColumns.COLUMN_NAME_ID_INDEX_0));
+        image.setNotify_id(cursor.getInt(Image.ImageColumns.COLUMN_NAME_NOTIFY_ID_INDEX_1));
+        image.setUser_id(cursor.getInt(Image.ImageColumns.COLUMN_NAME_USER_ID_INDEX_2));
+        image.setUpload_dt(cursor.getString(Image.ImageColumns.COLUMN_NAME_UPLOAD_DT_INDEX_3));
+        image.setFile_name(cursor.getString(Image.ImageColumns.COLUMN_NAME_FILE_NAME_INDEX_4));
+        image.setFile_path(cursor.getString(Image.ImageColumns.COLUMN_NAME_FILE_PATH_INDEX_5));
+        image.setFile_url(cursor.getString(Image.ImageColumns.COLUMN_NAME_FILE_URL_INDEX_6));
+        image.setCaption(cursor.getString(Image.ImageColumns.COLUMN_NAME_CAPTION_INDEX_7));
+        image.setLocal_file_url(cursor.getString(Image.ImageColumns.COLUMN_NAME_LOCAL_FILE_URL_INDEX_8));
+        return image;
+    }
 }

@@ -90,7 +90,10 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return _defineScreenExamResultsbyRole(inflater, container);
+        if (currentRole == null)
+            return inflater.inflate(R.layout.screen_error_application, container, false);
+        else
+            return _defineScreenExamResultsbyRole(inflater, container);
     }
 
     @Override
@@ -161,7 +164,6 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
         // Attach the view pager to the tab strip
         tabsStrip.setViewPager(mViewPageScreenExamResultsStudent);
-
 
 
         return view;

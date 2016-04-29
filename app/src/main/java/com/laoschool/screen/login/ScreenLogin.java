@@ -62,14 +62,6 @@ public class ScreenLogin extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-    public void goToHomeScreen() {
-        Intent intent = new Intent(this, HomeActivity.class);
-        intent.setAction(LaoSchoolShared.ROLE_STUDENT);
-        startActivity(intent);
-        finish();
-
-    }
-
     public void switchToScreenFogotPassword() {
         ScreenFogotPassword screenFogotPassword = new ScreenFogotPassword();
         screenFogotPassword.setContainer(this);

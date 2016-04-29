@@ -20,6 +20,7 @@ import com.laoschool.view.FragmentLifecycle;
  */
 public class ScreenAttended extends Fragment implements FragmentLifecycle {
     int containerId;
+    private String currentRole;
 
     public ScreenAttended() {
         // Required empty public constructor
@@ -34,15 +35,19 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.screen_attenden, container, false);
-        view.findViewById(R.id.btnCreateMessge).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                iScreenAttended.gotoCreateMessageFormScreenAttended();
-            }
-        });
-        return view;
+        if (currentRole == null)
+            return inflater.inflate(R.layout.screen_error_application, container, false);
+        else {
+            // Inflate the layout for this fragment
+            View view = inflater.inflate(R.layout.screen_attenden, container, false);
+            view.findViewById(R.id.btnCreateMessge).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    iScreenAttended.gotoCreateMessageFormScreenAttended();
+                }
+            });
+            return view;
+        }
     }
 
     @Override
@@ -51,6 +56,7 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
         setHasOptionsMenu(true);
         if (getArguments() != null) {
             containerId = getArguments().getInt(LaoSchoolShared.CONTAINER_ID);
+            currentRole = getArguments().getString(LaoSchoolShared.CURRENT_ROLE);
             Log.d(getString(R.string.title_screen_attended), "-Container Id:" + containerId);
         }
     }
@@ -64,6 +70,7 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
         ScreenAttended fragment = new ScreenAttended();
         Bundle args = new Bundle();
         args.putInt(LaoSchoolShared.CONTAINER_ID, containerId);
+        args.putString(LaoSchoolShared.CURRENT_ROLE, currentRole);
         fragment.setArguments(args);
         return fragment;
     }
@@ -81,6 +88,6 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        iScreenAttended= (IScreenAttended) activity;
+        iScreenAttended = (IScreenAttended) activity;
     }
 }

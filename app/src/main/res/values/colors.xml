@@ -34,4 +34,8 @@
     <color name="colorWhite">@android:color/white</color>
     <color name="colorStar">#FFD54F</color>
 
+    <color name="black_overlay">#66000000</color>
+
+    <color name="color_bg_un_read">#FFF9C4</color>
+    <color name="color_bg_read">#eee</color>
 </resources>

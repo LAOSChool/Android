@@ -168,4 +168,23 @@ public class Class {
         Class aclass = gson.fromJson(jsonString, Class.class);
         return aclass;
     }
+
+    @Override
+    public String toString() {
+        return "Class{" +
+                "id=" + id +
+                ", school_id=" + school_id +
+                ", title='" + title + '\'' +
+                ", location='" + location + '\'' +
+                ", term=" + term +
+                ", years='" + years + '\'' +
+                ", start_dt='" + start_dt + '\'' +
+                ", end_dt='" + end_dt + '\'' +
+                ", class_type=" + class_type +
+                ", grade_type=" + grade_type +
+                ", fee=" + fee +
+                ", sts=" + sts +
+                ", head_teacher_id=" + head_teacher_id +
+                '}';
+    }
 }

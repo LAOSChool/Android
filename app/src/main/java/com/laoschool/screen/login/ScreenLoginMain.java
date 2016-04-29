@@ -89,15 +89,25 @@ public class ScreenLoginMain extends Fragment {
 
 //      btnFogetPass.setPaintFlags(btnFogetPass.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 //      btnFogetPass.setText("Forgot password?");
+        SharedPreferences prefs = this.getActivity().getSharedPreferences(
+                LaoSchoolShared.SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
+        String userName = prefs.getString("userName", null);
+        if (userName != null)
+            txbUserName.setText(userName);
 
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String userName = txbUserName.getText().toString();
+                final String userName = txbUserName.getText().toString();
                 String password = txbPassword.getText().toString();
                 service.login(userName, password, new AsyncCallback<String>() {
                     @Override
                     public void onSuccess(String result) {
+
                         goToHomeScreen();
+                        //save last username
+                        SharedPreferences prefs = thiz.getActivity().getSharedPreferences(
+                                LaoSchoolShared.SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
+                        prefs.edit().putString("userName", userName).apply();
                     }
 
                     @Override
@@ -119,7 +129,7 @@ public class ScreenLoginMain extends Fragment {
 
         btnQuestion.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                InputMethodManager imm = (InputMethodManager)thiz.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) thiz.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 goToHelpScreen();
             }
@@ -168,25 +178,6 @@ public class ScreenLoginMain extends Fragment {
         return view;
     }
 
-    protected void autoLogin() {
-        service.login("tranan", "1234567890", new AsyncCallback<String>() {
-            @Override
-            public void onSuccess(String result) {
-                goToHomeScreen();
-            }
-
-            @Override
-            public void onFailure(String message) {
-                goToHomeScreen();
-                System.out.println(message);
-                if (message.contains("TimeoutError"))
-                    Toast.makeText(thiz.getActivity(), "No internet connection", Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(thiz.getActivity(), "Wrong username or password", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
     public void goToForgetPassScreen() {
         container.switchToScreenFogotPassword();
     }
@@ -197,7 +188,6 @@ public class ScreenLoginMain extends Fragment {
 
     public void goToHomeScreen() {
         Intent intent = new Intent(this.getActivity(), HomeActivity.class);
-        intent.setAction(LaoSchoolShared.ROLE_STUDENT);
         startActivity(intent);
         this.getActivity().finish();
     }

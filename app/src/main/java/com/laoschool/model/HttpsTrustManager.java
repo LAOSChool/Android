@@ -48,6 +48,7 @@ public class HttpsTrustManager implements X509TrustManager {
     }
 
     public static void allowAllSSL() {
+
         HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
 
             @Override
