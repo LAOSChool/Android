@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.laoschool.entities.Image;
 import com.laoschool.entities.Message;
 
 /**
@@ -26,8 +27,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.d("", "onCreate table:" + Message.MessageColumns.CREATE_MESSAGES_TABLE);
+        //Log.d("", "onCreate table:" + Message.MessageColumns.CREATE_MESSAGES_TABLE);
         db.execSQL(Message.MessageColumns.CREATE_MESSAGES_TABLE);
+        db.execSQL(Image.ImageColumns.CREATE_IMAGE_TABLE);
 
     }
 
@@ -35,6 +37,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + Message.MessageColumns.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + Image.ImageColumns.TABLE_NAME);
         // Create tables again
         onCreate(db);
 

@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -70,7 +71,7 @@ public class ScreenFogotPassword extends Fragment {
         final EditText txbPhoneNumber = (EditText) view.findViewById(R.id.txbPhoneNumber);
         final ScrollView scrollView = (ScrollView) view.findViewById(R.id.scrollView);
         final LinearLayout textbBox = (LinearLayout) view.findViewById(R.id.textBox);
-
+        txbPhoneNumber.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_CLASS_PHONE);
         this.scrollView = scrollView;
 
         btnBack.setOnClickListener(new View.OnClickListener() {
@@ -151,7 +152,7 @@ public class ScreenFogotPassword extends Fragment {
         return view;
     }
 
-    private void sendScroll(){
+    private void sendScroll() {
         final Handler handler = new Handler();
         new Thread(new Runnable() {
             @Override

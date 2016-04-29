@@ -24,7 +24,7 @@
     <string name="hello_blank_fragment">Hello</string>
     <string name="tite_screen_login_help">Login help</string>
     <string name="title_screen_forgot_pasword">Forgot password</string>
-    <string name="title_screen_announcement_details">Announcement details</string>
+    <string name="title_screen_announcement_details"></string>
     <string name="title_screen_message_details"></string>
     <string name="action_log_out">Logout</string>
     <string name="row_line" translatable="false">line</string>
@@ -47,6 +47,11 @@
     <string name="err_msg_network_disconnect">Network disconnect</string>
     <string name="hint_input_messsage">Write a message</string>
     <string name="action_view_profile">View Profile</string>
+    <string name="action_create_announcement">Create annocemnet</string>
+    <string name="action_send_announcement">Send</string>
+    <string name="action_attach_file">Acttach file</string>
+    <string name="annocement_title_to">To</string>
+    <string name="err_msg_limit_img_seleted">Limit 5 image</string>
 
 
     <string-array name="more_teacher">
@@ -81,4 +86,15 @@
     <string-array name="settings">
         <item>@string/setting_change_language</item>
     </string-array>
+
+    <string name="title_activity_preview_image"></string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="err_msg_download_image_fails">Download file image fails</string>
+    <string name="msg_download_image_sucessfuly">Save image</string>
+    <string name="hint_write_caption_message">Write caption image</string>
+    <string name="msg_confirm_sent_notication">Send notifications to</string>
+    <string name="btn_ok">Ok</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="msg_create_process">Create...</string>
 </resources>

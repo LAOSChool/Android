@@ -1,6 +1,7 @@
 package com.laoschool.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,13 +13,17 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
+import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.entities.Message;
 import com.laoschool.listener.OnLoadMoreListener;
-import com.laoschool.model.DataAccessInterface;
-import com.laoschool.model.sqlite.CRUDMessage;
+import com.laoschool.model.AsyncCallback;
+import com.laoschool.model.sqlite.DataAccessMessage;
 import com.laoschool.screen.ScreenMessage;
 import com.laoschool.shared.LaoSchoolShared;
+import com.laoschool.tools.CustomNetworkImageView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -30,10 +35,10 @@ import java.util.List;
  */
 public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = "Adp_ListMessage";
+    private final int positionPage;
     List<Message> messageList;
     ScreenMessage screenMessage;
     private Context context;
-    private CRUDMessage crudMessage;
 
     private final int VIEW_TYPE_ITEM = 0;
     private final int VIEW_TYPE_LOADING = 1;
@@ -43,6 +48,7 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private int visibleThreshold = 5;
     private int lastVisibleItem, totalItemCount;
     private RecyclerView mRecyclerView;
+    private DataAccessMessage dataAccessMessage;
 
     public void setOnLoadMoreListener(OnLoadMoreListener mOnLoadMoreListener) {
         this.mOnLoadMoreListener = mOnLoadMoreListener;
@@ -52,12 +58,12 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return messageList;
     }
 
-    public ListMessageAdapter(RecyclerView mRecyclerView, ScreenMessage screenMessage, List<Message> messageList) {
+    public ListMessageAdapter(RecyclerView mRecyclerView, ScreenMessage screenMessage, List<Message> messageList, int positionPage) {
         this.messageList = messageList;
         this.screenMessage = screenMessage;
         this.context = screenMessage.getActivity();
-        this.crudMessage = new CRUDMessage(context);
         this.mRecyclerView = mRecyclerView;
+        this.positionPage = positionPage;
         _handelerScrollList();
 
     }
@@ -98,7 +104,7 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         try {
             if (holder instanceof ListMessageAdapterViewHolder) {
                 ListMessageAdapterViewHolder listHolder = (ListMessageAdapterViewHolder) holder;
@@ -108,11 +114,12 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 TextView txbContent = ((TextView) view.findViewById(R.id.txbContent));
                 final TextView txbSender = ((TextView) view.findViewById(R.id.txbSender));
                 final TextView txtDateSend = ((TextView) view.findViewById(R.id.txtDateSend));
-                final ImageView imgUserAvata = (ImageView) view.findViewById(R.id.imgUserAvata);
+                final NetworkImageView imgUserAvata = (NetworkImageView) view.findViewById(R.id.imgUserAvata);
                 final ImageView imgFlagMessage = (ImageView) view.findViewById(R.id.imgFlagMessage);
 
 
                 if (LaoSchoolShared.myProfile != null) {
+
                     if (LaoSchoolShared.myProfile.getId() == message.getFrom_usr_id()) {
                         txbSender.setText("from: me");
                         txbSender.setTextColor(
@@ -123,7 +130,9 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                                 context.getResources().getColor(R.color.colorDefault));
                         txbSender.setTypeface(null, Typeface.NORMAL);
                         txbTitle.setTypeface(null, Typeface.NORMAL);
-                        imgUserAvata.setColorFilter(context.getResources().getColor(R.color.color_messsage_read));
+//                        imgUserAvata.setColorFilter(context.getResources().getColor(R.color.color_messsage_read));
+                        view.setBackgroundColor(
+                                context.getResources().getColor(R.color.color_bg_read));
                     } else {
                         txbSender.setText("from: " + message.getFrom_user_name());
 
@@ -139,10 +148,22 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
                         txbSender.setTypeface(null, (message.getIs_read() == 0) ? Typeface.NORMAL : Typeface.NORMAL);
                         txbTitle.setTypeface(null, (message.getIs_read() == 0) ? Typeface.NORMAL : Typeface.NORMAL);
-                        imgUserAvata.setColorFilter((message.getIs_read() == 0) ?
-                                context.getResources().getColor(R.color.color_messsage_send_date_not_read) :
-                                context.getResources().getColor(R.color.color_messsage_read));
+//                        imgUserAvata.setColorFilter((message.getIs_read() == 0) ?
+//                                context.getResources().getColor(R.color.color_messsage_send_date_not_read) :
+//                                context.getResources().getColor(R.color.color_messsage_read));
+                        view.setBackgroundColor((message.getIs_read() == 0) ?
+                                context.getResources().getColor(R.color.color_bg_un_read) :
+                                context.getResources().getColor(R.color.color_bg_read));
                     }
+                    if (message.getFrm_user_photo() != null) {
+                        LaoSchoolSingleton.getInstance().getImageLoader().get(message.getFrm_user_photo(), ImageLoader.getImageListener(imgUserAvata,
+                                R.drawable.ic_account_circle_black_36dp, android.R.drawable
+                                        .ic_dialog_alert));
+                        imgUserAvata.setImageUrl(message.getFrm_user_photo(), LaoSchoolSingleton.getInstance().getImageLoader());
+                    } else {
+                        imgUserAvata.setDefaultImageResId(R.drawable.ic_account_circle_black_36dp);
+                    }
+//
                     txbContent.setText(message.getContent());
                     txbTitle.setText(message.getTitle());
                     DateFormat outputFormatter1 = new SimpleDateFormat("dd-MMM");
@@ -171,9 +192,16 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         if (message.getIs_read() == 0) {
                             //Update is read
                             message.setIs_read(1);
-                            crudMessage.updateMessage(message);
+                            dataAccessMessage.updateMessage(message);
+                            _updateStatusMessageToServer(message);
                         }
-                        Log.d(TAG, "id:" + message.getId());
+                        Log.d(TAG, "Page:" + positionPage);
+                        if (positionPage == 1) {
+                            messageList.remove(position);
+                        }
+                        notifyDataSetChanged();
+
+
                     }
                 });
             } else if (holder instanceof LoadingViewHolder) {
@@ -186,6 +214,20 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             e.printStackTrace();
         }
 
+    }
+
+    private void _updateStatusMessageToServer(Message message) {
+        LaoSchoolSingleton.getInstance().getDataAccessService().updateMessage(message, new AsyncCallback<Message>() {
+            @Override
+            public void onSuccess(Message result) {
+                Log.d(TAG, "_updateStatusMessageToServer() onSuccess():" + result.getId());
+            }
+
+            @Override
+            public void onFailure(String message) {
+                Log.e(TAG, "_updateStatusMessageToServer() onFailure():" + message);
+            }
+        });
     }
 
     @Override

@@ -4,7 +4,6 @@ package com.laoschool.screen;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -21,18 +20,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
+import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.adapter.RecyclerViewConversionMessageAdapter;
 import com.laoschool.entities.Message;
 import com.laoschool.model.AsyncCallback;
 import com.laoschool.model.DataAccessImpl;
 import com.laoschool.model.DataAccessInterface;
-import com.laoschool.model.sqlite.CRUDMessage;
+import com.laoschool.model.sqlite.DataAccessMessage;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -51,13 +52,13 @@ public class ScreenMessageDetails extends Fragment implements FragmentLifecycle 
     private TextView txtFormUserNameMessageDetails;
     private TextView txtToUserNameMessageDetails;
     private ImageView imgPiorityMessageDetails;
-    private ImageView imgUserSentMessageAvata;
+    private NetworkImageView imgUserSentMessageAvata;
 
 
     private RecyclerView mRecylerViewConversionMessage;
     private Context context;
     private DataAccessInterface service;
-    private CRUDMessage crudMessage;
+    private DataAccessMessage dataAccessMessage;
 
 
     EditText txtConversionMessage;
@@ -80,7 +81,6 @@ public class ScreenMessageDetails extends Fragment implements FragmentLifecycle 
         }
         this.context = getActivity();
         this.service = DataAccessImpl.getInstance(context);
-        this.crudMessage = new CRUDMessage(context);
     }
 
     @Override
@@ -94,7 +94,7 @@ public class ScreenMessageDetails extends Fragment implements FragmentLifecycle 
         txtFormUserNameMessageDetails = (TextView) view.findViewById(R.id.txtFormUserNameMessageDetails);
         txtToUserNameMessageDetails = (TextView) view.findViewById(R.id.txtToUserNameMessageDetails);
         imgPiorityMessageDetails = (ImageView) view.findViewById(R.id.imgPiorityMessageDetails);
-        imgUserSentMessageAvata = (ImageView) view.findViewById(R.id.imgUserSentMessageAvata);
+        imgUserSentMessageAvata = (NetworkImageView) view.findViewById(R.id.imgUserSentMessageAvata);
 
         //init Conversion list
         mRecylerViewConversionMessage = (RecyclerView) view.findViewById(R.id.mRecylerViewConversionMessage);
@@ -174,13 +174,22 @@ public class ScreenMessageDetails extends Fragment implements FragmentLifecycle 
                 imgPiorityMessageDetails.setColorFilter(message.getImp_flg() == 1 ?
                         screenMessage.getActivity().getResources().getColor(R.color.colorDefault)
                         : screenMessage.getActivity().getResources().getColor(R.color.colorStar));
-                imgUserSentMessageAvata.setColorFilter(screenMessage.getActivity().getResources().getColor(R.color.color_messsage_tilte_not_read));
+                // imgUserSentMessageAvata.setColorFilter(screenMessage.getActivity().getResources().getColor(R.color.color_messsage_tilte_not_read));
+
+                if (message.getFrm_user_photo() != null) {
+                    LaoSchoolSingleton.getInstance().getImageLoader().get(message.getFrm_user_photo(), ImageLoader.getImageListener(imgUserSentMessageAvata,
+                            R.drawable.ic_account_circle_black_36dp, android.R.drawable
+                                    .ic_dialog_alert));
+                    imgUserSentMessageAvata.setImageUrl(message.getFrm_user_photo(), LaoSchoolSingleton.getInstance().getImageLoader());
+                } else {
+                    imgUserSentMessageAvata.setDefaultImageResId(R.drawable.ic_account_circle_black_36dp);
+                }
 
                 txtFormUserNameMessageDetails.setText(message.getFrom_user_name());
                 txtToUserNameMessageDetails.setText("to " + message.getTo_user_name());
 
                 //set Adaper
-//            List<Message> messages=crudMessage.getAllMessages();
+//            List<Message> messages=dataAccessMessage.getAllMessages();
 //            _setConversionMessages(messages);
                 service.getMessages("", "", "", "", "", "", "", "", new AsyncCallback<List<Message>>() {
                     @Override
@@ -277,7 +286,7 @@ public class ScreenMessageDetails extends Fragment implements FragmentLifecycle 
                         public void onSuccess(Message result) {
                             Log.d(TAG, "Message results:" + result.toJson());
                             // save local
-                            crudMessage.addMessage(result);
+                            dataAccessMessage.addMessage(result);
                             _resetForm();
                             //Reload conversion
                             _refeshData();
@@ -307,7 +316,7 @@ public class ScreenMessageDetails extends Fragment implements FragmentLifecycle 
 
     private void _refeshData() {
         //set Adaper
-//        List<Message> messages = crudMessage.getAllMessages();
+//        List<Message> messages = dataAccessMessage.getAllMessages();
 //        _setConversionMessages(messages);
         service.getMessages("", "", "", "", "", "", "", "", new AsyncCallback<List<Message>>() {
             @Override

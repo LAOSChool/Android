@@ -5,14 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Handler;
+import android.support.v4.util.LruCache;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.entities.User;
 import com.laoschool.model.AsyncCallback;
@@ -50,13 +54,9 @@ import javax.crypto.SecretKey;
 
 public class SplashScreen extends AppCompatActivity {
 
-    private static final long SPLASH_TIME_OUT = 1000;
-    private DataAccessInterface service;
-    private SplashScreen thiz;
-    private KeyStore keyStore;
-
+    private static final long SPLASH_TIME_OUT = 2000;
     public final String TAG = "SplashScreen";
-
+    SplashScreen thiz;
 //    private void unLockCredentialStorage() {
 //        try {
 //            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
@@ -69,7 +69,7 @@ public class SplashScreen extends AppCompatActivity {
 //        }
 //    }
 
-    public X509Certificate generateCertificate(KeyPair keyPair){
+    public X509Certificate generateCertificate(KeyPair keyPair) {
         try {
             Calendar start = Calendar.getInstance();
             Calendar end = Calendar.getInstance();
@@ -99,20 +99,20 @@ public class SplashScreen extends AppCompatActivity {
 
     private void createNewKey() {
         try {
-            keyStore = KeyStore.getInstance("AndroidKeyStore");
+            KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
             keyStore.load(null);
-            if(!keyStore.containsAlias(LaoSchoolShared.KEY_STORE_ALIAS)) {
+            if (!keyStore.containsAlias(LaoSchoolShared.KEY_STORE_ALIAS)) {
                 KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
                 kpg.initialize(1024);
                 KeyPair kp = kpg.genKeyPair();
                 X509Certificate certificate = generateCertificate(kp);
                 Certificate[] certChain = new Certificate[1];
                 certChain[0] = certificate;
-                keyStore.setKeyEntry(LaoSchoolShared.KEY_STORE_ALIAS, (Key)kp.getPrivate(), null, certChain);
+                keyStore.setKeyEntry(LaoSchoolShared.KEY_STORE_ALIAS, (Key) kp.getPrivate(), null, certChain);
             }
         } catch (KeyStoreException e) {
             e.printStackTrace();
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
@@ -125,10 +125,8 @@ public class SplashScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_screen);
-
-        service = DataAccessImpl.getInstance(this.getApplicationContext());
-        createNewKey();
-
+//
+//
         new Handler().postDelayed(new Runnable() {
             /*
              * Showing splash screen with a timer. This will be useful when you
@@ -136,6 +134,7 @@ public class SplashScreen extends AppCompatActivity {
              */
             @Override
             public void run() {
+                createNewKey();
                 checkAuth();
             }
         }, SPLASH_TIME_OUT);
@@ -146,11 +145,10 @@ public class SplashScreen extends AppCompatActivity {
                 LaoSchoolShared.SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
         String auth_key = prefs.getString("auth_key", null);
 
-        if(auth_key == null) {
+        if (auth_key == null) {
             startLogin();
-        }
-        else {
-           getUserProfile();
+        } else {
+            getUserProfile();
         }
     }
 
@@ -161,12 +159,11 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     private void getUserProfile() {
-        service.getUserProfile(new AsyncCallback<User>() {
+        LaoSchoolSingleton.getInstance().getDataAccessService().getUserProfile(new AsyncCallback<User>() {
             @Override
             public void onSuccess(User result) {
                 LaoSchoolShared.myProfile = result;
                 Intent intent = new Intent(SplashScreen.this, HomeActivity.class);
-                intent.setAction(result.getRoles());
                 startActivity(intent);
                 finish();
             }

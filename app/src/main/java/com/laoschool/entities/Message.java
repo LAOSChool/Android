@@ -4,11 +4,9 @@ import android.provider.BaseColumns;
 
 import com.google.gson.Gson;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -60,10 +58,18 @@ public class Message {
 
     int cId;
 
+    int type = 0;
+
+    List<Image> notifyImages;
+
+    int task_id;
+
+    String frm_user_photo;
+
     public Message() {
     }
 
-    public Message(int id, int school_id, int class_id, int from_usr_id, String from_user_name, int to_usr_id, String to_user_name, String content, int channel, int is_sent, String sent_dt, int is_read, String read_dt, String other, int msg_type_id, int imp_flg, String title, String schoolName, String messageType, String cc_list, int aId) {
+    public Message(int id, int school_id, int class_id, int from_usr_id, String from_user_name, int to_usr_id, String to_user_name, String content, int channel, int is_sent, String sent_dt, int is_read, String read_dt, String other, int msg_type_id, int imp_flg, String title, String schoolName, String messageType, String cc_list, int cId, int type, List<Image> notifyImages, int task_id, String frm_user_photo) {
         this.id = id;
         this.school_id = school_id;
         this.class_id = class_id;
@@ -84,7 +90,11 @@ public class Message {
         this.schoolName = schoolName;
         this.messageType = messageType;
         this.cc_list = cc_list;
-        this.cId = aId;
+        this.cId = cId;
+        this.type = type;
+        this.notifyImages = notifyImages;
+        this.task_id = task_id;
+        this.frm_user_photo = frm_user_photo;
     }
 
     public int getId() {
@@ -255,11 +265,44 @@ public class Message {
         this.cId = cId;
     }
 
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public List<Image> getNotifyImages() {
+        return notifyImages;
+    }
+
+    public void setNotifyImages(List<Image> notifyImages) {
+        this.notifyImages = notifyImages;
+    }
+
+    public int getTask_id() {
+        return task_id;
+    }
+
+    public void setTask_id(int task_id) {
+        this.task_id = task_id;
+    }
+
+    public String getFrm_user_photo() {
+        return frm_user_photo;
+    }
+
+    public void setFrm_user_photo(String frm_user_photo) {
+        this.frm_user_photo = frm_user_photo;
+    }
+
     public String toJson() {
         Gson gson = new Gson();
         String jsonString = gson.toJson(this);
         return jsonString;
     }
+
 
     public static Message fromJson(String jsonString) {
         Gson gson = new Gson();
@@ -267,11 +310,23 @@ public class Message {
         return message;
     }
 
-    public static Message parsefromJson(String jsonString) {
+    public static Message messageParsefromJson(String jsonString) {
         Message message = new Message();
         try {
             JSONObject mainObject = new JSONObject(jsonString);
             message = fromJson(mainObject.getJSONObject("messageObject").toString());
+            return message;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return message;
+        }
+    }
+
+    public static Message notificationParsefromJson(String jsonString) {
+        Message message = new Message();
+        try {
+            JSONObject mainObject = new JSONObject(jsonString);
+            message = fromJson(mainObject.getJSONObject("list").toString());
             return message;
         } catch (JSONException e) {
             e.printStackTrace();
@@ -314,6 +369,12 @@ public class Message {
         public static final String COLUMN_NAME_MESSAGE_TYPE = "messageType";
         public static final String COLUMN_NAME_CLIENT_ID = "cId";
 
+        public static final String COLUMN_NAME_TYPE = "type";
+        public static final String COLUMN_NAME_TASK_ID = "task_id";
+
+        public static final String COLUMN_NAME_FRM_USER_PHOTO = "frm_user_photo";
+
+
         public static final int COLUMN_NAME_ID_INDEX_0 = 0;
         public static final int COLUMN_NAME_SCHOOL_ID_INDEX_1 = 1;
         public static final int COLUMN_NAME_CLASS_ID_INDEX_2 = 2;
@@ -342,6 +403,11 @@ public class Message {
         public static final int COLUMN_NAME_SCHOOL_NAME_INDEX_18 = 18;
         public static final int COLUMN_NAME_MESSAGE_TYPE_INDEX_19 = 19;
         public static final int COLUMN_NAME_CLIENT_ID_INDEX_20 = 20;
+        public static final int COLUMN_NAME_TYPE_INDEX_21 = 21;
+        public static final int COLUMN_NAME_TASK_ID_INDEX_22 = 22;
+        public static final int COLUMN_NAME_FRM_USER_PHOTO_INDEX_23 = 23;
+
+        public static final int COLUMN_NAME_FILE_URL_INDEX_24 = 24;
 
 
         public static final String CREATE_MESSAGES_TABLE = "CREATE TABLE " + TABLE_NAME + "("
@@ -375,7 +441,10 @@ public class Message {
                 + COLUMN_NAME_SCHOOL_NAME + " TEXT,"//18
                 + COLUMN_NAME_MESSAGE_TYPE + " TEXT,"//19
 
-                + COLUMN_NAME_CLIENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT" //20
+                + COLUMN_NAME_CLIENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," //20
+                + COLUMN_NAME_TYPE + " INTEGER," //21
+                + COLUMN_NAME_TASK_ID + " INTEGER," //21
+                + COLUMN_NAME_FRM_USER_PHOTO + " TEXT" //21
                 + ")";
     }
 
@@ -383,15 +452,41 @@ public class Message {
     public String toString() {
         return "Message{" +
                 "id=" + id +
-                ", content='" + content + '\'' +
-                ", sent_dt='" + sent_dt + '\'' +
-                ", title='" + title + '\'' +
-                ", cId=" + cId +
+                ", school_id=" + school_id +
+                ", class_id=" + class_id +
                 ", from_usr_id=" + from_usr_id +
                 ", from_user_name='" + from_user_name + '\'' +
                 ", to_usr_id=" + to_usr_id +
                 ", to_user_name='" + to_user_name + '\'' +
-                ", is_read='" + is_read + '\'' +
+                ", content='" + content + '\'' +
+                ", channel=" + channel +
+                ", is_sent=" + is_sent +
+                ", sent_dt='" + sent_dt + '\'' +
+                ", is_read=" + is_read +
+                ", read_dt='" + read_dt + '\'' +
+                ", other='" + other + '\'' +
+                ", msg_type_id=" + msg_type_id +
+                ", imp_flg=" + imp_flg +
+                ", title='" + title + '\'' +
+                ", schoolName='" + schoolName + '\'' +
+                ", messageType='" + messageType + '\'' +
+                ", cc_list='" + cc_list + '\'' +
+                ", cId=" + cId +
+                ", type=" + type +
+                ", notifyImages=" + notifyImages +
                 '}';
     }
+
+    public String messageCreatetoString() {
+        return "Message{" +
+                "school_id=" + school_id +
+                ", class_id=" + class_id +
+                ", title='" + title +
+                ", content='" + content +
+                ", from_usr_id=" + from_usr_id +
+                ", to_usr_id=" + to_usr_id +
+                '}';
+    }
+
+
 }

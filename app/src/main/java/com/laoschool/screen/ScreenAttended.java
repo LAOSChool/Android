@@ -36,6 +36,7 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
     private DataAccessInterface service;
     private ScreenAttended thiz = this;
     int containerId;
+    private String currentRole;
 
     private List<Attendance> attendanceList = new ArrayList<>();
     PageFragment currentPage;
@@ -57,7 +58,7 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
             public void onSuccess(List<Attendance> result) {
                 ringProgressDialog.dismiss();
                 attendanceList.addAll(result);
-                if(currentPage != null)
+                if (currentPage != null)
                     currentPage.setData(attendanceList);
             }
 
@@ -76,9 +77,9 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            if(position == 0)
+            if (position == 0)
                 return "HK I";
-            else if(position == 1)
+            else if (position == 1)
                 return "HK II";
             else
                 return "Over Year";
@@ -94,7 +95,7 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
             if (position == 0) {
                 currentPage = PageFragment.newInstance(0);
                 return currentPage;
-            } else if(position == 1){
+            } else if (position == 1) {
                 currentPage = PageFragment.newInstance(1);
                 return currentPage;
             } else {
@@ -148,46 +149,64 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.screen_attendance, container, false);
+        if (currentRole == null)
+            return inflater.inflate(R.layout.screen_error_application, container, false);
+        else {
+//            // Inflate the layout for this fragment
+//            View view = inflater.inflate(R.layout.screen_attenden, container, false);
+//            view.findViewById(R.id.btnCreateMessge).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    iScreenAttended.gotoCreateMessageFormScreenAttended();
+//                }
+//            });
+//            return view;
+//        }
+
+            // Inflate the layout for this fragment
+            View view = inflater.inflate(R.layout.screen_attendance, container, false);
 //        view.findViewById(R.id.btnCreateMessge).setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
 //                iScreenAttended.gotoCreateMessageFormScreenAttended();
 //            }
 //        });
-        ViewPager vpPager = (ViewPager) view.findViewById(R.id.viewPage);
-        MyPagerAdapter adapterViewPager = new MyPagerAdapter(this.getActivity().getSupportFragmentManager());
-        vpPager.setAdapter(adapterViewPager);
+            ViewPager vpPager = (ViewPager) view.findViewById(R.id.viewPage);
+            MyPagerAdapter adapterViewPager = new MyPagerAdapter(this.getActivity().getSupportFragmentManager());
+            vpPager.setAdapter(adapterViewPager);
 
-        // Bind the tabs to the ViewPager
-        PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
-        tabs.setViewPager(vpPager);
-        return view;
+            // Bind the tabs to the ViewPager
+            PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
+            tabs.setViewPager(vpPager);
+            return view;
+
+        }
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-        service = DataAccessImpl.getInstance(this.getActivity());
-        if (getArguments() != null) {
-            containerId = getArguments().getInt(LaoSchoolShared.CONTAINER_ID);
-            Log.d(getString(R.string.title_screen_attended), "-Container Id:" + containerId);
+        @Override
+        public void onCreate (Bundle savedInstanceState){
+            super.onCreate(savedInstanceState);
+            setHasOptionsMenu(true);
+            service = DataAccessImpl.getInstance(this.getActivity());
+            if (getArguments() != null) {
+                containerId = getArguments().getInt(LaoSchoolShared.CONTAINER_ID);
+                currentRole = getArguments().getString(LaoSchoolShared.CURRENT_ROLE);
+                Log.d(getString(R.string.title_screen_attended), "-Container Id:" + containerId);
+            }
+
+            getAttendances();
         }
 
-        getAttendances();
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-    }
+        @Override
+        public void onCreateOptionsMenu (Menu menu, MenuInflater inflater){
+            super.onCreateOptionsMenu(menu, inflater);
+        }
 
     public static Fragment instantiate(int containerId, String currentRole) {
         ScreenAttended fragment = new ScreenAttended();
         Bundle args = new Bundle();
         args.putInt(LaoSchoolShared.CONTAINER_ID, containerId);
+        args.putString(LaoSchoolShared.CURRENT_ROLE, currentRole);
         fragment.setArguments(args);
         return fragment;
     }
@@ -205,6 +224,6 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        iScreenAttended= (IScreenAttended) activity;
+        iScreenAttended = (IScreenAttended) activity;
     }
 }

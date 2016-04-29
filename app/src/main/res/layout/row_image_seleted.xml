@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="8dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:background="#ffffff"
+    android:paddingBottom="8dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/imgImageSelected"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="#ffffff"
+            android:scaleType="fitXY" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/imgImageSelected"
+            android:layout_alignLeft="@+id/imgImageSelected"
+            android:layout_alignStart="@+id/imgImageSelected"
+            android:background="#eee"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/txtImageSelectedUrl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@+id/imgDownloadImage"
+                android:text="Url"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:singleLine="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+            <TextView
+                android:id="@+id/txtImageSelectedFileSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/txtImageSelectedUrl"
+                android:layout_alignStart="@+id/txtImageSelectedUrl"
+                android:layout_below="@+id/txtImageSelectedUrl"
+                android:layout_toStartOf="@+id/imgDownloadImage"
+                android:text="New Text"
+                android:textSize="12sp"
+                android:singleLine="true"
+                android:layout_alignRight="@+id/txtImageSelectedUrl"
+                android:layout_alignEnd="@+id/txtImageSelectedUrl" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#eee"
+        android:paddingRight="16dp"
+        android:paddingLeft="16dp">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtCaptionImage"
+            android:layout_gravity="center_horizontal"
+            android:hint="@string/hint_write_caption_message"
+            android:singleLine="true"
+            android:layout_toLeftOf="@+id/imgDownloadImage"
+            android:layout_toStartOf="@+id/imgDownloadImage"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:id="@+id/imgDownloadImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/abc_ic_clear_mtrl_alpha"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginLeft="16dp" />
+    </RelativeLayout>
+
+</LinearLayout>

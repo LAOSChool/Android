@@ -73,11 +73,17 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
     private View _defineScreenMorebyRole(LayoutInflater inflater, ViewGroup container) {
 //        boolean checkConn = LaoSchoolShared.checkConn(context);
 //        Log.d(TAG, "-checkConn:" + checkConn);
-        if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
-            return _defineSrceenMoreTeacher(inflater, container);
+        if (currentRole != null) {
+            if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
+                return _defineSrceenMoreTeacher(inflater, container);
+            } else {
+                return _defineSrceenMoreStudent(inflater, container);
+            }
         } else {
-            return _defineSrceenMoreStudent(inflater, container);
+            return inflater.inflate(R.layout.screen_error_application, container, false);
         }
+
+
 //        if (checkConn) {
 //        } else {
 //            return inflater.inflate(R.layout.view_connection_error, container, false);
@@ -181,32 +187,13 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
 
     @Override
     public void onPauseFragment() {
-        try {
-            boolean checkConn = LaoSchoolShared.checkConn(context);
-            Log.d(TAG, "onPauseFragment -checkConn:" + checkConn);
-            if (checkConn) {
-                Toast.makeText(context, "Connection ok!", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(context, "Connection fails!", Toast.LENGTH_SHORT).show();
-            }
-        } catch (Exception e) {
-            LaoSchoolShared.showErrorOccurred(context, "onResumeFragment", e);
-        }
+
+
     }
 
     @Override
     public void onResumeFragment() {
-        try {
-            boolean checkConn = LaoSchoolShared.checkConn(context);
-            Log.d(TAG, "onResumeFragment -checkConn:" + checkConn);
-            if (checkConn) {
-                Toast.makeText(context, "Connection ok!", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(context, "Connection fails!", Toast.LENGTH_SHORT).show();
-            }
-        } catch (Exception e) {
-            LaoSchoolShared.showErrorOccurred(context, "onResumeFragment", e);
-        }
+
     }
 
     public static Fragment instantiate(int containerId, String currentRole) {
@@ -216,6 +203,15 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
         args.putString(CURRENT_ROLE, currentRole);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (LaoSchoolShared.myProfile == null) {
+            HomeActivity homeActivity = (HomeActivity) getActivity();
+            homeActivity.logoutApplication();
+        }
     }
 
     @Override

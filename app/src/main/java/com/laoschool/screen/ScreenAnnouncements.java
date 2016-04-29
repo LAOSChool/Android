@@ -2,73 +2,249 @@ package com.laoschool.screen;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.astuetz.PagerSlidingTabStrip;
 import com.laoschool.R;
+import com.laoschool.LaoSchoolSingleton;
+import com.laoschool.adapter.ListMessageAdapter;
+import com.laoschool.adapter.ListNotificationAdapter;
+import com.laoschool.entities.Message;
+import com.laoschool.listener.OnLoadMoreListener;
+import com.laoschool.model.AsyncCallback;
+import com.laoschool.model.DataAccessInterface;
+import com.laoschool.model.sqlite.DataAccessNotification;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
+import com.laoschool.view.ViewpagerDisableSwipeLeft;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
-
-
+    private static final String TAG = "ScreenAnnouncements";
+    private static ScreenAnnouncements thiz;
     private int containerId;
-    private String announcementId;
+    private String currentRole = LaoSchoolShared.ROLE_STUDENT;
+    private Context context;
 
-    public interface IScreenAnnouncements {
-        void gotoScreenAnnouncementDetails();
+    private static DataAccessInterface service;
+    private static DataAccessNotification accessNotification;
+    private Message notification;
+
+    //Item for student
+    private RecyclerView mRecylerViewNotificationStudent;
+
+    //Item for teacher
+    ViewpagerDisableSwipeLeft viewPage;
+    PagerSlidingTabStrip tabs;
+
+    public Message getNotification() {
+        return notification;
     }
 
-    private IScreenAnnouncements iScreenAnnouncements;
+    public void setNotification(Message message) {
+        this.notification = message;
+    }
+
+    public interface IScreenAnnouncements {
+        void gotoScreenAnnouncementDetails(Message notificaiton);
+
+        void _gotoCreateAnnouncement();
+
+        void logoutApplication();
+    }
+
+    public IScreenAnnouncements iScreenAnnouncements;
 
     public ScreenAnnouncements() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            containerId = getArguments().getInt(LaoSchoolShared.CONTAINER_ID);
+            currentRole = getArguments().getString(LaoSchoolShared.CURRENT_ROLE);
+            Log.d(getString(R.string.title_screen_announcements), "-Container Id:" + containerId);
+            setHasOptionsMenu(true);
+        }
+        this.thiz = this;
+        this.context = getActivity();
+        this.service = LaoSchoolSingleton.getInstance().getDataAccessService();
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.screen_announcements, container, false);
-        view.findViewById(R.id.announcementdetails).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setAnnouncementId("1000");
-                iScreenAnnouncements.gotoScreenAnnouncementDetails();
-            }
-        });
+        if (currentRole == null)
+            return inflater.inflate(R.layout.screen_error_application, container, false);
+        else {
+            // Inflate the layout for this fragment
+            View view = inflater.inflate(R.layout.screen_announcements_student, container, false);
+//            if (currentRole.equals(LaoSchoolShared.ROLE_STUDENT))
+//                return _defineStudentView(view);
+//            else {
+            view = inflater.inflate(R.layout.screen_announcements_teacher, container, false);
+            return _defineTeacherView(view);
+            //}
+        }
+
+    }
+
+    private View _defineTeacherView(View view) {
+        // Bind the tabs to the ViewPager
+        tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
+
+        viewPage = (ViewpagerDisableSwipeLeft) view.findViewById(R.id.notificationViewPage);
+        NotificationPagerAdapter notificationPagerAdapter = new NotificationPagerAdapter(getFragmentManager());
+        viewPage.setAdapter(notificationPagerAdapter);
+        viewPage.setAllowedSwipeDirection(HomeActivity.SwipeDirection.none);
+        tabs.setViewPager(viewPage);
+
+        _handlerPageChange();
+
         return view;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-        if (getArguments() != null) {
-            containerId = getArguments().getInt(LaoSchoolShared.CONTAINER_ID);
-            Log.d(getString(R.string.title_screen_attended), "-Container Id:" + containerId);
-        }
+    private void _handlerPageChange() {
+        ViewPager.OnPageChangeListener onPageNotificationChangeListener = new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                NotificationList notifragment = ((NotificationPagerAdapter) (viewPage.getAdapter())).getFragment(position);
+                if (notifragment != null) {
+                    notifragment._getListMessageFormLocalData();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        };
+        viewPage.addOnPageChangeListener(onPageNotificationChangeListener);
     }
+
+    private View _defineStudentView(View view) {
+        mRecylerViewNotificationStudent = (RecyclerView) view.findViewById(R.id.mRecylerViewNotificationStudent);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+        mRecylerViewNotificationStudent.setLayoutManager(linearLayoutManager);
+        final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
+        //
+        int count = accessNotification.getNotificationCount();
+        Log.d(TAG, "notification count in local:" + count);
+        if (count > 0) {
+            getNotificationFormClientForStudent();
+        } else {
+            getNotificationFormServerForStudent();
+        }
+
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getNotificationFormServerForStudent();
+                // Refresh items
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
+        return view;
+    }
+
+    private void getNotificationFormClientForStudent() {
+        List<Message> messages = accessNotification.getListNotificationForUser(Message.MessageColumns.COLUMN_NAME_TO_USER_NAME, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
+        _setListNotificationForStudent(messages);
+
+    }
+
+    private void getNotificationFormServerForStudent() {
+        service.getNotification(new AsyncCallback<List<Message>>() {
+            @Override
+            public void onSuccess(List<Message> result) {
+                try {
+                    for (Message message : result) {
+                        accessNotification.addOrUpdateNotification(message);
+                    }
+                    List<Message> messages = accessNotification.getListNotificationForUser(Message.MessageColumns.COLUMN_NAME_TO_USER_NAME, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
+                    _setListNotificationForStudent(messages);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(String message) {
+
+            }
+        });
+    }
+
+    private void _setListNotificationForStudent(List<Message> messages) {
+        final ListNotificationAdapter listMessageAdapter = new ListNotificationAdapter(this, mRecylerViewNotificationStudent, 0, messages);
+        mRecylerViewNotificationStudent.setAdapter(listMessageAdapter);
+    }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+        if (currentRole != null)
+            if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER))
+                inflater.inflate(R.menu.menu_screen_announcement, menu);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (currentRole != null) {
+            if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
+                int id = item.getItemId();
+                switch (id) {
+                    case R.id.action_create_announcement:
+                        iScreenAnnouncements._gotoCreateAnnouncement();
+                        return true;
+                }
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public static Fragment instantiate(int containerId, String currentRole) {
         ScreenAnnouncements fragment = new ScreenAnnouncements();
         Bundle args = new Bundle();
         args.putInt(LaoSchoolShared.CONTAINER_ID, containerId);
+        args.putString(LaoSchoolShared.CURRENT_ROLE, currentRole);
         fragment.setArguments(args);
         return fragment;
     }
@@ -83,17 +259,266 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
 
     }
 
-    public String getAnnouncementId() {
-        return announcementId;
-    }
-
-    public void setAnnouncementId(String announcementId) {
-        this.announcementId = announcementId;
-    }
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         iScreenAnnouncements = (IScreenAnnouncements) activity;
+    }
+
+    public class NotificationPagerAdapter extends FragmentPagerAdapter {
+        private FragmentManager mFragmentManager;
+        private Map<Integer, String> mFragmentTags;
+
+
+        public NotificationPagerAdapter(FragmentManager fm) {
+            super(fm);
+            mFragmentManager = fm;
+            mFragmentTags = new HashMap<Integer, String>();
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            if (position == 0)
+                return "Inbox";
+            else
+                return "Unread";
+
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return NotificationList.newInstance(position);
+        }
+
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            Object obj = super.instantiateItem(container, position);
+            if (obj instanceof Fragment) {
+                // record the fragment tag here.
+                Fragment f = (Fragment) obj;
+                String tag = f.getTag();
+                mFragmentTags.put(position, tag);
+            }
+            return obj;
+        }
+
+        public NotificationList getFragment(int position) {
+            String tag = mFragmentTags.get(position);
+            if (tag == null)
+                return null;
+            return (NotificationList) mFragmentManager.findFragmentByTag(tag);
+        }
+    }
+
+    public static class NotificationList extends Fragment {
+        private static String ARG_POSITION = "position";
+        private int position;
+        private RecyclerView mRecyclerListMessage;
+        private Context context;
+        SwipeRefreshLayout mSwipeRefreshLayout;
+
+
+        public static NotificationList newInstance(int page) {
+            Bundle args = new Bundle();
+            args.putInt(ARG_POSITION, page);
+            NotificationList fragment = new NotificationList();
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            position = getArguments().getInt(ARG_POSITION);
+            this.context = getActivity();
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            View view = inflater.inflate(R.layout.view_message_list, container, false);
+            mRecyclerListMessage = (RecyclerView) view.findViewById(R.id.mRecyclerListMessage);
+            mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+            //set adapter
+            mRecyclerListMessage.setLayoutManager(linearLayoutManager);
+
+            _defineListNotification();
+
+            //
+            _handlerSwipeReload();
+
+
+            return view;
+        }
+
+        private void _handlerSwipeReload() {
+            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    //get max from id
+                    if (mRecyclerListMessage.getAdapter() != null) {
+                        try {
+                            ListNotificationAdapter listMessageAdapter = (ListNotificationAdapter) mRecyclerListMessage.getAdapter();
+                            int form_id = listMessageAdapter.getNotificationList().get(0).getId();
+                            _getListMessageFormServer(form_id);
+                        } catch (Exception e) {
+                            _getListMessageFormServer();
+                        }
+                    } else {
+                        _getListMessageFormServer();
+                    }
+                    // Refresh items
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
+            });
+        }
+
+        private void _defineListNotification() {
+            final ProgressDialog progressDialog = new ProgressDialog(context);
+            progressDialog.setMessage("Loading...");
+            progressDialog.show();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //Load message in local
+                    int countLocal = accessNotification.getNotificationCount();
+                    Log.d(TAG, "NotificationList:count notification in Local=" + countLocal);
+
+                    if (countLocal > 0) {
+                        _getListMessageFormLocalData();
+                    } else {
+                        _getListMessageFormServer();
+                    }
+                    progressDialog.dismiss();
+                }
+            }, 2000);
+        }
+
+        private void _getListMessageFormServer() {
+            Log.d(TAG, "NotificationList:_getListMessageFormServer() position=" + position);
+            service.getNotification(new AsyncCallback<List<Message>>() {
+                @Override
+                public void onSuccess(List<Message> result) {
+                    try {
+                        for (Message message : result) {
+                            accessNotification.addOrUpdateNotification(message);
+                        }
+                        _getListMessageFormLocalData();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(String message) {
+
+                }
+            });
+        }
+
+        private void _getListMessageFormServer(int last_id) {
+            Log.d(TAG, "NotificationList:_getListMessageFormServer(" + last_id + ") position=" + position);
+            service.getNotification(last_id, new AsyncCallback<List<Message>>() {
+                @Override
+                public void onSuccess(List<Message> result) {
+                    try {
+                        for (Message message : result) {
+                            accessNotification.addOrUpdateNotification(message);
+                        }
+                        _getListMessageFormLocalData();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(String message) {
+
+                }
+            });
+        }
+
+        public void _getListMessageFormLocalData() {
+            List<Message> notificationForUser = new ArrayList<>();
+            if (LaoSchoolShared.myProfile != null) {
+                notificationForUser = accessNotification.getListNotificationForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, (position == 0 ? 1 : 0));
+                Log.d(TAG, "NotificationList:getListNotificationForUser size=" + notificationForUser.size());
+            }
+            _setListNotification(notificationForUser, position);
+
+        }
+
+        private void _setListNotification(final List<Message> messages, final int position) {
+            try {
+                final ListNotificationAdapter listMessageAdapter = new ListNotificationAdapter(thiz, mRecyclerListMessage, position, messages);
+                listMessageAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
+                    @Override
+                    public void onLoadMore() {
+                        int countMessageFormLocal = accessNotification.getNotificationCount((position == 0) ? 1 : 0);
+                        if (messages.size() < countMessageFormLocal) {
+                            Log.d(TAG, "Load more notification !!!");
+                            messages.add(null);
+                            listMessageAdapter.notifyItemInserted(messages.size() - 1);
+                            _loadMoreData(messages, listMessageAdapter, position);
+                        } else {
+                            Log.d(TAG, "No notification load !!!");
+                        }
+
+                    }
+                });
+                mRecyclerListMessage.setAdapter(listMessageAdapter);
+
+            } catch (Exception e) {
+                Log.e(TAG, "NotificationList:_setListNotification():" + e.getMessage());
+            }
+
+        }
+
+        private void _loadMoreData(final List<Message> messages, final ListNotificationAdapter notificationAdapter, final int position) {
+            //Load more data for reyclerview
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d(TAG, "/_loadMoreData():Load More 2");
+
+                    //Remove loading item
+                    messages.remove(messages.size() - 1);
+                    notificationAdapter.notifyItemRemoved(messages.size());
+
+                    //Load data
+
+                    List<Message> messagesForUser = new ArrayList<>();
+                    if (LaoSchoolShared.myProfile != null) {
+                        messagesForUser = accessNotification.getListNotificationForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), messages.size() + 30, messages.size(), (position == 0 ? 1 : 0));
+                        Log.d(TAG, "NotificationList:getListNotificationForUser size=" + messages.size());
+                    }
+                    messages.addAll(messagesForUser);
+
+
+                    notificationAdapter.notifyDataSetChanged();
+                    notificationAdapter.setLoaded();
+                }
+            }, 2000);
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+            if (LaoSchoolShared.myProfile == null) {
+                HomeActivity homeActivity = (HomeActivity) getActivity();
+                homeActivity.logoutApplication();
+            }
+        }
     }
 }

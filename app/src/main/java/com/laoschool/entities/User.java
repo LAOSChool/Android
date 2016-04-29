@@ -1,5 +1,7 @@
 package com.laoschool.entities;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -192,6 +194,7 @@ public class User {
                 eclass.setEnd_dt(eclassObj.getString("end_dt"));
                 eclass.setHead_teacher_id(eclassObj.getInt("head_teacher_id"));
                 classes.add(eclass);
+                Log.d("", eclass.toString());
             }
 
             //user.setEclass(eclass);
@@ -206,7 +209,6 @@ public class User {
             return user;
         }
     }
-
 
 
 }
