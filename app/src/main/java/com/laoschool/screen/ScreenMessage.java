@@ -1,6 +1,7 @@
 package com.laoschool.screen;
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -56,12 +57,13 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
     Message message;
     ScreenMessage screenMessage;
     static DataAccessMessage dataAccessMessage;
-    ViewpagerDisableSwipeLeft pager;
-    PagerSlidingTabStrip tabs;
-    MessagesPagerAdapter messagesPagerAdapter;
+    static ViewpagerDisableSwipeLeft pager;
+    static PagerSlidingTabStrip tabs;
+    static MessagesPagerAdapter messagesPagerAdapter;
     boolean refeshListMessage = false;
 
     FloatingActionButton btnCreateMessage;
+    private static FragmentManager fr;
 
     public Message getMessage() {
         return message;
@@ -121,20 +123,102 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
     private View _defineScreenMessage(LayoutInflater inflater, ViewGroup container) {
         View view = inflater.inflate(R.layout.screen_message, container, false);
         pager = (ViewpagerDisableSwipeLeft) view.findViewById(R.id.messageViewPage);
+        tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
         btnCreateMessage = (FloatingActionButton) view.findViewById(R.id.btnCreateMessage);
 
-        messagesPagerAdapter = new MessagesPagerAdapter(getFragmentManager());
-        pager.setAdapter(messagesPagerAdapter);
         pager.setAllowedSwipeDirection(HomeActivity.SwipeDirection.none);
-        // Bind the tabs to the ViewPager
-        tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
-        tabs.setViewPager(pager);
 
-        _handlerCreateMessage();
+        _defineData();
 
         _handlerPageChange();
 
         return view;
+    }
+
+    private void _defineData() {
+        int countLocal = dataAccessMessage.getMessagesCount();
+        Log.d(TAG, "_defineData():count message in Local=" + countLocal);
+        if (countLocal > 0) {
+            _getDataFormLocal();
+        } else {
+            _getDataFormServer();
+        }
+    }
+
+    private void _getDataFormServer() {
+        _getDataFormServer(-1);
+    }
+
+    private static void _getDataFormServer(final int position) {
+        Log.d(TAG, "_getDataFormServer() position=" + position);
+        int form_id = DataAccessMessage.getMaxMessagesID(LaoSchoolShared.myProfile.getId());
+
+        final String classID = "";
+        final String fromUserID = ((position == 2) ? String.valueOf(LaoSchoolShared.myProfile.getId()) : "");
+        final String fromDate = "";
+        final String toUserID = ((position == 0 || position == 1) ? String.valueOf(LaoSchoolShared.myProfile.getId()) : "");
+        final String toDate = "";
+        final String channel = "";
+        final String status = "";
+        final String fromID = ((form_id > 0) ? String.valueOf(form_id) : "");
+        Log.d(TAG, "_getDataFormServer()):\n" +
+                "getMessages(classID=" + classID + "\n" +
+                ",fromUserID=" + fromUserID + ",fromDate=" + fromDate + "\n" +
+                ",toUserID=" + toUserID + ",toDate=" + toDate + "\n" +
+                ",channel=" + channel + ",status=" + status + "\n" +
+                ",fromID=" + fromID + ")");
+        service.getMessages(
+                classID//classID
+                , fromUserID//from user ID
+                , fromDate//from date
+                , toDate//to date
+                , toUserID//to user ID
+                , channel//channel
+                , status//status
+                , fromID//from id
+                , new AsyncCallback<List<Message>>() {
+                    @Override
+                    public void onSuccess(List<Message> result) {
+                        try {
+                            int sizeResults = result.size();
+                            Log.d(TAG, "_getDataFormServer()):" +
+                                    "getMessages()/onSuccess() Results size=" + sizeResults);
+                            for (Message message : result) {
+                                dataAccessMessage.addOrUpdateMessage(message);
+                            }
+                            _getDataFormLocal(position);
+                        } catch (Exception e) {
+                            Log.d(TAG, "_getDataFormServer() onSuccess Exception=" + e.getMessage());
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(String message) {
+                        Log.e(TAG, "NotificationList:setOnRefreshListener():\n" +
+                                "getMessages(classID=" + classID + "\n" +
+                                ",fromUserID=" + fromUserID + ",fromDate=" + fromDate + "\n" +
+                                ",toUserID=" + toUserID + ",toDate=" + toDate + "\n" +
+                                ",channel=" + channel + ",status=" + status + "\n" +
+                                ",fromID=" + fromID + ")/onFailure():" + message);
+                    }
+                });
+    }
+
+    private static void _getDataFormLocal(int position) {
+        List<Message> messagesForUserInbox = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
+        List<Message> messagesToUserUnread = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 0);
+        List<Message> messagesFormUser = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
+        // Bind the tabs to the ViewPager
+        messagesPagerAdapter = new MessagesPagerAdapter(fr, messagesForUserInbox, messagesToUserUnread, messagesFormUser);
+        pager.setAdapter(messagesPagerAdapter);
+        tabs.setViewPager(pager);
+        if (position > -1)
+            pager.setCurrentItem(position);
+    }
+
+    private static void _getDataFormLocal() {
+        _getDataFormLocal(-1);
     }
 
     private void _handlerPageChange() {
@@ -147,8 +231,19 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
             @Override
             public void onPageSelected(int position) {
                 MessageListFragment notifragment = ((MessagesPagerAdapter) (pager.getAdapter())).getFragment(position);
-                if (notifragment != null) {
-                    notifragment._getListMessageFormLocalData();
+                switch (position) {
+                    case 0:
+                        List<Message> messagesForUserInbox = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
+                        notifragment._setListMessage(messagesForUserInbox, 0);
+                        break;
+                    case 1:
+                        List<Message> messagesForUserUnread = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 0);
+                        notifragment._setListMessage(messagesForUserUnread, 1);
+                        break;
+                    case 2:
+                        List<Message> messagesFormUser = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
+                        notifragment._setListMessage(messagesFormUser, 2);
+                        break;
                 }
             }
 
@@ -158,15 +253,6 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
             }
         };
         pager.addOnPageChangeListener(onPageNotificationChangeListener);
-    }
-
-    private void _handlerCreateMessage() {
-        btnCreateMessage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                iScreenMessage._gotoScreenCreateMessage();
-            }
-        });
     }
 
 
@@ -181,6 +267,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         service = DataAccessImpl.getInstance(getActivity());
         this.thiz = this;
         this.context = getActivity();
+        this.fr = getFragmentManager();
     }
 
 
@@ -211,12 +298,23 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
     }
 
 
+    @SuppressLint("ValidFragment")
     public static class MessageListFragment extends Fragment {
         private static String ARG_POSITION = "position";
         private int position;
         private RecyclerView mRecyclerListMessage;
         private Context context;
         SwipeRefreshLayout mSwipeRefreshLayout;
+        private List<Message> messages;
+
+        public MessageListFragment(int position, List<Message> messages) {
+            this.position = position;
+            this.messages = messages;
+        }
+
+        public MessageListFragment() {
+
+        }
 
         public static MessageListFragment newInstance(int page) {
             Bundle args = new Bundle();
@@ -229,7 +327,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            position = getArguments().getInt(ARG_POSITION);
+            // position = getArguments().getInt(ARG_POSITION);
             this.context = getActivity();
         }
 
@@ -242,7 +340,8 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
             //set adapter
             mRecyclerListMessage.setLayoutManager(linearLayoutManager);
 
-            _defineListMessage();
+            // _defineListMessage();
+            _setListMessage(messages, position);
             //
             _handlerSwipeReload();
 
@@ -254,95 +353,96 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
             mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    _getListMessageFormServer();
+                    //_getListMessageFormServer();
+                    _getDataFormServer(position);
                     // Refresh items
                     mSwipeRefreshLayout.setRefreshing(false);
                 }
             });
         }
 
-        private void _defineListMessage() {
-            //Load message in local
-            int countLocal = dataAccessMessage.getMessagesCount();
-            Log.d(TAG, "NotificationList:count message in Local=" + countLocal);
+//        private void _defineListMessage() {
+//            //Load message in local
+//            int countLocal = dataAccessMessage.getMessagesCount();
+//            Log.d(TAG, "NotificationList:count message in Local=" + countLocal);
+////
+//            if (countLocal > 0) {
+//                _getListMessageFormLocalData();
+//            } else {
+//                _getListMessageFormServer();
+//            }
+//        }
+
+//        private void _getListMessageFormServer() {
+//            Log.d(TAG, "NotificationList:_getListMessageFormServer() position=" + position);
+//            int form_id = DataAccessMessage.getMaxMessagesID(LaoSchoolShared.myProfile.getId());
 //
-            if (countLocal > 0) {
-                _getListMessageFormLocalData();
-            } else {
-                _getListMessageFormServer();
-            }
-        }
-
-        private void _getListMessageFormServer() {
-            Log.d(TAG, "NotificationList:_getListMessageFormServer() position=" + position);
-            int form_id = DataAccessMessage.getMaxMessagesID(LaoSchoolShared.myProfile.getId());
-
-            final String classID = "";
-            final String fromUserID = ((position == 2) ? String.valueOf(LaoSchoolShared.myProfile.getId()) : "");
-            final String fromDate = "";
-            final String toUserID = ((position == 0 || position == 1) ? String.valueOf(LaoSchoolShared.myProfile.getId()) : "");
-            final String toDate = "";
-            final String channel = "";
-            final String status = "";
-            final String fromID = ((form_id > 0) ? String.valueOf(form_id) : "");
-            service.getMessages(
-                    classID//classID
-                    , fromUserID//from user ID
-                    , fromDate//from date
-                    , toDate//to date
-                    , toUserID//to user ID
-                    , channel//channel
-                    , status//status
-                    , fromID//from id
-                    , new AsyncCallback<List<Message>>() {
-                        @Override
-                        public void onSuccess(List<Message> result) {
-                            try {
-                                int sizeResults = result.size();
-                                Log.d(TAG, "NotificationList:setOnRefreshListener():\n" +
-                                        "getMessages(classID=" + classID + "\n" +
-                                        ",fromUserID=" + fromUserID + ",fromDate=" + fromDate + "\n" +
-                                        ",toUserID=" + toUserID + ",toDate=" + toDate + "\n" +
-                                        ",channel=" + channel + ",status=" + status + "\n" +
-                                        ",fromID=" + fromID + ")/onSuccess() Results size=" + sizeResults);
-                                for (Message message : result) {
-                                    dataAccessMessage.addOrUpdateMessage(message);
-                                }
-                                _getListMessageFormLocalData();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-
-                        }
-
-                        @Override
-                        public void onFailure(String message) {
-                            Log.e(TAG, "NotificationList:setOnRefreshListener():\n" +
-                                    "getMessages(classID=" + classID + "\n" +
-                                    ",fromUserID=" + fromUserID + ",fromDate=" + fromDate + "\n" +
-                                    ",toUserID=" + toUserID + ",toDate=" + toDate + "\n" +
-                                    ",channel=" + channel + ",status=" + status + "\n" +
-                                    ",fromID=" + fromID + ")/onFailure():" + message);
-                        }
-                    });
-
-        }
-
-        public void _getListMessageFormLocalData() {
-            Log.d(TAG, "NotificationList:_getListMessageFormLocalData() position=" + position);
-            List<Message> messagesForUser = new ArrayList<>();
-            if (LaoSchoolShared.myProfile != null) {
-                if (position == 0) {
-                    messagesForUser = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
-                } else if (position == 1) {
-                    messagesForUser = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 0);
-                } else if (position == 2) {
-                    messagesForUser = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
-                }
-                Log.d(TAG, "MessageListFragment:getListMessagesForUser size=" + messagesForUser.size());
-            }
-            _setListMessage(messagesForUser, position);
-        }
+//            final String classID = "";
+//            final String fromUserID = ((position == 2) ? String.valueOf(LaoSchoolShared.myProfile.getId()) : "");
+//            final String fromDate = "";
+//            final String toUserID = ((position == 0 || position == 1) ? String.valueOf(LaoSchoolShared.myProfile.getId()) : "");
+//            final String toDate = "";
+//            final String channel = "";
+//            final String status = "";
+//            final String fromID = ((form_id > 0) ? String.valueOf(form_id) : "");
+//            service.getMessages(
+//                    classID//classID
+//                    , fromUserID//from user ID
+//                    , fromDate//from date
+//                    , toDate//to date
+//                    , toUserID//to user ID
+//                    , channel//channel
+//                    , status//status
+//                    , fromID//from id
+//                    , new AsyncCallback<List<Message>>() {
+//                        @Override
+//                        public void onSuccess(List<Message> result) {
+//                            try {
+//                                int sizeResults = result.size();
+//                                Log.d(TAG, "NotificationList:setOnRefreshListener():\n" +
+//                                        "getMessages(classID=" + classID + "\n" +
+//                                        ",fromUserID=" + fromUserID + ",fromDate=" + fromDate + "\n" +
+//                                        ",toUserID=" + toUserID + ",toDate=" + toDate + "\n" +
+//                                        ",channel=" + channel + ",status=" + status + "\n" +
+//                                        ",fromID=" + fromID + ")/onSuccess() Results size=" + sizeResults);
+//                                for (Message message : result) {
+//                                    dataAccessMessage.addOrUpdateMessage(message);
+//                                }
+//                                _getListMessageFormLocalData();
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            }
+//
+//                        }
+//
+//                        @Override
+//                        public void onFailure(String message) {
+//                            Log.e(TAG, "NotificationList:setOnRefreshListener():\n" +
+//                                    "getMessages(classID=" + classID + "\n" +
+//                                    ",fromUserID=" + fromUserID + ",fromDate=" + fromDate + "\n" +
+//                                    ",toUserID=" + toUserID + ",toDate=" + toDate + "\n" +
+//                                    ",channel=" + channel + ",status=" + status + "\n" +
+//                                    ",fromID=" + fromID + ")/onFailure():" + message);
+//                        }
+//                    });
+//
+//        }
+//
+//        public void _getListMessageFormLocalData() {
+//            Log.d(TAG, "NotificationList:_getListMessageFormLocalData() position=" + position);
+//            List<Message> messagesForUser = new ArrayList<>();
+//            if (LaoSchoolShared.myProfile != null) {
+//                if (position == 0) {
+//                    messagesForUser = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
+//                } else if (position == 1) {
+//                    messagesForUser = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 0);
+//                } else if (position == 2) {
+//                    messagesForUser = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
+//                }
+//                Log.d(TAG, "MessageListFragment:getListMessagesForUser size=" + messagesForUser.size());
+//            }
+//            _setListMessage(messagesForUser, position);
+//        }
 
         private void _setListMessage(final List<Message> messages, final int position) {
             try {
@@ -417,14 +517,21 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
 
     }
 
-    public class MessagesPagerAdapter extends FragmentPagerAdapter {
+    public static class MessagesPagerAdapter extends FragmentPagerAdapter {
         private FragmentManager mFragmentManager;
         private Map<Integer, String> mFragmentTags;
+        private List<Message> messagesForUserInbox;
+        private List<Message> messagesToUserUnread;
+        private List<Message> messagesFormUser;
 
-        public MessagesPagerAdapter(FragmentManager fm) {
-            super(fm);
-            mFragmentManager = fm;
+
+        public MessagesPagerAdapter(FragmentManager fr, List<Message> messagesForUserInbox, List<Message> messagesToUserUnread, List<Message> messagesFormUser) {
+            super(fr);
+            mFragmentManager = fr;
             mFragmentTags = new HashMap<Integer, String>();
+            this.messagesForUserInbox = messagesForUserInbox;
+            this.messagesToUserUnread = messagesToUserUnread;
+            this.messagesFormUser = messagesFormUser;
         }
 
         @Override
@@ -447,11 +554,11 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                return MessageListFragment.newInstance(0);
+                return new MessageListFragment(0, messagesForUserInbox);
             } else if (position == 1) {
-                return MessageListFragment.newInstance(1);
+                return new MessageListFragment(1, messagesToUserUnread);
             } else if (position == 2) {
-                return MessageListFragment.newInstance(2);
+                return new MessageListFragment(2, messagesFormUser);
             } else {
                 return null;
             }
