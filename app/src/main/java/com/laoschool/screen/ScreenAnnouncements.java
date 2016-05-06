@@ -115,43 +115,39 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     }
 
     private void _defineData() {
-        //Load message in local
-        int countLocal = accessNotification.getNotificationCount();
-        Log.d(TAG, "_defineData():count notification in Local=" + countLocal);
-        if (countLocal > 0) {
-            getDataFormLocal();
-        } else {
-            getDataFormServer();
-        }
-        //  _handlerPageChange();
+        _showProgressLoading(true);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                int countLocal = accessNotification.getNotificationCount();
+                Log.d(TAG, "_defineData():count notification in Local=" + countLocal);
+                if (countLocal > 0) {
+                    getDataFormLocal();
+                } else {
+                    getDataFormServer();
+                }
+            }
+        }, LaoSchoolShared.LOADING_TIME);
+
     }
 
     public static void getDataFormServer() {
-        _showProgressLoading(true);
         service.getNotification(new AsyncCallback<List<Message>>() {
             @Override
             public void onSuccess(final List<Message> result) {
                 try {
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            for (Message message : result) {
-                                accessNotification.addOrUpdateNotification(message);
-                            }
-                            getDataFormLocal(-1);
-                            _showProgressLoading(false);
-                        }
-                    }, LaoSchoolShared.LOADING_TIME);
+                    for (Message message : result) {
+                        accessNotification.addOrUpdateNotification(message);
+                    }
+                    getDataFormLocal(-1);
                 } catch (Exception e) {
                     Log.e(TAG, "getDataFormServer()/getNotification() Exception=" + e.getMessage());
-                    _showProgressLoading(false);
                 }
             }
 
             @Override
             public void onFailure(String message) {
                 Log.e(TAG, "getDataFormServer()/getNotification() onFailure=" + message);
-                _showProgressLoading(false);
             }
 
             @Override
@@ -173,31 +169,22 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
 
 
     public static void getDataFormServer(final int form_id, final int position) {
-        _showProgressLoading(true);
         service.getNotification(form_id, new AsyncCallback<List<Message>>() {
             @Override
             public void onSuccess(final List<Message> result) {
                 try {
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            for (Message message : result) {
-                                accessNotification.addOrUpdateNotification(message);
-                            }
-                            getDataFormLocal(position);
-                            _showProgressLoading(false);
-                        }
-                    }, LaoSchoolShared.LOADING_TIME);
+                    for (Message message : result) {
+                        accessNotification.addOrUpdateNotification(message);
+                    }
+                    getDataFormLocal(position);
                 } catch (Exception e) {
                     Log.e(TAG, "getDataFormServer()/getNotification(" + form_id + ") Exception=" + e.getMessage());
-                    _showProgressLoading(false);
                 }
             }
 
             @Override
             public void onFailure(String message) {
                 Log.e(TAG, "getDataFormServer()/getNotification(" + form_id + ") onFailure=" + message);
-                _showProgressLoading(false);
             }
 
             @Override
@@ -208,13 +195,7 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     }
 
     private static void getDataFormLocal() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                getDataFormLocal(-1);
-            }
-        }, LaoSchoolShared.LOADING_TIME);
-
+        getDataFormLocal(-1);
     }
 
     private static void getDataFormLocal(int position) {
@@ -223,6 +204,7 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
             if (position > -1) {
                 viewPage.setCurrentItem(position);
             }
+            _showProgressLoading(false);
         } catch (Exception e) {
             Log.e(TAG, "getDataFormLocal() Exception = " + e.getMessage());
         }

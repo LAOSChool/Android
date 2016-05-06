@@ -139,13 +139,20 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
     }
 
     private void _defineData() {
-        int countLocal = dataAccessMessage.getMessagesCount();
-        Log.d(TAG, "_defineData():count message in Local=" + countLocal);
-        if (countLocal > 0) {
-            _getDataFormLocal();
-        } else {
-            _getDataFormServer();
-        }
+        _showProgessLoading(true);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                int countLocal = dataAccessMessage.getMessagesCount();
+                Log.d(TAG, "_defineData():count message in Local=" + countLocal);
+                if (countLocal > 0) {
+                    _getDataFormLocal();
+                } else {
+                    _getDataFormServer();
+                }
+            }
+        }, LaoSchoolShared.LOADING_TIME);
+
     }
 
     private void _getDataFormServer() {
@@ -153,7 +160,6 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
     }
 
     private static void _getDataFormServer(final int position) {
-        _showProgessLoading(true);
         Log.d(TAG, "_getDataFormServer() position=" + position);
         int form_id = DataAccessMessage.getMaxMessagesID(LaoSchoolShared.myProfile.getId());
 
@@ -187,20 +193,12 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
                             int sizeResults = result.size();
                             Log.d(TAG, "_getDataFormServer()):" +
                                     "getMessages()/onSuccess() Results size=" + sizeResults);
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    for (Message message : result) {
-                                        dataAccessMessage.addOrUpdateMessage(message);
-                                    }
-                                    _getDataFormLocal(position);
-                                    _showProgessLoading(false);
-                                }
-                            }, LaoSchoolShared.LOADING_TIME);
-
+                            for (Message message : result) {
+                                dataAccessMessage.addOrUpdateMessage(message);
+                            }
+                            _getDataFormLocal(position);
                         } catch (Exception e) {
                             Log.d(TAG, "_getDataFormServer() onSuccess Exception=" + e.getMessage());
-                            _showProgessLoading(false);
                         }
 
                     }
@@ -213,7 +211,6 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
                                 ",toUserID=" + toUserID + ",toDate=" + toDate + "\n" +
                                 ",channel=" + channel + ",status=" + status + "\n" +
                                 ",fromID=" + fromID + ")/onFailure():" + message);
-                        _showProgessLoading(false);
                     }
 
                     @Override
@@ -238,6 +235,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         if (position > -1) {
             pager.setCurrentItem(position);
         }
+        _showProgessLoading(false);
 
     }
 
@@ -252,15 +250,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
     }
 
     private static void _getDataFormLocal() {
-        _showProgessLoading(true);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                _getDataFormLocal(-1);
-                _showProgessLoading(false);
-            }
-        }, 2000);
-
+        _getDataFormLocal(-1);
     }
 
     private void _handlerPageChange() {
