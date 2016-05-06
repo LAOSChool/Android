@@ -228,4 +228,7 @@ public interface DataAccessInterface {
     public void updateNotification(Message message, AsyncCallback<Message> callback);
 
     public void getImageBitmap(String url, AsyncCallback<Bitmap> callback);
+
+    public void updateMessageIsRead(Message message, AsyncCallback<Message> callback);
+    public void updateMessageIsFlag(Message message, AsyncCallback<Message> callback);
 }

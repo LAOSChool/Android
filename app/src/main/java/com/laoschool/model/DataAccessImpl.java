@@ -66,8 +66,8 @@ public class DataAccessImpl implements DataAccessInterface {
 
     private static String api_key = "TEST_API_KEY";
 
-    final String LOGIN_HOST = "https://222.255.29.25:8443/laoschoolws/";
-    final String HOST = "https://222.255.29.25:8443/laoschoolws/api/";
+    final String LOGIN_HOST = "https://192.168.0.202:9443/laoschoolws/";
+    final String HOST = "https://192.168.0.202:9443/laoschoolws/api/";
 
     //VDC:https://222.255.29.25:8443/laoschoolws/api
     //192.168.0.202:9443
@@ -635,7 +635,7 @@ public class DataAccessImpl implements DataAccessInterface {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("school_id", message.getSchool_id());
         jsonObject.addProperty("class_id", message.getClass_id());
-        jsonObject.addProperty("title", message.getTitle());
+        //jsonObject.addProperty("title", message.getTitle());
         jsonObject.addProperty("content", message.getContent());
         jsonObject.addProperty("from_usr_id", message.getFrom_usr_id());
         jsonObject.addProperty("to_usr_id", message.getTo_usr_id());
@@ -916,6 +916,7 @@ public class DataAccessImpl implements DataAccessInterface {
         jsonObject.addProperty("class_id", message.getClass_id());
         jsonObject.addProperty("title", String.valueOf(message.getTitle()));
         jsonObject.addProperty("content", String.valueOf(message.getContent()));
+        jsonObject.addProperty("imp_flg", message.getImp_flg());
         jsonObject.addProperty("dest_type", 1);
         Gson gson = new Gson();
         String jsonString = gson.toJson(jsonObject);
@@ -954,4 +955,69 @@ public class DataAccessImpl implements DataAccessInterface {
         return resizedFile;
     }
 
+    @Override
+    public void updateMessageIsRead(Message message, final AsyncCallback<Message> callback) {
+        // Request a string response from the provided URL.
+        String url = HOST + "messages/update/" + message.getId() + "?is_read=1";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("Service/updateMessage()", response);
+                        Message m = Message.messageParsefromJson(response);
+                        callback.onSuccess(m);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Service/updateMessage()", error.toString());
+                        callback.onFailure(error.toString());
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", getAuthKey());
+                return params;
+            }
+        };
+
+        mRequestQueue.add(stringRequest);
+    }
+
+    @Override
+    public void updateMessageIsFlag(Message message, final AsyncCallback<Message> callback) {
+        // Request a string response from the provided URL.
+        String url = HOST + "messages/update/" + message.getId() + "?imp_flg="+message.getImp_flg();
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("Service/updateMessage()", response);
+                        Message m = Message.messageParsefromJson(response);
+                        callback.onSuccess(m);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Service/updateMessage()", error.toString());
+                        callback.onFailure(error.toString());
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", getAuthKey());
+                return params;
+            }
+        };
+
+        mRequestQueue.add(stringRequest);
+    }
 }
