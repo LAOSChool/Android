@@ -224,31 +224,29 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
 
     private static void _getDataFormLocal(int position) {
         if (position > -1) {
-            List<Message> messagesForUserInbox = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
-            List<Message> messagesToUserUnread = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 0);
-            List<Message> messagesFormUser = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
-            // Bind the tabs to the ViewPager
-            messagesPagerAdapter = new MessagesPagerAdapter(fr, messagesForUserInbox, messagesToUserUnread, messagesFormUser);
-            pager.setAdapter(messagesPagerAdapter);
-            tabs.setViewPager(pager);
+            _initPageData();
             pager.setCurrentItem(position);
         } else {
             _showProgessLoading(true);
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    List<Message> messagesForUserInbox = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
-                    List<Message> messagesToUserUnread = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 0);
-                    List<Message> messagesFormUser = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
-                    // Bind the tabs to the ViewPager
-                    messagesPagerAdapter = new MessagesPagerAdapter(fr, messagesForUserInbox, messagesToUserUnread, messagesFormUser);
-                    pager.setAdapter(messagesPagerAdapter);
-                    tabs.setViewPager(pager);
+                    _initPageData();
                     _showProgessLoading(false);
                 }
             }, 1500);
         }
 
+    }
+
+    private static void _initPageData() {
+        List<Message> messagesForUserInbox = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
+        List<Message> messagesToUserUnread = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 0);
+        List<Message> messagesFormUser = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
+        // Bind the tabs to the ViewPager
+        messagesPagerAdapter = new MessagesPagerAdapter(fr, messagesForUserInbox, messagesToUserUnread, messagesFormUser);
+        pager.setAdapter(messagesPagerAdapter);
+        tabs.setViewPager(pager);
     }
 
     private static void _getDataFormLocal() {
