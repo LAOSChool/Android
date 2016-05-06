@@ -128,16 +128,18 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         txtDateSend.setTextColor(context.getResources().getColor(R.color.colorRead));
                         txbSender.setTypeface(null, Typeface.NORMAL);
                         txbTitle.setTypeface(null, Typeface.NORMAL);
+                        txtDateSend.setTypeface(null, Typeface.NORMAL);
                         imgGotoDetails.setColorFilter(context.getResources().getColor(R.color.colorRead));
                         view.setBackgroundColor(context.getResources().getColor(R.color.color_bg_read));
                     } else {
-                        txbSender.setText("from: " + message.getFrom_user_name());
+                        txbSender.setText(message.getFrom_user_name());
                         if (message.getIs_read() == 0) {
-                            txbSender.setTextColor(context.getResources().getColor(R.color.colorUnread));
+                            txbSender.setTextColor(context.getResources().getColor(R.color.colorSenderUnread));
                             txbTitle.setTextColor(context.getResources().getColor(R.color.colorUnread));
-                            txtDateSend.setTextColor(context.getResources().getColor(R.color.colorUnread));
-                            txbSender.setTypeface(null, Typeface.NORMAL);
-                            txbTitle.setTypeface(null, Typeface.NORMAL);
+                            txtDateSend.setTextColor(context.getResources().getColor(R.color.colorDateUnread));
+                            txbSender.setTypeface(null, Typeface.BOLD);
+                            txbTitle.setTypeface(null, Typeface.BOLD);
+                            txtDateSend.setTypeface(null, Typeface.BOLD);
                             imgGotoDetails.setColorFilter(context.getResources().getColor(R.color.colorUnread));
                             view.setBackgroundColor(context.getResources().getColor(R.color.color_bg_un_read));
                         } else {
@@ -146,6 +148,7 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                             txtDateSend.setTextColor(context.getResources().getColor(R.color.colorRead));
                             txbSender.setTypeface(null, Typeface.NORMAL);
                             txbTitle.setTypeface(null, Typeface.NORMAL);
+                            txtDateSend.setTypeface(null, Typeface.NORMAL);
                             imgGotoDetails.setColorFilter(context.getResources().getColor(R.color.colorPriorityLow));
                             view.setBackgroundColor(context.getResources().getColor(R.color.color_bg_read));
                         }
