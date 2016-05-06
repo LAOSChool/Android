@@ -103,31 +103,30 @@ public class ListNotificationAdapter extends RecyclerView.Adapter<RecyclerView.V
                         txbSender.setText(message.getFrom_user_name());
                     }
                     if (message.getIs_read() == 0) {
-                        txbSender.setTextColor(context.getResources().getColor(R.color.color_messsage_read));
-                        txbTitle.setTextColor(context.getResources().getColor(R.color.color_messsage_read));
-                        txtDateSend.setTextColor(context.getResources().getColor(R.color.color_messsage_read));
+                        txbSender.setTextColor(context.getResources().getColor(R.color.colorUnread));
+                        txbTitle.setTextColor(context.getResources().getColor(R.color.colorUnread));
+                        txtDateSend.setTextColor(context.getResources().getColor(R.color.colorUnread));
                         txbSender.setTypeface(null, Typeface.NORMAL);
                         txbTitle.setTypeface(null, Typeface.NORMAL);
-                        imgFlagMessage.setColorFilter(context.getResources().getColor(R.color.color_messsage_read));
+                        imgFlagMessage.setColorFilter(context.getResources().getColor(R.color.colorUnread));
                         view.setBackgroundColor(context.getResources().getColor(R.color.color_bg_un_read));
                     } else {
-                        txbSender.setTextColor(context.getResources().getColor(R.color.colorDefault));
-                        txbTitle.setTextColor(context.getResources().getColor(R.color.colorDefault));
-                        txtDateSend.setTextColor(context.getResources().getColor(R.color.colorDefault));
+                        txbSender.setTextColor(context.getResources().getColor(R.color.colorRead));
+                        txbTitle.setTextColor(context.getResources().getColor(R.color.colorRead));
+                        txtDateSend.setTextColor(context.getResources().getColor(R.color.colorRead));
                         txbSender.setTypeface(null, Typeface.NORMAL);
                         txbTitle.setTypeface(null, Typeface.NORMAL);
-                        imgFlagMessage.setColorFilter(context.getResources().getColor(R.color.colorDefault));
+                        imgFlagMessage.setColorFilter(context.getResources().getColor(R.color.colorRead));
                         view.setBackgroundColor(context.getResources().getColor(R.color.color_bg_read));
                     }
                     if (message.getImp_flg() == 0) {
                         imgStar.setImageDrawable(LaoSchoolShared.getDraweble(context, R.drawable.ic_star_border_white_24dp));
-                        imgStar.setColorFilter(context.getResources().getColor(R.color.colorDefault));
+                        imgStar.setColorFilter(context.getResources().getColor(R.color.colorPriorityLow));
                     } else {
                         imgStar.setImageDrawable(LaoSchoolShared.getDraweble(context, R.drawable.ic_star_white_24dp));
-                        imgStar.setColorFilter(context.getResources().getColor(R.color.colorStar));
+                        imgStar.setColorFilter(context.getResources().getColor(R.color.colorPriorityHigh));
                     }
                     imgUserAvata.setDefaultImageResId(R.drawable.ic_account_circle_black_36dp);
-                    //imgUserAvata.setImageDrawable(LaoSchoolShared.getDraweble(context, R.drawable.ic_account_circle_black_36dp));
                     txbContent.setText(message.getContent());
                     txbTitle.setText(message.getTitle());
                     DateFormat outputFormatter1 = new SimpleDateFormat("dd-MMM");
