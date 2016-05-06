@@ -208,6 +208,11 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
             public void onFailure(String message) {
 
             }
+
+            @Override
+            public void onAuthFail(String message) {
+                LaoSchoolShared.goBackToLoginPage(context);
+            }
         });
     }
 
@@ -423,6 +428,11 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
                 public void onFailure(String message) {
 
                 }
+
+                @Override
+                public void onAuthFail(String message) {
+                    LaoSchoolShared.goBackToLoginPage(context);
+                }
             });
         }
 
@@ -445,6 +455,11 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
                 @Override
                 public void onFailure(String message) {
 
+                }
+
+                @Override
+                public void onAuthFail(String message) {
+                    LaoSchoolShared.goBackToLoginPage(context);
                 }
             });
         }

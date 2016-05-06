@@ -30,6 +30,7 @@ import com.laoschool.R;
 import com.laoschool.model.AsyncCallback;
 import com.laoschool.model.DataAccessImpl;
 import com.laoschool.model.DataAccessInterface;
+import com.laoschool.shared.LaoSchoolShared;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -114,6 +115,11 @@ public class ScreenFogotPassword extends Fragment {
                             Toast.makeText(thiz.getActivity(), "Phone number not match with username !", Toast.LENGTH_SHORT).show();
                         else
                             Toast.makeText(thiz.getActivity(), message, Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onAuthFail(String message) {
+                        LaoSchoolShared.goBackToLoginPage(thiz.getContext());
                     }
                 });
             }

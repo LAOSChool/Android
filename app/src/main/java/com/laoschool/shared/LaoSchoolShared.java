@@ -4,6 +4,8 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
@@ -26,6 +28,7 @@ import com.laoschool.R;
 import com.laoschool.entities.Image;
 import com.laoschool.entities.Message;
 import com.laoschool.entities.User;
+import com.laoschool.screen.login.ScreenLogin;
 
 
 import java.io.ByteArrayInputStream;
@@ -284,5 +287,27 @@ public class LaoSchoolShared {
         image.setCaption(cursor.getString(Image.ImageColumns.COLUMN_NAME_CAPTION_INDEX_7));
         image.setLocal_file_url(cursor.getString(Image.ImageColumns.COLUMN_NAME_LOCAL_FILE_URL_INDEX_8));
         return image;
+    }
+
+    public static void goBackToLoginPage(final Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
+        preferences.edit().remove("auth_key").commit();
+
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+        builder1.setMessage("Someone has fucking login to your account in fucking another device! Please re-login,");
+        builder1.setCancelable(true);
+
+        builder1.setPositiveButton(
+                "Ok",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Intent intent = new Intent(context, ScreenLogin.class);
+                        context.startActivity(intent);
+                        ((Activity) context).finish();
+                    }
+                });
+
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
     }
 }

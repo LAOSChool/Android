@@ -117,6 +117,11 @@ public class ScreenLoginMain extends Fragment {
                         else
                             Toast.makeText(thiz.getActivity(), "Wrong username or password", Toast.LENGTH_SHORT).show();
                     }
+
+                    @Override
+                    public void onAuthFail(String message) {
+                        LaoSchoolShared.goBackToLoginPage(thiz.getContext());
+                    }
                 });
             }
         });

@@ -324,6 +324,11 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
                                     ",channel=" + channel + ",status=" + status + "\n" +
                                     ",fromID=" + fromID + ")/onFailure():" + message);
                         }
+
+                        @Override
+                        public void onAuthFail(String message) {
+                            LaoSchoolShared.goBackToLoginPage(context);
+                        }
                     });
 
         }

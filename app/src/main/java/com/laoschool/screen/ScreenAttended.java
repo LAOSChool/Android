@@ -67,6 +67,11 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                 ringProgressDialog.dismiss();
                 Toast.makeText(thiz.getActivity(), "Some error occur !", Toast.LENGTH_SHORT).show();
             }
+
+            @Override
+            public void onAuthFail(String message) {
+                LaoSchoolShared.goBackToLoginPage(thiz.getContext());
+            }
         });
     }
 

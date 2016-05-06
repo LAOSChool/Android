@@ -25,6 +25,7 @@ import com.laoschool.entities.Message;
 import com.laoschool.model.AsyncCallback;
 import com.laoschool.model.sqlite.DataAccessImage;
 import com.laoschool.screen.PreviewImage;
+import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.tools.CustomNetworkImageView;
 
 import java.io.File;
@@ -222,6 +223,11 @@ public class NotificationDetailsAdapter extends RecyclerView.Adapter<Notificatio
                     Log.d("LoadImage", "_loadImageFormUrl()Error messag:" + image.getLocal_file_url());
                     imgImageSelected.setImageResource(R.drawable.no_photo);
                     imgDownloadImage.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAuthFail(String message) {
+                    LaoSchoolShared.goBackToLoginPage(context);
                 }
             });
         } else {

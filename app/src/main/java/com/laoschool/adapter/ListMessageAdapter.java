@@ -227,6 +227,11 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             public void onFailure(String message) {
                 Log.e(TAG, "_updateStatusMessageToServer() onFailure():" + message);
             }
+
+            @Override
+            public void onAuthFail(String message) {
+                LaoSchoolShared.goBackToLoginPage(context);
+            }
         });
     }
 

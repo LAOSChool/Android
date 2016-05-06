@@ -135,6 +135,11 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                 public void onFailure(String message) {
 
                 }
+
+                @Override
+                public void onAuthFail(String message) {
+                    LaoSchoolShared.goBackToLoginPage(context);
+                }
             });
         } catch (Exception e) {
             //e.printStackTrace();
@@ -279,6 +284,11 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                             progressDialog.dismiss();
                             _showAlertMessage(getString(R.string.err_msg_create_message));
 
+                        }
+
+                        @Override
+                        public void onAuthFail(String message) {
+                            LaoSchoolShared.goBackToLoginPage(context);
                         }
                     });
 
