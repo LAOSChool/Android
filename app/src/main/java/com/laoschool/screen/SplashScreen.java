@@ -57,6 +57,7 @@ public class SplashScreen extends AppCompatActivity {
     private static final long SPLASH_TIME_OUT = 2000;
     public final String TAG = "SplashScreen";
     SplashScreen thiz;
+
 //    private void unLockCredentialStorage() {
 //        try {
 //            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
@@ -125,6 +126,7 @@ public class SplashScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_screen);
+        thiz = this;
 //
 //
         new Handler().postDelayed(new Runnable() {
@@ -171,6 +173,11 @@ public class SplashScreen extends AppCompatActivity {
             @Override
             public void onFailure(String message) {
                 startLogin();
+            }
+
+            @Override
+            public void onAuthFail(String message) {
+                LaoSchoolShared.goBackToLoginPage(thiz);
             }
         });
     }
