@@ -129,33 +129,11 @@ public class ScreenMessageDetails extends Fragment implements FragmentLifecycle 
             String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
             ScreenMessage screenMessage = (ScreenMessage) ((HomeActivity) getActivity()).getSupportFragmentManager().findFragmentByTag(tag);
             if (screenMessage != null) {
-//            Message
                 Message message = screenMessage.getMessage();
-                if (message == null) {
-                    message = Message.fromJson("{\n" +
-                            "  \"id\": 1,\n" +
-                            "  \"school_id\": 1,\n" +
-                            "  \"class_id\": 1,\n" +
-                            "  \"from_usr_id\": 1,\n" +
-                            "  \"from_user_name\": \"NamNT1\",\n" +
-                            "  \"to_usr_id\": 2,\n" +
-                            "  \"to_user_name\": \"Hue1\",\n" +
-                            "  \"content\": \"test message\",\n" +
-                            "  \"msg_type_id\": 1,\n" +
-                            "  \"channel\": 1,\n" +
-                            "  \"is_sent\": 1,\n" +
-                            "  \"sent_dt\": \"2016-03-24 00:00:00.0\",\n" +
-                            "  \"is_read\": 1,\n" +
-                            "  \"read_dt\": \"2016-03-24 00:00:00.0\",\n" +
-                            "  \"imp_flg\": 1,\n" +
-                            "  \"other\": \"ko co gi quan trong\",\n" +
-                            "  \"title\": \"test title\",\n" +
-                            "  \"cc_list\": \"\",\n" +
-                            "  \"schoolName\": \"Truong Tieu Hoc Thanh Xuan Trung\",\n" +
-                            "  \"messageType\": \"NX\"\n" +
-                            "}");
-                    Toast.makeText(getActivity(), "Message null", Toast.LENGTH_SHORT).show();
-                }
+
+                //set Title Message
+                ((HomeActivity) getActivity()).getSupportActionBar().setTitle(message.getFrom_user_name());
+
                 txtTilteMessageDetails.setText(message.getTitle());
                 txtContentMessageDetails.setText(message.getContent());
                 //
@@ -171,16 +149,13 @@ public class ScreenMessageDetails extends Fragment implements FragmentLifecycle 
                 String output1 = outputFormatter1.format(date1);
                 txtDateMessageDetails.setText(output1);
                 if (message.getImp_flg() == 0) {
-                    imgPiorityMessageDetails.setColorFilter(screenMessage.getActivity().getResources().getColor(R.color.colorDefault));
-                    imgPiorityMessageDetails.setTag(R.color.colorDefault);
+                    imgPiorityMessageDetails.setColorFilter(screenMessage.getActivity().getResources().getColor(R.color.colorPriorityLow));
+                    imgPiorityMessageDetails.setTag(R.color.colorPriorityLow);
                 } else {
                     imgPiorityMessageDetails.setColorFilter(
-                            screenMessage.getActivity().getResources().getColor(R.color.colorStar));
-                    imgPiorityMessageDetails.setTag(R.color.colorStar);
+                            screenMessage.getActivity().getResources().getColor(R.color.colorPriorityHigh));
+                    imgPiorityMessageDetails.setTag(R.color.colorPriorityHigh);
                 }
-
-
-                // imgUserSentMessageAvata.setColorFilter(screenMessage.getActivity().getResources().getColor(R.color.color_messsage_tilte_not_read));
                 // _handlerImagePriotyClick(message);
                 if (message.getFrm_user_photo() != null) {
                     LaoSchoolSingleton.getInstance().getImageLoader().get(message.getFrm_user_photo(), ImageLoader.getImageListener(imgUserSentMessageAvata,
@@ -197,29 +172,29 @@ public class ScreenMessageDetails extends Fragment implements FragmentLifecycle 
                 //set Adaper
 //            List<Message> messages=dataAccessMessage.getAllMessages();
 //            _setConversionMessages(messages);
-                service.getMessages("", "", "", "", "", "", "", "", new AsyncCallback<List<Message>>() {
-                    @Override
-                    public void onSuccess(List<Message> result) {
-                        _setConversionMessages(result);
-                    }
-
-                    @Override
-                    public void onFailure(String message) {
-                        Log.d(TAG, "set Adaper error:" + message);
-                    }
-                });
-
-
-                //Handler onclic send
-                btnSendMesasage.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        _sendMessage();
-                    }
-                });
+//                service.getMessages("", "", "", "", "", "", "", "", new AsyncCallback<List<Message>>() {
+//                    @Override
+//                    public void onSuccess(List<Message> result) {
+//                        _setConversionMessages(result);
+//                    }
+//
+//                    @Override
+//                    public void onFailure(String message) {
+//                        Log.d(TAG, "set Adaper error:" + message);
+//                    }
+//                });
+//
+//
+//                //Handler onclic send
+//                btnSendMesasage.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        _sendMessage();
+//                    }
+//                });
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "onResumeFragment() Exception=" + e.getMessage());
         }
     }
 
