@@ -113,26 +113,26 @@ public class NotificationDetailsAdapter extends RecyclerView.Adapter<Notificatio
 
                 if (notification.getImp_flg() == 1) {
                     imgPiorityNotificationDetails.setColorFilter(
-                            context.getResources().getColor(R.color.colorStar));
-                    imgPiorityNotificationDetails.setTag(R.color.colorStar);
+                            context.getResources().getColor(R.color.colorPriorityHigh));
+                    imgPiorityNotificationDetails.setTag(R.color.colorPriorityHigh);
                 } else {
                     imgPiorityNotificationDetails.setColorFilter(
-                            context.getResources().getColor(R.color.colorDefault));
-                    imgPiorityNotificationDetails.setTag(R.color.colorDefault);
+                            context.getResources().getColor(R.color.colorPriorityLow));
+                    imgPiorityNotificationDetails.setTag(R.color.colorPriorityLow);
                 }
-                imgPiorityNotificationDetails.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (imgPiorityNotificationDetails.getTag().equals(R.color.colorDefault)) {
-                            imgPiorityNotificationDetails.setColorFilter(context.getResources().getColor(R.color.colorStar));
-                            imgPiorityNotificationDetails.setTag(R.color.colorStar);
-                        } else {
-                            imgPiorityNotificationDetails.setColorFilter(context.getResources().getColor(R.color.colorDefault));
-                            imgPiorityNotificationDetails.setTag(R.color.colorDefault);
-                        }
-                    }
-                });
-                imgUserSentNotificationAvata.setColorFilter(context.getResources().getColor(R.color.color_messsage_tilte_not_read));
+//                imgPiorityNotificationDetails.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        if (imgPiorityNotificationDetails.getTag().equals(R.color.colorPriorityLow)) {
+//                            imgPiorityNotificationDetails.setColorFilter(context.getResources().getColor(R.color.colorPriorityHigh));
+//                            imgPiorityNotificationDetails.setTag(R.color.colorPriorityHigh);
+//                        } else {
+//                            imgPiorityNotificationDetails.setColorFilter(context.getResources().getColor(R.color.colorPriorityLow));
+//                            imgPiorityNotificationDetails.setTag(R.color.colorPriorityLow);
+//                        }
+//                    }
+//                });
+                imgUserSentNotificationAvata.setColorFilter(context.getResources().getColor(R.color.colorUnread));
 
                 txtFormUserNameNotificationDetails.setText(notification.getFrom_user_name());
                 txtToUserNameNotificationDetails.setText("to " + notification.getTo_user_name());
