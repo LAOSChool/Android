@@ -182,16 +182,22 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
                 , fromID//from id
                 , new AsyncCallback<List<Message>>() {
                     @Override
-                    public void onSuccess(List<Message> result) {
+                    public void onSuccess(final List<Message> result) {
                         try {
                             int sizeResults = result.size();
                             Log.d(TAG, "_getDataFormServer()):" +
                                     "getMessages()/onSuccess() Results size=" + sizeResults);
-                            for (Message message : result) {
-                                dataAccessMessage.addOrUpdateMessage(message);
-                            }
-                            _getDataFormLocal(position);
-                            _showProgessLoading(false);
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    for (Message message : result) {
+                                        dataAccessMessage.addOrUpdateMessage(message);
+                                    }
+                                    _getDataFormLocal(position);
+                                    _showProgessLoading(false);
+                                }
+                            }, LaoSchoolShared.LOADING_TIME);
+
                         } catch (Exception e) {
                             Log.d(TAG, "_getDataFormServer() onSuccess Exception=" + e.getMessage());
                             _showProgessLoading(false);
@@ -228,18 +234,9 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
     }
 
     private static void _getDataFormLocal(int position) {
+        _initPageData();
         if (position > -1) {
-            _initPageData();
             pager.setCurrentItem(position);
-        } else {
-            _showProgessLoading(true);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    _initPageData();
-                    _showProgessLoading(false);
-                }
-            }, 1500);
         }
 
     }
@@ -255,7 +252,15 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
     }
 
     private static void _getDataFormLocal() {
-        _getDataFormLocal(-1);
+        _showProgessLoading(true);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                _getDataFormLocal(-1);
+                _showProgessLoading(false);
+            }
+        }, 2000);
+
     }
 
     private void _handlerPageChange() {
