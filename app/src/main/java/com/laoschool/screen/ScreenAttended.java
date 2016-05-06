@@ -52,7 +52,11 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
     private IScreenAttended iScreenAttended;
 
     private void getAttendances() {
-        final ProgressDialog ringProgressDialog = ProgressDialog.show(this.getActivity(), "Please wait ...", "Loading ...", true);
+        final ProgressDialog ringProgressDialog = new ProgressDialog(this.getActivity());
+        ringProgressDialog.setTitle("Please wait ...");
+        ringProgressDialog.setMessage("Loading ...");
+        ringProgressDialog.setIndeterminate(false);
+        ringProgressDialog.show();
         service.getAttendances("", "", new AsyncCallback<List<Attendance>>() {
             @Override
             public void onSuccess(List<Attendance> result) {
@@ -143,6 +147,7 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
         }
 
         public void setData(List<Attendance> attendances) {
+
         }
     }
 
@@ -183,24 +188,24 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
         }
     }
 
-        @Override
-        public void onCreate (Bundle savedInstanceState){
-            super.onCreate(savedInstanceState);
-            setHasOptionsMenu(true);
-            service = DataAccessImpl.getInstance(this.getActivity());
-            if (getArguments() != null) {
-                containerId = getArguments().getInt(LaoSchoolShared.CONTAINER_ID);
-                currentRole = getArguments().getString(LaoSchoolShared.CURRENT_ROLE);
-                Log.d(getString(R.string.title_screen_attended), "-Container Id:" + containerId);
-            }
-
-            getAttendances();
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+        service = DataAccessImpl.getInstance(this.getActivity());
+        if (getArguments() != null) {
+            containerId = getArguments().getInt(LaoSchoolShared.CONTAINER_ID);
+            currentRole = getArguments().getString(LaoSchoolShared.CURRENT_ROLE);
+            Log.d(getString(R.string.title_screen_attended), "-Container Id:" + containerId);
         }
 
-        @Override
-        public void onCreateOptionsMenu (Menu menu, MenuInflater inflater){
-            super.onCreateOptionsMenu(menu, inflater);
-        }
+        getAttendances();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 
     public static Fragment instantiate(int containerId, String currentRole) {
         ScreenAttended fragment = new ScreenAttended();
