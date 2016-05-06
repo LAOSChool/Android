@@ -188,29 +188,36 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     }
 
     private static void getDataFormLocal() {
+        getDataFormLocal(-1);
+    }
+
+    private static void getDataFormLocal(int position) {
         try {
-            List<Message> notificationForUserInbox = accessNotification.getListNotificationForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
-            List<Message> notificationForUserUnread = accessNotification.getListNotificationForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 0);
-            notificationPagerAdapter = new NotificationPagerAdapter(fr, notificationForUserInbox, notificationForUserUnread);
-            viewPage.setAdapter(notificationPagerAdapter);
-            tabs.setViewPager(viewPage);
-            //viewPage.setCurrentItem(viewPage.getCurrentItem());
+            if (position > -1) {
+                _initPageData();
+                viewPage.setCurrentItem(position);
+            } else {
+                _showProgressLoading(true);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        _initPageData();
+                        _showProgressLoading(false);
+                    }
+                }, 1500);
+
+            }
         } catch (Exception e) {
             Log.e(TAG, "getDataFormLocal() Exception = " + e.getMessage());
         }
     }
 
-    private static void getDataFormLocal(int position) {
-        try {
-            List<Message> notificationForUserInbox = accessNotification.getListNotificationForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
-            List<Message> notificationForUserUnread = accessNotification.getListNotificationForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 0);
-            notificationPagerAdapter = new NotificationPagerAdapter(fr, notificationForUserInbox, notificationForUserUnread);
-            viewPage.setAdapter(notificationPagerAdapter);
-            tabs.setViewPager(viewPage);
-            viewPage.setCurrentItem(position);
-        } catch (Exception e) {
-            Log.e(TAG, "getDataFormLocal() Exception = " + e.getMessage());
-        }
+    private static void _initPageData() {
+        List<Message> notificationForUserInbox = accessNotification.getListNotificationForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
+        List<Message> notificationForUserUnread = accessNotification.getListNotificationForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 0);
+        notificationPagerAdapter = new NotificationPagerAdapter(fr, notificationForUserInbox, notificationForUserUnread);
+        viewPage.setAdapter(notificationPagerAdapter);
+        tabs.setViewPager(viewPage);
     }
 
 
