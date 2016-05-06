@@ -1,64 +1,46 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.laoschool.screen.ScreenMessage">
+    android:layout_height="match_parent">
 
-    <!-- TODO: Update blank fragment layout -->
-    <com.astuetz.PagerSlidingTabStrip
-        android:id="@+id/tabs"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/mMessages"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:background="@color/colorLaosRed"
-        android:textColor="@color/abc_primary_text_disable_only_material_dark"
-        app:pstsDividerColor="#ffffff"
-        app:pstsIndicatorColor="#7E57C2"
-        app:pstsIndicatorHeight="3dp"
-        app:pstsShouldExpand="true"
-        app:pstsTextAllCaps="false" />
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        tools:context="com.laoschool.screen.ScreenMessage">
 
-    <com.laoschool.view.ViewpagerDisableSwipeLeft
-        android:id="@+id/messageViewPage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tabs" />
+        <!-- TODO: Update blank fragment layout -->
+        <com.astuetz.PagerSlidingTabStrip
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="@color/colorLaosRed"
+            android:textColor="@color/abc_primary_text_disable_only_material_dark"
+            app:pstsDividerColor="#ffffff"
+            app:pstsIndicatorColor="#7E57C2"
+            app:pstsIndicatorHeight="3dp"
+            app:pstsShouldExpand="true"
+            app:pstsTextAllCaps="false" />
 
-    <LinearLayout
+        <com.laoschool.view.ViewpagerDisableSwipeLeft
+            android:id="@+id/messageViewPage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tabs" />
+
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/mProgress"
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/title_screen_message" />
-
-        <TextView
-            android:id="@+id/messagedetails"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:text="goto Message details"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-    </LinearLayout>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/btnCreateMessage"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="15dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginRight="15dp"
-        android:src="@drawable/ic_mode_edit_white_24dp"
-        app:backgroundTint="@color/colorLaosRed"
         android:visibility="gone" />
-
-</RelativeLayout>
+</FrameLayout>

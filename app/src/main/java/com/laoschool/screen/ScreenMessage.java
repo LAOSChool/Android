@@ -24,6 +24,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.laoschool.R;
@@ -63,8 +65,9 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
     static MessagesPagerAdapter messagesPagerAdapter;
     boolean refeshListMessage = false;
 
-    FloatingActionButton btnCreateMessage;
     private static FragmentManager fr;
+    private static LinearLayout mMessages;
+    private static ProgressBar mProgress;
 
     public Message getMessage() {
         return message;
@@ -88,9 +91,6 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         this.refeshListMessage = refeshListMessage;
     }
 
-    public boolean isRefeshListMessage() {
-        return refeshListMessage;
-    }
 
     public interface IScreenMessage {
         void _gotoScreenCreateMessage();
@@ -124,9 +124,10 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
 
     private View _defineScreenMessage(LayoutInflater inflater, ViewGroup container) {
         View view = inflater.inflate(R.layout.screen_message, container, false);
+        mMessages = (LinearLayout) view.findViewById(R.id.mMessages);
+        mProgress = (ProgressBar) view.findViewById(R.id.mProgress);
         pager = (ViewpagerDisableSwipeLeft) view.findViewById(R.id.messageViewPage);
         tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
-        btnCreateMessage = (FloatingActionButton) view.findViewById(R.id.btnCreateMessage);
 
         pager.setAllowedSwipeDirection(HomeActivity.SwipeDirection.none);
 
@@ -152,6 +153,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
     }
 
     private static void _getDataFormServer(final int position) {
+        _showProgessLoading(true);
         Log.d(TAG, "_getDataFormServer() position=" + position);
         int form_id = DataAccessMessage.getMaxMessagesID(LaoSchoolShared.myProfile.getId());
 
@@ -189,8 +191,10 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
                                 dataAccessMessage.addOrUpdateMessage(message);
                             }
                             _getDataFormLocal(position);
+                            _showProgessLoading(false);
                         } catch (Exception e) {
                             Log.d(TAG, "_getDataFormServer() onSuccess Exception=" + e.getMessage());
+                            _showProgessLoading(false);
                         }
 
                     }
@@ -203,8 +207,19 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
                                 ",toUserID=" + toUserID + ",toDate=" + toDate + "\n" +
                                 ",channel=" + channel + ",status=" + status + "\n" +
                                 ",fromID=" + fromID + ")/onFailure():" + message);
+                        _showProgessLoading(false);
                     }
                 });
+    }
+
+    private static void _showProgessLoading(boolean b) {
+        if (b) {
+            mMessages.setVisibility(View.GONE);
+            mProgress.setVisibility(View.VISIBLE);
+        } else {
+            mMessages.setVisibility(View.VISIBLE);
+            mProgress.setVisibility(View.GONE);
+        }
     }
 
     private static void _getDataFormLocal(int position) {
@@ -293,7 +308,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
 
     @Override
     public void onAttach(Activity activity) {
-        Log.d(TAG,"onAttach(Activity)");
+        Log.d(TAG, "onAttach(Activity)");
         super.onAttach(activity);
         iScreenMessage = (IScreenMessage) activity;
         if (LaoSchoolShared.myProfile == null) {
@@ -604,7 +619,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
 
     @Override
     public void onAttach(Context context) {
-        Log.d(TAG,"onAttach(Context)");
+        Log.d(TAG, "onAttach(Context)");
         super.onAttach(context);
     }
 
