@@ -193,6 +193,7 @@ public class User {
                 eclass.setStart_dt(eclassObj.getString("start_dt"));
                 eclass.setEnd_dt(eclassObj.getString("end_dt"));
                 eclass.setHead_teacher_id(eclassObj.getInt("head_teacher_id"));
+                eclass.setHeadTeacherName(eclassObj.getString("headTeacherName"));
                 classes.add(eclass);
                 Log.d("", eclass.toString());
             }
