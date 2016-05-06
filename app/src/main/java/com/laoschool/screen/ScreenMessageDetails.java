@@ -1,6 +1,7 @@
 package com.laoschool.screen;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -169,13 +170,18 @@ public class ScreenMessageDetails extends Fragment implements FragmentLifecycle 
                 }
                 String output1 = outputFormatter1.format(date1);
                 txtDateMessageDetails.setText(output1);
+                if (message.getImp_flg() == 0) {
+                    imgPiorityMessageDetails.setColorFilter(screenMessage.getActivity().getResources().getColor(R.color.colorDefault));
+                    imgPiorityMessageDetails.setTag(R.color.colorDefault);
+                } else {
+                    imgPiorityMessageDetails.setColorFilter(
+                            screenMessage.getActivity().getResources().getColor(R.color.colorStar));
+                    imgPiorityMessageDetails.setTag(R.color.colorStar);
+                }
 
 
-                imgPiorityMessageDetails.setColorFilter(message.getImp_flg() == 1 ?
-                        screenMessage.getActivity().getResources().getColor(R.color.colorDefault)
-                        : screenMessage.getActivity().getResources().getColor(R.color.colorStar));
                 // imgUserSentMessageAvata.setColorFilter(screenMessage.getActivity().getResources().getColor(R.color.color_messsage_tilte_not_read));
-
+                // _handlerImagePriotyClick(message);
                 if (message.getFrm_user_photo() != null) {
                     LaoSchoolSingleton.getInstance().getImageLoader().get(message.getFrm_user_photo(), ImageLoader.getImageListener(imgUserSentMessageAvata,
                             R.drawable.ic_account_circle_black_36dp, android.R.drawable
@@ -215,6 +221,45 @@ public class ScreenMessageDetails extends Fragment implements FragmentLifecycle 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void _handlerImagePriotyClick(final Message message) {
+        imgPiorityMessageDetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (imgPiorityMessageDetails.getTag().equals(R.color.colorDefault)) {
+                    imgPiorityMessageDetails.setColorFilter(context.getResources().getColor(R.color.colorStar));
+                    imgPiorityMessageDetails.setTag(R.color.colorStar);
+                    message.setImp_flg(1);
+                } else {
+                    imgPiorityMessageDetails.setColorFilter(context.getResources().getColor(R.color.colorDefault));
+                    imgPiorityMessageDetails.setTag(R.color.colorDefault);
+                    message.setImp_flg(0);
+
+                }
+                DataAccessMessage.updateMessage(message);
+                _updatePriotyFormServer(message);
+            }
+        });
+    }
+
+    private void _updatePriotyFormServer(Message message) {
+        final ProgressDialog ringProgressDialog = new ProgressDialog(this.getActivity());
+        ringProgressDialog.setTitle("Please wait ...");
+        ringProgressDialog.setMessage("Loading ...");
+        ringProgressDialog.setIndeterminate(false);
+        ringProgressDialog.show();
+        service.updateMessageIsFlag(message, new AsyncCallback<Message>() {
+            @Override
+            public void onSuccess(Message result) {
+                ringProgressDialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(String message) {
+                ringProgressDialog.dismiss();
+            }
+        });
     }
 
     private void _setConversionMessages(List<Message> messages) {
