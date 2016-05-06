@@ -49,6 +49,7 @@ public class LaoSchoolShared {
 
     public static final int SELECT_PHOTO = 100;
     public static final int SELECT_CAMERA = 101;
+    public static final long LOADING_TIME = 2000;
     public static User myProfile;
     public static final String SHARED_PREFERENCES_TAG = "com.laoshcool.app";
     public static final String KEY_STORE_ALIAS = "LAOSCHOOL_KEY";
@@ -255,7 +256,7 @@ public class LaoSchoolShared {
         return message;
     }
 
-    public static String getPath(Context context,Uri uri) {
+    public static String getPath(Context context, Uri uri) {
         // just some safety built in
         if (uri == null) {
             // TODO perform some logging or show user feedback
@@ -276,7 +277,7 @@ public class LaoSchoolShared {
     }
 
     public static Image parseImageFormSql(Cursor cursor) {
-        Image image=new Image();
+        Image image = new Image();
         image.setId(cursor.getInt(Image.ImageColumns.COLUMN_NAME_ID_INDEX_0));
         image.setNotify_id(cursor.getInt(Image.ImageColumns.COLUMN_NAME_NOTIFY_ID_INDEX_1));
         image.setUser_id(cursor.getInt(Image.ImageColumns.COLUMN_NAME_USER_ID_INDEX_2));
