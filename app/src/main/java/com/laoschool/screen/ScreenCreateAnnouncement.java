@@ -264,6 +264,13 @@ public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecy
         message.setClass_id(LaoSchoolShared.myProfile.getEclass().getId());
         message.setTitle(txtTitle.getText().toString());
         message.setContent(txtContent.getText().toString());
+        if (imgPrioty.getTag() != null) {
+            if (imgPrioty.getTag().equals(R.color.colorDefault)) {
+                message.setImp_flg(0);
+            } else {
+                message.setImp_flg(1);
+            }
+        }
         message.setNotifyImages(files);
 //        Log.d(TAG, "Message create:" + message.toString());
         _confirmSentNotification(message);
