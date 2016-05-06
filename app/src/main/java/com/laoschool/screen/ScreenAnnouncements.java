@@ -22,6 +22,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.laoschool.R;
@@ -67,6 +69,9 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     static NotificationPagerAdapter notificationPagerAdapter;
 
     static NotificationList currentPage;
+
+    private static LinearLayout mAnnouncement;
+    private static ProgressBar mProgressBar;
 
     public Message getNotification() {
         return notification;
@@ -122,11 +127,7 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     }
 
     public static void getDataFormServer() {
-        final ProgressDialog ringProgressDialog = new ProgressDialog(context);
-        ringProgressDialog.setTitle("Please wait ...");
-        ringProgressDialog.setMessage("Loading ...");
-        ringProgressDialog.setIndeterminate(false);
-        ringProgressDialog.show();
+        _showProgressLoading(true);
         service.getNotification(new AsyncCallback<List<Message>>() {
             @Override
             public void onSuccess(List<Message> result) {
@@ -135,54 +136,34 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
                         accessNotification.addOrUpdateNotification(message);
                     }
                     getDataFormLocal();
-                    ringProgressDialog.dismiss();
+                    _showProgressLoading(false);
                 } catch (Exception e) {
-                    e.printStackTrace();
-                    ringProgressDialog.dismiss();
+                    Log.e(TAG, "getDataFormServer()/getNotification() Exception=" + e.getMessage());
+                    _showProgressLoading(false);
                 }
             }
 
             @Override
             public void onFailure(String message) {
-                ringProgressDialog.dismiss();
+                Log.e(TAG, "getDataFormServer()/getNotification() onFailure=" + message);
+                _showProgressLoading(false);
             }
         });
     }
 
-    public static void getDataFormServer(int form_id) {
-        final ProgressDialog ringProgressDialog = new ProgressDialog(context);
-        ringProgressDialog.setTitle("Please wait ...");
-        ringProgressDialog.setMessage("Loading ...");
-        ringProgressDialog.setIndeterminate(false);
-        ringProgressDialog.show();
-        service.getNotification(form_id, new AsyncCallback<List<Message>>() {
-            @Override
-            public void onSuccess(List<Message> result) {
-                try {
-                    for (Message message : result) {
-                        accessNotification.addOrUpdateNotification(message);
-                    }
-                    getDataFormLocal();
-                    ringProgressDialog.dismiss();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    ringProgressDialog.dismiss();
-                }
-            }
-
-            @Override
-            public void onFailure(String message) {
-                ringProgressDialog.dismiss();
-            }
-        });
+    private static void _showProgressLoading(boolean b) {
+        if (b) {
+            mProgressBar.setVisibility(View.VISIBLE);
+            mAnnouncement.setVisibility(View.GONE);
+        } else {
+            mProgressBar.setVisibility(View.GONE);
+            mAnnouncement.setVisibility(View.VISIBLE);
+        }
     }
 
-    public static void getDataFormServer(int form_id, final int position) {
-        final ProgressDialog ringProgressDialog = new ProgressDialog(context);
-        ringProgressDialog.setTitle("Please wait ...");
-        ringProgressDialog.setMessage("Loading ...");
-        ringProgressDialog.setIndeterminate(false);
-        ringProgressDialog.show();
+
+    public static void getDataFormServer(final int form_id, final int position) {
+        _showProgressLoading(true);
         service.getNotification(form_id, new AsyncCallback<List<Message>>() {
             @Override
             public void onSuccess(List<Message> result) {
@@ -191,16 +172,17 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
                         accessNotification.addOrUpdateNotification(message);
                     }
                     getDataFormLocal(position);
-                    ringProgressDialog.dismiss();
+                    _showProgressLoading(false);
                 } catch (Exception e) {
-                    e.printStackTrace();
-                    ringProgressDialog.dismiss();
+                    Log.e(TAG, "getDataFormServer()/getNotification(" + form_id + ") Exception=" + e.getMessage());
+                    _showProgressLoading(false);
                 }
             }
 
             @Override
             public void onFailure(String message) {
-                ringProgressDialog.dismiss();
+                Log.e(TAG, "getDataFormServer()/getNotification(" + form_id + ") onFailure=" + message);
+                _showProgressLoading(false);
             }
         });
     }
@@ -251,6 +233,8 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     }
 
     private View _defineTeacherView(View view) {
+        mAnnouncement = (LinearLayout) view.findViewById(R.id.mAnnouncement);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.mProgress);
         // Bind the tabs to the ViewPager
         tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
 
@@ -311,7 +295,6 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
             }
         });
 
-        // _defineData();
 
         return view;
     }
@@ -494,10 +477,9 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
             //set adapter
             mRecyclerListMessage.setLayoutManager(linearLayoutManager);
             //
-            _handlerSwipeReload();
-
             _setListNotification(notificationForUser, position);
 
+            _handlerSwipeReload();
             return view;
         }
 
