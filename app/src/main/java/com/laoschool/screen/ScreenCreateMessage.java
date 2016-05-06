@@ -125,22 +125,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
         txtMessageTo = (TextView) view.findViewById(R.id.txtConversionMessageTo);
         cbSendSmsStudent = (CheckBox) view.findViewById(R.id.cbSendSmsStudent);
         try {
-            service.getUserById(LaoSchoolShared.myProfile.getEclass().getHead_teacher_id(), new AsyncCallback<User>() {
-                @Override
-                public void onSuccess(User result) {
-                    txtMessageTo.setText(result.getFullname());
-                }
-
-                @Override
-                public void onFailure(String message) {
-
-                }
-
-                @Override
-                public void onAuthFail(String message) {
-                    LaoSchoolShared.goBackToLoginPage(context);
-                }
-            });
+            txtMessageTo.setText(LaoSchoolShared.myProfile.getEclass().getHeadTeacherName());
         } catch (Exception e) {
             //e.printStackTrace();
             Toast.makeText(context, "Server null", Toast.LENGTH_SHORT).show();
