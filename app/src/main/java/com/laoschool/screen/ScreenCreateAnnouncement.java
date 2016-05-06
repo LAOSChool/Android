@@ -322,6 +322,11 @@ public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecy
                     String alert = getString(R.string.err_msg_create_message);
                     _showAlertMessage(alert);
                 }
+
+                @Override
+                public void onAuthFail(String message) {
+                    LaoSchoolShared.goBackToLoginPage(context);
+                }
             });
         } catch (Exception e) {
             Log.e(TAG, "/_createNotification() Exception message:" + e.getMessage());

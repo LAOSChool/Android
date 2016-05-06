@@ -180,6 +180,11 @@ public class ListNotificationAdapter extends RecyclerView.Adapter<RecyclerView.V
             public void onFailure(String message) {
                 Log.e(TAG, "_updateIsReadNotification() onFailure():" + message);
             }
+
+            @Override
+            public void onAuthFail(String message) {
+                LaoSchoolShared.goBackToLoginPage(context);
+            }
         });
     }
 

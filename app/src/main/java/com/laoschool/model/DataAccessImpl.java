@@ -275,8 +275,16 @@ public class DataAccessImpl implements DataAccessInterface {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("Service/gUserProfile()", error.toString());
-                        callback.onFailure(error.toString());
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && networkResponse.statusCode == 409) {
+                            // HTTP Status Code: 409 Unauthorized Oo
+                            Log.e("Service/getUsers()", "error status code " + networkResponse.statusCode);
+                            callback.onAuthFail(error.toString());
+                        }
+                        else {
+                            Log.e("Service/getUsers()", error.toString());
+                            callback.onFailure(error.toString());
+                        }
                     }
                 }
         ) {
@@ -330,8 +338,16 @@ public class DataAccessImpl implements DataAccessInterface {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("Service/gUserProfile()", error.toString());
-                        callback.onFailure(error.toString());
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && networkResponse.statusCode == 409) {
+                            // HTTP Status Code: 409 Unauthorized Oo
+                            Log.e("Service/gUserProfile()", "error status code " + networkResponse.statusCode);
+                            callback.onAuthFail(error.toString());
+                        }
+                        else {
+                            Log.e("Service/gUserProfile()", error.toString());
+                            callback.onFailure(error.toString());
+                        }
                     }
                 }
         ) {
@@ -363,8 +379,16 @@ public class DataAccessImpl implements DataAccessInterface {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("Service/getUserById()", error.toString());
-                        callback.onFailure(error.toString());
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && networkResponse.statusCode == 409) {
+                            // HTTP Status Code: 409 Unauthorized Oo
+                            Log.e("Service/getUserById()", "error status code " + networkResponse.statusCode);
+                            callback.onAuthFail(error.toString());
+                        }
+                        else {
+                            Log.e("Service/getUserById()", error.toString());
+                            callback.onFailure(error.toString());
+                        }
                     }
                 }
         ) {
@@ -400,8 +424,16 @@ public class DataAccessImpl implements DataAccessInterface {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("Service/getAttendance()", error.toString());
-                        callback.onFailure(error.toString());
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && networkResponse.statusCode == 409) {
+                            // HTTP Status Code: 409 Unauthorized Oo
+                            Log.e("Service/getAttendance()", "error status code " + networkResponse.statusCode);
+                            callback.onAuthFail(error.toString());
+                        }
+                        else {
+                            Log.e("Service/getAttendance()", error.toString());
+                            callback.onFailure(error.toString());
+                        }
                     }
                 }
 
@@ -493,8 +525,16 @@ public class DataAccessImpl implements DataAccessInterface {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("Service/getMessage()", error.toString());
-                        callback.onFailure(error.toString());
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && networkResponse.statusCode == 409) {
+                            // HTTP Status Code: 409 Unauthorized Oo
+                            Log.e("Service/getMessages()", "error status code " + networkResponse.statusCode);
+                            callback.onAuthFail(error.toString());
+                        }
+                        else {
+                            Log.e("Service/getMessages()", error.toString());
+                            callback.onFailure(error.toString());
+                        }
                     }
                 }
 
@@ -608,8 +648,16 @@ public class DataAccessImpl implements DataAccessInterface {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("Service/createMessage()", error.toString());
-                        callback.onFailure(error.toString());
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && networkResponse.statusCode == 409) {
+                            // HTTP Status Code: 409 Unauthorized Oo
+                            Log.e("Service/createMessage()", "error status code " + networkResponse.statusCode);
+                            callback.onAuthFail(error.toString());
+                        }
+                        else {
+                            Log.e("Service/createMessage()", error.toString());
+                            callback.onFailure(error.toString());
+                        }
                     }
                 }
         ) {
@@ -661,8 +709,16 @@ public class DataAccessImpl implements DataAccessInterface {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("Service/updateMessage()", error.toString());
-                        callback.onFailure(error.toString());
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && networkResponse.statusCode == 409) {
+                            // HTTP Status Code: 409 Unauthorized Oo
+                            Log.e("Service/updateMessage()", "error status code " + networkResponse.statusCode);
+                            callback.onAuthFail(error.toString());
+                        }
+                        else {
+                            Log.e("Service/updateMessage()", error.toString());
+                            callback.onFailure(error.toString());
+                        }
                     }
                 }
         ) {
@@ -702,7 +758,7 @@ public class DataAccessImpl implements DataAccessInterface {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            Log.d("S/getNotification()", response);
+                            Log.d("Service/gNotification()", response);
                             ListMessages messages = ListMessages.fromJson(response);
                             callback.onSuccess(messages.getList());
                         } catch (Exception e) {
@@ -713,8 +769,16 @@ public class DataAccessImpl implements DataAccessInterface {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("S/getNotification()", error.toString());
-                        callback.onFailure(error.toString());
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && networkResponse.statusCode == 409) {
+                            // HTTP Status Code: 409 Unauthorized Oo
+                            Log.e("Service/gNotification()", "error status code " + networkResponse.statusCode);
+                            callback.onAuthFail(error.toString());
+                        }
+                        else {
+                            Log.e("Service/gNotification()", error.toString());
+                            callback.onFailure(error.toString());
+                        }
                     }
                 }
 
@@ -742,7 +806,7 @@ public class DataAccessImpl implements DataAccessInterface {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            Log.d("S/getNotification()", response);
+                            Log.d("Service/gNotification()", response);
                             JSONObject mainObject = new JSONObject(response);
                             int total_count = mainObject.getInt("total_count");
                             if (total_count > 0) {
@@ -759,8 +823,16 @@ public class DataAccessImpl implements DataAccessInterface {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("S/getNotification()", error.toString());
-                        callback.onFailure(error.toString());
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && networkResponse.statusCode == 409) {
+                            // HTTP Status Code: 409 Unauthorized Oo
+                            Log.e("Service/gNotification()", "error status code " + networkResponse.statusCode);
+                            callback.onAuthFail(error.toString());
+                        }
+                        else {
+                            Log.e("Service/gNotification()", error.toString());
+                            callback.onFailure(error.toString());
+                        }
                     }
                 }
 
@@ -792,7 +864,16 @@ public class DataAccessImpl implements DataAccessInterface {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                callback.onFailure(error.getMessage());
+                NetworkResponse networkResponse = error.networkResponse;
+                if (networkResponse != null && networkResponse.statusCode == 409) {
+                    // HTTP Status Code: 409 Unauthorized Oo
+                    Log.e("Service/getImage()", "error status code " + networkResponse.statusCode);
+                    callback.onAuthFail(error.toString());
+                }
+                else {
+                    Log.e("Service/getImage()", error.toString());
+                    callback.onFailure(error.toString());
+                }
             }
         });
 
@@ -801,7 +882,7 @@ public class DataAccessImpl implements DataAccessInterface {
     @Override
     public void createNotification(final Message message, final AsyncCallback<Message> callback) {
         String url = HOST + "notifies/create";
-        Log.d("S/createNotification()", "message=" + message.toString());
+        Log.d("Service/cNotification()", "message=" + message.toString());
         try {
             HttpEntity entity = null;
             MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
@@ -830,7 +911,7 @@ public class DataAccessImpl implements DataAccessInterface {
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                            Log.d("S/createNotification()", response);
+                            Log.d("Service/cNotification()", response);
                             //Message m = Message.messageParsefromJson(response);
                             callback.onSuccess(new Message());
                         }
@@ -838,8 +919,16 @@ public class DataAccessImpl implements DataAccessInterface {
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Log.e("S/createNotification()", error.toString());
-                            callback.onFailure(error.toString());
+                            NetworkResponse networkResponse = error.networkResponse;
+                            if (networkResponse != null && networkResponse.statusCode == 409) {
+                                // HTTP Status Code: 409 Unauthorized Oo
+                                Log.e("Service/cNotification()", "error status code " + networkResponse.statusCode);
+                                callback.onAuthFail(error.toString());
+                            }
+                            else {
+                                Log.e("Service/cNotification()", error.toString());
+                                callback.onFailure(error.toString());
+                            }
                         }
                     }
             ) {
@@ -885,7 +974,7 @@ public class DataAccessImpl implements DataAccessInterface {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("S/updateNotification()", response);
+                        Log.d("Service/uNotification()", response);
                         Message m = Message.messageParsefromJson(response);
                         callback.onSuccess(m);
                     }
@@ -893,8 +982,16 @@ public class DataAccessImpl implements DataAccessInterface {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("S/updateNotification()", error.toString());
-                        callback.onFailure(error.toString());
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && networkResponse.statusCode == 409) {
+                            // HTTP Status Code: 409 Unauthorized Oo
+                            Log.e("Service/uNotification()", "error status code " + networkResponse.statusCode);
+                            callback.onAuthFail(error.toString());
+                        }
+                        else {
+                            Log.e("Service/uNotification()", error.toString());
+                            callback.onFailure(error.toString());
+                        }
                     }
                 }
         ) {
