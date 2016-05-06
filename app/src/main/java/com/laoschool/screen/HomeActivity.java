@@ -149,6 +149,7 @@ public class HomeActivity extends AppCompatActivity implements
         setSupportActionBar(toolbar);
 
         service = LaoSchoolSingleton.getInstance().getDataAccessService();
+//        Toast.makeText(this, "Getting profile", Toast.LENGTH_SHORT).show();
         if (LaoSchoolShared.myProfile == null) {
             getUserProfile();
         } else {
@@ -180,6 +181,11 @@ public class HomeActivity extends AppCompatActivity implements
                 Intent intent = new Intent(thiz, ScreenLogin.class);
                 startActivity(intent);
                 finish();
+            }
+
+            @Override
+            public void onAuthFail(String message) {
+                LaoSchoolShared.goBackToLoginPage(thiz);
             }
         });
     }

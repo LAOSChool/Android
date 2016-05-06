@@ -209,6 +209,11 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
                                 ",fromID=" + fromID + ")/onFailure():" + message);
                         _showProgessLoading(false);
                     }
+
+                    @Override
+                    public void onAuthFail(String message) {
+                        LaoSchoolShared.goBackToLoginPage(context);
+                    }
                 });
     }
 
@@ -411,6 +416,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
 //            Log.d(TAG, "NotificationList:_getListMessageFormServer() position=" + position);
 //            int form_id = DataAccessMessage.getMaxMessagesID(LaoSchoolShared.myProfile.getId());
 //
+
 //            final String classID = "";
 //            final String fromUserID = ((position == 2) ? String.valueOf(LaoSchoolShared.myProfile.getId()) : "");
 //            final String fromDate = "";
@@ -477,6 +483,84 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
 //            }
 //            _setListMessage(messagesForUser, position);
 //        }
+
+
+        private void _getListMessageFormServer() {
+            Log.d(TAG, "NotificationList:_getListMessageFormServer() position=" + position);
+            int form_id = DataAccessMessage.getMaxMessagesID(LaoSchoolShared.myProfile.getId());
+
+            final String classID = "";
+            final String fromUserID = ((position == 2) ? String.valueOf(LaoSchoolShared.myProfile.getId()) : "");
+            final String fromDate = "";
+            final String toUserID = ((position == 0 || position == 1) ? String.valueOf(LaoSchoolShared.myProfile.getId()) : "");
+            final String toDate = "";
+            final String channel = "";
+            final String status = "";
+            final String fromID = ((form_id > 0) ? String.valueOf(form_id) : "");
+            service.getMessages(
+                    classID//classID
+                    , fromUserID//from user ID
+                    , fromDate//from date
+                    , toDate//to date
+                    , toUserID//to user ID
+                    , channel//channel
+                    , status//status
+                    , fromID//from id
+                    , new AsyncCallback<List<Message>>() {
+                        @Override
+                        public void onSuccess(List<Message> result) {
+                            try {
+                                int sizeResults = result.size();
+                                Log.d(TAG, "NotificationList:setOnRefreshListener():\n" +
+                                        "getMessages(classID=" + classID + "\n" +
+                                        ",fromUserID=" + fromUserID + ",fromDate=" + fromDate + "\n" +
+                                        ",toUserID=" + toUserID + ",toDate=" + toDate + "\n" +
+                                        ",channel=" + channel + ",status=" + status + "\n" +
+                                        ",fromID=" + fromID + ")/onSuccess() Results size=" + sizeResults);
+                                for (Message message : result) {
+                                    dataAccessMessage.addOrUpdateMessage(message);
+                                }
+                                _getListMessageFormLocalData();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+
+                        @Override
+                        public void onFailure(String message) {
+                            Log.e(TAG, "NotificationList:setOnRefreshListener():\n" +
+                                    "getMessages(classID=" + classID + "\n" +
+                                    ",fromUserID=" + fromUserID + ",fromDate=" + fromDate + "\n" +
+                                    ",toUserID=" + toUserID + ",toDate=" + toDate + "\n" +
+                                    ",channel=" + channel + ",status=" + status + "\n" +
+                                    ",fromID=" + fromID + ")/onFailure():" + message);
+                        }
+
+                        @Override
+                        public void onAuthFail(String message) {
+                            LaoSchoolShared.goBackToLoginPage(context);
+                        }
+                    });
+
+        }
+
+        public void _getListMessageFormLocalData() {
+            Log.d(TAG, "NotificationList:_getListMessageFormLocalData() position=" + position);
+            List<Message> messagesForUser = new ArrayList<>();
+            if (LaoSchoolShared.myProfile != null) {
+                if (position == 0) {
+                    messagesForUser = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
+                } else if (position == 1) {
+                    messagesForUser = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 0);
+                } else if (position == 2) {
+                    messagesForUser = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
+                }
+                Log.d(TAG, "MessageListFragment:getListMessagesForUser size=" + messagesForUser.size());
+            }
+            _setListMessage(messagesForUser, position);
+        }
+
 
         private void _setListMessage(final List<Message> messages, final int position) {
             try {

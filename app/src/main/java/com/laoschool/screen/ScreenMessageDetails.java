@@ -210,7 +210,6 @@ public class ScreenMessageDetails extends Fragment implements FragmentLifecycle 
                     imgPiorityMessageDetails.setColorFilter(context.getResources().getColor(R.color.colorDefault));
                     imgPiorityMessageDetails.setTag(R.color.colorDefault);
                     message.setImp_flg(0);
-
                 }
                 DataAccessMessage.updateMessage(message);
                 _updatePriotyFormServer(message);
@@ -233,6 +232,11 @@ public class ScreenMessageDetails extends Fragment implements FragmentLifecycle 
             @Override
             public void onFailure(String message) {
                 ringProgressDialog.dismiss();
+            }
+
+            @Override
+            public void onAuthFail(String message) {
+                LaoSchoolShared.goBackToLoginPage(context);
             }
         });
     }
@@ -317,6 +321,11 @@ public class ScreenMessageDetails extends Fragment implements FragmentLifecycle 
                             Log.d(TAG, R.string.err_msg_create_message + ":" + message1);
                             _resetForm();
                         }
+
+                        @Override
+                        public void onAuthFail(String message) {
+                            LaoSchoolShared.goBackToLoginPage(context);
+                        }
                     });
 
                 } else {
@@ -347,6 +356,11 @@ public class ScreenMessageDetails extends Fragment implements FragmentLifecycle 
             @Override
             public void onFailure(String message) {
                 Log.d(TAG, "set Adaper error:" + message);
+            }
+
+            @Override
+            public void onAuthFail(String message) {
+                LaoSchoolShared.goBackToLoginPage(context);
             }
         });
     }

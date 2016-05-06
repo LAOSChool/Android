@@ -148,6 +148,11 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
                 Log.e(TAG, "getDataFormServer()/getNotification() onFailure=" + message);
                 _showProgressLoading(false);
             }
+
+            @Override
+            public void onAuthFail(String message) {
+                LaoSchoolShared.goBackToLoginPage(context);
+            }
         });
     }
 
@@ -183,6 +188,11 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
             public void onFailure(String message) {
                 Log.e(TAG, "getDataFormServer()/getNotification(" + form_id + ") onFailure=" + message);
                 _showProgressLoading(false);
+            }
+
+            @Override
+            public void onAuthFail(String message) {
+                LaoSchoolShared.goBackToLoginPage(context);
             }
         });
     }
@@ -331,6 +341,11 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
             @Override
             public void onFailure(String message) {
 
+            }
+
+            @Override
+            public void onAuthFail(String message) {
+                LaoSchoolShared.goBackToLoginPage(context);
             }
         });
     }
@@ -511,6 +526,95 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
                 }
             });
         }
+
+
+        private void _defineListNotification() {
+            final ProgressDialog progressDialog = new ProgressDialog(context);
+            progressDialog.setMessage("Loading...");
+            progressDialog.show();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //Load message in local
+                    int countLocal = accessNotification.getNotificationCount();
+                    Log.d(TAG, "NotificationList:count notification in Local=" + countLocal);
+
+                    if (countLocal > 0) {
+                        _getListMessageFormLocalData();
+                    } else {
+                        _getListMessageFormServer();
+                    }
+                    progressDialog.dismiss();
+                }
+            }, 2000);
+        }
+
+        private void _getListMessageFormServer() {
+            Log.d(TAG, "NotificationList:_getListMessageFormServer() position=" + position);
+            service.getNotification(new AsyncCallback<List<Message>>() {
+                @Override
+                public void onSuccess(List<Message> result) {
+                    try {
+                        for (Message message : result) {
+                            accessNotification.addOrUpdateNotification(message);
+                        }
+                        _getListMessageFormLocalData();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(String message) {
+
+                }
+
+                @Override
+                public void onAuthFail(String message) {
+                    LaoSchoolShared.goBackToLoginPage(context);
+                }
+            });
+        }
+
+        private void _getListMessageFormServer(int last_id) {
+            Log.d(TAG, "NotificationList:_getListMessageFormServer(" + last_id + ") position=" + position);
+            service.getNotification(last_id, new AsyncCallback<List<Message>>() {
+                @Override
+                public void onSuccess(List<Message> result) {
+                    try {
+                        for (Message message : result) {
+                            accessNotification.addOrUpdateNotification(message);
+                        }
+                        _getListMessageFormLocalData();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(String message) {
+
+                }
+
+                @Override
+                public void onAuthFail(String message) {
+                    LaoSchoolShared.goBackToLoginPage(context);
+                }
+            });
+        }
+
+        public void _getListMessageFormLocalData() {
+            List<Message> notificationForUser = new ArrayList<>();
+            if (LaoSchoolShared.myProfile != null) {
+                notificationForUser = accessNotification.getListNotificationForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, (position == 0 ? 1 : 0));
+                Log.d(TAG, "NotificationList:getListNotificationForUser size=" + notificationForUser.size());
+            }
+            _setListNotification(notificationForUser, position);
+
+        }
+
 
         private void _setListNotification(final List<Message> messages, final int position) {
             try {
