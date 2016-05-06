@@ -154,8 +154,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
 
     private boolean validateMessageConten(EditText edit) {
         if (edit.getText().toString().trim().isEmpty()) {
-            requestFocus(edit);
-            Toast.makeText(context, R.string.err_msg_input_message_conten, Toast.LENGTH_SHORT).show();
+            _showErorMessage(getString(R.string.err_msg_input_message_conten), edit);
             return false;
         }
         return true;
@@ -235,9 +234,9 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
 //                return;
 //            }
 //        } else {
-        if (!validateMessageTitle(txtMessageTitleStudent)) {
-            return;
-        }
+//        if (!validateMessageTitle(txtMessageTitleStudent)) {
+//            return;
+//        }
         if (!validateMessageConten(txtMessageContentStudent)) {
             return;
         }
@@ -246,7 +245,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                 if (LaoSchoolShared.myProfile.getEclass() != null) {
                     final Message message = new Message();
 
-                    message.setTitle(txtMessageTitleStudent.getText().toString());
+                    //message.setTitle(txtMessageTitleStudent.getText().toString());
                     message.setContent(txtMessageContentStudent.getText().toString());
                     message.setChannel(cbSendSmsStudent.isChecked() ? 0 : 1);
 
@@ -267,6 +266,10 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                             result.setIs_read(1);
                             // save local
                             dataAccessMessage.addMessage(result);
+                            _resetForm();
+                            if (iScreenCreateMessage != null) {
+                                iScreenCreateMessage.goBackToMessage();
+                            }
                             progressDialog.dismiss();
                             _showAlertMessage(getString(R.string.msg_create_message_sucessfully));
 
@@ -298,17 +301,30 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
     }
 
     private void _showAlertMessage(String alert) {
+        Toast.makeText(context, alert, Toast.LENGTH_LONG).show();
+//        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//
+//        builder.setMessage(alert);
+//        builder.setNegativeButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                dialogInterface.dismiss();
+//            }
+//        });
+//        Dialog dialog = builder.create();
+//        dialog.show();
+    }
+
+    private void _showErorMessage(String alert, final EditText edit) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
         builder.setMessage(alert);
         builder.setNegativeButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                _resetForm();
+                requestFocus(edit);
                 dialogInterface.dismiss();
-                if (iScreenCreateMessage != null) {
-                    iScreenCreateMessage.goBackToMessage();
-                }
+
             }
         });
         Dialog dialog = builder.create();
