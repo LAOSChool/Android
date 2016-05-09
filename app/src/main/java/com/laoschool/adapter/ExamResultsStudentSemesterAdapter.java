@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by Hue on 3/11/2016.
  */
-public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<ExamResultsStudentSemesterAdapter.RecylerViewScreenExamResultsStudentTabAdapterViewHolder> {
+public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<ExamResultsStudentSemesterAdapter.ExamResultsStudentSemesterAdapterViewHolder> {
     private Fragment screen;
     private Context context;
     private List<String> strings;
@@ -32,7 +32,7 @@ public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<Exam
     }
 
     @Override
-    public RecylerViewScreenExamResultsStudentTabAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ExamResultsStudentSemesterAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = null;
         if (viewType == TYPE_LINE)
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_line, parent, false); //Inflating the layout
@@ -41,12 +41,12 @@ public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<Exam
         } else if (viewType == TYPE_SUB_HEADER) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_only_title, parent, false); //Inflating the layout
         }
-        RecylerViewScreenExamResultsStudentTabAdapterViewHolder viewHolder = new RecylerViewScreenExamResultsStudentTabAdapterViewHolder(view, viewType);
+        ExamResultsStudentSemesterAdapterViewHolder viewHolder = new ExamResultsStudentSemesterAdapterViewHolder(view, viewType);
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(RecylerViewScreenExamResultsStudentTabAdapterViewHolder holder, int position) {
+    public void onBindViewHolder(ExamResultsStudentSemesterAdapterViewHolder holder, int position) {
         View view = holder.view;
         try {
             final String title = strings.get(position);
@@ -87,11 +87,11 @@ public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<Exam
 
     }
 
-    public class RecylerViewScreenExamResultsStudentTabAdapterViewHolder extends RecyclerView.ViewHolder {
+    public class ExamResultsStudentSemesterAdapterViewHolder extends RecyclerView.ViewHolder {
         View view;
         int viewType;
 
-        public RecylerViewScreenExamResultsStudentTabAdapterViewHolder(View itemView, int viewType) {
+        public ExamResultsStudentSemesterAdapterViewHolder(View itemView, int viewType) {
             super(itemView);
             this.view = itemView;
             this.viewType = viewType;
