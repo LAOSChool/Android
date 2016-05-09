@@ -518,8 +518,57 @@ public class DataAccessImpl implements DataAccessInterface {
                 return params;
             }
         };
+        mRequestQueue.add(stringRequest);
+    }
 
-//      Log.d("Service/getMessage()", "URL:" + stringRequest.getUrl());
+    @Override
+    public void getMyExamResults(final AsyncCallback<List<ExamResult>> callback) {
+        String url = HOST + "exam_results/myprofile";
+        Log.d("S/getMyExamResults()","url:"+url);
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url.trim(),
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("S/getMyExamResults()", response);
+                        try {
+                            JSONObject mainObject = new JSONObject(response);
+                            int total_count = mainObject.getInt("total_count");
+                            if (total_count > 0) {
+                                ListExamResults examResults = ListExamResults.fromJson(response);
+                                callback.onSuccess(examResults.getList());
+                            } else {
+                                callback.onSuccess(new ArrayList<ExamResult>());
+                            }
+                        } catch (JSONException e) {
+                            callback.onSuccess(new ArrayList<ExamResult>());
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && networkResponse.statusCode == 409) {
+                            // HTTP Status Code: 409 Unauthorized Oo
+                            Log.e("S/getMyExamResults()", "error status code " + networkResponse.statusCode);
+                            callback.onAuthFail(error.toString());
+                        } else {
+                            Log.e("S/getMyExamResults()", error.toString());
+                            callback.onFailure(error.toString());
+                        }
+                    }
+                }
+
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", getAuthKey());
+                return params;
+            }
+        };
         mRequestQueue.add(stringRequest);
     }
 
