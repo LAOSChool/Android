@@ -220,17 +220,17 @@ public class DataAccessImpl implements DataAccessInterface {
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Service/forgotPass()", error.toString());
                         try {
-                            if(error.networkResponse != null) {
+                            if (error.networkResponse != null) {
                                 String responseBody = new String(error.networkResponse.data, "utf-8");
                                 JSONObject jsonObject = new JSONObject(responseBody);
                                 String developerMessage = jsonObject.getString("developerMessage");
                                 callback.onFailure(developerMessage);
-                            }
-                            else
+                            } else
                                 callback.onFailure(error.toString());
-                        } catch ( JSONException e ) {
+                        } catch (JSONException e) {
                             callback.onFailure(error.toString());
-                        } catch (UnsupportedEncodingException e){}
+                        } catch (UnsupportedEncodingException e) {
+                        }
                     }
                 }
         ) {
@@ -280,8 +280,7 @@ public class DataAccessImpl implements DataAccessInterface {
                             // HTTP Status Code: 409 Unauthorized Oo
                             Log.e("Service/getUsers()", "error status code " + networkResponse.statusCode);
                             callback.onAuthFail(error.toString());
-                        }
-                        else {
+                        } else {
                             Log.e("Service/getUsers()", error.toString());
                             callback.onFailure(error.toString());
                         }
@@ -343,8 +342,7 @@ public class DataAccessImpl implements DataAccessInterface {
                             // HTTP Status Code: 409 Unauthorized Oo
                             Log.e("Service/gUserProfile()", "error status code " + networkResponse.statusCode);
                             callback.onAuthFail(error.toString());
-                        }
-                        else {
+                        } else {
                             Log.e("Service/gUserProfile()", error.toString());
                             callback.onFailure(error.toString());
                         }
@@ -384,8 +382,7 @@ public class DataAccessImpl implements DataAccessInterface {
                             // HTTP Status Code: 409 Unauthorized Oo
                             Log.e("Service/getUserById()", "error status code " + networkResponse.statusCode);
                             callback.onAuthFail(error.toString());
-                        }
-                        else {
+                        } else {
                             Log.e("Service/getUserById()", error.toString());
                             callback.onFailure(error.toString());
                         }
@@ -429,8 +426,7 @@ public class DataAccessImpl implements DataAccessInterface {
                             // HTTP Status Code: 409 Unauthorized Oo
                             Log.e("Service/getAttendance()", "error status code " + networkResponse.statusCode);
                             callback.onAuthFail(error.toString());
-                        }
-                        else {
+                        } else {
                             Log.e("Service/getAttendance()", error.toString());
                             callback.onFailure(error.toString());
                         }
@@ -461,8 +457,70 @@ public class DataAccessImpl implements DataAccessInterface {
     }
 
     @Override
-    public void getExamResults(int filter_class_id, int filter_user_id, AsyncCallback<List<ExamResult>> callback) {
+    public void getExamResults(int filter_class_id, int filter_user_id, final AsyncCallback<List<ExamResult>> callback) {
+        String url = HOST + "exam_results";
+        StringBuilder stringBuilder = new StringBuilder();
+        int check = 0;
+        if (filter_class_id > -1) {
+            stringBuilder.append("?filter_class_id=" + filter_class_id);
+            check = 1;
+        }
+        if (filter_user_id > -1) {
+            if (check == 0) {
+                stringBuilder.append("?filter_user_id=" + filter_user_id);
+            } else if (check == 1) {
+                stringBuilder.append("&filter_user_id=" + filter_user_id);
+            }
+        }
+        url += stringBuilder.toString();
+        Log.d("S/getExamResults()","url:"+url);
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url.trim(),
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("S/getExamResults()", response);
+                        try {
+                            JSONObject mainObject = new JSONObject(response);
+                            int total_count = mainObject.getInt("total_count");
+                            if (total_count > 0) {
+                                ListExamResults examResults = ListExamResults.fromJson(response);
+                                callback.onSuccess(examResults.getList());
+                            } else {
+                                callback.onSuccess(new ArrayList<ExamResult>());
+                            }
+                        } catch (JSONException e) {
+                            callback.onSuccess(new ArrayList<ExamResult>());
+                        }
 
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && networkResponse.statusCode == 409) {
+                            // HTTP Status Code: 409 Unauthorized Oo
+                            Log.e("S/getExamResults()", "error status code " + networkResponse.statusCode);
+                            callback.onAuthFail(error.toString());
+                        } else {
+                            Log.e("S/getExamResults()", error.toString());
+                            callback.onFailure(error.toString());
+                        }
+                    }
+                }
+
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", getAuthKey());
+                return params;
+            }
+        };
+
+//      Log.d("Service/getMessage()", "URL:" + stringRequest.getUrl());
+        mRequestQueue.add(stringRequest);
     }
 
     @Override
@@ -530,8 +588,7 @@ public class DataAccessImpl implements DataAccessInterface {
                             // HTTP Status Code: 409 Unauthorized Oo
                             Log.e("Service/getMessages()", "error status code " + networkResponse.statusCode);
                             callback.onAuthFail(error.toString());
-                        }
-                        else {
+                        } else {
                             Log.e("Service/getMessages()", error.toString());
                             callback.onFailure(error.toString());
                         }
@@ -653,8 +710,7 @@ public class DataAccessImpl implements DataAccessInterface {
                             // HTTP Status Code: 409 Unauthorized Oo
                             Log.e("Service/createMessage()", "error status code " + networkResponse.statusCode);
                             callback.onAuthFail(error.toString());
-                        }
-                        else {
+                        } else {
                             Log.e("Service/createMessage()", error.toString());
                             callback.onFailure(error.toString());
                         }
@@ -714,8 +770,7 @@ public class DataAccessImpl implements DataAccessInterface {
                             // HTTP Status Code: 409 Unauthorized Oo
                             Log.e("Service/updateMessage()", "error status code " + networkResponse.statusCode);
                             callback.onAuthFail(error.toString());
-                        }
-                        else {
+                        } else {
                             Log.e("Service/updateMessage()", error.toString());
                             callback.onFailure(error.toString());
                         }
@@ -774,8 +829,7 @@ public class DataAccessImpl implements DataAccessInterface {
                             // HTTP Status Code: 409 Unauthorized Oo
                             Log.e("Service/gNotification()", "error status code " + networkResponse.statusCode);
                             callback.onAuthFail(error.toString());
-                        }
-                        else {
+                        } else {
                             Log.e("Service/gNotification()", error.toString());
                             callback.onFailure(error.toString());
                         }
@@ -828,8 +882,7 @@ public class DataAccessImpl implements DataAccessInterface {
                             // HTTP Status Code: 409 Unauthorized Oo
                             Log.e("Service/gNotification()", "error status code " + networkResponse.statusCode);
                             callback.onAuthFail(error.toString());
-                        }
-                        else {
+                        } else {
                             Log.e("Service/gNotification()", error.toString());
                             callback.onFailure(error.toString());
                         }
@@ -869,8 +922,7 @@ public class DataAccessImpl implements DataAccessInterface {
                     // HTTP Status Code: 409 Unauthorized Oo
                     Log.e("Service/getImage()", "error status code " + networkResponse.statusCode);
                     callback.onAuthFail(error.toString());
-                }
-                else {
+                } else {
                     Log.e("Service/getImage()", error.toString());
                     callback.onFailure(error.toString());
                 }
@@ -924,8 +976,7 @@ public class DataAccessImpl implements DataAccessInterface {
                                 // HTTP Status Code: 409 Unauthorized Oo
                                 Log.e("Service/cNotification()", "error status code " + networkResponse.statusCode);
                                 callback.onAuthFail(error.toString());
-                            }
-                            else {
+                            } else {
                                 Log.e("Service/cNotification()", error.toString());
                                 callback.onFailure(error.toString());
                             }
@@ -987,8 +1038,7 @@ public class DataAccessImpl implements DataAccessInterface {
                             // HTTP Status Code: 409 Unauthorized Oo
                             Log.e("Service/uNotification()", "error status code " + networkResponse.statusCode);
                             callback.onAuthFail(error.toString());
-                        }
-                        else {
+                        } else {
                             Log.e("Service/uNotification()", error.toString());
                             callback.onFailure(error.toString());
                         }
@@ -1088,7 +1138,7 @@ public class DataAccessImpl implements DataAccessInterface {
     @Override
     public void updateMessageIsFlag(Message message, final AsyncCallback<Message> callback) {
         // Request a string response from the provided URL.
-        String url = HOST + "messages/update/" + message.getId() + "?imp_flg="+message.getImp_flg();
+        String url = HOST + "messages/update/" + message.getId() + "?imp_flg=" + message.getImp_flg();
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
