@@ -10,16 +10,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.laoschool.R;
-import com.laoschool.screen.ScreenListTeacher;
 
 import java.util.List;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Hue on 3/11/2016.
  */
-public class RecylerViewScreenExamResultsStudentTabAdapter extends RecyclerView.Adapter<RecylerViewScreenExamResultsStudentTabAdapter.RecylerViewScreenExamResultsStudentTabAdapterViewHolder> {
+public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<ExamResultsStudentSemesterAdapter.RecylerViewScreenExamResultsStudentTabAdapterViewHolder> {
     private Fragment screen;
     private Context context;
     private List<String> strings;
@@ -28,7 +25,7 @@ public class RecylerViewScreenExamResultsStudentTabAdapter extends RecyclerView.
     private int TYPE_TITLE = 1;
     private int TYPE_LINE = 2;
 
-    public RecylerViewScreenExamResultsStudentTabAdapter(Fragment screen, List<String> strings) {
+    public ExamResultsStudentSemesterAdapter(Fragment screen, List<String> strings) {
         this.screen = screen;
         this.context = screen.getActivity();
         this.strings = strings;
