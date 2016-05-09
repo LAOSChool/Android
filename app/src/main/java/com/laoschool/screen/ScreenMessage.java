@@ -85,6 +85,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
     @Override
     public void onResumeFragment() {
         Log.d(TAG, "onResumeFragment");
+        _showProgessLoading(false);
     }
 
     public void setRefeshListMessage(boolean refeshListMessage) {
@@ -108,6 +109,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
     }
 
     public static ScreenMessage instantiate(int containerId, String currentRole) {
+        Log.d(TAG, "instantiate()");
         ScreenMessage screenMessage = new ScreenMessage();
         Bundle args = new Bundle();
         args.putInt(LaoSchoolShared.CONTAINER_ID, containerId);
@@ -140,7 +142,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
 
     private void _defineData() {
         _showProgessLoading(true);
-        new Handler().postDelayed(new Runnable() {
+        boolean run = new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 int countLocal = dataAccessMessage.getMessagesCount();
@@ -153,6 +155,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
             }
         }, LaoSchoolShared.LOADING_TIME);
 
+        Log.d(TAG, "_defineData() Run:" + run);
     }
 
     private void _getDataFormServer() {
@@ -571,15 +574,19 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
                                                                  } else if (position == 2) {
                                                                      countMessageFormLocal = dataAccessMessage.getMessagesCountFormUser(Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId());
                                                                  }
-
-                                                                 if (messages.size() < countMessageFormLocal) {
-                                                                     Log.d(TAG, "Load More");
-                                                                     messages.add(null);
-                                                                     listMessageAdapter.notifyItemInserted(messages.size() - 1);
-                                                                     _loadMoreData(messages, listMessageAdapter, position);
+                                                                 if (messages != null) {
+                                                                     if (messages.size() < countMessageFormLocal) {
+                                                                         Log.d(TAG, "onLoadMore()");
+                                                                         messages.add(null);
+                                                                         listMessageAdapter.notifyItemInserted(messages.size() - 1);
+                                                                         _loadMoreData(messages, listMessageAdapter, position);
+                                                                     } else {
+                                                                         Log.d(TAG, "onLoadMore() No message load !!!");
+                                                                     }
                                                                  } else {
-                                                                     Log.d(TAG, "No message load !!!");
+                                                                     Log.d(TAG, "onLoadMore() message Null");
                                                                  }
+
 
                                                              }
                                                          }
