@@ -465,6 +465,10 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
         SwipeRefreshLayout mSwipeRefreshLayout;
         private List<Message> notificationForUser;
 
+        public NotificationList() {
+
+        }
+
         public NotificationList(int position, List<Message> notificationForUser) {
             this.position = position;
             this.notificationForUser = notificationForUser;
