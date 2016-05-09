@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,7 +17,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.laoschool.R;
-import com.laoschool.adapter.RecylerViewScreenExamResultsStudentTabAdapter;
+import com.laoschool.adapter.ExamResultsStudentSemesterAdapter;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
 
@@ -90,7 +89,7 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
 
     private void _fillDataForListResultFilter(RecyclerView recyclerView, List<String> datas) {
         //init adapter
-        RecylerViewScreenExamResultsStudentTabAdapter adapter = new RecylerViewScreenExamResultsStudentTabAdapter(this, datas);
+        ExamResultsStudentSemesterAdapter adapter = new ExamResultsStudentSemesterAdapter(this, datas);
         recyclerView.setAdapter(adapter);
     }
 
