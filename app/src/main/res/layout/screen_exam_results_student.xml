@@ -1,22 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
-    <com.astuetz.PagerSlidingTabStrip
-        android:id="@+id/tabs"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:background="@color/colorLaosRed"
-        android:textColor="@color/abc_primary_text_disable_only_material_dark"
-        app:pstsDividerColor="#ffffff"
-        app:pstsIndicatorColor="#7E57C2"
-        app:pstsIndicatorHeight="3dp"
-        app:pstsShouldExpand="true"
-        app:pstsTextAllCaps="false" />
-    <com.laoschool.view.ViewpagerDisableSwipeLeft
-        android:id="@+id/mViewPageScreenExamResultsStudent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:id="@+id/mExamResultsStudent">
+
+        <com.astuetz.PagerSlidingTabStrip
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="@color/colorLaosRed"
+            android:textColor="@color/abc_primary_text_disable_only_material_dark"
+            app:pstsDividerColor="#ffffff"
+            app:pstsIndicatorColor="#7E57C2"
+            app:pstsIndicatorHeight="3dp"
+            app:pstsShouldExpand="true"
+            app:pstsTextAllCaps="false" />
+
+        <com.laoschool.view.ViewpagerDisableSwipeLeft
+            android:id="@+id/mViewPageScreenExamResultsStudent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/mProgress"
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-</LinearLayout>
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+</FrameLayout>
