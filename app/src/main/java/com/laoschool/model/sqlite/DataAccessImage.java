@@ -77,7 +77,7 @@ public class DataAccessImage {
         try {
             String selectbyIDQuery = "SELECT * FROM " + Image.ImageColumns.TABLE_NAME
                     + " WHERE " + Image.ImageColumns.COLUMN_NAME_NOTIFY_ID + " = " + notificationId;
-            Log.d(TAG, "getListImageFormNotificationId(" + notificationId + "):query =" + selectbyIDQuery);
+            //Log.d(TAG, "getListImageFormNotificationId(" + notificationId + "):query =" + selectbyIDQuery);
 
             SQLiteDatabase db = databaseHandler.getReadableDatabase();
 

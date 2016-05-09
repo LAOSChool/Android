@@ -700,19 +700,22 @@ public class HomeActivity extends AppCompatActivity implements
 
     @Override
     public void logoutApplication() {
-        SharedPreferences preferences = this.getSharedPreferences(LaoSchoolShared.SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
-        preferences.edit().remove("auth_key").commit();
+        SharedPreferences mySPrefs = this.getSharedPreferences(
+                LaoSchoolShared.SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = mySPrefs.edit();
+        editor.remove("auth_key");
 
-        //clear cache data
-        DataAccessMessage.deleteTable();
-        DataAccessImage.deleteTable();
+        if (editor.commit()) {
+            //clear cache data
+            DataAccessMessage.deleteTable();
+            DataAccessImage.deleteTable();
 
-        //
-        Intent intent = new Intent(this, ScreenLogin.class);
-        startActivity(intent);
-        finish();
-
-
+            Intent intent = new Intent(this, ScreenLogin.class);
+            startActivity(intent);
+            finish();
+        } else {
+            Toast.makeText(this, "Delete auth_key fails", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

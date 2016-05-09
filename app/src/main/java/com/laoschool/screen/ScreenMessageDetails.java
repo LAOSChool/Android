@@ -1,6 +1,7 @@
 package com.laoschool.screen;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -128,33 +129,11 @@ public class ScreenMessageDetails extends Fragment implements FragmentLifecycle 
             String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
             ScreenMessage screenMessage = (ScreenMessage) ((HomeActivity) getActivity()).getSupportFragmentManager().findFragmentByTag(tag);
             if (screenMessage != null) {
-//            Message
                 Message message = screenMessage.getMessage();
-                if (message == null) {
-                    message = Message.fromJson("{\n" +
-                            "  \"id\": 1,\n" +
-                            "  \"school_id\": 1,\n" +
-                            "  \"class_id\": 1,\n" +
-                            "  \"from_usr_id\": 1,\n" +
-                            "  \"from_user_name\": \"NamNT1\",\n" +
-                            "  \"to_usr_id\": 2,\n" +
-                            "  \"to_user_name\": \"Hue1\",\n" +
-                            "  \"content\": \"test message\",\n" +
-                            "  \"msg_type_id\": 1,\n" +
-                            "  \"channel\": 1,\n" +
-                            "  \"is_sent\": 1,\n" +
-                            "  \"sent_dt\": \"2016-03-24 00:00:00.0\",\n" +
-                            "  \"is_read\": 1,\n" +
-                            "  \"read_dt\": \"2016-03-24 00:00:00.0\",\n" +
-                            "  \"imp_flg\": 1,\n" +
-                            "  \"other\": \"ko co gi quan trong\",\n" +
-                            "  \"title\": \"test title\",\n" +
-                            "  \"cc_list\": \"\",\n" +
-                            "  \"schoolName\": \"Truong Tieu Hoc Thanh Xuan Trung\",\n" +
-                            "  \"messageType\": \"NX\"\n" +
-                            "}");
-                    Toast.makeText(getActivity(), "Message null", Toast.LENGTH_SHORT).show();
-                }
+
+                //set Title Message
+                ((HomeActivity) getActivity()).getSupportActionBar().setTitle(message.getFrom_user_name());
+
                 txtTilteMessageDetails.setText(message.getTitle());
                 txtContentMessageDetails.setText(message.getContent());
                 //
@@ -169,13 +148,15 @@ public class ScreenMessageDetails extends Fragment implements FragmentLifecycle 
                 }
                 String output1 = outputFormatter1.format(date1);
                 txtDateMessageDetails.setText(output1);
-
-
-                imgPiorityMessageDetails.setColorFilter(message.getImp_flg() == 1 ?
-                        screenMessage.getActivity().getResources().getColor(R.color.colorDefault)
-                        : screenMessage.getActivity().getResources().getColor(R.color.colorStar));
-                // imgUserSentMessageAvata.setColorFilter(screenMessage.getActivity().getResources().getColor(R.color.color_messsage_tilte_not_read));
-
+                if (message.getImp_flg() == 0) {
+                    imgPiorityMessageDetails.setColorFilter(screenMessage.getActivity().getResources().getColor(R.color.colorPriorityLow));
+                    imgPiorityMessageDetails.setTag(R.color.colorPriorityLow);
+                } else {
+                    imgPiorityMessageDetails.setColorFilter(
+                            screenMessage.getActivity().getResources().getColor(R.color.colorPriorityHigh));
+                    imgPiorityMessageDetails.setTag(R.color.colorPriorityHigh);
+                }
+                // _handlerImagePriotyClick(message);
                 if (message.getFrm_user_photo() != null) {
                     LaoSchoolSingleton.getInstance().getImageLoader().get(message.getFrm_user_photo(), ImageLoader.getImageListener(imgUserSentMessageAvata,
                             R.drawable.ic_account_circle_black_36dp, android.R.drawable
@@ -191,35 +172,73 @@ public class ScreenMessageDetails extends Fragment implements FragmentLifecycle 
                 //set Adaper
 //            List<Message> messages=dataAccessMessage.getAllMessages();
 //            _setConversionMessages(messages);
-                service.getMessages("", "", "", "", "", "", "", "", new AsyncCallback<List<Message>>() {
-                    @Override
-                    public void onSuccess(List<Message> result) {
-                        _setConversionMessages(result);
-                    }
-
-                    @Override
-                    public void onFailure(String message) {
-                        Log.d(TAG, "set Adaper error:" + message);
-                    }
-
-                    @Override
-                    public void onAuthFail(String message) {
-                        LaoSchoolShared.goBackToLoginPage(context);
-                    }
-                });
-
-
-                //Handler onclic send
-                btnSendMesasage.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        _sendMessage();
-                    }
-                });
+//                service.getMessages("", "", "", "", "", "", "", "", new AsyncCallback<List<Message>>() {
+//                    @Override
+//                    public void onSuccess(List<Message> result) {
+//                        _setConversionMessages(result);
+//                    }
+//
+//                    @Override
+//                    public void onFailure(String message) {
+//                        Log.d(TAG, "set Adaper error:" + message);
+//                    }
+//                });
+//
+//
+//                //Handler onclic send
+//                btnSendMesasage.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        _sendMessage();
+//                    }
+//                });
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "onResumeFragment() Exception=" + e.getMessage());
         }
+    }
+
+    private void _handlerImagePriotyClick(final Message message) {
+        imgPiorityMessageDetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (imgPiorityMessageDetails.getTag().equals(R.color.colorDefault)) {
+                    imgPiorityMessageDetails.setColorFilter(context.getResources().getColor(R.color.colorStar));
+                    imgPiorityMessageDetails.setTag(R.color.colorStar);
+                    message.setImp_flg(1);
+                } else {
+                    imgPiorityMessageDetails.setColorFilter(context.getResources().getColor(R.color.colorDefault));
+                    imgPiorityMessageDetails.setTag(R.color.colorDefault);
+                    message.setImp_flg(0);
+                }
+                DataAccessMessage.updateMessage(message);
+                _updatePriotyFormServer(message);
+            }
+        });
+    }
+
+    private void _updatePriotyFormServer(Message message) {
+        final ProgressDialog ringProgressDialog = new ProgressDialog(this.getActivity());
+        ringProgressDialog.setTitle("Please wait ...");
+        ringProgressDialog.setMessage("Loading ...");
+        ringProgressDialog.setIndeterminate(false);
+        ringProgressDialog.show();
+        service.updateMessageIsFlag(message, new AsyncCallback<Message>() {
+            @Override
+            public void onSuccess(Message result) {
+                ringProgressDialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(String message) {
+                ringProgressDialog.dismiss();
+            }
+
+            @Override
+            public void onAuthFail(String message) {
+                LaoSchoolShared.goBackToLoginPage(context);
+            }
+        });
     }
 
     private void _setConversionMessages(List<Message> messages) {

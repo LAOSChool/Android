@@ -21,50 +21,56 @@
             android:text="Title"
             android:textColor="@android:color/black"
             android:textSize="15sp"
-            android:layout_above="@+id/txbContent"
-            android:layout_toLeftOf="@+id/txtDateSend"
             android:layout_alignLeft="@+id/txbSender"
+            android:layout_alignParentTop="true"
             android:layout_alignStart="@+id/txbSender"
-            android:visibility="gone" />
+            android:layout_toStartOf="@+id/txtDateSend"
+            android:layout_marginBottom="5dp"
+            android:layout_toLeftOf="@+id/txtDateSend" />
 
         <TextView
             android:id="@+id/txbSender"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/txbContent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="56dp"
+            android:layout_toStartOf="@+id/txtDateSend"
             android:text="Sender"
             android:textColor="@android:color/black"
-            android:textSize="16sp"
+            android:textSize="12sp"
             android:textStyle="normal"
-            android:layout_marginLeft="56dp"
-            android:singleLine="true" />
+            android:layout_toLeftOf="@+id/txtDateSend" />
 
         <TextView
             android:id="@+id/txbContent"
             android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/txbTitle"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignRight="@+id/txbTitle"
+            android:layout_below="@+id/txbTitle"
+            android:layout_marginLeft="56dp"
+            android:singleLine="true"
+            android:text="Content"
             android:textColor="@color/colorDefault"
             android:textSize="14sp"
-            android:layout_alignLeft="@+id/txbSender"
-            android:layout_alignStart="@+id/txbSender"
-            android:layout_toStartOf="@+id/txtDateSend"
-            android:layout_marginRight="16dp"
-            android:maxLines="2"
-            android:lines="2"
-            android:layout_alignParentBottom="true"
-            android:layout_below="@+id/txbSender" />
+            android:layout_marginBottom="5dp"/>
 
         <TextView
             android:id="@+id/txtDateSend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="16dp"
             android:singleLine="true"
             android:text="Date"
             android:textColor="#2962FF"
-            android:textSize="12sp"
-            android:layout_above="@+id/imgFlagMessage"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:textSize="12sp" />
 
         <com.android.volley.toolbox.NetworkImageView
             android:id="@+id/imgUserAvata"
@@ -80,18 +86,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_keyboard_arrow_right_black_24dp"
-            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="false" />
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/imgStar"
-            android:src="@drawable/ic_star_border_white_24dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_star_border_white_24dp" />
     </RelativeLayout>
 
     <LinearLayout

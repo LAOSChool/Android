@@ -8,11 +8,11 @@
     <string name="title_screen_schedule">Schedule</string>
     <string name="title_screen_more">More</string>
     <string name="title_activity_screen_login">Lao school</string>
-    <string name="action_create_message">Create message</string>
+    <string name="action_create_message">Create</string>
     <string name="title_screen_final_results_student">Final results</string>
     <string name="title_screen_profile">Profile</string>
     <string name="title_screen_school_information">School information</string>
-    <string name="title_screen_create_message">Create message</string>
+    <string name="title_screen_create_message">Create</string>
     <string name="action_cancel">Cancel</string>
     <string name="action_send_message">Send</string>
     <string name="title_screen_select_list_student">Select list student</string>
@@ -39,7 +39,7 @@
     <string name="hint_message_content">Content</string>
 
     <string name="err_msg_input_message_title">Enter message title</string>
-    <string name="err_msg_input_message_conten">Enter message conten</string>
+    <string name="err_msg_input_message_conten">Please enter conten !!!</string>
     <string name="err_msg_create_message">Create message fails</string>
 
     <string name="action_set_chanel_create_message">SMS</string>
@@ -97,4 +97,6 @@
     <string name="btn_ok">Ok</string>
     <string name="btn_cancel">Cancel</string>
     <string name="msg_create_process">Create...</string>
+    <string name="msg_re_login_application">This account was being logged in by other device. Please re-login.</string>
+    <string name="err" >Error</string>
 </resources>

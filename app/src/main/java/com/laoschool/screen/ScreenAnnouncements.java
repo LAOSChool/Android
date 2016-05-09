@@ -1,6 +1,7 @@
 package com.laoschool.screen;
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -21,6 +22,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.laoschool.R;
@@ -47,9 +50,10 @@ import java.util.Map;
 public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     private static final String TAG = "ScreenAnnouncements";
     private static ScreenAnnouncements thiz;
+    private static FragmentManager fr;
     private int containerId;
     private String currentRole = LaoSchoolShared.ROLE_STUDENT;
-    private Context context;
+    private static Context context;
 
     private static DataAccessInterface service;
     private static DataAccessNotification accessNotification;
@@ -59,8 +63,15 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     private RecyclerView mRecylerViewNotificationStudent;
 
     //Item for teacher
-    ViewpagerDisableSwipeLeft viewPage;
-    PagerSlidingTabStrip tabs;
+    static ViewpagerDisableSwipeLeft viewPage;
+    static PagerSlidingTabStrip tabs;
+
+    static NotificationPagerAdapter notificationPagerAdapter;
+
+    static NotificationList currentPage;
+
+    private static LinearLayout mAnnouncement;
+    private static ProgressBar mProgressBar;
 
     public Message getNotification() {
         return notification;
@@ -71,11 +82,13 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     }
 
     public interface IScreenAnnouncements {
+
         void gotoScreenAnnouncementDetails(Message notificaiton);
 
         void _gotoCreateAnnouncement();
 
         void logoutApplication();
+
     }
 
     public IScreenAnnouncements iScreenAnnouncements;
@@ -96,6 +109,113 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
         this.thiz = this;
         this.context = getActivity();
         this.service = LaoSchoolSingleton.getInstance().getDataAccessService();
+        this.fr = getFragmentManager();
+
+
+    }
+
+    private void _defineData() {
+        _showProgressLoading(true);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                int countLocal = accessNotification.getNotificationCount();
+                Log.d(TAG, "_defineData():count notification in Local=" + countLocal);
+                if (countLocal > 0) {
+                    getDataFormLocal();
+                } else {
+                    getDataFormServer();
+                }
+            }
+        }, LaoSchoolShared.LOADING_TIME);
+
+    }
+
+    public static void getDataFormServer() {
+        service.getNotification(new AsyncCallback<List<Message>>() {
+            @Override
+            public void onSuccess(final List<Message> result) {
+                try {
+                    for (Message message : result) {
+                        accessNotification.addOrUpdateNotification(message);
+                    }
+                    getDataFormLocal(-1);
+                } catch (Exception e) {
+                    Log.e(TAG, "getDataFormServer()/getNotification() Exception=" + e.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(String message) {
+                Log.e(TAG, "getDataFormServer()/getNotification() onFailure=" + message);
+            }
+
+            @Override
+            public void onAuthFail(String message) {
+                LaoSchoolShared.goBackToLoginPage(context);
+            }
+        });
+    }
+
+    private static void _showProgressLoading(boolean b) {
+        if (b) {
+            mProgressBar.setVisibility(View.VISIBLE);
+            mAnnouncement.setVisibility(View.GONE);
+        } else {
+            mProgressBar.setVisibility(View.GONE);
+            mAnnouncement.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+    public static void getDataFormServer(final int form_id, final int position) {
+        service.getNotification(form_id, new AsyncCallback<List<Message>>() {
+            @Override
+            public void onSuccess(final List<Message> result) {
+                try {
+                    for (Message message : result) {
+                        accessNotification.addOrUpdateNotification(message);
+                    }
+                    getDataFormLocal(position);
+                } catch (Exception e) {
+                    Log.e(TAG, "getDataFormServer()/getNotification(" + form_id + ") Exception=" + e.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(String message) {
+                Log.e(TAG, "getDataFormServer()/getNotification(" + form_id + ") onFailure=" + message);
+            }
+
+            @Override
+            public void onAuthFail(String message) {
+                LaoSchoolShared.goBackToLoginPage(context);
+            }
+        });
+    }
+
+    private static void getDataFormLocal() {
+        getDataFormLocal(-1);
+    }
+
+    private static void getDataFormLocal(int position) {
+        try {
+            _initPageData();
+            if (position > -1) {
+                viewPage.setCurrentItem(position);
+            }
+            _showProgressLoading(false);
+        } catch (Exception e) {
+            Log.e(TAG, "getDataFormLocal() Exception = " + e.getMessage());
+        }
+    }
+
+    private static void _initPageData() {
+        List<Message> notificationForUserInbox = accessNotification.getListNotificationForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
+        List<Message> notificationForUserUnread = accessNotification.getListNotificationForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 0);
+        notificationPagerAdapter = new NotificationPagerAdapter(fr, notificationForUserInbox, notificationForUserUnread);
+        viewPage.setAdapter(notificationPagerAdapter);
+        tabs.setViewPager(viewPage);
     }
 
 
@@ -118,14 +238,15 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     }
 
     private View _defineTeacherView(View view) {
+        mAnnouncement = (LinearLayout) view.findViewById(R.id.mAnnouncement);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.mProgress);
         // Bind the tabs to the ViewPager
         tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
 
         viewPage = (ViewpagerDisableSwipeLeft) view.findViewById(R.id.notificationViewPage);
-        NotificationPagerAdapter notificationPagerAdapter = new NotificationPagerAdapter(getFragmentManager());
-        viewPage.setAdapter(notificationPagerAdapter);
         viewPage.setAllowedSwipeDirection(HomeActivity.SwipeDirection.none);
-        tabs.setViewPager(viewPage);
+
+        _defineData();
 
         _handlerPageChange();
 
@@ -141,10 +262,10 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
 
             @Override
             public void onPageSelected(int position) {
+                Log.d(TAG, "_handlerPageChange() onPageSelected() = " + position);
+                List<Message> notificationForUser = accessNotification.getListNotificationForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, (position == 0) ? 1 : 0);
                 NotificationList notifragment = ((NotificationPagerAdapter) (viewPage.getAdapter())).getFragment(position);
-                if (notifragment != null) {
-                    notifragment._getListMessageFormLocalData();
-                }
+                notifragment._setListNotification(notificationForUser, position);
             }
 
             @Override
@@ -178,6 +299,7 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         });
+
 
         return view;
     }
@@ -270,15 +392,19 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
         iScreenAnnouncements = (IScreenAnnouncements) activity;
     }
 
-    public class NotificationPagerAdapter extends FragmentPagerAdapter {
+    public static class NotificationPagerAdapter extends FragmentPagerAdapter {
         private FragmentManager mFragmentManager;
         private Map<Integer, String> mFragmentTags;
+        private List<Message> notificationForUserInbox;
+        private List<Message> notificationForUserUnread;
 
 
-        public NotificationPagerAdapter(FragmentManager fm) {
+        public NotificationPagerAdapter(FragmentManager fm, List<Message> notificationForUserInbox, List<Message> notificationForUserUnread) {
             super(fm);
             mFragmentManager = fm;
             mFragmentTags = new HashMap<Integer, String>();
+            this.notificationForUserInbox = notificationForUserInbox;
+            this.notificationForUserUnread = notificationForUserUnread;
         }
 
         @Override
@@ -297,7 +423,14 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
 
         @Override
         public Fragment getItem(int position) {
-            return NotificationList.newInstance(position);
+            if (position == 0) {
+                currentPage = new NotificationList(0, notificationForUserInbox);
+                return currentPage;
+            } else {
+                currentPage = new NotificationList(1, notificationForUserUnread);
+                return currentPage;
+            }
+
         }
 
         public int getItemPosition(Object object) {
@@ -324,26 +457,22 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
         }
     }
 
+    @SuppressLint("ValidFragment")
     public static class NotificationList extends Fragment {
-        private static String ARG_POSITION = "position";
         private int position;
         private RecyclerView mRecyclerListMessage;
         private Context context;
         SwipeRefreshLayout mSwipeRefreshLayout;
+        private List<Message> notificationForUser;
 
-
-        public static NotificationList newInstance(int page) {
-            Bundle args = new Bundle();
-            args.putInt(ARG_POSITION, page);
-            NotificationList fragment = new NotificationList();
-            fragment.setArguments(args);
-            return fragment;
+        public NotificationList(int position, List<Message> notificationForUser) {
+            this.position = position;
+            this.notificationForUser = notificationForUser;
         }
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            position = getArguments().getInt(ARG_POSITION);
             this.context = getActivity();
         }
 
@@ -355,13 +484,10 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
             //set adapter
             mRecyclerListMessage.setLayoutManager(linearLayoutManager);
-
-            _defineListNotification();
-
             //
+            _setListNotification(notificationForUser, position);
+
             _handlerSwipeReload();
-
-
             return view;
         }
 
@@ -374,104 +500,17 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
                         try {
                             ListNotificationAdapter listMessageAdapter = (ListNotificationAdapter) mRecyclerListMessage.getAdapter();
                             int form_id = listMessageAdapter.getNotificationList().get(0).getId();
-                            _getListMessageFormServer(form_id);
+                            getDataFormServer(form_id, position);
                         } catch (Exception e) {
-                            _getListMessageFormServer();
+                            getDataFormServer();
                         }
                     } else {
-                        _getListMessageFormServer();
+                        getDataFormServer();
                     }
                     // Refresh items
                     mSwipeRefreshLayout.setRefreshing(false);
                 }
             });
-        }
-
-        private void _defineListNotification() {
-            final ProgressDialog progressDialog = new ProgressDialog(context);
-            progressDialog.setMessage("Loading...");
-            progressDialog.show();
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    //Load message in local
-                    int countLocal = accessNotification.getNotificationCount();
-                    Log.d(TAG, "NotificationList:count notification in Local=" + countLocal);
-
-                    if (countLocal > 0) {
-                        _getListMessageFormLocalData();
-                    } else {
-                        _getListMessageFormServer();
-                    }
-                    progressDialog.dismiss();
-                }
-            }, 2000);
-        }
-
-        private void _getListMessageFormServer() {
-            Log.d(TAG, "NotificationList:_getListMessageFormServer() position=" + position);
-            service.getNotification(new AsyncCallback<List<Message>>() {
-                @Override
-                public void onSuccess(List<Message> result) {
-                    try {
-                        for (Message message : result) {
-                            accessNotification.addOrUpdateNotification(message);
-                        }
-                        _getListMessageFormLocalData();
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(String message) {
-
-                }
-
-                @Override
-                public void onAuthFail(String message) {
-                    LaoSchoolShared.goBackToLoginPage(context);
-                }
-            });
-        }
-
-        private void _getListMessageFormServer(int last_id) {
-            Log.d(TAG, "NotificationList:_getListMessageFormServer(" + last_id + ") position=" + position);
-            service.getNotification(last_id, new AsyncCallback<List<Message>>() {
-                @Override
-                public void onSuccess(List<Message> result) {
-                    try {
-                        for (Message message : result) {
-                            accessNotification.addOrUpdateNotification(message);
-                        }
-                        _getListMessageFormLocalData();
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(String message) {
-
-                }
-
-                @Override
-                public void onAuthFail(String message) {
-                    LaoSchoolShared.goBackToLoginPage(context);
-                }
-            });
-        }
-
-        public void _getListMessageFormLocalData() {
-            List<Message> notificationForUser = new ArrayList<>();
-            if (LaoSchoolShared.myProfile != null) {
-                notificationForUser = accessNotification.getListNotificationForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, (position == 0 ? 1 : 0));
-                Log.d(TAG, "NotificationList:getListNotificationForUser size=" + notificationForUser.size());
-            }
-            _setListNotification(notificationForUser, position);
-
         }
 
         private void _setListNotification(final List<Message> messages, final int position) {

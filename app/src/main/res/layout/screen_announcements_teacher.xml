@@ -1,29 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.laoschool.screen.ScreenMessage">
+    android:layout_height="match_parent">
 
-    <!-- TODO: Update blank fragment layout -->
-    <com.astuetz.PagerSlidingTabStrip
-        android:id="@+id/tabs"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:background="@color/colorLaosRed"
-        android:textColor="@color/abc_primary_text_disable_only_material_dark"
-        app:pstsDividerColor="#ffffff"
-        app:pstsIndicatorColor="#7E57C2"
-        app:pstsIndicatorHeight="3dp"
-        app:pstsShouldExpand="true"
-        app:pstsTextAllCaps="false" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.laoschool.screen.ScreenMessage"
+        android:layout_gravity="center"
+        android:id="@+id/mAnnouncement">
 
-    <com.laoschool.view.ViewpagerDisableSwipeLeft
-        android:id="@+id/notificationViewPage"
+        <!-- TODO: Update blank fragment layout -->
+        <com.astuetz.PagerSlidingTabStrip
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="@color/colorLaosRed"
+            android:textColor="@color/abc_primary_text_disable_only_material_dark"
+            app:pstsDividerColor="#ffffff"
+            app:pstsIndicatorColor="#7E57C2"
+            app:pstsIndicatorHeight="3dp"
+            app:pstsShouldExpand="true"
+            app:pstsTextAllCaps="false" />
+
+        <com.laoschool.view.ViewpagerDisableSwipeLeft
+            android:id="@+id/notificationViewPage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tabs" />
+
+    </LinearLayout>
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tabs" />
-
-</RelativeLayout>
+        android:id="@+id/mProgress"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+</FrameLayout>

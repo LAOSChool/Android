@@ -146,10 +146,10 @@ public class SplashScreen extends AppCompatActivity {
         SharedPreferences prefs = this.getSharedPreferences(
                 LaoSchoolShared.SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
         String auth_key = prefs.getString("auth_key", null);
-
         if (auth_key == null) {
             startLogin();
         } else {
+            Log.d(TAG, "auth_key:" + auth_key);
             getUserProfile();
         }
     }

@@ -115,45 +115,43 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 final TextView txbSender = ((TextView) view.findViewById(R.id.txbSender));
                 final TextView txtDateSend = ((TextView) view.findViewById(R.id.txtDateSend));
                 final NetworkImageView imgUserAvata = (NetworkImageView) view.findViewById(R.id.imgUserAvata);
-                final ImageView imgFlagMessage = (ImageView) view.findViewById(R.id.imgFlagMessage);
+                final ImageView imgGotoDetails = (ImageView) view.findViewById(R.id.imgFlagMessage);
+                final ImageView imgStar = (ImageView) view.findViewById(R.id.imgStar);
 
 
                 if (LaoSchoolShared.myProfile != null) {
 
                     if (LaoSchoolShared.myProfile.getId() == message.getFrom_usr_id()) {
                         txbSender.setText("from: me");
-                        txbSender.setTextColor(
-                                context.getResources().getColor(R.color.colorDefault));
-                        txbTitle.setTextColor(
-                                context.getResources().getColor(R.color.color_messsage_read));
-                        txtDateSend.setTextColor(
-                                context.getResources().getColor(R.color.colorDefault));
+                        txbSender.setTextColor(context.getResources().getColor(R.color.colorRead));
+                        txbTitle.setTextColor(context.getResources().getColor(R.color.colorRead));
+                        txtDateSend.setTextColor(context.getResources().getColor(R.color.colorRead));
                         txbSender.setTypeface(null, Typeface.NORMAL);
                         txbTitle.setTypeface(null, Typeface.NORMAL);
-//                        imgUserAvata.setColorFilter(context.getResources().getColor(R.color.color_messsage_read));
-                        view.setBackgroundColor(
-                                context.getResources().getColor(R.color.color_bg_read));
+                        txtDateSend.setTypeface(null, Typeface.NORMAL);
+                        imgGotoDetails.setColorFilter(context.getResources().getColor(R.color.colorRead));
+                        view.setBackgroundColor(context.getResources().getColor(R.color.color_bg_read));
                     } else {
-                        txbSender.setText("from: " + message.getFrom_user_name());
-
-                        txbSender.setTextColor((message.getIs_read() == 0) ?
-                                context.getResources().getColor(R.color.colorDefault) :
-                                context.getResources().getColor(R.color.colorDefault));
-                        txbTitle.setTextColor((message.getIs_read() == 0) ?
-                                context.getResources().getColor(R.color.color_messsage_tilte_not_read) :
-                                context.getResources().getColor(R.color.color_messsage_read));
-                        txtDateSend.setTextColor((message.getIs_read() == 0) ?
-                                context.getResources().getColor(R.color.colorDefault) :
-                                context.getResources().getColor(R.color.colorDefault));
-
-                        txbSender.setTypeface(null, (message.getIs_read() == 0) ? Typeface.NORMAL : Typeface.NORMAL);
-                        txbTitle.setTypeface(null, (message.getIs_read() == 0) ? Typeface.NORMAL : Typeface.NORMAL);
-//                        imgUserAvata.setColorFilter((message.getIs_read() == 0) ?
-//                                context.getResources().getColor(R.color.color_messsage_send_date_not_read) :
-//                                context.getResources().getColor(R.color.color_messsage_read));
-                        view.setBackgroundColor((message.getIs_read() == 0) ?
-                                context.getResources().getColor(R.color.color_bg_un_read) :
-                                context.getResources().getColor(R.color.color_bg_read));
+                        txbSender.setText(message.getFrom_user_name());
+                        if (message.getIs_read() == 0) {
+                            txbSender.setTextColor(context.getResources().getColor(R.color.colorSenderUnread));
+                            txbTitle.setTextColor(context.getResources().getColor(R.color.colorUnread));
+                            txtDateSend.setTextColor(context.getResources().getColor(R.color.colorDateUnread));
+                            txbSender.setTypeface(null, Typeface.BOLD);
+                            txbTitle.setTypeface(null, Typeface.BOLD);
+                            txtDateSend.setTypeface(null, Typeface.BOLD);
+                            imgGotoDetails.setColorFilter(context.getResources().getColor(R.color.colorUnread));
+                            view.setBackgroundColor(context.getResources().getColor(R.color.color_bg_un_read));
+                        } else {
+                            txbSender.setTextColor(context.getResources().getColor(R.color.colorRead));
+                            txbTitle.setTextColor(context.getResources().getColor(R.color.colorRead));
+                            txtDateSend.setTextColor(context.getResources().getColor(R.color.colorRead));
+                            txbSender.setTypeface(null, Typeface.NORMAL);
+                            txbTitle.setTypeface(null, Typeface.NORMAL);
+                            txtDateSend.setTypeface(null, Typeface.NORMAL);
+                            imgGotoDetails.setColorFilter(context.getResources().getColor(R.color.colorPriorityLow));
+                            view.setBackgroundColor(context.getResources().getColor(R.color.color_bg_read));
+                        }
                     }
                     if (message.getFrm_user_photo() != null) {
                         LaoSchoolSingleton.getInstance().getImageLoader().get(message.getFrm_user_photo(), ImageLoader.getImageListener(imgUserAvata,
@@ -177,17 +175,23 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     }
                     String output1 = outputFormatter1.format(date1);
                     txtDateSend.setText(output1);
-                    imgFlagMessage.setColorFilter(screenMessage.getActivity().getResources().getColor(R.color.colorDefault));
+                    if (message.getImp_flg() == 0) {
+                        imgStar.setImageDrawable(LaoSchoolShared.getDraweble(context, R.drawable.ic_star_border_white_24dp));
+                        imgStar.setColorFilter(screenMessage.getActivity().getResources().getColor(R.color.colorPriorityLow));
+                    } else {
+                        imgStar.setImageDrawable(LaoSchoolShared.getDraweble(context, R.drawable.ic_star_white_24dp));
+                        imgStar.setColorFilter(screenMessage.getActivity().getResources().getColor(R.color.colorPriorityHigh));
+                    }
                 }
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         screenMessage.setMessage(message);
                         screenMessage.iScreenMessage._gotoMessageDetails(message);
-                        txbTitle.setTextColor(context.getResources().getColor(R.color.color_messsage_read));
-                        txbSender.setTextColor(context.getResources().getColor(R.color.colorDefault));
-                        txtDateSend.setTextColor(context.getResources().getColor(R.color.colorDefault));
-                        imgFlagMessage.setColorFilter(screenMessage.getActivity().getResources().getColor(R.color.colorDefault));
+                        txbTitle.setTextColor(context.getResources().getColor(R.color.colorRead));
+                        txbSender.setTextColor(context.getResources().getColor(R.color.colorRead));
+                        txtDateSend.setTextColor(context.getResources().getColor(R.color.colorRead));
+                        imgGotoDetails.setColorFilter(screenMessage.getActivity().getResources().getColor(R.color.colorRead));
 
                         if (message.getIs_read() == 0) {
                             //Update is read
@@ -217,7 +221,7 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     private void _updateStatusMessageToServer(Message message) {
-        LaoSchoolSingleton.getInstance().getDataAccessService().updateMessage(message, new AsyncCallback<Message>() {
+        LaoSchoolSingleton.getInstance().getDataAccessService().updateMessageIsRead(message, new AsyncCallback<Message>() {
             @Override
             public void onSuccess(Message result) {
                 Log.d(TAG, "_updateStatusMessageToServer() onSuccess():" + result.getId());
