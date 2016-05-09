@@ -6,25 +6,17 @@
     android:orientation="vertical">
     <com.astuetz.PagerSlidingTabStrip
         android:id="@+id/tabs"
-        app:pstsShouldExpand="true"
-        app:pstsTextAllCaps="true"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:textColor="#ffffff"
-        app:pstsIndicatorColor ="@color/colorLaosBlue"
-        app:pstsDividerColor="@color/colorLaosBlue"
-        android:background="@color/colorLaosRed" />
+        android:layout_height="30dp"
+        android:background="@color/colorLaosRed"
+        android:textColor="@color/abc_primary_text_disable_only_material_dark"
+        app:pstsDividerColor="#ffffff"
+        app:pstsIndicatorColor="#7E57C2"
+        app:pstsIndicatorHeight="3dp"
+        app:pstsShouldExpand="true"
+        app:pstsTextAllCaps="false" />
     <com.laoschool.view.ViewpagerDisableSwipeLeft
         android:id="@+id/mViewPageScreenExamResultsStudent"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <!--<android.support.v4.view.PagerTitleStrip-->
-            <!--android:id="@+id/pager_header"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="top"-->
-            <!--android:paddingBottom="4dp"-->
-            <!--android:paddingTop="4dp" />-->
-    </com.laoschool.view.ViewpagerDisableSwipeLeft>
+        android:layout_height="wrap_content"/>
 </LinearLayout>
