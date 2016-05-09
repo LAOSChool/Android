@@ -2,16 +2,20 @@ package com.laoschool.adapter;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.laoschool.R;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Hue on 3/11/2016.
@@ -24,6 +28,7 @@ public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<Exam
     private int TYPE_SUB_HEADER = 0;
     private int TYPE_TITLE = 1;
     private int TYPE_LINE = 2;
+
 
     public ExamResultsStudentSemesterAdapter(Fragment screen, List<String> strings) {
         this.screen = screen;
@@ -53,7 +58,25 @@ public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<Exam
             if (holder.viewType == TYPE_TITLE) {
 //                //Define and set data
                 TextView txtSubjectScreenResultsStudent = (TextView) view.findViewById(R.id.txtSubjectScreenResultsStudent);
+                RecyclerView mListScoreBySemester = (RecyclerView) view.findViewById(R.id.mListScoreBySemester);
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+                mListScoreBySemester.setLayoutManager(linearLayoutManager);
+
                 txtSubjectScreenResultsStudent.setText(title);
+
+                Map<String, String> scores = new HashMap<>();
+
+                scores.put("T1", "2");
+                scores.put("T2", "2");
+                scores.put("T3", "4");
+                scores.put("T4", "5");
+                scores.put("T5", "5");
+                scores.put("T6", "9");
+
+
+                ScoreStudentSemesterAdapter scoreStudentSemesterAdapter = new ScoreStudentSemesterAdapter(context, scores);
+                mListScoreBySemester.setAdapter(scoreStudentSemesterAdapter);
+
                 //Handler on click item
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override

@@ -5,10 +5,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -23,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import android.widget.Spinner;
@@ -30,9 +31,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.adapter.RecylerViewScreenExamResultsAdapter;
-import com.laoschool.adapter.RecylerViewScreenExamResultsStudentTabAdapter;
+import com.laoschool.adapter.ExamResultsStudentSemesterAdapter;
+import com.laoschool.entities.ExamResult;
+import com.laoschool.model.AsyncCallback;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
 import com.laoschool.view.ViewpagerDisableSwipeLeft;
@@ -85,11 +89,16 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     TextView txtTerm;
     TextView txtSubject;
     TextView txtClass;
+    ViewpagerDisableSwipeLeft mViewPageStudent;
+    PagerSlidingTabStrip tabsStrip;
+    LinearLayout mExamResultsStudent;
+    ProgressBar mProgressStudent;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(TAG,"onCreateView()");
         if (currentRole == null)
             return inflater.inflate(R.layout.screen_error_application, container, false);
         else
@@ -98,6 +107,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG,"onCreate()");
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         if (getArguments() != null) {
@@ -110,6 +120,12 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     }
 
     @Override
+    public void onResume() {
+        Log.d(TAG,"onResume()");
+        super.onResume();
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         //set display menu item
         super.onCreateOptionsMenu(menu, inflater);
@@ -117,21 +133,25 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
 
     @Override
     public void onPauseFragment() {
+        Log.d(TAG,"onPauseFragment()");
 
     }
 
     @Override
     public void onResumeFragment() {
+        Log.d(TAG,"onResumeFragment()");
 
     }
 
     @Override
     public void onAttach(Activity activity) {
+        Log.d(TAG,"onAttach()");
         super.onAttach(activity);
         iScreenExamResults = (IScreenExamResults) activity;
     }
 
     public static Fragment instantiate(int containerId, String currentRole) {
+        Log.d(TAG,"instantiate()");
         ScreenExamResults fragment = new ScreenExamResults();
         Bundle args = new Bundle();
         args.putInt(LaoSchoolShared.CONTAINER_ID, containerId);
@@ -151,22 +171,57 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
 
     private View _defineScreenExamResultsDetailForStudent(LayoutInflater inflater, ViewGroup container) {
         View view = inflater.inflate(R.layout.screen_exam_results_student, container, false);
-        ViewpagerDisableSwipeLeft mViewPageScreenExamResultsStudent = (ViewpagerDisableSwipeLeft) view.findViewById(R.id.mViewPageScreenExamResultsStudent);
-        //
-        //ScorePageAdapter scorePageAdapter = new ScorePageAdapter(context, Arrays.asList("Term 1", "Term 2", "Total"));
 
-        mViewPageScreenExamResultsStudent.setAllowedSwipeDirection(HomeActivity.SwipeDirection.none);
+        mExamResultsStudent = (LinearLayout) view.findViewById(R.id.mExamResultsStudent);
+        mProgressStudent = (ProgressBar) view.findViewById(R.id.mProgressExamResultsStudent);
 
-        ExamScorePagerAdapter sampleFragmentPagerAdapter = new ExamScorePagerAdapter(getFragmentManager(), Arrays.asList("Term 1", "Term 2", "Total"));
-        mViewPageScreenExamResultsStudent.setAdapter(sampleFragmentPagerAdapter);
+        mViewPageStudent = (ViewpagerDisableSwipeLeft) view.findViewById(R.id.mViewPageScreenExamResultsStudent);
+        tabsStrip = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
+        mViewPageStudent.setAllowedSwipeDirection(HomeActivity.SwipeDirection.none);
 
-        // Give the PagerSlidingTabStrip the ViewPager
-        PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
-        // Attach the view pager to the tab strip
-        tabsStrip.setViewPager(mViewPageScreenExamResultsStudent);
-
+        _definePageSemesterStudent();
 
         return view;
+    }
+
+    private void _definePageSemesterStudent() {
+        int classId = LaoSchoolShared.myProfile.getEclass().getId();
+        int userId = LaoSchoolShared.myProfile.getId();
+        LaoSchoolSingleton.getInstance().getDataAccessService().getExamResults(classId, userId, new AsyncCallback<List<ExamResult>>() {
+            @Override
+            public void onSuccess(List<ExamResult> result) {
+                if (result != null) {
+                    //difine pager
+                    ExamScorePagerAdapter sampleFragmentPagerAdapter = new ExamScorePagerAdapter(getFragmentManager(), Arrays.asList("Semester I", "Semester II"));
+                    mViewPageStudent.setAdapter(sampleFragmentPagerAdapter);
+                    // Attach the view pager to the tab strip
+                    tabsStrip.setViewPager(mViewPageStudent);
+                } else {
+                    Log.d(TAG, "_definePageSemesterStudent()/getExamResults()/onAuthFail() message:NUll");
+                }
+            }
+
+            @Override
+            public void onFailure(String message) {
+                Log.e(TAG, "_definePageSemesterStudent()/getExamResults()/onFailure() message:" + message);
+            }
+
+            @Override
+            public void onAuthFail(String message) {
+                Log.e(TAG, "_definePageSemesterStudent()/getExamResults()/onAuthFail() message:" + message);
+            }
+        });
+
+    }
+
+    private void _showProgressLoadingStudent(boolean b) {
+        if (b) {
+            mProgressStudent.setVisibility(View.VISIBLE);
+            mExamResultsStudent.setVisibility(View.GONE);
+        } else {
+            mProgressStudent.setVisibility(View.GONE);
+            mExamResultsStudent.setVisibility(View.VISIBLE);
+        }
     }
 
     private View _defineScreenExamResultsTeacher(LayoutInflater inflater, ViewGroup container) {
@@ -379,7 +434,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
 
 
     public class ExamScorePagerAdapter extends FragmentPagerAdapter {
-        final int PAGE_COUNT = 3;
+        final int PAGE_COUNT = 2;
         private List<String> tabTitles;
 
         public ExamScorePagerAdapter(FragmentManager fm, List<String> tabTitles) {
@@ -436,13 +491,12 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
             GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 1);
             recyclerView.setLayoutManager(gridLayoutManager);
 
-            RecylerViewScreenExamResultsStudentTabAdapter studentTabAdapter = new RecylerViewScreenExamResultsStudentTabAdapter(fragment, Arrays.asList(getResources().getStringArray(R.array.subjects)));
+            ExamResultsStudentSemesterAdapter studentTabAdapter = new ExamResultsStudentSemesterAdapter(fragment, Arrays.asList(getResources().getStringArray(R.array.subjects)));
             if (mPage == 0) {
-
             } else if (mPage == 1) {
-                studentTabAdapter = new RecylerViewScreenExamResultsStudentTabAdapter(fragment, Arrays.asList(getResources().getStringArray(R.array.subjects1)));
+                studentTabAdapter = new ExamResultsStudentSemesterAdapter(fragment, Arrays.asList(getResources().getStringArray(R.array.subjects1)));
             } else if (mPage == 2) {
-                studentTabAdapter = new RecylerViewScreenExamResultsStudentTabAdapter(fragment, Arrays.asList(getResources().getStringArray(R.array.subjects2)));
+                studentTabAdapter = new ExamResultsStudentSemesterAdapter(fragment, Arrays.asList(getResources().getStringArray(R.array.subjects2)));
             }
             recyclerView.setAdapter(studentTabAdapter);
 
