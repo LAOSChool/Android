@@ -7,13 +7,13 @@
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#ffffff">
+        android:background="@color/color_bg_read">
 
         <RelativeLayout
             android:id="@+id/relativeLayout2"
             android:layout_width="125dp"
             android:layout_height="88dp"
-            android:background="#ffffff">
+            android:background="@color/color_bg_read">
 
             <TextView
                 android:id="@+id/txtSubjectScreenResultsStudent"
@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_toEndOf="@+id/relativeLayout2"
-            android:background="#ffffff"
+            android:background="@color/color_bg_read"
             android:orientation="vertical"
             android:layout_centerVertical="true">
 

@@ -37,7 +37,7 @@ public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<Exam
         if (viewType == TYPE_LINE)
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_line, parent, false); //Inflating the layout
         else if (viewType == TYPE_TITLE) {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_exam_results_sudent, parent, false); //Inflating the layout
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_exam_results_student, parent, false); //Inflating the layout
         } else if (viewType == TYPE_SUB_HEADER) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_only_title, parent, false); //Inflating the layout
         }
