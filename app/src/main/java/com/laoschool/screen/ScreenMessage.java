@@ -132,6 +132,10 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         pager = (ViewpagerDisableSwipeLeft) view.findViewById(R.id.messageViewPage);
         tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
         pager.setAllowedSwipeDirection(HomeActivity.SwipeDirection.none);
+        if (getUserVisibleHint())
+            if (!alreadyExecuted)
+                _defineData();
+
         return view;
     }
 
@@ -217,22 +221,21 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
                 });
     }
 
-    private static void _showProgessLoading(boolean b) {
-        if (b) {
-            if (mMessages != null)
-                mMessages.setVisibility(View.GONE);
-            if (mProgress != null)
-                mProgress.setVisibility(View.VISIBLE);
+    private static void _showProgessLoading(boolean show) {
+        if (mMessages != null) {
+            mMessages.setVisibility(show ? View.GONE : View.VISIBLE);
         } else {
-            if (mMessages != null)
-                mMessages.setVisibility(View.VISIBLE);
-            if (mProgress != null)
-                mProgress.setVisibility(View.GONE);
+            Log.d(TAG, "mMessages Null");
+        }
+        if (mProgress != null) {
+            mProgress.setVisibility(show ? View.VISIBLE : View.GONE);
+        } else {
+            Log.d(TAG, "mProgress Null");
         }
     }
 
     private static void _getDataFormLocal(int position) {
-        _initPageData();
+        _initPageData(true);
         if (position > -1) {
             pager.setCurrentItem(position);
         }
@@ -241,12 +244,16 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
 
     }
 
-    private static void _initPageData() {
+    private static void _initPageData(boolean inita) {
         List<Message> messagesForUserInbox = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
         List<Message> messagesToUserUnread = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 0);
         List<Message> messagesFormUser = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
         // Bind the tabs to the ViewPager
-        messagesPagerAdapter = new MessagesPagerAdapter(fr, messagesForUserInbox, messagesToUserUnread, messagesFormUser);
+        if (inita)
+            messagesPagerAdapter = new MessagesPagerAdapter(fr, messagesForUserInbox, messagesToUserUnread, messagesFormUser);
+        else {
+            messagesPagerAdapter = new MessagesPagerAdapter(fr, new ArrayList<Message>(), new ArrayList<Message>(), new ArrayList<Message>());
+        }
         pager.setAdapter(messagesPagerAdapter);
         tabs.setViewPager(pager);
 
@@ -760,13 +767,9 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         super.onDetach();
     }
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        Log.d(TAG, "setUserVisibleHint(" + isVisibleToUser + ")");
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser)
-            if (!alreadyExecuted) {
-                _defineData();
-            }
-    }
+//    @Override
+//    public void setUserVisibleHint(boolean isVisibleToUser) {
+//        Log.d(TAG, "setUserVisibleHint(" + isVisibleToUser + ")");
+//        super.setUserVisibleHint(isVisibleToUser);
+//    }
 }
