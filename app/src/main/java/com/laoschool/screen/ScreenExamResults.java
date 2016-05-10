@@ -148,7 +148,16 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     @Override
     public void onResumeFragment() {
         Log.d(TAG, "onResumeFragment()");
+        if (getUserVisibleHint()) {
+            if (!alreadyExecuted) {
+                if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
 
+                } else {
+                    _definePageSemesterStudent();
+                }
+            }
+
+        }
     }
 
     @Override
@@ -245,6 +254,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     }
 
     private void _getMyExamResult() {
+        _showProgressLoadingStudent(true);
         LaoSchoolSingleton.getInstance().getDataAccessService().getMyExamResults(new AsyncCallback<List<ExamResult>>() {
             @Override
             public void onSuccess(List<ExamResult> result) {
@@ -666,15 +676,5 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         Log.d(TAG, "setUserVisibleHint(" + isVisibleToUser + ")");
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            if (!alreadyExecuted) {
-                if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
-
-                } else {
-                    _definePageSemesterStudent();
-                }
-            }
-
-        }
     }
 }
