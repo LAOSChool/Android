@@ -68,6 +68,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
     private static FragmentManager fr;
     private static LinearLayout mMessages;
     private static ProgressBar mProgress;
+    private boolean alreadyExecuted = false;
 
     public Message getMessage() {
         return message;
@@ -130,19 +131,13 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         mProgress = (ProgressBar) view.findViewById(R.id.mProgress);
         pager = (ViewpagerDisableSwipeLeft) view.findViewById(R.id.messageViewPage);
         tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
-
         pager.setAllowedSwipeDirection(HomeActivity.SwipeDirection.none);
-
-        _defineData();
-
-        _handlerPageChange();
-
         return view;
     }
 
     private void _defineData() {
         _showProgessLoading(true);
-        boolean run = new Handler().postDelayed(new Runnable() {
+        new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 int countLocal = dataAccessMessage.getMessagesCount();
@@ -152,10 +147,9 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
                 } else {
                     _getDataFormServer();
                 }
+                alreadyExecuted = true;
             }
         }, LaoSchoolShared.LOADING_TIME);
-
-        Log.d(TAG, "_defineData() Run:" + run);
     }
 
     private void _getDataFormServer() {
@@ -225,11 +219,15 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
 
     private static void _showProgessLoading(boolean b) {
         if (b) {
-            mMessages.setVisibility(View.GONE);
-            mProgress.setVisibility(View.VISIBLE);
+            if (mMessages != null)
+                mMessages.setVisibility(View.GONE);
+            if (mProgress != null)
+                mProgress.setVisibility(View.VISIBLE);
         } else {
-            mMessages.setVisibility(View.VISIBLE);
-            mProgress.setVisibility(View.GONE);
+            if (mMessages != null)
+                mMessages.setVisibility(View.VISIBLE);
+            if (mProgress != null)
+                mProgress.setVisibility(View.GONE);
         }
     }
 
@@ -238,6 +236,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         if (position > -1) {
             pager.setCurrentItem(position);
         }
+        _handlerPageChange();
         _showProgessLoading(false);
 
     }
@@ -250,13 +249,14 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         messagesPagerAdapter = new MessagesPagerAdapter(fr, messagesForUserInbox, messagesToUserUnread, messagesFormUser);
         pager.setAdapter(messagesPagerAdapter);
         tabs.setViewPager(pager);
+
     }
 
     private static void _getDataFormLocal() {
         _getDataFormLocal(-1);
     }
 
-    private void _handlerPageChange() {
+    private static void _handlerPageChange() {
         ViewPager.OnPageChangeListener onPageNotificationChangeListener = new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -758,5 +758,15 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
     public void onDetach() {
         Log.d(TAG, "onDetach()");
         super.onDetach();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        Log.d(TAG, "setUserVisibleHint(" + isVisibleToUser + ")");
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser)
+            if (!alreadyExecuted) {
+                _defineData();
+            }
     }
 }
