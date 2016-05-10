@@ -40,6 +40,7 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
 
     private List<Attendance> attendanceList = new ArrayList<>();
     PageFragment currentPage;
+    private boolean alreadyExecuted = false;
 
     public ScreenAttended() {
         // Required empty public constructor
@@ -64,6 +65,8 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                 attendanceList.addAll(result);
                 if (currentPage != null)
                     currentPage.setData(attendanceList);
+
+                alreadyExecuted = true;
             }
 
             @Override
@@ -71,11 +74,14 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                 ringProgressDialog.dismiss();
                 if (thiz.getActivity() != null)
                     Toast.makeText(thiz.getActivity(), "Some error occur !", Toast.LENGTH_SHORT).show();
+
+                alreadyExecuted = true;
             }
 
             @Override
             public void onAuthFail(String message) {
                 LaoSchoolShared.goBackToLoginPage(thiz.getContext());
+                alreadyExecuted = true;
             }
         });
     }
@@ -205,7 +211,7 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
             Log.d(getString(R.string.title_screen_attended), "-Container Id:" + containerId);
         }
 
-        getAttendances();
+
     }
 
     @Override
@@ -236,5 +242,16 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         iScreenAttended = (IScreenAttended) activity;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            if (!alreadyExecuted) {
+                getAttendances();
+            }
+
+        }
     }
 }
