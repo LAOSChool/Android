@@ -102,6 +102,15 @@ public interface DataAccessInterface {
      */
     public void getExamResults(int filter_class_id, int filter_user_id, AsyncCallback<List<ExamResult>> callback);
 
+
+    /**
+     * Get the list of available exam_results
+     * Paging support: Yes (refer to Common=>Pagination)
+     *
+     * @param callback return list of exam result if success,
+     */
+    public void getMyExamResults(AsyncCallback<List<ExamResult>> callback);
+
     /**
      * Get class for a specific Exam Result ID
      *
@@ -222,13 +231,16 @@ public interface DataAccessInterface {
      * Get the list of available notification
      */
     public void getNotification(AsyncCallback<List<Message>> callback);
-    public void getNotification(int filter_from_id,AsyncCallback<List<Message>> callback);
 
-    public void createNotification(Message message,AsyncCallback<Message> callback);
+    public void getNotification(int filter_from_id, AsyncCallback<List<Message>> callback);
+
+    public void createNotification(Message message, AsyncCallback<Message> callback);
+
     public void updateNotification(Message message, AsyncCallback<Message> callback);
 
     public void getImageBitmap(String url, AsyncCallback<Bitmap> callback);
 
     public void updateMessageIsRead(Message message, AsyncCallback<Message> callback);
+
     public void updateMessageIsFlag(Message message, AsyncCallback<Message> callback);
 }

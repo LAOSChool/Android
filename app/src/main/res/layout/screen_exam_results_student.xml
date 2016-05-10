@@ -1,30 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
-    <com.astuetz.PagerSlidingTabStrip
-        android:id="@+id/tabs"
-        app:pstsShouldExpand="true"
-        app:pstsTextAllCaps="true"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:textColor="#ffffff"
-        app:pstsIndicatorColor ="@color/colorLaosBlue"
-        app:pstsDividerColor="@color/colorLaosBlue"
-        android:background="@color/colorLaosRed" />
-    <com.laoschool.view.ViewpagerDisableSwipeLeft
-        android:id="@+id/mViewPageScreenExamResultsStudent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-        <!--<android.support.v4.view.PagerTitleStrip-->
-            <!--android:id="@+id/pager_header"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="top"-->
-            <!--android:paddingBottom="4dp"-->
-            <!--android:paddingTop="4dp" />-->
-    </com.laoschool.view.ViewpagerDisableSwipeLeft>
-</LinearLayout>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/mExamResultsStudent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <com.astuetz.PagerSlidingTabStrip
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="@color/colorLaosRed"
+            android:textColor="@color/abc_primary_text_disable_only_material_dark"
+            app:pstsDividerColor="#ffffff"
+            app:pstsIndicatorColor="#7E57C2"
+            app:pstsIndicatorHeight="3dp"
+            app:pstsShouldExpand="true"
+            app:pstsTextAllCaps="false" />
+
+        <com.laoschool.view.ViewpagerDisableSwipeLeft
+            android:id="@+id/mViewPageScreenExamResultsStudent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/mProgressExamResultsStudent"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+    <include
+        layout="@layout/view_server_error"
+        android:id="@+id/mError"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+    <include
+        layout="@layout/view_no_data"
+        android:id="@+id/mNoData"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+</FrameLayout>

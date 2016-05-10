@@ -58,6 +58,7 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     private static DataAccessInterface service;
     private static DataAccessNotification accessNotification;
     private Message notification;
+    boolean alreadyExecuted = false;
 
     //Item for student
     private RecyclerView mRecylerViewNotificationStudent;
@@ -93,18 +94,26 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
 
     public IScreenAnnouncements iScreenAnnouncements;
 
-    public ScreenAnnouncements() {
-        // Required empty public constructor
+
+    public static ScreenAnnouncements instantiate(int containerId, String currentRole) {
+        Log.d(TAG, "instantiate()");
+        ScreenAnnouncements fragment = new ScreenAnnouncements();
+        Bundle args = new Bundle();
+        args.putInt(LaoSchoolShared.CONTAINER_ID, containerId);
+        args.putString(LaoSchoolShared.CURRENT_ROLE, currentRole);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate()");
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         if (getArguments() != null) {
             containerId = getArguments().getInt(LaoSchoolShared.CONTAINER_ID);
             currentRole = getArguments().getString(LaoSchoolShared.CURRENT_ROLE);
-            Log.d(getString(R.string.title_screen_announcements), "-Container Id:" + containerId);
-            setHasOptionsMenu(true);
+            Log.d(TAG, "-Container Id:" + containerId);
         }
         this.thiz = this;
         this.context = getActivity();
@@ -115,6 +124,7 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     }
 
     private void _defineData() {
+        Log.d(TAG, "_defineData()");
         _showProgressLoading(true);
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -126,6 +136,8 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
                 } else {
                     getDataFormServer();
                 }
+                _handlerPageChange();
+                alreadyExecuted = true;
             }
         }, LaoSchoolShared.LOADING_TIME);
 
@@ -222,33 +234,30 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView()");
         if (currentRole == null)
             return inflater.inflate(R.layout.screen_error_application, container, false);
         else {
             // Inflate the layout for this fragment
-            View view = inflater.inflate(R.layout.screen_announcements_student, container, false);
+            //  View view = inflater.inflate(R.layout.screen_announcements_student, container, false);
 //            if (currentRole.equals(LaoSchoolShared.ROLE_STUDENT))
 //                return _defineStudentView(view);
 //            else {
-            view = inflater.inflate(R.layout.screen_announcements_teacher, container, false);
-            return _defineTeacherView(view);
+
+            return _defineTeacherView(inflater, container);
             //}
         }
 
     }
 
-    private View _defineTeacherView(View view) {
+    private View _defineTeacherView(LayoutInflater inflater, ViewGroup container) {
+        View view = inflater.inflate(R.layout.screen_announcements_teacher, container, false);
         mAnnouncement = (LinearLayout) view.findViewById(R.id.mAnnouncement);
         mProgressBar = (ProgressBar) view.findViewById(R.id.mProgress);
         // Bind the tabs to the ViewPager
         tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
-
         viewPage = (ViewpagerDisableSwipeLeft) view.findViewById(R.id.notificationViewPage);
         viewPage.setAllowedSwipeDirection(HomeActivity.SwipeDirection.none);
-
-        _defineData();
-
-        _handlerPageChange();
 
         return view;
     }
@@ -367,13 +376,12 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
         return super.onOptionsItemSelected(item);
     }
 
-    public static Fragment instantiate(int containerId, String currentRole) {
-        ScreenAnnouncements fragment = new ScreenAnnouncements();
-        Bundle args = new Bundle();
-        args.putInt(LaoSchoolShared.CONTAINER_ID, containerId);
-        args.putString(LaoSchoolShared.CURRENT_ROLE, currentRole);
-        fragment.setArguments(args);
-        return fragment;
+
+    @Override
+    public void onResume() {
+        Log.d(TAG, "onResume()");
+        super.onResume();
+
     }
 
     @Override
@@ -383,13 +391,20 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
 
     @Override
     public void onResumeFragment() {
+        Log.d(TAG, "onResumeFragment()");
+        if (getUserVisibleHint()) {
+            if (!alreadyExecuted) {
+                _defineData();
+            }
+        }
 
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        iScreenAnnouncements = (IScreenAnnouncements) activity;
+    public void onAttach(Context context) {
+        Log.d(TAG, "onAttach()");
+        super.onAttach(context);
+        iScreenAnnouncements = (IScreenAnnouncements) context;
     }
 
     public static class NotificationPagerAdapter extends FragmentPagerAdapter {
@@ -464,6 +479,10 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
         private Context context;
         SwipeRefreshLayout mSwipeRefreshLayout;
         private List<Message> notificationForUser;
+
+        public NotificationList() {
+
+        }
 
         public NotificationList(int position, List<Message> notificationForUser) {
             this.position = position;
@@ -575,4 +594,5 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
             }
         }
     }
+
 }

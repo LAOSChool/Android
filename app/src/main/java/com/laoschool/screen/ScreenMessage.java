@@ -68,6 +68,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
     private static FragmentManager fr;
     private static LinearLayout mMessages;
     private static ProgressBar mProgress;
+    private boolean alreadyExecuted = false;
 
     public Message getMessage() {
         return message;
@@ -85,6 +86,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
     @Override
     public void onResumeFragment() {
         Log.d(TAG, "onResumeFragment");
+        _showProgessLoading(false);
     }
 
     public void setRefeshListMessage(boolean refeshListMessage) {
@@ -108,6 +110,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
     }
 
     public static ScreenMessage instantiate(int containerId, String currentRole) {
+        Log.d(TAG, "instantiate()");
         ScreenMessage screenMessage = new ScreenMessage();
         Bundle args = new Bundle();
         args.putInt(LaoSchoolShared.CONTAINER_ID, containerId);
@@ -128,12 +131,10 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         mProgress = (ProgressBar) view.findViewById(R.id.mProgress);
         pager = (ViewpagerDisableSwipeLeft) view.findViewById(R.id.messageViewPage);
         tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
-
         pager.setAllowedSwipeDirection(HomeActivity.SwipeDirection.none);
-
-        _defineData();
-
-        _handlerPageChange();
+        if (getUserVisibleHint())
+            if (!alreadyExecuted)
+                _defineData();
 
         return view;
     }
@@ -150,9 +151,9 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
                 } else {
                     _getDataFormServer();
                 }
+                alreadyExecuted = true;
             }
         }, LaoSchoolShared.LOADING_TIME);
-
     }
 
     private void _getDataFormServer() {
@@ -220,40 +221,49 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
                 });
     }
 
-    private static void _showProgessLoading(boolean b) {
-        if (b) {
-            mMessages.setVisibility(View.GONE);
-            mProgress.setVisibility(View.VISIBLE);
+    private static void _showProgessLoading(boolean show) {
+        if (mMessages != null) {
+            mMessages.setVisibility(show ? View.GONE : View.VISIBLE);
         } else {
-            mMessages.setVisibility(View.VISIBLE);
-            mProgress.setVisibility(View.GONE);
+            Log.d(TAG, "mMessages Null");
+        }
+        if (mProgress != null) {
+            mProgress.setVisibility(show ? View.VISIBLE : View.GONE);
+        } else {
+            Log.d(TAG, "mProgress Null");
         }
     }
 
     private static void _getDataFormLocal(int position) {
-        _initPageData();
+        _initPageData(true);
         if (position > -1) {
             pager.setCurrentItem(position);
         }
+        _handlerPageChange();
         _showProgessLoading(false);
 
     }
 
-    private static void _initPageData() {
+    private static void _initPageData(boolean inita) {
         List<Message> messagesForUserInbox = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
         List<Message> messagesToUserUnread = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 0);
         List<Message> messagesFormUser = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
         // Bind the tabs to the ViewPager
-        messagesPagerAdapter = new MessagesPagerAdapter(fr, messagesForUserInbox, messagesToUserUnread, messagesFormUser);
+        if (inita)
+            messagesPagerAdapter = new MessagesPagerAdapter(fr, messagesForUserInbox, messagesToUserUnread, messagesFormUser);
+        else {
+            messagesPagerAdapter = new MessagesPagerAdapter(fr, new ArrayList<Message>(), new ArrayList<Message>(), new ArrayList<Message>());
+        }
         pager.setAdapter(messagesPagerAdapter);
         tabs.setViewPager(pager);
+
     }
 
     private static void _getDataFormLocal() {
         _getDataFormLocal(-1);
     }
 
-    private void _handlerPageChange() {
+    private static void _handlerPageChange() {
         ViewPager.OnPageChangeListener onPageNotificationChangeListener = new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -571,15 +581,19 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
                                                                  } else if (position == 2) {
                                                                      countMessageFormLocal = dataAccessMessage.getMessagesCountFormUser(Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId());
                                                                  }
-
-                                                                 if (messages.size() < countMessageFormLocal) {
-                                                                     Log.d(TAG, "Load More");
-                                                                     messages.add(null);
-                                                                     listMessageAdapter.notifyItemInserted(messages.size() - 1);
-                                                                     _loadMoreData(messages, listMessageAdapter, position);
+                                                                 if (messages != null) {
+                                                                     if (messages.size() < countMessageFormLocal) {
+                                                                         Log.d(TAG, "onLoadMore()");
+                                                                         messages.add(null);
+                                                                         listMessageAdapter.notifyItemInserted(messages.size() - 1);
+                                                                         _loadMoreData(messages, listMessageAdapter, position);
+                                                                     } else {
+                                                                         Log.d(TAG, "onLoadMore() No message load !!!");
+                                                                     }
                                                                  } else {
-                                                                     Log.d(TAG, "No message load !!!");
+                                                                     Log.d(TAG, "onLoadMore() message Null");
                                                                  }
+
 
                                                              }
                                                          }
@@ -752,4 +766,10 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         Log.d(TAG, "onDetach()");
         super.onDetach();
     }
+
+//    @Override
+//    public void setUserVisibleHint(boolean isVisibleToUser) {
+//        Log.d(TAG, "setUserVisibleHint(" + isVisibleToUser + ")");
+//        super.setUserVisibleHint(isVisibleToUser);
+//    }
 }

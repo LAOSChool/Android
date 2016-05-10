@@ -44,10 +44,14 @@ public class ExamResult {
 
     int term_id;
 
+    String term;
+
+    String subject;
+
     public ExamResult() {
     }
 
-    public ExamResult(int id, int school_id, int class_id, int exam_type, String exam_dt, int subject_id, int teacher_id, int student_id, String student_name, String notice, int result_type_id, int iresult, float fresult, String sresult, int term_id) {
+    public ExamResult(int id, int school_id, int class_id, int exam_type, String exam_dt, int subject_id, int teacher_id, int student_id, String student_name, String notice, int result_type_id, int iresult, float fresult, String sresult, int term_id, String term, String subject) {
         this.id = id;
         this.school_id = school_id;
         this.class_id = class_id;
@@ -63,6 +67,8 @@ public class ExamResult {
         this.fresult = fresult;
         this.sresult = sresult;
         this.term_id = term_id;
+        this.term = term;
+        this.subject = subject;
     }
 
     public int getId() {
@@ -183,6 +189,22 @@ public class ExamResult {
 
     public void setTerm_id(int term_id) {
         this.term_id = term_id;
+    }
+
+    public String getTerm() {
+        return term;
+    }
+
+    public void setTerm(String term) {
+        this.term = term;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
     public String toJson() {

@@ -232,7 +232,6 @@ public class HomeActivity extends AppCompatActivity implements
 
         fragments.add(ScreenMore.instantiate(containerId, currentRole));
 
-
         fragments.add(ScreenCreateMessage.instantiate(containerId, currentRole));
 
         fragments.add(ScreenSchedule.instantiate(containerId, currentRole));
@@ -258,16 +257,12 @@ public class HomeActivity extends AppCompatActivity implements
         fragments.add(ScreenCreateAnnouncement.instantiate(containerId, currentRole));
 
         this.mPagerAdapter = new PagerAdapter(super.getSupportFragmentManager(), fragments);
-
         //set adapter and set handler page change
         this.mViewPager.setAdapter(this.mPagerAdapter);
-        //_gotoPage(LaoSchoolShared.POSITION_SCREEN_MORE_4);
+
         this.mViewPager.addOnPageChangeListener(this);
 
         getSupportActionBar().setTitle(R.string.title_screen_message);
-
-        // Default to first tab
-        this.mTabHost.setCurrentTab(LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
     }
 
     /**
@@ -303,7 +298,7 @@ public class HomeActivity extends AppCompatActivity implements
 
         tabIncatorAnnouncemen.setLayoutParams(new LinearLayout.LayoutParams(widthTabIndicator, ViewGroup.LayoutParams.WRAP_CONTENT));
         tabSpecAnnouncemen.setIndicator(tabIncatorAnnouncemen);
-        HomeActivity.AddTab(this, this.mTabHost, tabSpecAnnouncemen, (tabInfo = new TabInfo(getString(R.string.title_screen_announcements), ScreenMessage.class, args)));
+        HomeActivity.AddTab(this, this.mTabHost, tabSpecAnnouncemen, (tabInfo = new TabInfo(getString(R.string.title_screen_announcements), ScreenAnnouncements.class, args)));
         this.mapTabInfo.put(tabInfo.tag, tabInfo);
 
 
@@ -643,7 +638,7 @@ public class HomeActivity extends AppCompatActivity implements
         _gotoPage(LaoSchoolShared.POSITION_SCREEN_EXAM_RESULTS_2);
     }
 
-    void _gotoPage(int position) {
+    private void _gotoPage(int position) {
         this.mViewPager.setCurrentItem(position, false);
     }
 
@@ -787,7 +782,9 @@ public class HomeActivity extends AppCompatActivity implements
         onBackPressed();
     }
 
-    public void logout(View view) {
-        logoutApplication();
+    public void reloadApplication(View view) {
+        finish();
+        Intent reloadApplication = new Intent(this, SplashScreen.class);
+        startActivity(reloadApplication);
     }
 }
