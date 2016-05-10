@@ -7,11 +7,12 @@
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/mExamResultsStudent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:orientation="vertical"
-        android:id="@+id/mExamResultsStudent">
+        android:visibility="visible">
 
         <com.astuetz.PagerSlidingTabStrip
             android:id="@+id/tabs"
@@ -36,6 +37,21 @@
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+    <include
+        layout="@layout/view_server_error"
+        android:id="@+id/mError"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+    <include
+        layout="@layout/view_no_data"
+        android:id="@+id/mNoData"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:visibility="gone" />
 </FrameLayout>
