@@ -58,6 +58,7 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     private static DataAccessInterface service;
     private static DataAccessNotification accessNotification;
     private Message notification;
+    boolean alreadyExecuted = false;
 
     //Item for student
     private RecyclerView mRecylerViewNotificationStudent;
@@ -136,6 +137,8 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
                 } else {
                     getDataFormServer();
                 }
+                _handlerPageChange();
+                alreadyExecuted = true;
             }
         }, LaoSchoolShared.LOADING_TIME);
 
@@ -256,11 +259,6 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
         tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
         viewPage = (ViewpagerDisableSwipeLeft) view.findViewById(R.id.notificationViewPage);
         viewPage.setAllowedSwipeDirection(HomeActivity.SwipeDirection.none);
-
-        _defineData();
-
-        _handlerPageChange();
-
         return view;
     }
 
@@ -588,6 +586,16 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
                 HomeActivity homeActivity = (HomeActivity) getActivity();
                 homeActivity.logoutApplication();
             }
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        Log.d(TAG, "setUserVisibleHint(" + isVisibleToUser + ")");
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            if (!alreadyExecuted)
+                _defineData();
         }
     }
 }
