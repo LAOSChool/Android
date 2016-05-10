@@ -65,7 +65,7 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
                 public void onClick(View v) {
                     String _term = cbxTermScreenRecordStudent.getSelectedItem().toString();
                     if (!_term.equals(getString(R.string.selected))) {
-                        _fillDataForListResultFilter(recyclerView, Arrays.asList(getResources().getStringArray(R.array.subjects2)));
+                       // _fillDataForListResultFilter(recyclerView, Arrays.asList(getResources().getStringArray(R.array.subjects2)));
                         Toast.makeText(context, "Show final record", Toast.LENGTH_SHORT).show();
                     } else {
                         //Show dropdown view
@@ -89,8 +89,8 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
 
     private void _fillDataForListResultFilter(RecyclerView recyclerView, List<String> datas) {
         //init adapter
-        ExamResultsStudentSemesterAdapter adapter = new ExamResultsStudentSemesterAdapter(this, datas);
-        recyclerView.setAdapter(adapter);
+//        ExamResultsStudentSemesterAdapter adapter = new ExamResultsStudentSemesterAdapter(this, datas);
+//        recyclerView.setAdapter(adapter);
     }
 
     @Override
