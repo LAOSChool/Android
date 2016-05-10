@@ -63,6 +63,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     private String data;
     private String currentRole;
     private Context context;
+    private boolean alreadyExecuted = false;
 
     public ScreenExamResults() {
         // Required empty public constructor
@@ -188,8 +189,6 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         tabsStrip = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
         mViewPageStudent.setAllowedSwipeDirection(HomeActivity.SwipeDirection.none);
 
-        _definePageSemesterStudent();
-
         _handlerOnclickError();
 
         _handlerOnclickNodata();
@@ -253,15 +252,19 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
                     if (result != null) {
                         _setDataforPageSemester(result);
                         _showProgressLoadingStudent(false);
+                        alreadyExecuted = true;
+
                     } else {
                         Log.d(TAG, "_definePageSemesterStudent()/getMyExamResults()/onAuthFail() message:NUll");
                         _showProgressLoadingStudent(false);
                         _showNoDataStudent();
+                        alreadyExecuted = true;
                     }
                 } else {
                     Log.d(TAG, "_definePageSemesterStudent()/getMyExamResults()/onAuthFail() message:Size==0");
                     _showProgressLoadingStudent(false);
                     _showNoDataStudent();
+                    alreadyExecuted = true;
                 }
 
             }
@@ -271,6 +274,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
                 Log.e(TAG, "_definePageSemesterStudent()/getMyExamResults()/onFailure() message:" + message);
                 _showProgressLoadingStudent(false);
                 _showErrorStudent();
+                alreadyExecuted = true;
             }
 
             @Override
@@ -278,6 +282,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
                 Log.e(TAG, "_definePageSemesterStudent()/getMyExamResults()/onAuthFail() message:" + message);
                 LaoSchoolShared.goBackToLoginPage(context);
                 _showProgressLoadingStudent(false);
+                alreadyExecuted = true;
             }
         });
         //_getExamResult();
@@ -657,4 +662,19 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         }
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        Log.d(TAG, "setUserVisibleHint(" + isVisibleToUser + ")");
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            if (!alreadyExecuted) {
+                if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
+
+                } else {
+                    _definePageSemesterStudent();
+                }
+            }
+
+        }
+    }
 }
