@@ -786,7 +786,9 @@ public class HomeActivity extends AppCompatActivity implements
         onBackPressed();
     }
 
-    public void logout(View view) {
-        logoutApplication();
+    public void reloadApplication(View view) {
+        finish();
+        Intent reloadApplication = new Intent(this, SplashScreen.class);
+        startActivity(reloadApplication);
     }
 }
