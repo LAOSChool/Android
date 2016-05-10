@@ -257,10 +257,9 @@ public class HomeActivity extends AppCompatActivity implements
         fragments.add(ScreenCreateAnnouncement.instantiate(containerId, currentRole));
 
         this.mPagerAdapter = new PagerAdapter(super.getSupportFragmentManager(), fragments);
-
         //set adapter and set handler page change
         this.mViewPager.setAdapter(this.mPagerAdapter);
-        //_gotoPage(LaoSchoolShared.POSITION_SCREEN_MORE_4);
+
         this.mViewPager.addOnPageChangeListener(this);
 
         getSupportActionBar().setTitle(R.string.title_screen_message);
@@ -642,7 +641,7 @@ public class HomeActivity extends AppCompatActivity implements
         _gotoPage(LaoSchoolShared.POSITION_SCREEN_EXAM_RESULTS_2);
     }
 
-    void _gotoPage(int position) {
+    private void _gotoPage(int position) {
         this.mViewPager.setCurrentItem(position, false);
     }
 
