@@ -18,10 +18,10 @@ import java.util.Map;
  */
 public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStudentSemesterAdapter.ScoreStudentSemesterAdapterViewHolder> {
     Context context;
-    Map<String, String> scores;
+    Map<String, ArrayList<String>> scores;
     List<String> months = new ArrayList<>();
 
-    public ScoreStudentSemesterAdapter(Context context, Map<String, String> scores) {
+    public ScoreStudentSemesterAdapter(Context context, Map<String, ArrayList<String>> scores) {
         this.context = context;
         this.scores = scores;
 
@@ -42,9 +42,14 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
     public void onBindViewHolder(ScoreStudentSemesterAdapterViewHolder holder, int position) {
         View view = holder.view;
         String month = months.get(position);
-        String score = scores.get(month);
         ((TextView) (view.findViewById(R.id.lbScoreMonth))).setText(month);
-        ((TextView) (view.findViewById(R.id.lbScore))).setText(score);
+        List<String> scoreList = scores.get(month);
+        if (scoreList.size() > 0) {
+            String score = scoreList.get(scoreList.size() - 1);
+            ((TextView) (view.findViewById(R.id.lbScore))).setText(score);
+        } else {
+            ((TextView) (view.findViewById(R.id.lbScore))).setText("");
+        }
     }
 
     @Override
