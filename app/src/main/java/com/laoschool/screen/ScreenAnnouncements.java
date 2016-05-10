@@ -94,8 +94,6 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
 
     public IScreenAnnouncements iScreenAnnouncements;
 
-    public ScreenAnnouncements() {
-    }
 
     public static ScreenAnnouncements instantiate(int containerId, String currentRole) {
         Log.d(TAG, "instantiate()");
@@ -126,6 +124,7 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     }
 
     private void _defineData() {
+        Log.d(TAG, "_defineData()");
         _showProgressLoading(true);
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -259,6 +258,7 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
         tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
         viewPage = (ViewpagerDisableSwipeLeft) view.findViewById(R.id.notificationViewPage);
         viewPage.setAllowedSwipeDirection(HomeActivity.SwipeDirection.none);
+
         return view;
     }
 
@@ -381,6 +381,7 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     public void onResume() {
         Log.d(TAG, "onResume()");
         super.onResume();
+
     }
 
     @Override
@@ -391,6 +392,11 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     @Override
     public void onResumeFragment() {
         Log.d(TAG, "onResumeFragment()");
+        if (getUserVisibleHint()) {
+            if (!alreadyExecuted) {
+                _defineData();
+            }
+        }
 
     }
 
@@ -589,13 +595,4 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
         }
     }
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        Log.d(TAG, "setUserVisibleHint(" + isVisibleToUser + ")");
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            if (!alreadyExecuted)
-                _defineData();
-        }
-    }
 }
