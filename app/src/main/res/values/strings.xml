@@ -99,4 +99,7 @@
     <string name="msg_create_process">Create...</string>
     <string name="msg_re_login_application">This account was being logged in by other device. Please re-login.</string>
     <string name="err" >Error</string>
+    <string name="server_error">Server error !!!</string>
+    <string name="reload">Reload</string>
+    <string name="msg_no_data">No data</string>
 </resources>
