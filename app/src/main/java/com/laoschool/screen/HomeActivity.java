@@ -263,9 +263,6 @@ public class HomeActivity extends AppCompatActivity implements
         this.mViewPager.addOnPageChangeListener(this);
 
         getSupportActionBar().setTitle(R.string.title_screen_message);
-
-        // Default to first tab
-        this.mTabHost.setCurrentTab(LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
     }
 
     /**
