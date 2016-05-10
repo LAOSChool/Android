@@ -232,7 +232,6 @@ public class HomeActivity extends AppCompatActivity implements
 
         fragments.add(ScreenMore.instantiate(containerId, currentRole));
 
-
         fragments.add(ScreenCreateMessage.instantiate(containerId, currentRole));
 
         fragments.add(ScreenSchedule.instantiate(containerId, currentRole));
@@ -303,7 +302,7 @@ public class HomeActivity extends AppCompatActivity implements
 
         tabIncatorAnnouncemen.setLayoutParams(new LinearLayout.LayoutParams(widthTabIndicator, ViewGroup.LayoutParams.WRAP_CONTENT));
         tabSpecAnnouncemen.setIndicator(tabIncatorAnnouncemen);
-        HomeActivity.AddTab(this, this.mTabHost, tabSpecAnnouncemen, (tabInfo = new TabInfo(getString(R.string.title_screen_announcements), ScreenMessage.class, args)));
+        HomeActivity.AddTab(this, this.mTabHost, tabSpecAnnouncemen, (tabInfo = new TabInfo(getString(R.string.title_screen_announcements), ScreenAnnouncements.class, args)));
         this.mapTabInfo.put(tabInfo.tag, tabInfo);
 
 
