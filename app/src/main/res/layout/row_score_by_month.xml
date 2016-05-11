@@ -11,7 +11,6 @@
         android:layout_height="wrap_content"
         android:text="1"
         android:id="@+id/lbScoreMonth"
-        android:textColor="@color/colorTitleUnread"
         android:layout_gravity="center" />
 
     <TextView
@@ -19,5 +18,6 @@
         android:layout_height="wrap_content"
         android:text="10"
         android:id="@+id/lbScore"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:textColor="@color/colorTitleUnread" />
 </LinearLayout>
