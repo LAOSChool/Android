@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import com.laoschool.R;
 import com.laoschool.entities.ExamResult;
+import com.laoschool.listener.OnLoadMoreListener;
+import com.laoschool.screen.ScreenExamResults;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -34,7 +36,8 @@ import java.util.TreeMap;
 /**
  * Created by Hue on 3/11/2016.
  */
-public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<ExamResultsStudentSemesterAdapter.ExamResultsStudentSemesterAdapterViewHolder> {
+public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final String TAG = ExamResultsStudentSemesterAdapter.class.getSimpleName();
     private Fragment screen;
     private Context context;
     private List<ExamResult> examResults;
@@ -49,45 +52,50 @@ public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<Exam
     public ExamResultsStudentSemesterAdapter(Fragment screen, List<ExamResult> examResults) {
         this.screen = screen;
         this.context = screen.getActivity();
-        this.examResults = examResults;
-        HashMap<Integer, String> hashterms = new LinkedHashMap<Integer, String>();
-        listMap = new HashMap<>();
-        for (ExamResult examResult : examResults) {
-            hashterms.put(examResult.getSubject_id(), examResult.getSubject());
+        if (examResults != null) {
+            this.examResults = examResults;
+            HashMap<Integer, String> hashSubject = new LinkedHashMap<Integer, String>();
+            listMap = new HashMap<>();
+            for (ExamResult examResult : examResults) {
+                hashSubject.put(examResult.getSubject_id(), examResult.getSubject());
+            }
+            Map<Integer, String> treeSubject = new TreeMap<>(hashSubject);
+            for (Integer subId : treeSubject.keySet()) {
+                //defile subject list
+                subjects.add(treeSubject.get(subId));
+                subjectIds.add(subId);
 
-        }
-        for (Integer subId : hashterms.keySet()) {
-            //defile subject list
-            subjects.add(hashterms.get(subId));
-            subjectIds.add(subId);
 
+                Map<Integer, ArrayList<String>> scoresByMonthList = new HashMap<>();
+                for (int i = 0; i < examResults.size(); i++) {
+                    ExamResult examResult = examResults.get(i);
+                    int exam_month = _getMonthFormStringDate(examResult.getExam_dt());
+                    String score = String.valueOf(examResult.getIresult());
+                    if (examResult.getSubject_id() == subId) {
 
-            Map<Integer, ArrayList<String>> scoresByMonthList = new HashMap<>();
-            for (int i = 0; i < examResults.size(); i++) {
-                ExamResult examResult = examResults.get(i);
-                int exam_month = _getMonthFormStringDate(examResult.getExam_dt());
-                String score = String.valueOf(examResult.getIresult());
-                if (examResult.getSubject_id() == subId) {
+                        ArrayList tempList = null;
+                        if (scoresByMonthList.containsKey(exam_month)) {
 
-                    ArrayList tempList = null;
-                    if (scoresByMonthList.containsKey(exam_month)) {
-
-                        tempList = scoresByMonthList.get(exam_month);
-                        if (tempList == null)
+                            tempList = scoresByMonthList.get(exam_month);
+                            if (tempList == null)
+                                tempList = new ArrayList();
+                            tempList.add(score);
+                        } else {
                             tempList = new ArrayList();
-                        tempList.add(score);
-                    } else {
-                        tempList = new ArrayList();
-                        tempList.add(score);
+                            tempList.add(score);
+                        }
+                        scoresByMonthList.put(exam_month, tempList);
                     }
-                    scoresByMonthList.put(exam_month, tempList);
+
+                    listMap.put(subId, scoresByMonthList);
                 }
 
-                listMap.put(subId, scoresByMonthList);
             }
-
+        } else {
+            this.examResults = new ArrayList<>();
         }
     }
+
 
     private int _getMonthFormStringDate(String exam_dt) {
         int month = 0;
@@ -103,13 +111,13 @@ public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<Exam
             cal.setTime(date1);
             month = cal.get(Calendar.MONTH) + 1;
         } catch (ParseException e) {
-            Log.e("", "_getMonthFormStringDate() ParseException:" + e.getMessage());
+            Log.e(TAG, "_getMonthFormStringDate() - ParseException:" + e.getMessage());
         }
         return month;
     }
 
     @Override
-    public ExamResultsStudentSemesterAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = null;
         if (viewType == TYPE_LINE)
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_line, parent, false); //Inflating the layout
@@ -123,36 +131,39 @@ public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<Exam
     }
 
     @Override
-    public void onBindViewHolder(ExamResultsStudentSemesterAdapterViewHolder holder, int position) {
-        View view = holder.view;
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         try {
-            if (holder.viewType == TYPE_TITLE) {
-                final String title = subjects.get(position);
-                Map<Integer, ArrayList<String>> scores = listMap.get(subjectIds.get(position));
-                Map<Integer, ArrayList<String>> treeScores = new TreeMap<>(scores);
+            if (holder instanceof ExamResultsStudentSemesterAdapterViewHolder) {
+                ExamResultsStudentSemesterAdapterViewHolder semesterHolder = (ExamResultsStudentSemesterAdapterViewHolder) holder;
+                View view = semesterHolder.view;
+                if (semesterHolder.viewType == TYPE_TITLE) {
+                    final String title = subjects.get(position);
+                    Map<Integer, ArrayList<String>> scores = listMap.get(subjectIds.get(position));
+                    Map<Integer, ArrayList<String>> treeScores = new TreeMap<>(scores);
 //                //Define and set data
-                TextView txtSubjectScreenResultsStudent = (TextView) view.findViewById(R.id.txtSubjectScreenResultsStudent);
-                RecyclerView mListScoreBySemester = (RecyclerView) view.findViewById(R.id.mListScoreBySemester);
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-                mListScoreBySemester.setLayoutManager(linearLayoutManager);
+                    TextView txtSubjectScreenResultsStudent = (TextView) view.findViewById(R.id.txtSubjectScreenResultsStudent);
+                    RecyclerView mListScoreBySemester = (RecyclerView) view.findViewById(R.id.mListScoreBySemester);
+                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+                    mListScoreBySemester.setLayoutManager(linearLayoutManager);
 
-                txtSubjectScreenResultsStudent.setText(title);
+                    txtSubjectScreenResultsStudent.setText(title);
 
-                ScoreStudentSemesterAdapter scoreStudentSemesterAdapter = new ScoreStudentSemesterAdapter(context, treeScores);
-                mListScoreBySemester.setAdapter(scoreStudentSemesterAdapter);
-                //Handler on click item
-                view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(context, title, Toast.LENGTH_SHORT).show();
+                    ScoreStudentSemesterAdapter scoreStudentSemesterAdapter = new ScoreStudentSemesterAdapter(context, treeScores);
+                    mListScoreBySemester.setAdapter(scoreStudentSemesterAdapter);
+                    //Handler on click item
+                    view.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Toast.makeText(context, title, Toast.LENGTH_SHORT).show();
 
-                    }
-                });
-            } else {
+                        }
+                    });
+                } else {
 
+                }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "onBindViewHolder() - exception messages:" + e.getMessage());
         }
     }
 
