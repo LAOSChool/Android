@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -45,9 +46,7 @@ import com.laoschool.view.ViewpagerDisableSwipeLeft;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -58,12 +57,13 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
 
 
     private static final String TAG = "ScreenExamResults";
+    private static FragmentManager fr;
     private ScreenExamResults screenExamResults;
     private int containerId;
     private String data;
     private String currentRole;
-    private Context context;
-    private boolean alreadyExecuted = false;
+    private static Context context;
+    private static boolean alreadyExecuted = false;
 
     public ScreenExamResults() {
         // Required empty public constructor
@@ -96,11 +96,12 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     TextView txtTerm;
     TextView txtSubject;
     TextView txtClass;
-    ViewpagerDisableSwipeLeft mViewPageStudent;
-    PagerSlidingTabStrip tabsStrip;
-    LinearLayout mExamResultsStudent;
-    ProgressBar mProgressStudent;
-    FrameLayout mError, mNoData;
+    static ViewpagerDisableSwipeLeft mViewPageStudent;
+    static PagerSlidingTabStrip tabsStrip;
+    static LinearLayout mExamResultsStudent;
+    static ProgressBar mProgressStudent;
+    static FrameLayout mError;
+    static FrameLayout mNoData;
 
 
     @Override
@@ -125,6 +126,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         }
         this.context = getActivity();
         this.screenExamResults = this;
+        this.fr = getFragmentManager();
     }
 
     @Override
@@ -148,16 +150,14 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     @Override
     public void onResumeFragment() {
         Log.d(TAG, "onResumeFragment()");
-        if (getUserVisibleHint()) {
-            if (!alreadyExecuted) {
+        if (!alreadyExecuted) {
+            if (currentRole != null)
                 if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
-
                 } else {
                     _definePageSemesterStudent();
                 }
-            }
-
         }
+
     }
 
     @Override
@@ -230,7 +230,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
             @Override
             public void onSuccess(List<ExamResult> result) {
                 if (result != null) {
-                    _setDataforPageSemester(result);
+                    _setDataforPageSemester(result, -1);
                 } else {
                     Log.d(TAG, "_definePageSemesterStudent()/getExamResults()/onSuccess() message:NUll");
                 }
@@ -253,25 +253,30 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         });
     }
 
-    private void _getMyExamResult() {
-        _showProgressLoadingStudent(true);
+    private static void _getMyExamResult() {
+        _getMyExamResult(-1);
+    }
+
+    private static void _getMyExamResult(final int positon) {
+        if (positon == -1)
+            _showProgressLoadingStudent(true);
         LaoSchoolSingleton.getInstance().getDataAccessService().getMyExamResults(new AsyncCallback<List<ExamResult>>() {
             @Override
             public void onSuccess(List<ExamResult> result) {
                 if (result.size() > 0) {
                     if (result != null) {
-                        _setDataforPageSemester(result);
+                        _setDataforPageSemester(result, positon);
                         _showProgressLoadingStudent(false);
                         alreadyExecuted = true;
 
                     } else {
-                        Log.d(TAG, "_definePageSemesterStudent()/getMyExamResults()/onAuthFail() message:NUll");
+                        Log.d(TAG, "getMyExamResults(" + positon + ")/onAuthFail() message:NUll");
                         _showProgressLoadingStudent(false);
                         _showNoDataStudent();
                         alreadyExecuted = true;
                     }
                 } else {
-                    Log.d(TAG, "_definePageSemesterStudent()/getMyExamResults()/onAuthFail() message:Size==0");
+                    Log.d(TAG, "getMyExamResults(" + positon + ")/onAuthFail() message:Size==0");
                     _showProgressLoadingStudent(false);
                     _showNoDataStudent();
                     alreadyExecuted = true;
@@ -281,7 +286,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
 
             @Override
             public void onFailure(String message) {
-                Log.e(TAG, "_definePageSemesterStudent()/getMyExamResults()/onFailure() message:" + message);
+                Log.e(TAG, "getMyExamResults(" + positon + ")/onFailure() message:" + message);
                 _showProgressLoadingStudent(false);
                 _showErrorStudent();
                 alreadyExecuted = true;
@@ -289,17 +294,16 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
 
             @Override
             public void onAuthFail(String message) {
-                Log.e(TAG, "_definePageSemesterStudent()/getMyExamResults()/onAuthFail() message:" + message);
+                Log.e(TAG, "getMyExamResults(" + positon + ")/onAuthFail() message:" + message);
                 LaoSchoolShared.goBackToLoginPage(context);
                 _showProgressLoadingStudent(false);
                 alreadyExecuted = true;
             }
         });
-        //_getExamResult();
     }
 
 
-    private void _setDataforPageSemester(List<ExamResult> result) {
+    private static void _setDataforPageSemester(List<ExamResult> result, int positon) {
         HashMap<Integer, String> hashterms = new LinkedHashMap<Integer, String>();
         Map<Integer, List<ExamResult>> mapTermExam = new HashMap<Integer, List<ExamResult>>();
         for (ExamResult examResult : result) {
@@ -326,10 +330,12 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         }
 
         //difine pager
-        ExamScorePagerAdapter sampleFragmentPagerAdapter = new ExamScorePagerAdapter(getFragmentManager(), hashterms, mapTermExam);
+        ExamScorePagerAdapter sampleFragmentPagerAdapter = new ExamScorePagerAdapter(fr, hashterms, mapTermExam);
         mViewPageStudent.setAdapter(sampleFragmentPagerAdapter);
         // Attach the view pager to the tab strip
         tabsStrip.setViewPager(mViewPageStudent);
+        if (positon > -1)
+            mViewPageStudent.setCurrentItem(positon);
     }
 
     private Map<Integer, List<ExamResult>> _hashExamResultsbyTerm(List<ExamResult> result) {
@@ -342,14 +348,14 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         _getMyExamResult();
     }
 
-    private void _showErrorStudent() {
+    private static void _showErrorStudent() {
         mError.setVisibility(View.VISIBLE);
         mProgressStudent.setVisibility(View.GONE);
         mExamResultsStudent.setVisibility(View.GONE);
         mNoData.setVisibility(View.GONE);
     }
 
-    private void _showNoDataStudent() {
+    private static void _showNoDataStudent() {
         mNoData.setVisibility(View.VISIBLE);
         mError.setVisibility(View.GONE);
         mProgressStudent.setVisibility(View.GONE);
@@ -357,7 +363,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     }
 
 
-    private void _showProgressLoadingStudent(boolean b) {
+    private static void _showProgressLoadingStudent(boolean b) {
         if (b) {
             mProgressStudent.setVisibility(View.VISIBLE);
             mExamResultsStudent.setVisibility(View.GONE);
@@ -578,7 +584,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     }
 
 
-    public class ExamScorePagerAdapter extends FragmentPagerAdapter {
+    public static class ExamScorePagerAdapter extends FragmentPagerAdapter {
         private List<Integer> termIds = new ArrayList<>();
         private List<String> terms = new ArrayList<>();
         private List<List<ExamResult>> lists = new ArrayList<>();
@@ -586,8 +592,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         public ExamScorePagerAdapter(FragmentManager fm, HashMap<Integer, String> hashterms, Map<Integer, List<ExamResult>> examResultList) {
             super(fm);
             for (Integer key : hashterms.keySet()) {
-                List<ExamResult> results = new ArrayList<>();
-                Log.d(TAG, "Term:" + key + ",Name:" + hashterms.get(key));
+                Log.d(TAG, "ExamScorePagerAdapter() -Term:" + key + ",Name:" + hashterms.get(key));
                 termIds.add(key);
                 terms.add(hashterms.get(key));
                 lists.add(examResultList.get(key));
@@ -652,23 +657,30 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         // Inflate the fragment layout we defined above for this fragment
         // Set the associated text for the title
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
             View view = inflater.inflate(R.layout.view_exam_resluts_student_tab, container, false);
             RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.mRecyclerViewExamResultsStudentTab);
+            final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
             GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 1);
             recyclerView.setLayoutManager(gridLayoutManager);
+            _setData(recyclerView);
+            _handlerSwipeRefesh(mSwipeRefreshLayout);
+            return view;
+        }
+
+        private void _setData(RecyclerView recyclerView) {
             ExamResultsStudentSemesterAdapter studentTabAdapter = new ExamResultsStudentSemesterAdapter(fragment, lists);
             recyclerView.setAdapter(studentTabAdapter);
-//            if (lists != null) {
-//                List<ExamResult> results = lists.get(mPage);
-//                Log.d(TAG, "Page:" + mPage);
-//                ExamResultsStudentSemesterAdapter studentTabAdapter = new ExamResultsStudentSemesterAdapter(fragment, results);
-//                if (mPage == 0) {
-//                } else if (mPage == 1) {
-//                    studentTabAdapter = new ExamResultsStudentSemesterAdapter(fragment, results);
-//                }
-//            }
-            return view;
+        }
+
+        private void _handlerSwipeRefesh(final SwipeRefreshLayout mSwipeRefreshLayout) {
+            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    _getMyExamResult(mPage);
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
+            });
         }
     }
 
@@ -676,5 +688,16 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         Log.d(TAG, "setUserVisibleHint(" + isVisibleToUser + ")");
         super.setUserVisibleHint(isVisibleToUser);
+//        if (isVisibleToUser) {
+//            if (!alreadyExecuted) {
+//                if (currentRole != null)
+//                    if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
+//
+//                    } else {
+//
+//                    }
+//            }
+//
+//        }
     }
 }
