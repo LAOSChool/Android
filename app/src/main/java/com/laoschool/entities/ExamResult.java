@@ -1,5 +1,8 @@
 package com.laoschool.entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -10,7 +13,7 @@ import java.util.Date;
 /**
  * Created by Tran An on 11/03/2016.
  */
-public class ExamResult {
+public class ExamResult implements Parcelable {
 
     static final String Entity_Name = "exam_results";
 
@@ -218,4 +221,64 @@ public class ExamResult {
         ExamResult examResult = gson.fromJson(jsonString, ExamResult.class);
         return examResult;
     }
+
+    protected ExamResult(Parcel in) {
+        id = in.readInt();
+        school_id = in.readInt();
+        class_id = in.readInt();
+        exam_type = in.readInt();
+        exam_dt = in.readString();
+        subject_id = in.readInt();
+        teacher_id = in.readInt();
+        student_id = in.readInt();
+        student_name = in.readString();
+        notice = in.readString();
+        result_type_id = in.readInt();
+        iresult = in.readInt();
+        fresult = in.readFloat();
+        sresult = in.readString();
+        term_id = in.readInt();
+        term = in.readString();
+        subject = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(Entity_Name);
+        dest.writeInt(id);
+        dest.writeInt(school_id);
+        dest.writeInt(class_id);
+        dest.writeInt(exam_type);
+        dest.writeString(exam_dt);
+        dest.writeInt(subject_id);
+        dest.writeInt(teacher_id);
+        dest.writeInt(student_id);
+        dest.writeString(student_name);
+        dest.writeString(notice);
+        dest.writeInt(result_type_id);
+        dest.writeInt(iresult);
+        dest.writeFloat(fresult);
+        dest.writeString(sresult);
+        dest.writeInt(term_id);
+        dest.writeString(term);
+        dest.writeString(subject);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<ExamResult> CREATOR = new Parcelable.Creator<ExamResult>() {
+        @Override
+        public ExamResult createFromParcel(Parcel in) {
+            return new ExamResult(in);
+        }
+
+        @Override
+        public ExamResult[] newArray(int size) {
+            return new ExamResult[size];
+        }
+    };
 }
