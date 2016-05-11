@@ -158,8 +158,8 @@ public class User {
     }
 
     public static User parseFromJson(String jsonString) {
-        User user = new User();
         try {
+            User user = new User();
             JSONObject mainObject = new JSONObject(jsonString);
             user.setId(mainObject.getInt("id"));
             user.setSso_id(mainObject.getString("sso_id"));
@@ -207,7 +207,7 @@ public class User {
             return user;
         } catch (JSONException e) {
             e.printStackTrace();
-            return user;
+            return null;
         }
     }
 

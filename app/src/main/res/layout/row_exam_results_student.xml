@@ -1,62 +1,130 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="vertical"-->
+    <!--android:background="@color/color_bg_read">-->
+
+    <!--&lt;!&ndash;<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:background="@color/color_bg_read">&ndash;&gt;-->
+
+        <!--<RelativeLayout-->
+            <!--android:id="@+id/relativeLayout2"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="40dp"-->
+            <!--android:background="@color/color_bg_read">-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/txtSubjectScreenResultsStudent"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:singleLine="false"-->
+                <!--android:text="Math"-->
+                <!--android:textColor="@color/colorPrimary"-->
+                <!--android:textStyle="bold"-->
+                <!--android:layout_alignParentStart="false"-->
+                <!--android:layout_alignParentEnd="false"-->
+                <!--android:paddingTop="8dp"-->
+                <!--android:paddingLeft="16dp"-->
+                <!--android:paddingBottom="8dp"-->
+                <!--android:layout_centerInParent="true" />-->
+        <!--</RelativeLayout>-->
+
+    <!--<LinearLayout-->
+        <!--android:orientation="horizontal"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:background="@color/colorPrimary"-->
+        <!--android:layout_marginLeft="16dp"-->
+        <!--android:layout_marginRight="16dp" />-->
+
+    <!--<RelativeLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="56dp">-->
+
+        <!--<android.support.v7.widget.RecyclerView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/mListScoreBySemester"-->
+            <!--android:layout_centerInParent="true" />-->
+    <!--</RelativeLayout>-->
+
+    <!--&lt;!&ndash;</RelativeLayout>&ndash;&gt;-->
+
+    <!--<LinearLayout-->
+        <!--android:orientation="horizontal"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="3dp"-->
+        <!--android:background="@color/colorDefault"></LinearLayout>-->
+
+<!--</LinearLayout>-->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@color/color_bg_read">
+    android:orientation="vertical">
 
-    <!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:background="@color/color_bg_read">-->
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffffff">
 
         <RelativeLayout
             android:id="@+id/relativeLayout2"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="@color/color_bg_read">
+            android:layout_width="100dp"
+            android:layout_height="88dp"
+            android:background="#ffffff">
 
             <TextView
                 android:id="@+id/txtSubjectScreenResultsStudent"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:singleLine="false"
+                android:layout_height="match_parent"
+                android:maxLines="3"
+                android:lines="3"
                 android:text="Math"
                 android:textColor="@color/colorPrimary"
                 android:textStyle="bold"
-                android:layout_alignParentStart="false"
-                android:layout_alignParentEnd="false"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:paddingTop="8dp"
-                android:paddingLeft="16dp"
-                android:paddingBottom="8dp"
-                android:layout_centerInParent="true" />
+                android:paddingRight="8dp"
+                android:paddingLeft="16dp" />
         </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="88dp"
+            android:layout_alignParentRight="true"
+            android:layout_toEndOf="@+id/relativeLayout2"
+            android:background="@color/color_bg_un_read"
+            android:orientation="vertical"
+            android:layout_centerVertical="true">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="88dp"
+                >
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/mListScoreBySemester"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:paddingRight="16dp"
+                    android:layout_gravity="center" />
+            </FrameLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/colorPrimary"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="56dp">
-
-        <android.support.v7.widget.RecyclerView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/mListScoreBySemester"
-            android:layout_centerInParent="true" />
-    </RelativeLayout>
-
-    <!--</RelativeLayout>-->
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:background="@color/colorDefault"></LinearLayout>
-
+        android:background="@color/color_divider"></LinearLayout>
 </LinearLayout>

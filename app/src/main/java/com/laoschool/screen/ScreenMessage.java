@@ -69,6 +69,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
     private static LinearLayout mMessages;
     private static ProgressBar mProgress;
     private boolean alreadyExecuted = false;
+    private String currentRole;
 
     public Message getMessage() {
         return message;
@@ -114,6 +115,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         ScreenMessage screenMessage = new ScreenMessage();
         Bundle args = new Bundle();
         args.putInt(LaoSchoolShared.CONTAINER_ID, containerId);
+        args.putString(LaoSchoolShared.CURRENT_ROLE, currentRole);
         screenMessage.setArguments(args);
         return screenMessage;
     }
@@ -122,7 +124,11 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView()");
-        return _defineScreenMessage(inflater, container);
+        if (currentRole == null)
+            return inflater.inflate(R.layout.screen_error_application, container, false);
+        else {
+            return _defineScreenMessage(inflater, container);
+        }
     }
 
     private View _defineScreenMessage(LayoutInflater inflater, ViewGroup container) {
@@ -305,7 +311,12 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         setHasOptionsMenu(true);
         if (getArguments() != null) {
             containerId = getArguments().getInt(LaoSchoolShared.CONTAINER_ID);
-            Log.d(getString(R.string.title_screen_message), "-Container Id:" + containerId);
+            currentRole = getArguments().getString(LaoSchoolShared.CURRENT_ROLE);
+            if (currentRole != null) {
+                Log.d(TAG, "-Container Id:" + containerId + ",currentRole:" + currentRole);
+            } else {
+                Log.d(TAG, "-Container Id:" + containerId + ",currentRole null");
+            }
         }
         service = DataAccessImpl.getInstance(getActivity());
         this.thiz = this;
@@ -316,7 +327,9 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_screen_message, menu);
+        if (currentRole != null) {
+            inflater.inflate(R.menu.menu_screen_message, menu);
+        }
     }
 
     @Override
