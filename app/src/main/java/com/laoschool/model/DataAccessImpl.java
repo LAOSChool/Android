@@ -59,7 +59,7 @@ import java.util.Map;
  * Created by Tran An on 14/03/2016.
  */
 public class DataAccessImpl implements DataAccessInterface {
-
+    private static final String TAG = DataAccessImpl.class.getSimpleName();
     private static DataAccessImpl mInstance;
     private RequestQueue mRequestQueue;
     private static Context mCtx;
@@ -524,7 +524,7 @@ public class DataAccessImpl implements DataAccessInterface {
     @Override
     public void getMyExamResults(final AsyncCallback<List<ExamResult>> callback) {
         String url = HOST + "exam_results/myprofile";
-        Log.d("S/getMyExamResults()", "url:" + url);
+        Log.d("Service", TAG + ".getMyExamResults() -url:" + url);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url.trim(),
                 new Response.Listener<String>() {
                     @Override
@@ -532,7 +532,7 @@ public class DataAccessImpl implements DataAccessInterface {
                         try {
                             JSONObject mainObject = new JSONObject(response);
                             int total_count = mainObject.getInt("total_count");
-                            Log.d("S/getMyExamResults()", "total_count:"+ total_count);
+                            Log.d("Service", TAG + ".getMyExamResults() onResponse() -total_count:" + total_count);
                             if (total_count > 0) {
                                 ListExamResults examResults = ListExamResults.fromJson(response);
                                 callback.onSuccess(examResults.getList());
@@ -549,12 +549,11 @@ public class DataAccessImpl implements DataAccessInterface {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         NetworkResponse networkResponse = error.networkResponse;
+                        Log.e("Service", TAG + ".getMyExamResults() onErrorResponse() - code: " + networkResponse.statusCode + ",messages: " + error.toString());
                         if (networkResponse != null && networkResponse.statusCode == 409) {
                             // HTTP Status Code: 409 Unauthorized Oo
-                            Log.e("S/getMyExamResults()", "error status code " + networkResponse.statusCode);
                             callback.onAuthFail(error.toString());
                         } else {
-                            Log.e("S/getMyExamResults()", error.toString());
                             callback.onFailure(error.toString());
                         }
                     }
