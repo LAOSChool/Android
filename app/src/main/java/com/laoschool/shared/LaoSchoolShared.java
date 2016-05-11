@@ -24,6 +24,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.entities.Image;
 import com.laoschool.entities.Message;
@@ -290,7 +291,9 @@ public class LaoSchoolShared {
         return image;
     }
 
-    public static void goBackToLoginPage(final Context context) {
+    public static void goBackToLoginPage(Context context) {
+        if (context == null)
+            context = LaoSchoolSingleton.context;
         SharedPreferences preferences = context.getSharedPreferences(SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
         preferences.edit().remove("auth_key").commit();
 
@@ -299,13 +302,14 @@ public class LaoSchoolShared {
         builder1.setMessage(context.getString(R.string.msg_re_login_application));
         builder1.setCancelable(true);
 
+        final Context finalContext = context;
         builder1.setPositiveButton(
                 "Ok",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Intent intent = new Intent(context, ScreenLogin.class);
-                        context.startActivity(intent);
-                        ((Activity) context).finish();
+                        Intent intent = new Intent(finalContext, ScreenLogin.class);
+                        finalContext.startActivity(intent);
+                        ((Activity) finalContext).finish();
                     }
                 });
 
