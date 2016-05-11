@@ -52,7 +52,7 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     private static ScreenAnnouncements thiz;
     private static FragmentManager fr;
     private int containerId;
-    private String currentRole = LaoSchoolShared.ROLE_STUDENT;
+    private String currentRole;
     private static Context context;
 
     private static DataAccessInterface service;
@@ -105,6 +105,9 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
         return fragment;
     }
 
+    public ScreenAnnouncements() {
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate()");
@@ -113,7 +116,11 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
         if (getArguments() != null) {
             containerId = getArguments().getInt(LaoSchoolShared.CONTAINER_ID);
             currentRole = getArguments().getString(LaoSchoolShared.CURRENT_ROLE);
-            Log.d(TAG, "-Container Id:" + containerId);
+            if (currentRole != null) {
+                Log.d(TAG, "-Container Id:" + containerId + ",currentRole:" + currentRole);
+            } else {
+                Log.d(TAG, "-Container Id:" + containerId + ",currentRole null");
+            }
         }
         this.thiz = this;
         this.context = getActivity();
@@ -234,7 +241,7 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView()");
+        Log.d(TAG, "onCreateView()/getUserVisibleHint():" + getUserVisibleHint());
         if (currentRole == null)
             return inflater.inflate(R.layout.screen_error_application, container, false);
         else {
@@ -243,9 +250,8 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
 //            if (currentRole.equals(LaoSchoolShared.ROLE_STUDENT))
 //                return _defineStudentView(view);
 //            else {
-
-            return _defineTeacherView(inflater, container);
             //}
+            return _defineTeacherView(inflater, container);
         }
 
     }
@@ -391,11 +397,9 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
 
     @Override
     public void onResumeFragment() {
-        Log.d(TAG, "onResumeFragment()");
-        if (getUserVisibleHint()) {
-            if (!alreadyExecuted) {
-                _defineData();
-            }
+        Log.d(TAG, "onResumeFragment()/getUserVisibleHint():" + getUserVisibleHint());
+        if (!alreadyExecuted && getUserVisibleHint()) {
+            _defineData();
         }
 
     }
