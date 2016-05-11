@@ -172,8 +172,12 @@ public class HomeActivity extends AppCompatActivity implements
         service.getUserProfile(new AsyncCallback<User>() {
             @Override
             public void onSuccess(User result) {
-                LaoSchoolShared.myProfile = result;
-                _startHome();
+                if (result != null) {
+                    LaoSchoolShared.myProfile = result;
+                    _startHome();
+                } else {
+                    LaoSchoolShared.goBackToLoginPage(thiz);
+                }
             }
 
             @Override
