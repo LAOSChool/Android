@@ -473,7 +473,7 @@ public class DataAccessImpl implements DataAccessInterface {
             }
         }
         url += stringBuilder.toString();
-        Log.d("S/getExamResults()","url:"+url);
+        Log.d("S/getExamResults()", "url:" + url);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url.trim(),
                 new Response.Listener<String>() {
                     @Override
@@ -524,15 +524,15 @@ public class DataAccessImpl implements DataAccessInterface {
     @Override
     public void getMyExamResults(final AsyncCallback<List<ExamResult>> callback) {
         String url = HOST + "exam_results/myprofile";
-        Log.d("S/getMyExamResults()","url:"+url);
+        Log.d("S/getMyExamResults()", "url:" + url);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url.trim(),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("S/getMyExamResults()", response);
                         try {
                             JSONObject mainObject = new JSONObject(response);
                             int total_count = mainObject.getInt("total_count");
+                            Log.d("S/getMyExamResults()", "total_count:"+ total_count);
                             if (total_count > 0) {
                                 ListExamResults examResults = ListExamResults.fromJson(response);
                                 callback.onSuccess(examResults.getList());
