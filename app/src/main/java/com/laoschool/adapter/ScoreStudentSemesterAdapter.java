@@ -10,7 +10,12 @@ import android.widget.TextView;
 
 import com.laoschool.R;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +23,7 @@ import java.util.Map;
  * Created by Hue on 5/9/2016.
  */
 public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStudentSemesterAdapter.ScoreStudentSemesterAdapterViewHolder> {
+    private static final String TAG = ScoreStudentSemesterAdapter.class.getSimpleName();
     Context context;
     Map<Integer, ArrayList<String>> scores;
     List<Integer> months = new ArrayList<>();
@@ -44,7 +50,8 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
         View view = holder.view;
         try {
             int month = months.get(position);
-            ((TextView) (view.findViewById(R.id.lbScoreMonth))).setText(String.valueOf(month));
+            String monthStr = _getMonthString(month);
+            ((TextView) (view.findViewById(R.id.lbScoreMonth))).setText(monthStr);
             List<String> scoreList = scores.get(month);
             if (scoreList.size() > 0) {
                 String score = scoreList.get(scoreList.size() - 1);
@@ -53,8 +60,15 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
                 ((TextView) (view.findViewById(R.id.lbScore))).setText("");
             }
         } catch (Exception e) {
-            Log.e("ScoreAdapter", "onBindViewHolder() Exception=" + e.getMessage());
+            Log.e(TAG, "onBindViewHolder() - exception=" + e.getMessage());
         }
+    }
+
+    private String _getMonthString(int month) {
+        DateFormat inputFormatter1 = new SimpleDateFormat("MMM");
+        Calendar cal = Calendar.getInstance();
+        cal.set(2016, month, 10);
+        return inputFormatter1.format(cal.getTime());
     }
 
     @Override
