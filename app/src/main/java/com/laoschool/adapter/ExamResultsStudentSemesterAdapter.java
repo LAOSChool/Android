@@ -1,6 +1,7 @@
 package com.laoschool.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,6 +21,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -42,7 +44,7 @@ public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<Exam
     private int TYPE_SUB_HEADER = 0;
     private int TYPE_TITLE = 1;
     private int TYPE_LINE = 2;
-    Map<Integer, Map<String, ArrayList<String>>> listMap;
+    Map<Integer, Map<Integer, ArrayList<String>>> listMap;
 
     public ExamResultsStudentSemesterAdapter(Fragment screen, List<ExamResult> examResults) {
         this.screen = screen;
@@ -58,17 +60,18 @@ public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<Exam
             //defile subject list
             subjects.add(hashterms.get(subId));
             subjectIds.add(subId);
-            Map<String, ArrayList<String>> scoresByMonthList = new HashMap<>();
 
+
+            Map<Integer, ArrayList<String>> scoresByMonthList = new HashMap<>();
             for (int i = 0; i < examResults.size(); i++) {
                 ExamResult examResult = examResults.get(i);
-                String exam_month = _getMonthFormStringDate(examResult.getExam_dt());
+                int exam_month = _getMonthFormStringDate(examResult.getExam_dt());
                 String score = String.valueOf(examResult.getIresult());
-                //Log.d("ExamResults", "exam_month:" + exam_month + ",score:" + score);
                 if (examResult.getSubject_id() == subId) {
 
                     ArrayList tempList = null;
                     if (scoresByMonthList.containsKey(exam_month)) {
+
                         tempList = scoresByMonthList.get(exam_month);
                         if (tempList == null)
                             tempList = new ArrayList();
@@ -79,14 +82,15 @@ public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<Exam
                     }
                     scoresByMonthList.put(exam_month, tempList);
                 }
+
                 listMap.put(subId, scoresByMonthList);
             }
 
         }
     }
 
-    private String _getMonthFormStringDate(String exam_dt) {
-        String month = "";
+    private int _getMonthFormStringDate(String exam_dt) {
+        int month = 0;
         DateFormat inputFormatter1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         Date date1;
         try {
@@ -97,7 +101,7 @@ public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<Exam
             }
             Calendar cal = Calendar.getInstance();
             cal.setTime(date1);
-            month = String.valueOf(cal.get(Calendar.MONTH) + 1);
+            month = cal.get(Calendar.MONTH) + 1;
         } catch (ParseException e) {
             Log.e("", "_getMonthFormStringDate() ParseException:" + e.getMessage());
         }
@@ -124,7 +128,8 @@ public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<Exam
         try {
             if (holder.viewType == TYPE_TITLE) {
                 final String title = subjects.get(position);
-                Map<String, ArrayList<String>> scores = listMap.get(subjectIds.get(position));
+                Map<Integer, ArrayList<String>> scores = listMap.get(subjectIds.get(position));
+                Map<Integer, ArrayList<String>> treeScores = new TreeMap<>(scores);
 //                //Define and set data
                 TextView txtSubjectScreenResultsStudent = (TextView) view.findViewById(R.id.txtSubjectScreenResultsStudent);
                 RecyclerView mListScoreBySemester = (RecyclerView) view.findViewById(R.id.mListScoreBySemester);
@@ -133,7 +138,7 @@ public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<Exam
 
                 txtSubjectScreenResultsStudent.setText(title);
 
-                ScoreStudentSemesterAdapter scoreStudentSemesterAdapter = new ScoreStudentSemesterAdapter(context, scores);
+                ScoreStudentSemesterAdapter scoreStudentSemesterAdapter = new ScoreStudentSemesterAdapter(context, treeScores);
                 mListScoreBySemester.setAdapter(scoreStudentSemesterAdapter);
                 //Handler on click item
                 view.setOnClickListener(new View.OnClickListener() {

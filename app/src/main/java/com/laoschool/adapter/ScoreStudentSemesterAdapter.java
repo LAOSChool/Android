@@ -2,6 +2,7 @@ package com.laoschool.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,14 +19,14 @@ import java.util.Map;
  */
 public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStudentSemesterAdapter.ScoreStudentSemesterAdapterViewHolder> {
     Context context;
-    Map<String, ArrayList<String>> scores;
-    List<String> months = new ArrayList<>();
+    Map<Integer, ArrayList<String>> scores;
+    List<Integer> months = new ArrayList<>();
 
-    public ScoreStudentSemesterAdapter(Context context, Map<String, ArrayList<String>> scores) {
+    public ScoreStudentSemesterAdapter(Context context, Map<Integer, ArrayList<String>> scores) {
         this.context = context;
         this.scores = scores;
 
-        for (String key : scores.keySet()) {
+        for (Integer key : scores.keySet()) {
             months.add(key);
         }
     }
@@ -41,14 +42,18 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
     @Override
     public void onBindViewHolder(ScoreStudentSemesterAdapterViewHolder holder, int position) {
         View view = holder.view;
-        String month = months.get(position);
-        ((TextView) (view.findViewById(R.id.lbScoreMonth))).setText(month);
-        List<String> scoreList = scores.get(month);
-        if (scoreList.size() > 0) {
-            String score = scoreList.get(scoreList.size() - 1);
-            ((TextView) (view.findViewById(R.id.lbScore))).setText(score);
-        } else {
-            ((TextView) (view.findViewById(R.id.lbScore))).setText("");
+        try {
+            int month = months.get(position);
+            ((TextView) (view.findViewById(R.id.lbScoreMonth))).setText(String.valueOf(month));
+            List<String> scoreList = scores.get(month);
+            if (scoreList.size() > 0) {
+                String score = scoreList.get(scoreList.size() - 1);
+                ((TextView) (view.findViewById(R.id.lbScore))).setText(score);
+            } else {
+                ((TextView) (view.findViewById(R.id.lbScore))).setText("");
+            }
+        } catch (Exception e) {
+            Log.e("ScoreAdapter", "onBindViewHolder() Exception=" + e.getMessage());
         }
     }
 
