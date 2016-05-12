@@ -1,6 +1,8 @@
 package com.laoschool.adapter;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -61,7 +63,7 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
             }
             List<ExamResult> scoreList = scores.get(month);
             if (scoreList.size() > 0) {
-                ExamResult examResult = scoreList.get(scoreList.size() - 1);
+                final ExamResult examResult = scoreList.get(scoreList.size() - 1);
                 final String score = String.valueOf(examResult.getIresult());
                 ((TextView) (view.findViewById(R.id.lbScoreMonth))).setText(monthStr);
                 ((TextView) (view.findViewById(R.id.lbScore))).setText(score);
@@ -69,7 +71,7 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(context, " -score:" + score, Toast.LENGTH_SHORT).show();
+                        _showDetailsExamResults(examResult);
 
                     }
                 });
@@ -80,6 +82,27 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
         } catch (Exception e) {
             Log.e(TAG, "onBindViewHolder() - exception=" + e.getMessage());
         }
+    }
+
+    private void _showDetailsExamResults(ExamResult examResult) {
+        AlertDialog.Builder bDetails = new AlertDialog.Builder(context);
+        View examResultDetails = View.inflate(context, R.layout.view_exam_results_details, null);
+        ((TextView) examResultDetails.findViewById(R.id.lbExamSubject)).setText(String.valueOf(examResult.getSubjectName()));
+        ((TextView) examResultDetails.findViewById(R.id.lbExamDate)).setText(String.valueOf(examResult.getExam_month() + "/" + examResult.getExam_year()));
+        ((TextView) examResultDetails.findViewById(R.id.lbExamScore)).setText(String.valueOf(examResult.getIresult()));
+        ((TextView) examResultDetails.findViewById(R.id.lbExamTecherName)).setText(String.valueOf(examResult.getTeacherName()));
+        ((TextView) examResultDetails.findViewById(R.id.lbExamDateUpdateScore)).setText(String.valueOf(examResult.getExam_dt()));
+        ((TextView) examResultDetails.findViewById(R.id.lbExamNotice)).setText(String.valueOf(examResult.getNotice()));
+        bDetails.setCustomTitle(examResultDetails);
+        final Dialog dialog = bDetails.create();
+        ((TextView) examResultDetails.findViewById(R.id.lbExamClose)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+
     }
 
     private String _getMonthString(int month) {
