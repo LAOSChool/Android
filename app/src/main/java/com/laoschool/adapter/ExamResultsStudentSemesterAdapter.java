@@ -47,64 +47,76 @@ public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<Recy
     private int TYPE_SUB_HEADER = 0;
     private int TYPE_TITLE = 1;
     private int TYPE_LINE = 2;
-    Map<Integer, Map<Integer, ArrayList<String>>> listMap;
+    Map<Integer, Map<Integer, ArrayList<ExamResult>>> listExamMap = new HashMap<>();
 
     public ExamResultsStudentSemesterAdapter(Fragment screen, List<ExamResult> examResults) {
         this.screen = screen;
         this.context = screen.getActivity();
         if (examResults != null) {
             this.examResults = examResults;
-            HashMap<Integer, String> hashSubject = new LinkedHashMap<Integer, String>();
-            listMap = new HashMap<>();
-            for (ExamResult examResult : examResults) {
-                hashSubject.put(examResult.getSubject_id(), examResult.getSubject());
-            }
-            Map<Integer, String> treeSubject = new TreeMap<>(hashSubject);
+            //define linker subject
+            HashMap<Integer, String> hashSubject = defineSubjectMap(examResults);
+            //sort subject
+            Map<Integer, String> treeSubject = sortMap(hashSubject);
             for (Integer subId : treeSubject.keySet()) {
-                //defile subject list
-                subjects.add(treeSubject.get(subId));
-                subjectIds.add(subId);
-
-
-                Map<Integer, ArrayList<String>> scoresByMonthList = new HashMap<>();
-                ArrayList<String> end_semester = new ArrayList<>();
-                for (int i = 0; i < examResults.size(); i++) {
-                    ExamResult examResult = examResults.get(i);
-                    int exam_month = examResult.getExam_month();
-                    int exam_type = examResult.getExam_type();
-                    Log.d(TAG, " - exam_month:" + exam_month + ", exam_type:" + exam_type);
-                    String score = String.valueOf(examResult.getIresult());
-                    if (examResult.getSubject_id() == subId) {
-
-                        ArrayList tempList = null;
-                        if (scoresByMonthList.containsKey(exam_month)) {
-                            tempList = scoresByMonthList.get(exam_month);
-                            if (tempList == null)
-                                tempList = new ArrayList();
-                            if (exam_type == 1)
-                                tempList.add(score);
-                            else if (exam_type == 2) {
-                                end_semester.add(score);
-                            }
-                        } else {
-                            tempList = new ArrayList();
-                            if (exam_type == 1)
-                                tempList.add(score);
-                            else if (exam_type == 2) {
-                                end_semester.add(score);
-                            }
-                        }
-                        scoresByMonthList.put(exam_month, tempList);
-                    }
-                }
-                scoresByMonthList.put(100, end_semester);
-
-                listMap.put(subId, scoresByMonthList);
-
+                String subjectName = treeSubject.get(subId);
+                addSubject(subId, subjectName);
+                addExambySubjectId(subId);
             }
         } else {
             this.examResults = new ArrayList<>();
         }
+    }
+
+    private void addSubject(Integer subId, String subjectName) {
+        subjectIds.add(subId);
+        subjects.add(subjectName);
+    }
+
+    private void addExambySubjectId(Integer subId) {
+        Map<Integer, ArrayList<ExamResult>> examByMonthList = new HashMap<>();
+        ArrayList<ExamResult> end_exam_semester = new ArrayList<>();
+        for (int i = 0; i < examResults.size(); i++) {
+            ExamResult examResult = examResults.get(i);
+            int exam_month = examResult.getExam_month();
+            int exam_type = examResult.getExam_type();
+            if (examResult.getSubject_id() == subId) {
+                ArrayList<ExamResult> examTermList = null;
+
+                if (examByMonthList.containsKey(exam_month)) {
+                    examTermList = examByMonthList.get(exam_month);
+                    if (examTermList == null)
+                        examTermList = new ArrayList();
+                    if (exam_type == 1)
+                        examTermList.add(examResult);
+                    else if (exam_type == 2) {
+                        end_exam_semester.add(examResult);
+                    }
+                } else {
+                    examTermList = new ArrayList();
+                    if (exam_type == 1)
+                        examTermList.add(examResult);
+                    else if (exam_type == 2) {
+                        end_exam_semester.add(examResult);
+                    }
+                }
+                examByMonthList.put(exam_month, examTermList);
+            }
+        }
+        examByMonthList.put(100, end_exam_semester);
+        listExamMap.put(subId, examByMonthList);
+    }
+
+    private HashMap<Integer, String> defineSubjectMap(List<ExamResult> examResults) {
+        HashMap<Integer, String> hashSubject = new LinkedHashMap<Integer, String>();
+        for (ExamResult examResult : examResults) {
+            hashSubject.put(examResult.getSubject_id(), examResult.getSubject());
+        }
+        return hashSubject;
+    }
+
+    private Map sortMap(HashMap<Integer, String> hashSubject) {
+        return new TreeMap(hashSubject);
     }
 
 
@@ -130,8 +142,9 @@ public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<Recy
                 View view = semesterHolder.view;
                 if (semesterHolder.viewType == TYPE_TITLE) {
                     final String title = subjects.get(position);
-                    Map<Integer, ArrayList<String>> scores = listMap.get(subjectIds.get(position));
-                    Map<Integer, ArrayList<String>> treeScores = new TreeMap<>(scores);
+                    Map<Integer, ArrayList<ExamResult>> examsMap = listExamMap.get(subjectIds.get(position));
+                    Map<Integer, ArrayList<ExamResult>> examsTree = new TreeMap<>(examsMap);
+
 //                //Define and set data
                     TextView txtSubjectScreenResultsStudent = (TextView) view.findViewById(R.id.txtSubjectScreenResultsStudent);
                     RecyclerView mListScoreBySemester = (RecyclerView) view.findViewById(R.id.mListScoreBySemester);
@@ -140,7 +153,7 @@ public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<Recy
 
                     txtSubjectScreenResultsStudent.setText(title);
 
-                    ScoreStudentSemesterAdapter scoreStudentSemesterAdapter = new ScoreStudentSemesterAdapter(context, treeScores);
+                    ScoreStudentSemesterAdapter scoreStudentSemesterAdapter = new ScoreStudentSemesterAdapter(context, examsTree);
                     mListScoreBySemester.setAdapter(scoreStudentSemesterAdapter);
                 } else {
 
