@@ -122,10 +122,13 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
     }
 
     private String _getMonthString(int month) {
+        Log.d(TAG, " _getMonthString() - monnt:" + month);
         DateFormat inputFormatter1 = new SimpleDateFormat("MMM", Locale.US);
         Calendar cal = Calendar.getInstance();
-        cal.set(2016, month, 10);
-        return inputFormatter1.format(cal.getTime());
+        cal.set(2016, month-1, 10);
+        String monthParse = inputFormatter1.format(cal.getTime());
+        Log.d(TAG, " _getMonthString() - monnt:" + month + ",month parse:" + monthParse);
+        return monthParse;
     }
 
     @Override
