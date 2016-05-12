@@ -326,13 +326,13 @@ public class LaoSchoolShared {
             DateFormat inputFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
             DateFormat outputFormatter;
             if (type == 0) {
-                outputFormatter = new SimpleDateFormat("MM-yyyy");
+                outputFormatter = new SimpleDateFormat("dd-MMM");
             } else if (type == 1) {
-                outputFormatter = new SimpleDateFormat("dd-MM-yyyy");
+                outputFormatter = new SimpleDateFormat("dd-MMM-yyyy");
             } else if (type == 2) {
-                outputFormatter = new SimpleDateFormat("HH:mm dd-MM-yyyy");
+                outputFormatter = new SimpleDateFormat("HH:mm dd-MMM-yyyy");
             } else {
-                outputFormatter = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
+                outputFormatter = new SimpleDateFormat("HH:mm:ss dd-MMM-yyyy");
             }
 
             Date date;
