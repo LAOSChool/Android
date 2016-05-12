@@ -98,19 +98,7 @@ public class NotificationDetailsAdapter extends RecyclerView.Adapter<Notificatio
 
                 txtTilteNotificationDetails.setText(notification.getTitle());
                 txtContentNotificationDetails.setText(notification.getContent());
-
-                DateFormat outputFormatter1 = new SimpleDateFormat("dd-MMM-yyyy");
-                DateFormat inputFormatter1 = new SimpleDateFormat("yyyy-MM-dd");
-
-                Date date1;
-                if (notification.getSent_dt() != null) {
-                    date1 = inputFormatter1.parse(notification.getSent_dt());
-                } else {
-                    date1 = new Date();
-                }
-                String output1 = outputFormatter1.format(date1);
-                txtDateNotificationDetails.setText(output1);
-
+                txtDateNotificationDetails.setText(LaoSchoolShared.formatDate(notification.getSent_dt(), 1));
 
                 if (notification.getImp_flg() == 1) {
                     imgPiorityNotificationDetails.setColorFilter(
