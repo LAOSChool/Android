@@ -51,10 +51,14 @@ public class ExamResult implements Parcelable {
 
     String subject;
 
+    int exam_month;
+
+    int exam_year;
+
     public ExamResult() {
     }
 
-    public ExamResult(int id, int school_id, int class_id, int exam_type, String exam_dt, int subject_id, int teacher_id, int student_id, String student_name, String notice, int result_type_id, int iresult, float fresult, String sresult, int term_id, String term, String subject) {
+    public ExamResult(int id, int school_id, int class_id, int exam_type, String exam_dt, int subject_id, int teacher_id, int student_id, String student_name, String notice, int result_type_id, int iresult, float fresult, String sresult, int term_id, String term, String subject, int exam_month, int exam_year) {
         this.id = id;
         this.school_id = school_id;
         this.class_id = class_id;
@@ -72,6 +76,8 @@ public class ExamResult implements Parcelable {
         this.term_id = term_id;
         this.term = term;
         this.subject = subject;
+        this.exam_month = exam_month;
+        this.exam_year = exam_year;
     }
 
     public int getId() {
@@ -210,6 +216,22 @@ public class ExamResult implements Parcelable {
         this.subject = subject;
     }
 
+    public int getExam_month() {
+        return exam_month;
+    }
+
+    public void setExam_month(int exam_month) {
+        this.exam_month = exam_month;
+    }
+
+    public int getExam_year() {
+        return exam_year;
+    }
+
+    public void setExam_year(int exam_year) {
+        this.exam_year = exam_year;
+    }
+
     public String toJson() {
         Gson gson = new Gson();
         String jsonString = gson.toJson(this);
@@ -223,6 +245,7 @@ public class ExamResult implements Parcelable {
     }
 
     protected ExamResult(Parcel in) {
+
         id = in.readInt();
         school_id = in.readInt();
         class_id = in.readInt();
@@ -240,6 +263,8 @@ public class ExamResult implements Parcelable {
         term_id = in.readInt();
         term = in.readString();
         subject = in.readString();
+        exam_month = in.readInt();
+        exam_year = in.readInt();
     }
 
     @Override
@@ -267,6 +292,8 @@ public class ExamResult implements Parcelable {
         dest.writeInt(term_id);
         dest.writeString(term);
         dest.writeString(subject);
+        dest.writeInt(exam_month);
+        dest.writeInt(exam_year);
     }
 
     @SuppressWarnings("unused")
