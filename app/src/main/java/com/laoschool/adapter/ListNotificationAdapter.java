@@ -131,17 +131,7 @@ public class ListNotificationAdapter extends RecyclerView.Adapter<RecyclerView.V
                     imgUserAvata.setDefaultImageResId(R.drawable.ic_account_circle_black_36dp);
                     txbContent.setText(message.getContent());
                     txbTitle.setText(message.getTitle());
-                    DateFormat outputFormatter1 = new SimpleDateFormat("dd-MMM");
-                    DateFormat inputFormatter1 = new SimpleDateFormat("yyyy-MM-dd");
-
-                    Date date1;
-                    if (message.getSent_dt() != null) {
-                        date1 = inputFormatter1.parse(message.getSent_dt());
-                    } else {
-                        date1 = new Date();
-                    }
-                    String output1 = outputFormatter1.format(date1);
-                    txtDateSend.setText(output1);
+                    txtDateSend.setText(LaoSchoolShared.formatDate(message.getSent_dt(), 0));
 
                     view.setOnClickListener(new View.OnClickListener() {
                         @Override
