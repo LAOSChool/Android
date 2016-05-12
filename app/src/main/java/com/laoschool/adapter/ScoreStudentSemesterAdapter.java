@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -50,13 +51,20 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
         View view = holder.view;
         try {
             int month = months.get(position);
-            String monthStr = _getMonthString(month);
-            ((TextView) (view.findViewById(R.id.lbScoreMonth))).setText(monthStr);
+            String monthStr = "";
+            if (month < 100) {
+                monthStr = _getMonthString(month);
+            } else {
+                monthStr = "Final exam";
+            }
             List<String> scoreList = scores.get(month);
             if (scoreList.size() > 0) {
                 String score = scoreList.get(scoreList.size() - 1);
+                Log.d(TAG, " -score:" + score);
+                ((TextView) (view.findViewById(R.id.lbScoreMonth))).setText(monthStr);
                 ((TextView) (view.findViewById(R.id.lbScore))).setText(score);
             } else {
+                ((TextView) (view.findViewById(R.id.lbScoreMonth))).setText("");
                 ((TextView) (view.findViewById(R.id.lbScore))).setText("");
             }
         } catch (Exception e) {
@@ -65,7 +73,7 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
     }
 
     private String _getMonthString(int month) {
-        DateFormat inputFormatter1 = new SimpleDateFormat("MMM");
+        DateFormat inputFormatter1 = new SimpleDateFormat("MMM", Locale.US);
         Calendar cal = Calendar.getInstance();
         cal.set(2016, month, 10);
         return inputFormatter1.format(cal.getTime());
