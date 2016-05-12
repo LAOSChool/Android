@@ -142,14 +142,6 @@ public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<Recy
 
                     ScoreStudentSemesterAdapter scoreStudentSemesterAdapter = new ScoreStudentSemesterAdapter(context, treeScores);
                     mListScoreBySemester.setAdapter(scoreStudentSemesterAdapter);
-                    //Handler on click item
-                    view.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Toast.makeText(context, title, Toast.LENGTH_SHORT).show();
-
-                        }
-                    });
                 } else {
 
                 }
