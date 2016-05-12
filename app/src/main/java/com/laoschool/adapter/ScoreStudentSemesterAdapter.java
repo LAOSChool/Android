@@ -7,8 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.laoschool.R;
+import com.laoschool.entities.ExamResult;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -26,10 +28,10 @@ import java.util.Map;
 public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStudentSemesterAdapter.ScoreStudentSemesterAdapterViewHolder> {
     private static final String TAG = ScoreStudentSemesterAdapter.class.getSimpleName();
     Context context;
-    Map<Integer, ArrayList<String>> scores;
+    Map<Integer, ArrayList<ExamResult>> scores;
     List<Integer> months = new ArrayList<>();
 
-    public ScoreStudentSemesterAdapter(Context context, Map<Integer, ArrayList<String>> scores) {
+    public ScoreStudentSemesterAdapter(Context context, Map<Integer, ArrayList<ExamResult>> scores) {
         this.context = context;
         this.scores = scores;
 
@@ -51,18 +53,26 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
         View view = holder.view;
         try {
             int month = months.get(position);
-            String monthStr = "";
+            String monthStr;
             if (month < 100) {
                 monthStr = _getMonthString(month);
             } else {
                 monthStr = "Final exam";
             }
-            List<String> scoreList = scores.get(month);
+            List<ExamResult> scoreList = scores.get(month);
             if (scoreList.size() > 0) {
-                String score = scoreList.get(scoreList.size() - 1);
-                Log.d(TAG, " -score:" + score);
+                ExamResult examResult = scoreList.get(scoreList.size() - 1);
+                final String score = String.valueOf(examResult.getIresult());
                 ((TextView) (view.findViewById(R.id.lbScoreMonth))).setText(monthStr);
                 ((TextView) (view.findViewById(R.id.lbScore))).setText(score);
+
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(context, " -score:" + score, Toast.LENGTH_SHORT).show();
+
+                    }
+                });
             } else {
                 ((TextView) (view.findViewById(R.id.lbScoreMonth))).setText("");
                 ((TextView) (view.findViewById(R.id.lbScore))).setText("");
