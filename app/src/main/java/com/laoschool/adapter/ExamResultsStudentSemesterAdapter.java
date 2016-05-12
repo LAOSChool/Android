@@ -69,7 +69,8 @@ public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<Recy
                 Map<Integer, ArrayList<String>> scoresByMonthList = new HashMap<>();
                 for (int i = 0; i < examResults.size(); i++) {
                     ExamResult examResult = examResults.get(i);
-                    int exam_month = _getMonthFormStringDate(examResult.getExam_dt());
+                    int exam_month = examResult.getExam_month();
+                    Log.d(TAG, " - exam_month:" + exam_month);
                     String score = String.valueOf(examResult.getIresult());
                     if (examResult.getSubject_id() == subId) {
 
@@ -95,26 +96,7 @@ public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<Recy
             this.examResults = new ArrayList<>();
         }
     }
-
-
-    private int _getMonthFormStringDate(String exam_dt) {
-        int month = 0;
-        DateFormat inputFormatter1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-        Date date1;
-        try {
-            if (!exam_dt.trim().isEmpty()) {
-                date1 = inputFormatter1.parse(exam_dt);
-            } else {
-                date1 = new Date();
-            }
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(date1);
-            month = cal.get(Calendar.MONTH) + 1;
-        } catch (ParseException e) {
-            Log.e(TAG, "_getMonthFormStringDate() - ParseException:" + e.getMessage());
-        }
-        return month;
-    }
+    
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
