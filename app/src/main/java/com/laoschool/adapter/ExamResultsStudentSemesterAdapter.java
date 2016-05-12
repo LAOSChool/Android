@@ -1,9 +1,7 @@
 package com.laoschool.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v4.app.Fragment;
-import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,24 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.laoschool.R;
 import com.laoschool.entities.ExamResult;
-import com.laoschool.listener.OnLoadMoreListener;
-import com.laoschool.screen.ScreenExamResults;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -110,7 +97,7 @@ public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<Recy
     private HashMap<Integer, String> defineSubjectMap(List<ExamResult> examResults) {
         HashMap<Integer, String> hashSubject = new LinkedHashMap<Integer, String>();
         for (ExamResult examResult : examResults) {
-            hashSubject.put(examResult.getSubject_id(), examResult.getSubject());
+            hashSubject.put(examResult.getSubject_id(), examResult.getSubjectName());
         }
         return hashSubject;
     }

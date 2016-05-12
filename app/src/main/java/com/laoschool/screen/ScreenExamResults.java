@@ -313,9 +313,9 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         for (ExamResult examResult : result) {
             int termId = examResult.getTerm_id();
             ArrayList<ExamResult> examResultList = null;
-            if (examResult.getTerm() != null) {
+            if (examResult.getTermName() != null) {
                 //Put term List
-                hashterms.put(examResult.getTerm_id(), examResult.getTerm());
+                hashterms.put(examResult.getTerm_id(), examResult.getTermName());
 
                 //Add exam by Term
                 if (mapTermExam.containsKey(termId)) {
