@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.laoschool.R;
 import com.laoschool.entities.ExamResult;
+import com.laoschool.shared.LaoSchoolShared;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -106,7 +107,7 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
         }
         ((TextView) examResultDetails.findViewById(R.id.lbExamScore)).setText(String.valueOf(score));
         ((TextView) examResultDetails.findViewById(R.id.lbExamTecherName)).setText(String.valueOf(examResult.getTeacherName()));
-        ((TextView) examResultDetails.findViewById(R.id.lbExamDateUpdateScore)).setText(String.valueOf(examResult.getExam_dt()));
+        ((TextView) examResultDetails.findViewById(R.id.lbExamDateUpdateScore)).setText(" - "+LaoSchoolShared.formatDate(examResult.getExam_dt()));
         ((TextView) examResultDetails.findViewById(R.id.lbExamNotice)).setText(String.valueOf(examResult.getNotice()));
         bDetails.setCustomTitle(examResultDetails);
         final Dialog dialog = bDetails.create();
