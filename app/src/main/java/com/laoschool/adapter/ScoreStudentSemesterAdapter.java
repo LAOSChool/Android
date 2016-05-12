@@ -98,7 +98,13 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
         View examResultDetails = View.inflate(context, R.layout.view_exam_results_details, null);
         ((TextView) examResultDetails.findViewById(R.id.lbExamSubject)).setText(String.valueOf(examResult.getSubjectName()));
         ((TextView) examResultDetails.findViewById(R.id.lbExamDate)).setText(String.valueOf(examResult.getExam_month() + "/" + examResult.getExam_year()));
-        ((TextView) examResultDetails.findViewById(R.id.lbExamScore)).setText(String.valueOf(examResult.getIresult()));
+        String score = "";
+        if (examResult.getResult_type_id() == 1) {
+            score = String.valueOf(examResult.getIresult());
+        } else if (examResult.getResult_type_id() == 2) {
+            score = String.valueOf(examResult.getFresult());
+        }
+        ((TextView) examResultDetails.findViewById(R.id.lbExamScore)).setText(String.valueOf(score));
         ((TextView) examResultDetails.findViewById(R.id.lbExamTecherName)).setText(String.valueOf(examResult.getTeacherName()));
         ((TextView) examResultDetails.findViewById(R.id.lbExamDateUpdateScore)).setText(String.valueOf(examResult.getExam_dt()));
         ((TextView) examResultDetails.findViewById(R.id.lbExamNotice)).setText(String.valueOf(examResult.getNotice()));
