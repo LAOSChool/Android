@@ -67,36 +67,46 @@ public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<Recy
 
 
                 Map<Integer, ArrayList<String>> scoresByMonthList = new HashMap<>();
+                ArrayList<String> end_semester = new ArrayList<>();
                 for (int i = 0; i < examResults.size(); i++) {
                     ExamResult examResult = examResults.get(i);
                     int exam_month = examResult.getExam_month();
-                    Log.d(TAG, " - exam_month:" + exam_month);
+                    int exam_type = examResult.getExam_type();
+                    Log.d(TAG, " - exam_month:" + exam_month + ", exam_type:" + exam_type);
                     String score = String.valueOf(examResult.getIresult());
                     if (examResult.getSubject_id() == subId) {
 
                         ArrayList tempList = null;
                         if (scoresByMonthList.containsKey(exam_month)) {
-
                             tempList = scoresByMonthList.get(exam_month);
                             if (tempList == null)
                                 tempList = new ArrayList();
-                            tempList.add(score);
+                            if (exam_type == 1)
+                                tempList.add(score);
+                            else if (exam_type == 2) {
+                                end_semester.add(score);
+                            }
                         } else {
                             tempList = new ArrayList();
-                            tempList.add(score);
+                            if (exam_type == 1)
+                                tempList.add(score);
+                            else if (exam_type == 2) {
+                                end_semester.add(score);
+                            }
                         }
                         scoresByMonthList.put(exam_month, tempList);
                     }
-
-                    listMap.put(subId, scoresByMonthList);
                 }
+                scoresByMonthList.put(100, end_semester);
+
+                listMap.put(subId, scoresByMonthList);
 
             }
         } else {
             this.examResults = new ArrayList<>();
         }
     }
-    
+
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

@@ -51,13 +51,20 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
         View view = holder.view;
         try {
             int month = months.get(position);
-            String monthStr = _getMonthString(month);
-            ((TextView) (view.findViewById(R.id.lbScoreMonth))).setText(monthStr);
+            String monthStr = "";
+            if (month < 100) {
+                monthStr = _getMonthString(month);
+            } else {
+                monthStr = "Final exam";
+            }
             List<String> scoreList = scores.get(month);
             if (scoreList.size() > 0) {
                 String score = scoreList.get(scoreList.size() - 1);
+                Log.d(TAG, " -score:" + score);
+                ((TextView) (view.findViewById(R.id.lbScoreMonth))).setText(monthStr);
                 ((TextView) (view.findViewById(R.id.lbScore))).setText(score);
             } else {
+                ((TextView) (view.findViewById(R.id.lbScoreMonth))).setText("");
                 ((TextView) (view.findViewById(R.id.lbScore))).setText("");
             }
         } catch (Exception e) {
