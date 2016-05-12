@@ -136,18 +136,7 @@ public class ScreenMessageDetails extends Fragment implements FragmentLifecycle 
 
                 txtTilteMessageDetails.setText(message.getTitle());
                 txtContentMessageDetails.setText(message.getContent());
-                //
-                DateFormat outputFormatter1 = new SimpleDateFormat("dd-MMM-yyyy");
-                DateFormat inputFormatter1 = new SimpleDateFormat("yyyy-MM-dd");
-
-                Date date1;
-                if (message.getSent_dt() != null) {
-                    date1 = inputFormatter1.parse(message.getSent_dt());
-                } else {
-                    date1 = new Date();
-                }
-                String output1 = outputFormatter1.format(date1);
-                txtDateMessageDetails.setText(output1);
+                txtDateMessageDetails.setText(LaoSchoolShared.formatDate(message.getSent_dt(), 2));
                 if (message.getImp_flg() == 0) {
                     imgPiorityMessageDetails.setColorFilter(screenMessage.getActivity().getResources().getColor(R.color.colorPriorityLow));
                     imgPiorityMessageDetails.setTag(R.color.colorPriorityLow);

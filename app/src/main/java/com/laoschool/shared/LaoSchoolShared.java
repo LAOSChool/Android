@@ -36,7 +36,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -80,7 +84,7 @@ public class LaoSchoolShared {
     public static final String ROLE_TEARCHER = "TEACHER";
     public static final String ROLE_STUDENT = "STUDENT";
     public static final String ROLE = "role";
-    private static final String TAG = "LaoSchoolShared";
+    private static final String TAG = LaoSchoolShared.class.getSimpleName();
 
     public static String makeFragmentTag(int containerViewId, long id) {
         return "android:switcher:" + containerViewId + ":" + id;
@@ -315,5 +319,33 @@ public class LaoSchoolShared {
 
         AlertDialog alert11 = builder1.create();
         alert11.show();
+    }
+
+    public static String formatDate(String exam_dt, int type) {
+        try {
+            DateFormat inputFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+            DateFormat outputFormatter;
+            if (type == 0) {
+                outputFormatter = new SimpleDateFormat("dd-MMM");
+            } else if (type == 1) {
+                outputFormatter = new SimpleDateFormat("dd-MMM-yyyy");
+            } else if (type == 2) {
+                outputFormatter = new SimpleDateFormat("HH:mm dd-MMM-yyyy");
+            } else {
+                outputFormatter = new SimpleDateFormat("HH:mm:ss dd-MMM-yyyy");
+            }
+
+            Date date;
+            if (exam_dt != null) {
+                date = inputFormatter.parse(exam_dt);
+            } else {
+                date = new Date();
+            }
+            String output1 = outputFormatter.format(date);
+            return output1;
+        } catch (ParseException e) {
+            Log.e(TAG, "formatDate() - parse exception: " + e.getMessage());
+        }
+        return exam_dt;
     }
 }

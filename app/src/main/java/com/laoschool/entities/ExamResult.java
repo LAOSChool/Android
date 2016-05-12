@@ -55,10 +55,12 @@ public class ExamResult implements Parcelable {
 
     int exam_year;
 
+    String teacher;
+
     public ExamResult() {
     }
 
-    public ExamResult(int id, int school_id, int class_id, int exam_type, String exam_dt, int subject_id, int teacher_id, int student_id, String student_name, String notice, int result_type_id, int iresult, float fresult, String sresult, int term_id, String term, String subject, int exam_month, int exam_year) {
+    public ExamResult(int id, int school_id, int class_id, int exam_type, String exam_dt, int subject_id, int teacher_id, int student_id, String student_name, String notice, int result_type_id, int iresult, float fresult, String sresult, int term_id, String term, String subject, int exam_month, int exam_year, String teacher) {
         this.id = id;
         this.school_id = school_id;
         this.class_id = class_id;
@@ -78,6 +80,7 @@ public class ExamResult implements Parcelable {
         this.subject = subject;
         this.exam_month = exam_month;
         this.exam_year = exam_year;
+        this.teacher = teacher;
     }
 
     public int getId() {
@@ -200,19 +203,19 @@ public class ExamResult implements Parcelable {
         this.term_id = term_id;
     }
 
-    public String getTerm() {
+    public String getTermName() {
         return term;
     }
 
-    public void setTerm(String term) {
+    public void setTermName(String term) {
         this.term = term;
     }
 
-    public String getSubject() {
+    public String getSubjectName() {
         return subject;
     }
 
-    public void setSubject(String subject) {
+    public void setSubjectName(String subject) {
         this.subject = subject;
     }
 
@@ -232,6 +235,14 @@ public class ExamResult implements Parcelable {
         this.exam_year = exam_year;
     }
 
+    public String getTeacherName() {
+        return teacher;
+    }
+
+    public void setTeacherName(String teacher) {
+        this.teacher = teacher;
+    }
+
     public String toJson() {
         Gson gson = new Gson();
         String jsonString = gson.toJson(this);
@@ -243,6 +254,7 @@ public class ExamResult implements Parcelable {
         ExamResult examResult = gson.fromJson(jsonString, ExamResult.class);
         return examResult;
     }
+
 
     protected ExamResult(Parcel in) {
 
@@ -265,6 +277,7 @@ public class ExamResult implements Parcelable {
         subject = in.readString();
         exam_month = in.readInt();
         exam_year = in.readInt();
+        teacher=in.readString();
     }
 
     @Override
@@ -294,6 +307,7 @@ public class ExamResult implements Parcelable {
         dest.writeString(subject);
         dest.writeInt(exam_month);
         dest.writeInt(exam_year);
+        dest.writeString(teacher);
     }
 
     @SuppressWarnings("unused")

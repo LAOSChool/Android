@@ -164,17 +164,8 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 //
                     txbContent.setText(message.getContent());
                     txbTitle.setText(message.getTitle());
-                    DateFormat outputFormatter1 = new SimpleDateFormat("dd-MMM");
-                    DateFormat inputFormatter1 = new SimpleDateFormat("yyyy-MM-dd");
+                    txtDateSend.setText(LaoSchoolShared.formatDate(message.getSent_dt(), 0));
 
-                    Date date1;
-                    if (message.getSent_dt() != null) {
-                        date1 = inputFormatter1.parse(message.getSent_dt());
-                    } else {
-                        date1 = new Date();
-                    }
-                    String output1 = outputFormatter1.format(date1);
-                    txtDateSend.setText(output1);
                     if (message.getImp_flg() == 0) {
                         imgStar.setImageDrawable(LaoSchoolShared.getDraweble(context, R.drawable.ic_star_border_white_24dp));
                         imgStar.setColorFilter(screenMessage.getActivity().getResources().getColor(R.color.colorPriorityLow));
