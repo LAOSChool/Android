@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -65,7 +66,7 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
     }
 
     private String _getMonthString(int month) {
-        DateFormat inputFormatter1 = new SimpleDateFormat("MMM");
+        DateFormat inputFormatter1 = new SimpleDateFormat("MMM", Locale.US);
         Calendar cal = Calendar.getInstance();
         cal.set(2016, month, 10);
         return inputFormatter1.format(cal.getTime());
