@@ -64,17 +64,26 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
             List<ExamResult> scoreList = scores.get(month);
             if (scoreList.size() > 0) {
                 final ExamResult examResult = scoreList.get(scoreList.size() - 1);
-                final String score = String.valueOf(examResult.getIresult());
-                ((TextView) (view.findViewById(R.id.lbScoreMonth))).setText(monthStr);
-                ((TextView) (view.findViewById(R.id.lbScore))).setText(score);
+                String score = "";
+                if (examResult.getResult_type_id() == 1) {
+                    score = String.valueOf(examResult.getIresult());
+                } else if (examResult.getResult_type_id() == 2) {
+                    score = String.valueOf(examResult.getFresult());
+                }
+                if (!score.trim().isEmpty()) {
+                    ((TextView) (view.findViewById(R.id.lbScoreMonth))).setText(monthStr);
+                    ((TextView) (view.findViewById(R.id.lbScore))).setText(score);
 
-                view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        _showDetailsExamResults(examResult);
+                    view.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            _showDetailsExamResults(examResult);
 
-                    }
-                });
+                        }
+                    });
+                } else {
+                    Log.e(TAG, "onBindViewHolder() - score is empty");
+                }
             } else {
                 ((TextView) (view.findViewById(R.id.lbScoreMonth))).setText("");
                 ((TextView) (view.findViewById(R.id.lbScore))).setText("");
