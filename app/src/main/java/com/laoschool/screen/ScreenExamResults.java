@@ -38,6 +38,7 @@ import com.laoschool.R;
 import com.laoschool.adapter.RecylerViewScreenExamResultsAdapter;
 import com.laoschool.adapter.ExamResultsStudentSemesterAdapter;
 import com.laoschool.entities.ExamResult;
+import com.laoschool.entities.User;
 import com.laoschool.model.AsyncCallback;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
@@ -55,8 +56,6 @@ import java.util.TreeMap;
  * A simple {@link Fragment} subclass.
  */
 public class ScreenExamResults extends Fragment implements FragmentLifecycle {
-
-
     public static final String TAG = "ScreenExamResults";
     private static FragmentManager fr;
     private ScreenExamResults screenExamResults;
@@ -67,7 +66,6 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     private static boolean alreadyExecuted = false;
 
     public ScreenExamResults() {
-        // Required empty public constructor
         alreadyExecuted = false;
     }
 
@@ -152,18 +150,21 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     @Override
     public void onResumeFragment() {
         Log.d(TAG, "onResumeFragment()/getUserVisibleHint()=" + getUserVisibleHint() + ",alreadyExecuted=" + alreadyExecuted);
-        if (!alreadyExecuted) {
-            if (currentRole != null)
-                if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
-                } else {
-                    _definePageSemesterStudent();
-                }
-        }
+        if (!alreadyExecuted && getUserVisibleHint()) {
+            if (currentRole == null) {
+                Log.d(TAG, "onResumeFragment() - current role null");
+                currentRole = LaoSchoolShared.ROLE_STUDENT;
+            }
+            if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
+            } else {
+                _definePageSemesterStudent();
+            }
 
+        }
     }
 
     @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(Context activity) {
         Log.d(TAG, "onAttach()");
         super.onAttach(activity);
         iScreenExamResults = (IScreenExamResults) activity;
