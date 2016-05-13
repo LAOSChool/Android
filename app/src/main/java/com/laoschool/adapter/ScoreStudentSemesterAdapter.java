@@ -37,10 +37,12 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
     public ScoreStudentSemesterAdapter(Context context, Map<Integer, ArrayList<ExamResult>> scores) {
         this.context = context;
         this.scores = scores;
-
         for (Integer key : scores.keySet()) {
+            Log.d(TAG, " -month:" + key);
             months.add(key);
         }
+
+        Log.d(TAG, " -exam size:" + scores.size());
     }
 
 
@@ -56,12 +58,12 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
         View view = holder.view;
         try {
             int month = months.get(position);
-            String monthStr;
-            if (month < 100) {
-                monthStr = _getMonthString(month);
-            } else {
-                monthStr = "Final exam";
-            }
+            String monthStr = _getMonthString(month);
+//            if (month < 100) {
+//                monthStr =;
+//            } else if (month == 100) {
+//                monthStr = "Final";
+//            }
             List<ExamResult> scoreList = scores.get(month);
             if (scoreList.size() > 0) {
                 final ExamResult examResult = scoreList.get(scoreList.size() - 1);
@@ -79,11 +81,15 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
                     });
                 } else {
                     Log.e(TAG, "onBindViewHolder() - score is empty");
+                    view.setVisibility(View.GONE);
+                    //notifyItemRemoved(position);
                 }
             } else {
+                Log.e(TAG, "onBindViewHolder() - month:" + month + " list exam is empty");
                 view.setVisibility(View.GONE);
-                ((TextView) (view.findViewById(R.id.lbScoreMonth))).setText("");
-                ((TextView) (view.findViewById(R.id.lbScore))).setText("");
+//                ((TextView) (view.findViewById(R.id.lbScoreMonth))).setText("");
+//                ((TextView) (view.findViewById(R.id.lbScore))).setText("");
+                // notifyItemRemoved(position);
             }
         } catch (Exception e) {
             Log.e(TAG, "onBindViewHolder() - exception=" + e.getMessage());
@@ -117,7 +123,8 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
     }
 
     private String _getMonthString(int month) {
-        Log.d(TAG, " _getMonthString() - monnt:" + month);
+        if (month == 100)
+            return "Final";
         DateFormat inputFormatter1 = new SimpleDateFormat("MMM", Locale.US);
         Calendar cal = Calendar.getInstance();
         cal.set(2016, month - 1, 10);
