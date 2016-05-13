@@ -75,6 +75,9 @@ public class ScreenFogotPassword extends Fragment {
         txbPhoneNumber.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_CLASS_PHONE);
         this.scrollView = scrollView;
 
+        int color = Color.parseColor("#ffffff");
+        btnBack.setColorFilter(color);
+
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

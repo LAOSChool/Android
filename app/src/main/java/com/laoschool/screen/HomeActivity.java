@@ -228,10 +228,10 @@ public class HomeActivity extends AppCompatActivity implements
 
         fragments.add(ScreenExamResults.instantiate(containerId, currentRole));
 
-        fragments.add(ScreenAttended.instantiate(containerId, currentRole));
+        ScreenAttended screenAttended = (ScreenAttended) ScreenAttended.instantiate(containerId, currentRole);
+        fragments.add(screenAttended);
 
         fragments.add(ScreenMore.instantiate(containerId, currentRole));
-
 
         fragments.add(ScreenCreateMessage.instantiate(containerId, currentRole));
 
@@ -256,6 +256,8 @@ public class HomeActivity extends AppCompatActivity implements
         fragments.add(ScreenAnnouncementsDetails.instantiate(containerId, currentRole));
 
         fragments.add(ScreenCreateAnnouncement.instantiate(containerId, currentRole));
+
+        fragments.add(ScreenRequestAttendance.instantiate(containerId, currentRole, this, screenAttended));
 
         this.mPagerAdapter = new PagerAdapter(super.getSupportFragmentManager(), fragments);
 
@@ -444,6 +446,10 @@ public class HomeActivity extends AppCompatActivity implements
                 _setTitleandShowButtonBack(-1, "", DisplayButtonHome.show);
                 getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_36dp);
                 break;
+            case LaoSchoolShared.POSITION_SCREEN_REQUEST_ATTENDANCE_17:
+                _setTitleandShowButtonBack(R.string.action_request_attendance, null, DisplayButtonHome.show);
+                getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_36dp);
+                break;
             default:
                 _setTitleandShowButtonBack(R.string.title_screen_message, null, DisplayButtonHome.hide);
         }
@@ -571,6 +577,8 @@ public class HomeActivity extends AppCompatActivity implements
                 }
             } else if (currentPage == LaoSchoolShared.POSITION_SCREEN_CREATE_ANNOUNCEMENT_16) {
                 _gotoPage(LaoSchoolShared.POSITION_SCREEN_ANNOUNCEMENTS_1);
+            } else if (currentPage == LaoSchoolShared.POSITION_SCREEN_REQUEST_ATTENDANCE_17) {
+                _gotoPage(LaoSchoolShared.POSITION_SCREEN_ATTENDED_3);
             } else {
                 //back to tab information
                 _gotoPage(LaoSchoolShared.POSITION_SCREEN_MORE_4);
@@ -679,7 +687,7 @@ public class HomeActivity extends AppCompatActivity implements
     @Override
     public void gotoCreateMessageFormScreenAttended() {
         beforePosition = LaoSchoolShared.POSITION_SCREEN_ATTENDED_3;
-        _gotoPage(LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
+        _gotoPage(LaoSchoolShared.POSITION_SCREEN_REQUEST_ATTENDANCE_17);
     }
 
 

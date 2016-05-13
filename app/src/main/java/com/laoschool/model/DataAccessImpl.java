@@ -66,11 +66,12 @@ public class DataAccessImpl implements DataAccessInterface {
 
     private static String api_key = "TEST_API_KEY";
 
+    //VDC:https://222.255.29.25:8443/laoschoolws/api
+    //192.168.0.202:9443
     final String LOGIN_HOST = "https://192.168.0.202:9443/laoschoolws/";
     final String HOST = "https://192.168.0.202:9443/laoschoolws/api/";
 
-    //VDC:https://222.255.29.25:8443/laoschoolws/api
-    //192.168.0.202:9443
+
     private DataAccessImpl(Context context) {
         mCtx = context;
         mRequestQueue = LaoSchoolSingleton.getInstance().getRequestQueue();
@@ -405,9 +406,9 @@ public class DataAccessImpl implements DataAccessInterface {
     }
 
     @Override
-    public void getAttendances(String filter_class_id, String filter_user_id, final AsyncCallback<List<Attendance>> callback) {
+    public void getMyAttendances(String filter_class_id, String filter_user_id, final AsyncCallback<List<Attendance>> callback) {
         // Request a string response from the provided URL.
-        String url = HOST + "attendances";
+        String url = HOST + "attendances/myprofile";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url.trim(),
                 new Response.Listener<String>() {
                     @Override
@@ -453,6 +454,54 @@ public class DataAccessImpl implements DataAccessInterface {
     @Override
     public void getAttendanceById(int attendance_id, AsyncCallback<Attendance> callback) {
 
+    }
+
+    @Override
+    public void requestAttendance(Attendance attendance, final AsyncCallback<String> callback) {
+        final String httpPostBody = attendance.toJson();
+        // Request a string response from the provided URL.
+        String url = HOST + "attendances/request";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url.trim(),
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("Service/reqAttendance()", response);
+                        callback.onSuccess(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && networkResponse.statusCode == 409) {
+                            // HTTP Status Code: 409 Unauthorized Oo
+                            Log.e("Service/reqAttendance()", "error status code " + networkResponse.statusCode);
+                            callback.onAuthFail(error.toString());
+                        }
+                        else {
+                            Log.e("Service/reqAttendance()", error.toString());
+                            callback.onFailure(error.toString());
+                        }
+                    }
+                }
+
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", getAuthKey());
+                params.put("Content-Type", "application/json");
+                return params;
+            }
+
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                return httpPostBody.getBytes();
+            }
+        };
+
+        mRequestQueue.add(stringRequest);
     }
 
     @Override
@@ -632,9 +681,9 @@ public class DataAccessImpl implements DataAccessInterface {
     public void createMessage(final Message message, final AsyncCallback<Message> callback) {
         // Request a string response from the provided URL.
         String url = HOST + "messages/create";
-        //Log.d("Service/createMessage()", message.messageCreatetoString());
         final String httpPostBody = makeMessagetoJson(message);
-        Log.d("Service/createMessage()", "makeMessagetoJson():" + httpPostBody);
+
+//      Log.d("Service/createMessage()", "makeMessagetoJson():" + httpPostBody);
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
@@ -882,7 +931,7 @@ public class DataAccessImpl implements DataAccessInterface {
     @Override
     public void createNotification(final Message message, final AsyncCallback<Message> callback) {
         String url = HOST + "notifies/create";
-        Log.d("Service/cNotification()", "message=" + message.toString());
+//        Log.d("Service/cNotification()", "message=" + message.toString());
         try {
             HttpEntity entity = null;
             MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();

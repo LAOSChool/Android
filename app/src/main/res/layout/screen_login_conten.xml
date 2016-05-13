@@ -38,7 +38,7 @@
             android:textColor="@color/background_home_screen_tab"
             android:textSize="30dp"
             android:textStyle="bold"
-            android:paddingBottom="70dp"/>
+            android:paddingBottom="100dp"/>
 
         <RelativeLayout
             android:layout_width="match_parent"

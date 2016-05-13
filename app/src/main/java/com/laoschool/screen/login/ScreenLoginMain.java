@@ -158,10 +158,10 @@ public class ScreenLoginMain extends Fragment {
                     logo.setPadding(0, 0, 0, 0);
                     btnFogetPass.setVisibility(View.INVISIBLE);
                     return;
-                } else if (bottom > oldBottom) {
+                } else if (bottom > oldBottom && (bottom - oldBottom) > 30) {
                     layoutContent.setGravity(Gravity.CENTER);
                     layoutContent.setPadding(0, 0, 0, 90);
-                    logo.setPadding(0, 0, 0, 70);
+                    logo.setPadding(0, 0, 0, 100);
                     btnFogetPass.setVisibility(View.VISIBLE);
                     return;
                 }

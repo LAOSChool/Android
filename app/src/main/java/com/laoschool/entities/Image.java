@@ -143,7 +143,7 @@ public class Image {
         return "Image{" +
                 "id=" + id +
                 ", notify_id=" + notify_id +
-                ", user_id=" + user_id +
+                ", student_id=" + user_id +
                 ", upload_dt='" + upload_dt + '\'' +
                 ", file_name='" + file_name + '\'' +
                 ", file_path='" + file_path + '\'' +
@@ -160,7 +160,7 @@ public class Image {
 
         public static final String COLUMN_NAME_ID = "id";
         public static final String COLUMN_NAME_NOTIFY_ID = "notify_id";
-        public static final String COLUMN_NAME_USER_ID = "user_id";
+        public static final String COLUMN_NAME_USER_ID = "student_id";
 
         public static final String COLUMN_NAME_UPLOAD_DT = "upload_dt";
         public static final String COLUMN_NAME_FILE_NAME = "file_name";

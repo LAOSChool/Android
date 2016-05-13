@@ -1,6 +1,7 @@
 package com.laoschool.screen.login;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -34,6 +35,9 @@ public class ScreenLoginHelp extends Fragment {
 
         RelativeLayout header = (RelativeLayout) view.findViewById(R.id.header);
         ImageButton btnBack = (ImageButton) view.findViewById(R.id.btnBack);
+
+        int color = Color.parseColor("#ffffff");
+        btnBack.setColorFilter(color);
 
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override

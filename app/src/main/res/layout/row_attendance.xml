@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="vertical"
+        android:paddingBottom="0dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="10dp"
+        android:paddingTop="0dp"
+        android:background="@color/color_bg_un_read"
+        android:id="@+id/groupAttendancesView">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/btnDropdown"
+            android:src="@drawable/ic_keyboard_arrow_down_black_24dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true" />
+
+        <TextView
+            android:id="@+id/txbAttDt"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:singleLine="true"
+            android:text="2016 - 05 - 12"
+            android:textColor="#000000"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="35dp" />
+
+        <RelativeLayout
+        android:layout_width="115dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="15dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="5dp"
+            android:id="@+id/tableResult">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="Absent"
+            android:textColor="#2962FF"
+            android:textSize="12sp"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/txvExcused"
+            android:layout_toStartOf="@+id/txvExcused"
+            android:id="@+id/txvAbsent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="5"
+            android:textColor="@color/colorDefault"
+            android:textSize="12sp"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:id="@+id/txbAbsent"
+            android:paddingBottom="5dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@+id/txbExcused"
+            android:layout_toStartOf="@+id/txbExcused" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="16dp"
+            android:singleLine="true"
+            android:text="Excused"
+            android:textColor="#2962FF"
+            android:textSize="12sp"
+            android:id="@+id/txvExcused" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="0"
+            android:textColor="@color/colorDefault"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:id="@+id/txbExcused"
+            android:layout_alignTop="@+id/txbAbsent"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignLeft="@+id/txvExcused"
+            android:layout_alignStart="@+id/txvExcused" />
+
+        </RelativeLayout>
+
+       <!-- <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/btnDropdown"
+            android:src="@drawable/ic_keyboard_arrow_down_black_24dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:visibility="visible" />-->
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E0E0E0"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/colorDefault"
+        android:visibility="gone"
+        android:id="@+id/sessionView">
+    </LinearLayout>
+</LinearLayout>

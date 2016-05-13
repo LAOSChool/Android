@@ -2,11 +2,6 @@ package com.laoschool.entities;
 
 import com.google.gson.Gson;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Date;
-
 /**
  * Created by Tran An on 11/03/2016.
  */
@@ -24,15 +19,21 @@ public class Attendance {
 
     int subject_id;
 
-    int user_id;
+    int student_id;
 
-    String user_name;
+    String student_name;
+
+    String subject;
+
+    String term;
+
+    String session;
 
     int absent;
 
     int excused;
 
-    int late;
+    int state;
 
     String notice;
 
@@ -47,17 +48,41 @@ public class Attendance {
         this.class_id = class_id;
         this.att_dt = att_dt;
         this.subject_id = subject_id;
-        this.user_id = user_id;
-        this.user_name = user_name;
+        this.student_id = user_id;
+        this.student_name = user_name;
         this.absent = absent;
         this.excused = excused;
-        this.late = late;
+        this.state = late;
         this.notice = notice;
         this.chk_user_id = chk_user_id;
     }
 
     public int getId() {
         return id;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getTerm() {
+        return term;
+    }
+
+    public void setTerm(String term) {
+        this.term = term;
+    }
+
+    public String getSession() {
+        return session;
+    }
+
+    public void setSession(String session) {
+        this.session = session;
     }
 
     public void setId(int id) {
@@ -96,20 +121,20 @@ public class Attendance {
         this.subject_id = subject_id;
     }
 
-    public int getUser_id() {
-        return user_id;
+    public int getStudent_id() {
+        return student_id;
     }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
+    public void setStudent_id(int student_id) {
+        this.student_id = student_id;
     }
 
-    public String getUser_name() {
-        return user_name;
+    public String getStudent_name() {
+        return student_name;
     }
 
-    public void setUser_name(String user_name) {
-        this.user_name = user_name;
+    public void setStudent_name(String student_name) {
+        this.student_name = student_name;
     }
 
     public int getAbsent() {
@@ -128,12 +153,12 @@ public class Attendance {
         this.excused = excused;
     }
 
-    public int getLate() {
-        return late;
+    public int getState() {
+        return state;
     }
 
-    public void setLate(int late) {
-        this.late = late;
+    public void setState(int state) {
+        this.state = state;
     }
 
     public String getNotice() {

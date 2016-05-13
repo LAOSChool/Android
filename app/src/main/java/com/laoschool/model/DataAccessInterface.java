@@ -67,20 +67,28 @@ public interface DataAccessInterface {
     //----- Attendance -----//
 
     /**
-     * Get the list of available attendances.
-     * Paging Support: Yes (refer to Common=> Pagination)
-     *
-     * @param callback return list attendances if success,
+     * Get the list of available attendances of current user.
+     * Only available for student
+     * @param filter_class_id
+     * @param filter_user_id
+     * @param callback return list my attendances if success,
      */
-    public void getAttendances(String filter_class_id, String filter_user_id, AsyncCallback<List<Attendance>> callback);
+    public void getMyAttendances(String filter_class_id, String filter_user_id, AsyncCallback<List<Attendance>> callback);
 
     /**
      * Get attendance for a specific ID
      *
      * @param attendance_id
-     * @param callback      return attendance match the id if success,
+     * @param callback return attendance match the id if success,
      */
     public void getAttendanceById(int attendance_id, AsyncCallback<Attendance> callback);
+
+    /**
+     *
+     * @param attendance
+     * @param callback return status code
+     */
+    public void requestAttendance(Attendance attendance, AsyncCallback<String> callback);
 
     /**
      * Modify an existing Attendance information.
