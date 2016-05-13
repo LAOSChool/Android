@@ -48,15 +48,11 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private int visibleThreshold = 5;
     private int lastVisibleItem, totalItemCount;
     private RecyclerView mRecyclerView;
-    private DataAccessMessage dataAccessMessage;
 
     public void setOnLoadMoreListener(OnLoadMoreListener mOnLoadMoreListener) {
         this.mOnLoadMoreListener = mOnLoadMoreListener;
     }
 
-    public List<Message> getMessageList() {
-        return messageList;
-    }
 
     public ListMessageAdapter(RecyclerView mRecyclerView, ScreenMessage screenMessage, List<Message> messageList, int positionPage) {
         this.messageList = messageList;
@@ -91,8 +87,6 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_message, parent, false); //Inflating the layout
-//        ListMessageAdapterViewHolder recyclerViewListMessageAdapterViewHolder = new ListMessageAdapterViewHolder(view, viewType);
         if (viewType == VIEW_TYPE_ITEM) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_message, parent, false);
             return new ListMessageAdapterViewHolder(view, viewType);
@@ -187,7 +181,7 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         if (message.getIs_read() == 0) {
                             //Update is read
                             message.setIs_read(1);
-                            dataAccessMessage.updateMessage(message);
+                            DataAccessMessage.updateMessage(message);
                             _updateStatusMessageToServer(message);
                         }
                         Log.d(TAG, "Page:" + positionPage);

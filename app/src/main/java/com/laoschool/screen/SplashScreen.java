@@ -1,5 +1,6 @@
 package com.laoschool.screen;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
+import com.laoschool.LaoSchoolApplication;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.entities.User;
@@ -52,13 +54,36 @@ import java.util.Calendar;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
-public class SplashScreen extends AppCompatActivity {
+public class SplashScreen extends Activity {
 
-    private static final long SPLASH_TIME_OUT = 2000;
+    private static final long SPLASH_TIME_OUT = 3000;
     public final String TAG = "SplashScreen";
     SplashScreen thiz;
 
-//    private void unLockCredentialStorage() {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.splash_screen);
+        thiz = this;
+        new Handler().postDelayed(new Runnable() {
+            /*
+             * Showing splash screen with a timer. This will be useful when you
+             * want to show case your app logo / company
+             */
+            @Override
+            public void run() {
+                createNewKey();
+                checkAuth();
+            }
+        }, SPLASH_TIME_OUT);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
+    }
+    //    private void unLockCredentialStorage() {
 //        try {
 //            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
 //                startActivity(new Intent("android.credentials.UNLOCK"));
@@ -99,6 +124,7 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     private void createNewKey() {
+        Log.d(TAG, "createNewKey()");
         try {
             KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
             keyStore.load(null);
@@ -122,26 +148,6 @@ public class SplashScreen extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.splash_screen);
-        thiz = this;
-//
-//
-        new Handler().postDelayed(new Runnable() {
-            /*
-             * Showing splash screen with a timer. This will be useful when you
-             * want to show case your app logo / company
-             */
-            @Override
-            public void run() {
-                createNewKey();
-                checkAuth();
-            }
-        }, SPLASH_TIME_OUT);
-    }
-
     private void checkAuth() {
         SharedPreferences prefs = this.getSharedPreferences(
                 LaoSchoolShared.SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
@@ -149,7 +155,7 @@ public class SplashScreen extends AppCompatActivity {
         if (auth_key == null) {
             startLogin();
         } else {
-            Log.d(TAG, "auth_key:" + auth_key);
+            Log.d(TAG, "checkAuth() -auth_key:" + auth_key);
             getUserProfile();
         }
     }

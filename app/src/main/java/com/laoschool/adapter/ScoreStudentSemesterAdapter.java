@@ -37,10 +37,12 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
     public ScoreStudentSemesterAdapter(Context context, Map<Integer, ArrayList<ExamResult>> scores) {
         this.context = context;
         this.scores = scores;
-
         for (Integer key : scores.keySet()) {
+            Log.d(TAG, " -month:" + key);
             months.add(key);
         }
+
+        Log.d(TAG, " -exam size:" + scores.size());
     }
 
 
@@ -56,21 +58,16 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
         View view = holder.view;
         try {
             int month = months.get(position);
-            String monthStr;
-            if (month < 100) {
-                monthStr = _getMonthString(month);
-            } else {
-                monthStr = "Final exam";
-            }
+            String monthStr = _getMonthString(month);
+//            if (month < 100) {
+//                monthStr =;
+//            } else if (month == 100) {
+//                monthStr = "Final";
+//            }
             List<ExamResult> scoreList = scores.get(month);
             if (scoreList.size() > 0) {
                 final ExamResult examResult = scoreList.get(scoreList.size() - 1);
-                String score = "";
-                if (examResult.getResult_type_id() == 1) {
-                    score = String.valueOf(examResult.getIresult());
-                } else if (examResult.getResult_type_id() == 2) {
-                    score = String.valueOf(examResult.getFresult());
-                }
+                String score = examResult.getSresult();
                 if (!score.trim().isEmpty()) {
                     ((TextView) (view.findViewById(R.id.lbScoreMonth))).setText(monthStr);
                     ((TextView) (view.findViewById(R.id.lbScore))).setText(score);
@@ -84,10 +81,15 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
                     });
                 } else {
                     Log.e(TAG, "onBindViewHolder() - score is empty");
+                    view.setVisibility(View.GONE);
+                    //notifyItemRemoved(position);
                 }
             } else {
-                ((TextView) (view.findViewById(R.id.lbScoreMonth))).setText("");
-                ((TextView) (view.findViewById(R.id.lbScore))).setText("");
+                Log.e(TAG, "onBindViewHolder() - month:" + month + " list exam is empty");
+                view.setVisibility(View.GONE);
+//                ((TextView) (view.findViewById(R.id.lbScoreMonth))).setText("");
+//                ((TextView) (view.findViewById(R.id.lbScore))).setText("");
+                // notifyItemRemoved(position);
             }
         } catch (Exception e) {
             Log.e(TAG, "onBindViewHolder() - exception=" + e.getMessage());
@@ -98,13 +100,12 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
         AlertDialog.Builder bDetails = new AlertDialog.Builder(context);
         View examResultDetails = View.inflate(context, R.layout.view_exam_results_details, null);
         ((TextView) examResultDetails.findViewById(R.id.lbExamSubject)).setText(String.valueOf(examResult.getSubjectName()));
-        ((TextView) examResultDetails.findViewById(R.id.lbExamDate)).setText(String.valueOf(examResult.getExam_month() + "/" + examResult.getExam_year()));
-        String score = "";
-        if (examResult.getResult_type_id() == 1) {
-            score = String.valueOf(examResult.getIresult());
-        } else if (examResult.getResult_type_id() == 2) {
-            score = String.valueOf(examResult.getFresult());
+        if (examResult.getExam_type() == 2)
+            ((TextView) examResultDetails.findViewById(R.id.lbExamDate)).setText(examResult.getTermName());
+        else {
+            ((TextView) examResultDetails.findViewById(R.id.lbExamDate)).setText(String.valueOf(examResult.getExam_month() + "/" + examResult.getExam_year()));
         }
+        String score = examResult.getSresult();
         ((TextView) examResultDetails.findViewById(R.id.lbExamScore)).setText(String.valueOf(score));
         ((TextView) examResultDetails.findViewById(R.id.lbExamTecherName)).setText(String.valueOf(examResult.getTeacherName()));
         ((TextView) examResultDetails.findViewById(R.id.lbExamDateUpdateScore)).setText(" - " + LaoSchoolShared.formatDate(examResult.getExam_dt(), 2));
@@ -122,10 +123,11 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
     }
 
     private String _getMonthString(int month) {
-        Log.d(TAG, " _getMonthString() - monnt:" + month);
+        if (month == 100)
+            return "Final";
         DateFormat inputFormatter1 = new SimpleDateFormat("MMM", Locale.US);
         Calendar cal = Calendar.getInstance();
-        cal.set(2016, month-1, 10);
+        cal.set(2016, month - 1, 10);
         String monthParse = inputFormatter1.format(cal.getTime());
         Log.d(TAG, " _getMonthString() - monnt:" + month + ",month parse:" + monthParse);
         return monthParse;
