@@ -86,20 +86,14 @@ public class ScreenAnnouncementsDetails extends Fragment implements FragmentLife
             String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_ANNOUNCEMENTS_1);
             ScreenAnnouncements screenAnnouncements = (ScreenAnnouncements) ((HomeActivity) getActivity()).getSupportFragmentManager().findFragmentByTag(tag);
             if (screenAnnouncements != null) {
-
                 final Message notification = screenAnnouncements.getNotification();
+
+                //set Title Notification
+                ((HomeActivity) getActivity()).getSupportActionBar().setTitle(notification.getTitle());
+
                 Log.d(TAG, "Size image:" + notification.getNotifyImages().size());
-//                final ProgressDialog progressDialog = new ProgressDialog(context);
-//                progressDialog.show();
-//                new Handler().postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-                //define list image
                 NotificationDetailsAdapter notificationDetailsAdapter = new NotificationDetailsAdapter(getActivity(), notification);
                 mReclerViewListImageNotification.setAdapter(notificationDetailsAdapter);
-//                        progressDialog.dismiss();
-//                    }
-//                }, 200);
             }
         } catch (Exception e) {
             e.printStackTrace();

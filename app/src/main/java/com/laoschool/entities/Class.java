@@ -38,10 +38,12 @@ public class Class {
 
     int head_teacher_id;
 
+    String headTeacherName;
+
     public Class() {
     }
 
-    public Class(int id, int school_id, String title, String location, int term, String years, String start_dt, String end_dt, int class_type, int grade_type, int fee, int sts, int head_teacher_id) {
+    public Class(int id, int school_id, String title, String location, int term, String years, String start_dt, String end_dt, int class_type, int grade_type, int fee, int sts, int head_teacher_id, String headTeacherName) {
         this.id = id;
         this.school_id = school_id;
         this.title = title;
@@ -55,6 +57,7 @@ public class Class {
         this.fee = fee;
         this.sts = sts;
         this.head_teacher_id = head_teacher_id;
+        this.headTeacherName = headTeacherName;
     }
 
     public int getId() {
@@ -157,6 +160,14 @@ public class Class {
 
     public void setHead_teacher_id(int head_teacher_id) { this.head_teacher_id = head_teacher_id; }
 
+    public String getHeadTeacherName() {
+        return headTeacherName;
+    }
+
+    public void setHeadTeacherName(String headTeacherName) {
+        this.headTeacherName = headTeacherName;
+    }
+
     public String toJson() {
         Gson gson = new Gson();
         String jsonString = gson.toJson(this);
@@ -185,6 +196,7 @@ public class Class {
                 ", fee=" + fee +
                 ", sts=" + sts +
                 ", head_teacher_id=" + head_teacher_id +
+                ", headTeacherName='" + headTeacherName + '\'' +
                 '}';
     }
 }

@@ -3,7 +3,7 @@
     <color name="colorPrimary">@color/colorLaosRed</color>
     <!--#3F51B5-->
     <color name="colorPrimaryDark">#B71C1C</color>
-    <color name="colorAccent">#ff4081</color>
+    <color name="colorAccent">#2196f3</color>
     <color name="background_home_screen_tab">@android:color/white</color>
     <color name="text_title_tab_indicator">@android:color/darker_gray</color>
 
@@ -33,10 +33,20 @@
     <color name="colorDefault">#808080</color>
     <color name="colorWhite">@android:color/white</color>
     <color name="colorStar">#FFD54F</color>
+
     <color name="fragmentBackground">#E0E0E0</color>
 
     <color name="black_overlay">#66000000</color>
 
     <color name="color_bg_un_read">#FFF9C4</color>
     <color name="color_bg_read">#eee</color>
+
+    <color name="colorRead">#808080</color>
+    <color name="colorUnread">@android:color/black</color>
+    <color name="colorSenderUnread">#2196F3</color>
+    <color name="colorDateUnread">#2196F3</color>
+
+    <color name="colorPriorityHigh">#00A261</color>
+    <color name="colorPriorityLow">#808080</color>
+    <color name="colorTitleUnread">#2196F3</color>
 </resources>

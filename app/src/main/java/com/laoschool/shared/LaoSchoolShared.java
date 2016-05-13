@@ -24,6 +24,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.entities.Image;
 import com.laoschool.entities.Message;
@@ -35,7 +36,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -49,6 +54,7 @@ public class LaoSchoolShared {
 
     public static final int SELECT_PHOTO = 100;
     public static final int SELECT_CAMERA = 101;
+    public static final long LOADING_TIME = 1500;
     public static User myProfile;
     public static final String SHARED_PREFERENCES_TAG = "com.laoshcool.app";
     public static final String KEY_STORE_ALIAS = "LAOSCHOOL_KEY";
@@ -79,7 +85,7 @@ public class LaoSchoolShared {
     public static final String ROLE_TEARCHER = "TEACHER";
     public static final String ROLE_STUDENT = "STUDENT";
     public static final String ROLE = "role";
-    private static final String TAG = "LaoSchoolShared";
+    private static final String TAG = LaoSchoolShared.class.getSimpleName();
 
     public static String makeFragmentTag(int containerViewId, long id) {
         return "android:switcher:" + containerViewId + ":" + id;
@@ -256,7 +262,7 @@ public class LaoSchoolShared {
         return message;
     }
 
-    public static String getPath(Context context,Uri uri) {
+    public static String getPath(Context context, Uri uri) {
         // just some safety built in
         if (uri == null) {
             // TODO perform some logging or show user feedback
@@ -277,7 +283,7 @@ public class LaoSchoolShared {
     }
 
     public static Image parseImageFormSql(Cursor cursor) {
-        Image image=new Image();
+        Image image = new Image();
         image.setId(cursor.getInt(Image.ImageColumns.COLUMN_NAME_ID_INDEX_0));
         image.setNotify_id(cursor.getInt(Image.ImageColumns.COLUMN_NAME_NOTIFY_ID_INDEX_1));
         image.setUser_id(cursor.getInt(Image.ImageColumns.COLUMN_NAME_USER_ID_INDEX_2));
@@ -290,25 +296,57 @@ public class LaoSchoolShared {
         return image;
     }
 
-    public static void goBackToLoginPage(final Context context) {
+    public static void goBackToLoginPage(Context context) {
+        if (context == null)
+            context = LaoSchoolSingleton.context;
         SharedPreferences preferences = context.getSharedPreferences(SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
         preferences.edit().remove("auth_key").commit();
 
         AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-        builder1.setMessage("Someone has fucking login to your account in fucking another device! Please re-login,");
+        builder1.setTitle(context.getString(R.string.err));
+        builder1.setMessage(context.getString(R.string.msg_re_login_application));
         builder1.setCancelable(true);
 
+        final Context finalContext = context;
         builder1.setPositiveButton(
                 "Ok",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Intent intent = new Intent(context, ScreenLogin.class);
-                        context.startActivity(intent);
-                        ((Activity) context).finish();
+                        Intent intent = new Intent(finalContext, ScreenLogin.class);
+                        finalContext.startActivity(intent);
+                        ((Activity) finalContext).finish();
                     }
                 });
 
         AlertDialog alert11 = builder1.create();
         alert11.show();
+    }
+
+    public static String formatDate(String exam_dt, int type) {
+        try {
+            DateFormat inputFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+            DateFormat outputFormatter;
+            if (type == 0) {
+                outputFormatter = new SimpleDateFormat("dd-MMM");
+            } else if (type == 1) {
+                outputFormatter = new SimpleDateFormat("dd-MMM-yyyy");
+            } else if (type == 2) {
+                outputFormatter = new SimpleDateFormat("HH:mm dd-MMM-yyyy");
+            } else {
+                outputFormatter = new SimpleDateFormat("HH:mm:ss dd-MMM-yyyy");
+            }
+
+            Date date;
+            if (exam_dt != null) {
+                date = inputFormatter.parse(exam_dt);
+            } else {
+                date = new Date();
+            }
+            String output1 = outputFormatter.format(date);
+            return output1;
+        } catch (ParseException e) {
+            Log.e(TAG, "formatDate() - parse exception: " + e.getMessage());
+        }
+        return exam_dt;
     }
 }

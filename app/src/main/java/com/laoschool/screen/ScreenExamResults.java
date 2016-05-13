@@ -7,9 +7,10 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
@@ -22,7 +23,9 @@ import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import android.widget.Spinner;
@@ -30,32 +33,40 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.adapter.RecylerViewScreenExamResultsAdapter;
-import com.laoschool.adapter.RecylerViewScreenExamResultsStudentTabAdapter;
+import com.laoschool.adapter.ExamResultsStudentSemesterAdapter;
+import com.laoschool.entities.ExamResult;
+import com.laoschool.entities.User;
+import com.laoschool.model.AsyncCallback;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
 import com.laoschool.view.ViewpagerDisableSwipeLeft;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ScreenExamResults extends Fragment implements FragmentLifecycle {
-
-
-    private static final String TAG = "ScreenExamResults";
+    public static final String TAG = "ScreenExamResults";
+    private static FragmentManager fr;
     private ScreenExamResults screenExamResults;
     private int containerId;
     private String data;
     private String currentRole;
-    private Context context;
+    private static Context context;
+    private static boolean alreadyExecuted = false;
 
     public ScreenExamResults() {
-        // Required empty public constructor
+        alreadyExecuted = false;
     }
 
     public String getData() {
@@ -85,11 +96,18 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     TextView txtTerm;
     TextView txtSubject;
     TextView txtClass;
+    static ViewpagerDisableSwipeLeft mViewPageStudent;
+    static PagerSlidingTabStrip tabsStrip;
+    static LinearLayout mExamResultsStudent;
+    static ProgressBar mProgressStudent;
+    static FrameLayout mError;
+    static FrameLayout mNoData;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView()");
         if (currentRole == null)
             return inflater.inflate(R.layout.screen_error_application, container, false);
         else
@@ -98,15 +116,23 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate()");
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         if (getArguments() != null) {
             containerId = getArguments().getInt(LaoSchoolShared.CONTAINER_ID);
             currentRole = getArguments().getString(LaoSchoolShared.ROLE);
-            Log.d(getString(R.string.title_screen_exam_results), "-Container Id:" + containerId);
+            Log.d(TAG, "-Container Id:" + containerId);
         }
         this.context = getActivity();
         this.screenExamResults = this;
+        this.fr = getActivity().getSupportFragmentManager();
+    }
+
+    @Override
+    public void onResume() {
+        Log.d(TAG, "onResume()");
+        super.onResume();
     }
 
     @Override
@@ -117,21 +143,35 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
 
     @Override
     public void onPauseFragment() {
+        Log.d(TAG, "onPauseFragment()");
 
     }
 
     @Override
     public void onResumeFragment() {
+        Log.d(TAG, "onResumeFragment()/getUserVisibleHint()=" + getUserVisibleHint() + ",alreadyExecuted=" + alreadyExecuted);
+        if (!alreadyExecuted && getUserVisibleHint()) {
+            if (currentRole == null) {
+                Log.d(TAG, "onResumeFragment() - current role null");
+                currentRole = LaoSchoolShared.ROLE_STUDENT;
+            }
+            if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
+            } else {
+                _definePageSemesterStudent();
+            }
 
+        }
     }
 
     @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(Context activity) {
+        Log.d(TAG, "onAttach()");
         super.onAttach(activity);
         iScreenExamResults = (IScreenExamResults) activity;
     }
 
     public static Fragment instantiate(int containerId, String currentRole) {
+        Log.d(TAG, "instantiate()");
         ScreenExamResults fragment = new ScreenExamResults();
         Bundle args = new Bundle();
         args.putInt(LaoSchoolShared.CONTAINER_ID, containerId);
@@ -151,22 +191,194 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
 
     private View _defineScreenExamResultsDetailForStudent(LayoutInflater inflater, ViewGroup container) {
         View view = inflater.inflate(R.layout.screen_exam_results_student, container, false);
-        ViewpagerDisableSwipeLeft mViewPageScreenExamResultsStudent = (ViewpagerDisableSwipeLeft) view.findViewById(R.id.mViewPageScreenExamResultsStudent);
-        //
-        //ScorePageAdapter scorePageAdapter = new ScorePageAdapter(context, Arrays.asList("Term 1", "Term 2", "Total"));
 
-        mViewPageScreenExamResultsStudent.setAllowedSwipeDirection(HomeActivity.SwipeDirection.none);
+        mExamResultsStudent = (LinearLayout) view.findViewById(R.id.mExamResultsStudent);
+        mProgressStudent = (ProgressBar) view.findViewById(R.id.mProgressExamResultsStudent);
+        mError = (FrameLayout) view.findViewById(R.id.mError);
+        mNoData = (FrameLayout) view.findViewById(R.id.mNoData);
 
-        ExamScorePagerAdapter sampleFragmentPagerAdapter = new ExamScorePagerAdapter(getFragmentManager(), Arrays.asList("Term 1", "Term 2", "Total"));
-        mViewPageScreenExamResultsStudent.setAdapter(sampleFragmentPagerAdapter);
+        mViewPageStudent = (ViewpagerDisableSwipeLeft) view.findViewById(R.id.mViewPageScreenExamResultsStudent);
+        tabsStrip = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
+        mViewPageStudent.setAllowedSwipeDirection(HomeActivity.SwipeDirection.none);
 
-        // Give the PagerSlidingTabStrip the ViewPager
-        PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
-        // Attach the view pager to the tab strip
-        tabsStrip.setViewPager(mViewPageScreenExamResultsStudent);
+        _handlerOnclickError();
 
+        _handlerOnclickNodata();
 
         return view;
+    }
+
+    private void _handlerOnclickError() {
+        mError.findViewById(R.id.mReloadData).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                _showProgressLoadingStudent(true);
+                _getMyExamResult();
+            }
+        });
+    }
+
+    private void _handlerOnclickNodata() {
+        mNoData.findViewById(R.id.mReloadData).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                _showProgressLoadingStudent(true);
+                _getMyExamResult();
+            }
+        });
+    }
+
+    private void _getExamResult() {
+        LaoSchoolSingleton.getInstance().getDataAccessService().getExamResults(-1, -1, new AsyncCallback<List<ExamResult>>() {
+            @Override
+            public void onSuccess(List<ExamResult> result) {
+                if (result != null) {
+                    _setDataforPageSemester(result, -1);
+                } else {
+                    Log.d(TAG, "_definePageSemesterStudent()/getExamResults()/onSuccess() message:NUll");
+                }
+                _showProgressLoadingStudent(false);
+            }
+
+            @Override
+            public void onFailure(String message) {
+                Log.e(TAG, "_definePageSemesterStudent()/getExamResults()/onFailure() message:" + message);
+                _showProgressLoadingStudent(false);
+                _showErrorStudent();
+            }
+
+            @Override
+            public void onAuthFail(String message) {
+                Log.e(TAG, "_definePageSemesterStudent()/getExamResults()/onAuthFail() message:" + message);
+                LaoSchoolShared.goBackToLoginPage(context);
+                _showProgressLoadingStudent(false);
+            }
+        });
+    }
+
+    private void _getMyExamResult() {
+        _getMyExamResult(-1);
+    }
+
+    private void _getMyExamResult(final int positon) {
+        if (positon == -1)
+            _showProgressLoadingStudent(true);
+
+        LaoSchoolSingleton.getInstance().getDataAccessService().getMyExamResults(new AsyncCallback<List<ExamResult>>() {
+            @Override
+            public void onSuccess(List<ExamResult> result) {
+                if (result.size() > 0) {
+                    if (result != null) {
+                        _setDataforPageSemester(result, positon);
+                        _showProgressLoadingStudent(false);
+                        alreadyExecuted = true;
+
+                    } else {
+                        Log.d(TAG, "getMyExamResults(" + positon + ")/onAuthFail() message:NUll");
+                        _showProgressLoadingStudent(false);
+                        _showNoDataStudent();
+                        alreadyExecuted = true;
+                    }
+                } else {
+                    Log.d(TAG, "getMyExamResults(" + positon + ")/onAuthFail() message:Size==0");
+                    _showProgressLoadingStudent(false);
+                    _showNoDataStudent();
+                    alreadyExecuted = true;
+                }
+
+            }
+
+            @Override
+            public void onFailure(String message) {
+                Log.e(TAG, "getMyExamResults(" + positon + ")/onFailure() message:" + message);
+                _showProgressLoadingStudent(false);
+                _showErrorStudent();
+                alreadyExecuted = true;
+            }
+
+            @Override
+            public void onAuthFail(String message) {
+                Log.e(TAG, "getMyExamResults(" + positon + ")/onAuthFail() message:" + message);
+                LaoSchoolShared.goBackToLoginPage(context);
+                _showProgressLoadingStudent(false);
+                alreadyExecuted = true;
+            }
+        });
+    }
+
+
+    private static void _setDataforPageSemester(List<ExamResult> result, int positon) {
+        Log.d(TAG, "_setDataforPageSemester() positon=" + positon);
+        HashMap<Integer, String> hashterms = new LinkedHashMap<Integer, String>();
+        Map<Integer, ArrayList<ExamResult>> mapTermExam = new HashMap<>();
+        for (ExamResult examResult : result) {
+            int termId = examResult.getTerm_id();
+            ArrayList<ExamResult> examResultList = null;
+            if (examResult.getTermName() != null) {
+                //Put term List
+                hashterms.put(examResult.getTerm_id(), examResult.getTermName());
+
+                //Add exam by Term
+                if (mapTermExam.containsKey(termId)) {
+                    examResultList = mapTermExam.get(termId);
+                    if (examResultList == null) {
+                        examResultList = new ArrayList<>();
+                    }
+                    examResultList.add(examResult);
+                } else {
+                    examResultList = new ArrayList<>();
+                    examResultList.add(examResult);
+                }
+
+            }
+            mapTermExam.put(termId, examResultList);
+        }
+
+        //difine pager
+        ExamScorePagerAdapter sampleFragmentPagerAdapter = new ExamScorePagerAdapter(fr, hashterms, mapTermExam);
+        mViewPageStudent.setAdapter(sampleFragmentPagerAdapter);
+        // Attach the view pager to the tab strip
+        tabsStrip.setViewPager(mViewPageStudent);
+
+        if (positon > -1)
+            mViewPageStudent.setCurrentItem(positon);
+    }
+
+    private Map<Integer, List<ExamResult>> _hashExamResultsbyTerm(List<ExamResult> result) {
+
+        return null;
+    }
+
+    private void _definePageSemesterStudent() {
+        Log.d(TAG, "_definePageSemesterStudent()");
+        _getMyExamResult();
+    }
+
+    private static void _showErrorStudent() {
+        mError.setVisibility(View.VISIBLE);
+        mProgressStudent.setVisibility(View.GONE);
+        mExamResultsStudent.setVisibility(View.GONE);
+        mNoData.setVisibility(View.GONE);
+    }
+
+    private static void _showNoDataStudent() {
+        mNoData.setVisibility(View.VISIBLE);
+        mError.setVisibility(View.GONE);
+        mProgressStudent.setVisibility(View.GONE);
+        mExamResultsStudent.setVisibility(View.GONE);
+    }
+
+
+    private static void _showProgressLoadingStudent(boolean b) {
+        if (b) {
+            mProgressStudent.setVisibility(View.VISIBLE);
+            mExamResultsStudent.setVisibility(View.GONE);
+        } else {
+            mProgressStudent.setVisibility(View.GONE);
+            mExamResultsStudent.setVisibility(View.VISIBLE);
+        }
+        mError.setVisibility(View.GONE);
+        mNoData.setVisibility(View.GONE);
     }
 
     private View _defineScreenExamResultsTeacher(LayoutInflater inflater, ViewGroup container) {
@@ -378,42 +590,75 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     }
 
 
-    public class ExamScorePagerAdapter extends FragmentPagerAdapter {
-        final int PAGE_COUNT = 3;
-        private List<String> tabTitles;
+    public static class ExamScorePagerAdapter extends FragmentStatePagerAdapter {
+        private List<Integer> termIds = new ArrayList<>();
+        private List<String> terms = new ArrayList<>();
+        private List<ArrayList<ExamResult>> lists = new ArrayList<>();
 
-        public ExamScorePagerAdapter(FragmentManager fm, List<String> tabTitles) {
+        public ExamScorePagerAdapter(FragmentManager fm, HashMap<Integer, String> hashterms, Map<Integer, ArrayList<ExamResult>> examResultList) {
             super(fm);
-            this.tabTitles = tabTitles;
+            Map<Integer, String> treeterms = new TreeMap<>(hashterms);
+            for (Integer key : treeterms.keySet()) {
+                ArrayList<ExamResult> exams = examResultList.get(key);
+                termIds.add(key);
+                terms.add(hashterms.get(key));
+                lists.add(exams);
+                Log.d(TAG, "ExamScorePagerAdapter() -Term:" + key + ",Exam f_results:" + exams.size());
+            }
+
         }
 
         @Override
         public int getCount() {
-            return PAGE_COUNT;
+            return terms.size();
         }
 
         @Override
         public Fragment getItem(int position) {
-            return ScoreFragment.newInstance(position + 1);
+            if (position == 0)
+                return ScoreFragment.newInstance(0, termIds.get(0), lists.get(0));
+            else if (position == 1)
+                return ScoreFragment.newInstance(1, termIds.get(1), lists.get(1));
+            else
+                return null;
+
+
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             // Generate title based on item position
-            return tabTitles.get(position);
+            return terms.get(position);
         }
+
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
+        }
+
+
     }
 
     public static class ScoreFragment extends Fragment {
         public static final String ARG_PAGE = "ARG_PAGE";
-
-        private int mPage;
+        private static final String ARG_LIST = "list";
+        private static final String ARG_SEMESTER_ID = "semesterId";
+        private static final String S_TAG = ScoreFragment.class.getSimpleName();
+        private int position;
         ScoreFragment fragment;
         private Context context;
+        private RecyclerView recyclerView;
+        private ExamResultsStudentSemesterAdapter studentSemesterAdapter;
+        private List<ExamResult> f_results;
+        int semesterId;
 
-        public static ScoreFragment newInstance(int page) {
+        public ScoreFragment() {
+        }
+
+        public static ScoreFragment newInstance(int page, int semesterId, ArrayList<ExamResult> results) {
             Bundle args = new Bundle();
             args.putInt(ARG_PAGE, page);
+            args.putParcelableArrayList(ARG_LIST, results);
+            args.putInt(ARG_SEMESTER_ID, semesterId);
             ScoreFragment fragment = new ScoreFragment();
             fragment.setArguments(args);
             return fragment;
@@ -422,7 +667,12 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            mPage = getArguments().getInt(ARG_PAGE);
+            if (getArguments() != null) {
+                position = getArguments().getInt(ARG_PAGE);
+                f_results = getArguments().getParcelableArrayList(ARG_LIST);
+                semesterId = getArguments().getInt(ARG_SEMESTER_ID);
+            }
+
             this.fragment = this;
             this.context = getActivity();
         }
@@ -430,24 +680,106 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         // Inflate the fragment layout we defined above for this fragment
         // Set the associated text for the title
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
+            Log.d(TAG, S_TAG + ".onCreateView() position: " + position);
             View view = inflater.inflate(R.layout.view_exam_resluts_student_tab, container, false);
-            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.mRecyclerViewExamResultsStudentTab);
-            GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 1);
-            recyclerView.setLayoutManager(gridLayoutManager);
+            recyclerView = (RecyclerView) view.findViewById(R.id.mRecyclerViewExamResultsStudentTab);
+            final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+            recyclerView.setLayoutManager(linearLayoutManager);
 
-            RecylerViewScreenExamResultsStudentTabAdapter studentTabAdapter = new RecylerViewScreenExamResultsStudentTabAdapter(fragment, Arrays.asList(getResources().getStringArray(R.array.subjects)));
-            if (mPage == 0) {
+            studentSemesterAdapter = new ExamResultsStudentSemesterAdapter(fragment, f_results);
+            recyclerView.setAdapter(studentSemesterAdapter);
 
-            } else if (mPage == 1) {
-                studentTabAdapter = new RecylerViewScreenExamResultsStudentTabAdapter(fragment, Arrays.asList(getResources().getStringArray(R.array.subjects1)));
-            } else if (mPage == 2) {
-                studentTabAdapter = new RecylerViewScreenExamResultsStudentTabAdapter(fragment, Arrays.asList(getResources().getStringArray(R.array.subjects2)));
-            }
-            recyclerView.setAdapter(studentTabAdapter);
-
+            _handlerSwipeRefesh(mSwipeRefreshLayout);
             return view;
+        }
+
+
+        private void _handlerSwipeRefesh(final SwipeRefreshLayout mSwipeRefreshLayout) {
+            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    getMyExamResult(position);
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
+            });
+        }
+
+        private void getMyExamResult(final int position) {
+            LaoSchoolSingleton.getInstance().getDataAccessService().getMyExamResults(new AsyncCallback<List<ExamResult>>() {
+                @Override
+                public void onSuccess(List<ExamResult> result) {
+                    if (result.size() > 0) {
+                        if (result != null) {
+                            _refeshData(result);
+                            _showProgressLoadingStudent(false);
+                            alreadyExecuted = true;
+
+                        } else {
+                            Log.d(TAG, S_TAG + ".getMyExamResult(" + position + ").onAuthFail() message:NUll");
+                            _showProgressLoadingStudent(false);
+                            _showNoDataStudent();
+                            alreadyExecuted = true;
+                        }
+                    } else {
+                        Log.d(TAG, S_TAG + ".getMyExamResult(" + position + ").onAuthFail() message:Size==0");
+                        _showProgressLoadingStudent(false);
+                        _showNoDataStudent();
+                        alreadyExecuted = true;
+                    }
+
+                }
+
+                @Override
+                public void onFailure(String message) {
+                    Log.e(TAG, S_TAG + ".getMyExamResult(" + position + ").onFailure() message:" + message);
+                    _showProgressLoadingStudent(false);
+                    _showErrorStudent();
+                    alreadyExecuted = true;
+                }
+
+                @Override
+                public void onAuthFail(String message) {
+                    Log.e(TAG, S_TAG + "._getMyExamResult(" + position + ").onAuthFail() message:" + message);
+                    LaoSchoolShared.goBackToLoginPage(context);
+                    _showProgressLoadingStudent(false);
+                    alreadyExecuted = true;
+                }
+            });
+        }
+
+        private void _refeshData(List<ExamResult> result) {
+            recyclerView.swapAdapter(new ExamResultsStudentSemesterAdapter(this, _hashDatafromSemestes(result)), true);
+
+        }
+
+        private ArrayList<ExamResult> _hashDatafromSemestes(List<ExamResult> result) {
+            ArrayList<ExamResult> examResults = new ArrayList<>();
+            for (ExamResult examResult : result) {
+                if (examResult.getTerm_id() == semesterId) {
+                    examResults.add(examResult);
+                }
+            }
+            Log.d(TAG, "_hashDatafromSemestes() semesterId=" + semesterId + " ,size=" + examResults.size());
+            return examResults;
         }
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        Log.d(TAG, "setUserVisibleHint(" + isVisibleToUser + ")");
+        super.setUserVisibleHint(isVisibleToUser);
+//        if (isVisibleToUser) {
+//            if (!alreadyExecuted) {
+//                if (currentRole != null)
+//                    if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
+//
+//                    } else {
+//
+//                    }
+//            }
+//
+//        }
+    }
 }

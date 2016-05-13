@@ -39,9 +39,6 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
     private String currentRole;
     private boolean checkConn;
 
-    public ScreenMore() {
-        // Required empty public constructor
-    }
 
     public interface IScreenMore {
         void gotoSchoolInformationformMore();
@@ -62,6 +59,8 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
     }
 
     public IScreenMore iScreenMore;
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

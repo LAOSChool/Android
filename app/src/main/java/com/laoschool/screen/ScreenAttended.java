@@ -105,7 +105,8 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
             @Override
             public void onFailure(String message) {
                 ringProgressDialog.dismiss();
-                Toast.makeText(thiz.getActivity(), "Some error occur !", Toast.LENGTH_SHORT).show();
+                if (thiz.getActivity() != null)
+                    Toast.makeText(thiz.getActivity(), "Some error occur !", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -285,7 +286,6 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         service = DataAccessImpl.getInstance(this.getActivity());
-
         if (getArguments() != null) {
             containerId = getArguments().getInt(LaoSchoolShared.CONTAINER_ID);
             currentRole = getArguments().getString(LaoSchoolShared.CURRENT_ROLE);
@@ -334,4 +334,14 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
         super.onAttach(activity);
         iScreenAttended = (IScreenAttended) activity;
     }
+
+//    @Override
+//    public void setUserVisibleHint(boolean isVisibleToUser) {
+//        super.setUserVisibleHint(isVisibleToUser);
+//        if (isVisibleToUser) {
+//            if (!alreadyExecuted) {
+//                getAttendances();
+//            }
+//        }
+//    }
 }

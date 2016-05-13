@@ -172,8 +172,12 @@ public class HomeActivity extends AppCompatActivity implements
         service.getUserProfile(new AsyncCallback<User>() {
             @Override
             public void onSuccess(User result) {
-                LaoSchoolShared.myProfile = result;
-                _startHome();
+                if (result != null) {
+                    LaoSchoolShared.myProfile = result;
+                    _startHome();
+                } else {
+                    LaoSchoolShared.goBackToLoginPage(thiz);
+                }
             }
 
             @Override
@@ -260,16 +264,12 @@ public class HomeActivity extends AppCompatActivity implements
         fragments.add(ScreenRequestAttendance.instantiate(containerId, currentRole, this, screenAttended));
 
         this.mPagerAdapter = new PagerAdapter(super.getSupportFragmentManager(), fragments);
-
         //set adapter and set handler page change
         this.mViewPager.setAdapter(this.mPagerAdapter);
-        //_gotoPage(LaoSchoolShared.POSITION_SCREEN_MORE_4);
+
         this.mViewPager.addOnPageChangeListener(this);
 
         getSupportActionBar().setTitle(R.string.title_screen_message);
-
-        // Default to first tab
-        this.mTabHost.setCurrentTab(LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
     }
 
     /**
@@ -305,7 +305,7 @@ public class HomeActivity extends AppCompatActivity implements
 
         tabIncatorAnnouncemen.setLayoutParams(new LinearLayout.LayoutParams(widthTabIndicator, ViewGroup.LayoutParams.WRAP_CONTENT));
         tabSpecAnnouncemen.setIndicator(tabIncatorAnnouncemen);
-        HomeActivity.AddTab(this, this.mTabHost, tabSpecAnnouncemen, (tabInfo = new TabInfo(getString(R.string.title_screen_announcements), ScreenMessage.class, args)));
+        HomeActivity.AddTab(this, this.mTabHost, tabSpecAnnouncemen, (tabInfo = new TabInfo(getString(R.string.title_screen_announcements), ScreenAnnouncements.class, args)));
         this.mapTabInfo.put(tabInfo.tag, tabInfo);
 
 
@@ -708,19 +708,22 @@ public class HomeActivity extends AppCompatActivity implements
 
     @Override
     public void logoutApplication() {
-        SharedPreferences preferences = this.getSharedPreferences(LaoSchoolShared.SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
-        preferences.edit().remove("auth_key").commit();
+        SharedPreferences mySPrefs = this.getSharedPreferences(
+                LaoSchoolShared.SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = mySPrefs.edit();
+        editor.remove("auth_key");
 
-        //clear cache data
-        DataAccessMessage.deleteTable();
-        DataAccessImage.deleteTable();
+        if (editor.commit()) {
+            //clear cache data
+            DataAccessMessage.deleteTable();
+            DataAccessImage.deleteTable();
 
-        //
-        Intent intent = new Intent(this, ScreenLogin.class);
-        startActivity(intent);
-        finish();
-
-
+            Intent intent = new Intent(this, ScreenLogin.class);
+            startActivity(intent);
+            finish();
+        } else {
+            Toast.makeText(this, "Delete auth_key fails", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -792,7 +795,9 @@ public class HomeActivity extends AppCompatActivity implements
         onBackPressed();
     }
 
-    public void logout(View view) {
-        logoutApplication();
+    public void reloadApplication(View view) {
+        finish();
+        Intent reloadApplication = new Intent(this, SplashScreen.class);
+        startActivity(reloadApplication);
     }
 }
