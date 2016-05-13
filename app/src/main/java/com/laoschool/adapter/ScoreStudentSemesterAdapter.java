@@ -81,6 +81,7 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
                     Log.e(TAG, "onBindViewHolder() - score is empty");
                 }
             } else {
+                view.setVisibility(View.GONE);
                 ((TextView) (view.findViewById(R.id.lbScoreMonth))).setText("");
                 ((TextView) (view.findViewById(R.id.lbScore))).setText("");
             }
@@ -93,7 +94,11 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
         AlertDialog.Builder bDetails = new AlertDialog.Builder(context);
         View examResultDetails = View.inflate(context, R.layout.view_exam_results_details, null);
         ((TextView) examResultDetails.findViewById(R.id.lbExamSubject)).setText(String.valueOf(examResult.getSubjectName()));
-        ((TextView) examResultDetails.findViewById(R.id.lbExamDate)).setText(String.valueOf(examResult.getExam_month() + "/" + examResult.getExam_year()));
+        if (examResult.getExam_type() == 2)
+            ((TextView) examResultDetails.findViewById(R.id.lbExamDate)).setText(examResult.getTermName());
+        else {
+            ((TextView) examResultDetails.findViewById(R.id.lbExamDate)).setText(String.valueOf(examResult.getExam_month() + "/" + examResult.getExam_year()));
+        }
         String score = examResult.getSresult();
         ((TextView) examResultDetails.findViewById(R.id.lbExamScore)).setText(String.valueOf(score));
         ((TextView) examResultDetails.findViewById(R.id.lbExamTecherName)).setText(String.valueOf(examResult.getTeacherName()));
