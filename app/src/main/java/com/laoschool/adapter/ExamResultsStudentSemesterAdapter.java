@@ -74,23 +74,25 @@ public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<Recy
                     examTermList = examByMonthList.get(exam_month);
                     if (examTermList == null)
                         examTermList = new ArrayList();
-                    if (exam_type == 1)
+                    if (exam_type == 1) {
                         examTermList.add(examResult);
-                    else if (exam_type == 2) {
+                    } else if (exam_type == 2) {
                         end_exam_semester.add(examResult);
                     }
                 } else {
                     examTermList = new ArrayList();
-                    if (exam_type == 1)
+                    if (exam_type == 1) {
                         examTermList.add(examResult);
-                    else if (exam_type == 2) {
+                    } else if (exam_type == 2) {
                         end_exam_semester.add(examResult);
                     }
                 }
-                examByMonthList.put(exam_month, examTermList);
+                if (examTermList.size() > 0)
+                    examByMonthList.put(exam_month, examTermList);
             }
         }
-        examByMonthList.put(100, end_exam_semester);
+        if (end_exam_semester.size() > 0)
+            examByMonthList.put(100, end_exam_semester);
         listExamMap.put(subId, examByMonthList);
     }
 
