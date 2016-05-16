@@ -15,10 +15,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.NetworkResponse;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
@@ -31,6 +34,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.StringBody;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -473,8 +477,7 @@ public class DataAccessImpl implements DataAccessInterface {
                             // HTTP Status Code: 409 Unauthorized Oo
                             Log.e("Service/reqAttendance()", "error status code " + networkResponse.statusCode);
                             callback.onAuthFail(error.toString());
-                        }
-                        else {
+                        } else {
                             Log.e("Service/reqAttendance()", error.toString());
                             callback.onFailure(error.toString());
                         }
@@ -636,8 +639,53 @@ public class DataAccessImpl implements DataAccessInterface {
     }
 
     @Override
-    public void getTimeTables(int filter_class_id, AsyncCallback<List<TimeTable>> callback) {
-
+    public void getTimeTables(int filter_class_id, final AsyncCallback<List<TimeTable>> callback) {
+        String url = HOST + "/timetables?filter_class_id=" + filter_class_id;
+        JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    if (response != null) {
+                        int total_count = response.getInt("total_count");
+                        List<TimeTable> timeTables = new ArrayList<>();
+                        if (total_count > 0) {
+                            JSONArray listTimeTable = response.getJSONArray("list");
+                            for (int i = 0; i < listTimeTable.length(); i++) {
+                                JSONObject json_timeTable = listTimeTable.getJSONObject(i);
+                                timeTables.add(TimeTable.fromJson(json_timeTable.toString()));
+                            }
+                            callback.onSuccess(timeTables);
+                        } else {
+                            callback.onSuccess(timeTables);
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                NetworkResponse networkResponse = error.networkResponse;
+                if (networkResponse != null && networkResponse.statusCode == 409) {
+                    // HTTP Status Code: 409 Unauthorized Oo
+                    Log.e("Service/getMessages()", "error status code " + networkResponse.statusCode);
+                    callback.onAuthFail(error.toString());
+                } else {
+                    Log.e("Service/getMessages()", error.toString());
+                    callback.onFailure(error.toString());
+                }
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", getAuthKey());
+                return params;
+            }
+        };
+        mRequestQueue.add(jsonArrayRequest);
     }
 
     @Override
