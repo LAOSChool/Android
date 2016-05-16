@@ -2,6 +2,7 @@ package com.laoschool.adapter;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -137,8 +138,10 @@ public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<Recy
 //                //Define and set data
                     TextView txtSubjectScreenResultsStudent = (TextView) view.findViewById(R.id.txtSubjectScreenResultsStudent);
                     RecyclerView mListScoreBySemester = (RecyclerView) view.findViewById(R.id.mListScoreBySemester);
-                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-                    mListScoreBySemester.setLayoutManager(linearLayoutManager);
+                    //LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+
+                    GridLayoutManager gridLayoutManager=new GridLayoutManager(context,2,GridLayoutManager.HORIZONTAL,false);
+                    mListScoreBySemester.setLayoutManager(gridLayoutManager);
 
                     txtSubjectScreenResultsStudent.setText(title);
 
