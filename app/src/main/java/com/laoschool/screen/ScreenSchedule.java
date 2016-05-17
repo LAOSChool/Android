@@ -4,6 +4,9 @@ package com.laoschool.screen;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,9 +16,19 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.TextView;
 
+import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
+import com.laoschool.adapter.TimeTableStudentAdapter;
+import com.laoschool.entities.TimeTable;
+import com.laoschool.model.AsyncCallback;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,6 +45,14 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
     private static String mime = "text/html";
     private static String encoding = "utf-8";
     private static String ASSETS = "file:///android_asset/";
+
+    private RecyclerView mTimeTableStudentGrid;
+    private SwipeRefreshLayout mRefeshScheduleStudent;
+
+    //
+    TextView lbSchoolNameStudent;
+    TextView lbGvcnStudent;
+    TextView lbTermStudent;
 
     String testDataStudentSchedule = "<table class=\"MsoTableGrid\" border=\"1\" cellspacing=\"0\" cellpadding=\"0\" width=\"400\" style=\"width: 50pt; border-collapse: collapse; border: none;\">\n" +
             "    <tbody>\n" +
@@ -175,11 +196,26 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
     private View _defineSrceenScheduleStudent(LayoutInflater inflater, ViewGroup container) {
         View view = inflater.inflate(R.layout.screen_schedule_student, container, false);
         //
-        TextView txtSchoolName = (TextView) view.findViewById(R.id.txtSchoolName);
-        TextView txtGvcn = (TextView) view.findViewById(R.id.txtGvcn);
-        TextView txtTerm = (TextView) view.findViewById(R.id.txtClassScreenExamResults);
-        WebView mWebViewDetailsScheduleview = (WebView) view.findViewById(R.id.mWebViewDetailsSchedule);
-        mWebViewDetailsScheduleview.loadDataWithBaseURL(ASSETS, testDataStudentSchedule, mime, encoding, null);
+        lbSchoolNameStudent = (TextView) view.findViewById(R.id.txtSchoolName);
+        lbGvcnStudent = (TextView) view.findViewById(R.id.txtGvcn);
+        lbTermStudent = (TextView) view.findViewById(R.id.txtClassScreenExamResults);
+        mRefeshScheduleStudent = (SwipeRefreshLayout) view.findViewById(R.id.mRefeshScheduleStudent);
+        mTimeTableStudentGrid = (RecyclerView) view.findViewById(R.id.mTimeTableStudentGrid);
+
+        //new GridLayoutManager(context, 8, GridLayoutManager.VERTICAL, false)
+        //new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
+        mTimeTableStudentGrid.setLayoutManager(new GridLayoutManager(context, 8, GridLayoutManager.VERTICAL, false));
+
+//        WebView mWebViewDetailsScheduleview = (WebView) view.findViewById(R.id.mWebViewDetailsSchedule);
+//        mWebViewDetailsScheduleview.loadDataWithBaseURL(ASSETS, testDataStudentSchedule, mime, encoding, null);
+
+        mRefeshScheduleStudent.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //getTimeTable(LaoSchoolShared.myProfile.getEclass().getId());
+                mRefeshScheduleStudent.setRefreshing(false);
+            }
+        });
         return view;
     }
 
@@ -216,7 +252,63 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
 
     @Override
     public void onResumeFragment() {
+        getTimeTable(LaoSchoolShared.myProfile.getEclass().getId());
+    }
 
+    private void getTimeTable(int classId) {
+        LaoSchoolSingleton.getInstance().getDataAccessService().getTimeTables(classId, new AsyncCallback<List<TimeTable>>() {
+            @Override
+            public void onSuccess(List<TimeTable> result) {
+                Log.d(TAG, "getTimeTable().onSuccess() -results size:" + result.size());
+                _defineTimeTableStudent(result);
+            }
+
+            @Override
+            public void onFailure(String message) {
+
+            }
+
+            @Override
+            public void onAuthFail(String message) {
+                LaoSchoolShared.goBackToLoginPage(getActivity());
+            }
+        });
+    }
+
+    private void _defineTimeTableStudent(List<TimeTable> result) {
+        try {
+            //set infomation
+            lbSchoolNameStudent.setText(LaoSchoolShared.myProfile.getSchoolName());
+            lbGvcnStudent.setText(LaoSchoolShared.myProfile.getEclass().getHeadTeacherName());
+            lbTermStudent.setText(LaoSchoolShared.myProfile.getEclass().getTerm() + "/" + LaoSchoolShared.myProfile.getEclass().getYears());
+
+            //get current Term
+            //int currentTerm = 1;
+            List<Integer> dayOfweek = new ArrayList<Integer>(Arrays.asList(1, 2, 3, 4, 5, 6, 7));
+            Map<Integer, List<TimeTable>> timeTablebyDayMap = new HashMap<>();
+            for (Integer day : dayOfweek) {
+                List<TimeTable> timeTables = new ArrayList<>();
+                for (TimeTable timeTable : result) {
+                    if (timeTable.getWeekday_id() == day) {
+                        timeTables.add(timeTable);
+                    }
+                }
+                Log.d(TAG, "_defineTimeTableStudent() -size:" + timeTables.size());
+                timeTablebyDayMap.put(day, timeTables);
+            }
+            List<TimeTable> session = new ArrayList<>();
+            session.add(new TimeTable("S1"));
+            session.add(new TimeTable("S2"));
+            session.add(new TimeTable("S3"));
+            session.add(new TimeTable("S4"));
+            session.add(new TimeTable("S5"));
+            session.add(new TimeTable("S6"));
+            timeTablebyDayMap.put(0, session);
+            Log.d(TAG, "_defineTimeTableStudent() - session size:" + session.size());
+            TimeTableStudentAdapter timeTableStudentAdapter = new TimeTableStudentAdapter(context, timeTablebyDayMap);
+            mTimeTableStudentGrid.setAdapter(timeTableStudentAdapter);
+        } catch (Exception e) {
+        }
     }
 
     public static Fragment instantiate(int containerId, String currentRole) {
