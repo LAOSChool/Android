@@ -19,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
@@ -211,6 +212,7 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
         lbTermStudent = (TextView) view.findViewById(R.id.txtClassScreenExamResults);
         mSwipeRefeshScheduleStudent = (SwipeRefreshLayout) view.findViewById(R.id.mRefeshScheduleStudent);
         mTimeTableStudentGrid = (RecyclerView) view.findViewById(R.id.mTimeTableStudentGrid);
+        mTimeTableStudentGrid.setFocusable(false);
         mScrollTimeTableStudent = (ScrollView) view.findViewById(R.id.mScrollTimeTableStudent);
         mProgressStudent = (ProgressBar) view.findViewById(R.id.mProgress);
         mErrorStudent = (FrameLayout) view.findViewById(R.id.mError);
@@ -235,6 +237,24 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
             public void onRefresh() {
                 mSwipeRefeshScheduleStudent.setRefreshing(false);
                 getTimeTable();
+            }
+        });
+        mScrollTimeTableStudent.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+
+            @Override
+            public void onScrollChanged() {
+
+                int scrollX = mScrollTimeTableStudent.getScrollX(); //for horizontalScrollView
+                int scrollY = mScrollTimeTableStudent.getScrollY(); //for verticalScrollView
+                Log.d(TAG, "_handerSwipeRefresh().onScrollChanged() scrollX:" + scrollX + ",scrollY:" + scrollY);
+                //DO SOMETHING WITH THE SCROLL COORDINATES
+                if (scrollY == 0) {
+                    mSwipeRefeshScheduleStudent.setEnabled(true);
+                } else {
+                    mSwipeRefeshScheduleStudent.setEnabled(false);
+                }
+
+
             }
         });
     }
@@ -398,19 +418,22 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
             timeTablebyDayMap.put(0, session);
             TimeTableStudentAdapter timeTableStudentAdapter = new TimeTableStudentAdapter(context, timeTablebyDayMap);
             mTimeTableStudentGrid.setAdapter(timeTableStudentAdapter);
-
-//            //Scroll to top
-            mScrollTimeTableStudent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    // Ready, move up
-                    mScrollTimeTableStudent.fullScroll(View.FOCUS_UP);
-                }
-            });
+            
+            _scrollToTopStudent();
             _showProgressLoadingStudent(false);
         } catch (Exception e) {
             Log.e(TAG, "_defineTimeTableStudent() -exception:" + e.getMessage());
         }
+    }
+
+    private void _scrollToTopStudent() {
+        mScrollTimeTableStudent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                // Ready, move up
+                mScrollTimeTableStudent.fullScroll(View.FOCUS_UP);
+            }
+        });
     }
 
     public static Fragment instantiate(int containerId, String currentRole) {
