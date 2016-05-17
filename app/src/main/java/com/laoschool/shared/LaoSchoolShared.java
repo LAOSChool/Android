@@ -332,6 +332,8 @@ public class LaoSchoolShared {
                 outputFormatter = new SimpleDateFormat("dd-MMM-yyyy");
             } else if (type == 2) {
                 outputFormatter = new SimpleDateFormat("HH:mm dd-MMM-yyyy");
+            }else if (type == 3) {
+                outputFormatter = new SimpleDateFormat("ccc");
             } else {
                 outputFormatter = new SimpleDateFormat("HH:mm:ss dd-MMM-yyyy");
             }
