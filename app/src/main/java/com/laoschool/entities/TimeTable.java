@@ -36,11 +36,15 @@ public class TimeTable {
 
     String weekday;
 
+    String teacher;
+
+    String className;
+
 
     public TimeTable() {
     }
 
-    public TimeTable(int id, int school_id, int class_id, int teacher_id, int subject_id, int session_id, int weekday_id, String description, String subject, String session, String weekday) {
+    public TimeTable(int id, int school_id, int class_id, int teacher_id, int subject_id, int session_id, int weekday_id, String description, String subject, String session, String weekday, String teacher, String className) {
         this.id = id;
         this.school_id = school_id;
         this.class_id = class_id;
@@ -52,6 +56,12 @@ public class TimeTable {
         this.subject = subject;
         this.session = session;
         this.weekday = weekday;
+        this.teacher = teacher;
+        this.className = className;
+    }
+
+    public TimeTable(String subject) {
+        this.subject=subject;
     }
 
     public int getId() {
@@ -140,6 +150,22 @@ public class TimeTable {
 
     public void setWeekday(String weekday) {
         this.weekday = weekday;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public String getTeacherName() {
+        return teacher;
+    }
+
+    public void setTeacherName(String teacher) {
+        this.teacher = teacher;
     }
 
     public String toJson() {
