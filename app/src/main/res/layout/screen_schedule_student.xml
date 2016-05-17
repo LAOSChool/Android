@@ -8,10 +8,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#ffffff"
+        android:layout_marginBottom="5dp"
         android:orientation="vertical"
         android:paddingBottom="5dp"
-        android:layout_marginBottom="5dp">
+        android:background="#fff">
 
         <TextView
             android:id="@+id/textView11"
@@ -26,8 +26,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="#ffffff">
+            android:layout_height="30dp">
 
             <ImageView
                 android:id="@+id/imageView"
@@ -37,16 +36,19 @@
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="16dp"
-                android:src="@drawable/ic_school_black_24dp" />
+                android:src="@drawable/ic_school_black_24dp"
+                android:tint="@color/colorLaosBlue" />
 
             <TextView
                 android:id="@+id/txtSchoolName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="72dp"
+                android:layout_marginLeft="56dp"
                 android:text="Laos school"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#000"
+                android:textSize="16sp" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -62,22 +64,24 @@
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="16dp"
-                android:src="@drawable/ic_account_box_black_24dp" />
+                android:src="@drawable/ic_account_box_black_24dp"
+                android:tint="@color/colorLaosBlue" />
 
             <TextView
                 android:id="@+id/txtGvcn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="72dp"
+                android:layout_marginLeft="56dp"
                 android:text="Nguyen thi A"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#000"
+                android:textSize="14sp" />
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="#ffffff">
+            android:layout_height="30dp">
 
             <ImageView
                 android:id="@+id/imageView7"
@@ -87,24 +91,28 @@
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="16dp"
-                android:src="@drawable/ic_timer_black_24dp" />
+                android:src="@drawable/ic_timer_black_24dp"
+                android:tint="@color/colorLaosBlue" />
 
             <TextView
                 android:id="@+id/txtClassScreenExamResults"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="72dp"
+                android:layout_marginLeft="56dp"
                 android:text="2015-2016"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#000"
+                android:textSize="14sp" />
         </RelativeLayout>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#ffffff"
-        android:orientation="vertical">
+        android:background="@color/color_bg_un_read"
+        android:orientation="vertical"
+        android:weightSum="1">
 
         <TextView
             android:id="@+id/textView16"
@@ -121,6 +129,21 @@
             android:id="@+id/mWebViewDetailsSchedule"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+        <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/mRefeshScheduleStudent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/mTimeTableStudentGrid"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/color_bg_un_read" />
+        </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
 </LinearLayout>
+
