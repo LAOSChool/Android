@@ -13,7 +13,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.webkit.WebView;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.laoschool.LaoSchoolSingleton;
@@ -47,12 +51,17 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
     private static String ASSETS = "file:///android_asset/";
 
     private RecyclerView mTimeTableStudentGrid;
-    private SwipeRefreshLayout mRefeshScheduleStudent;
+    private SwipeRefreshLayout mSwipeRefeshScheduleStudent;
 
     //
-    TextView lbSchoolNameStudent;
-    TextView lbGvcnStudent;
-    TextView lbTermStudent;
+    private ScrollView mScrollTimeTableStudent;
+    private TextView lbSchoolNameStudent;
+    private TextView lbGvcnStudent;
+    private TextView lbTermStudent;
+    private boolean alreadyExecuted = false;
+    private FrameLayout mErrorStudent;
+    private FrameLayout mNoDataStudent;
+    private ProgressBar mProgressStudent;
 
     String testDataStudentSchedule = "<table class=\"MsoTableGrid\" border=\"1\" cellspacing=\"0\" cellpadding=\"0\" width=\"400\" style=\"width: 50pt; border-collapse: collapse; border: none;\">\n" +
             "    <tbody>\n" +
@@ -172,6 +181,7 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
             "    </tbody>\n" +
             "</table>";
 
+
     public ScreenSchedule() {
         // Required empty public constructor
     }
@@ -199,24 +209,52 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
         lbSchoolNameStudent = (TextView) view.findViewById(R.id.txtSchoolName);
         lbGvcnStudent = (TextView) view.findViewById(R.id.txtGvcn);
         lbTermStudent = (TextView) view.findViewById(R.id.txtClassScreenExamResults);
-        mRefeshScheduleStudent = (SwipeRefreshLayout) view.findViewById(R.id.mRefeshScheduleStudent);
+        mSwipeRefeshScheduleStudent = (SwipeRefreshLayout) view.findViewById(R.id.mRefeshScheduleStudent);
         mTimeTableStudentGrid = (RecyclerView) view.findViewById(R.id.mTimeTableStudentGrid);
-
+        mScrollTimeTableStudent = (ScrollView) view.findViewById(R.id.mScrollTimeTableStudent);
+        mProgressStudent = (ProgressBar) view.findViewById(R.id.mProgress);
+        mErrorStudent = (FrameLayout) view.findViewById(R.id.mError);
+        mNoDataStudent = (FrameLayout) view.findViewById(R.id.mNoData);
         //new GridLayoutManager(context, 8, GridLayoutManager.VERTICAL, false)
         //new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
         mTimeTableStudentGrid.setLayoutManager(new GridLayoutManager(context, 8, GridLayoutManager.VERTICAL, false));
 
+
 //        WebView mWebViewDetailsScheduleview = (WebView) view.findViewById(R.id.mWebViewDetailsSchedule);
 //        mWebViewDetailsScheduleview.loadDataWithBaseURL(ASSETS, testDataStudentSchedule, mime, encoding, null);
 
-        mRefeshScheduleStudent.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        _handerSwipeRefresh();
+        _handlerErrorRefresh();
+        _handlerNodataRefresh();
+        return view;
+    }
+
+    private void _handerSwipeRefresh() {
+        mSwipeRefeshScheduleStudent.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                //getTimeTable(LaoSchoolShared.myProfile.getEclass().getId());
-                mRefeshScheduleStudent.setRefreshing(false);
+                mSwipeRefeshScheduleStudent.setRefreshing(false);
+                getTimeTable();
             }
         });
-        return view;
+    }
+
+    private void _handlerErrorRefresh() {
+        mErrorStudent.findViewById(R.id.mReloadData).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getTimeTable();
+            }
+        });
+    }
+
+    private void _handlerNodataRefresh() {
+        mNoDataStudent.findViewById(R.id.mReloadData).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getTimeTable();
+            }
+        });
     }
 
     private View _defineScreenSchedulebyRole(LayoutInflater inflater, ViewGroup container) {
@@ -252,20 +290,35 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
 
     @Override
     public void onResumeFragment() {
-        getTimeTable(LaoSchoolShared.myProfile.getEclass().getId());
+        if (!alreadyExecuted && getUserVisibleHint()) {
+            if (currentRole == null) {
+                Log.d(TAG, "onResumeFragment() - current role null");
+                currentRole = LaoSchoolShared.ROLE_STUDENT;
+            }
+            if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
+            } else {
+                getTimeTable();
+            }
+
+        }
     }
 
-    private void getTimeTable(int classId) {
+    private void getTimeTable() {
+        int classId = LaoSchoolShared.myProfile.getEclass().getId();
+        _showProgressLoadingStudent(true);
         LaoSchoolSingleton.getInstance().getDataAccessService().getTimeTables(classId, new AsyncCallback<List<TimeTable>>() {
             @Override
             public void onSuccess(List<TimeTable> result) {
-                Log.d(TAG, "getTimeTable().onSuccess() -results size:" + result.size());
-                _defineTimeTableStudent(result);
+                if (result.size() > 0) {
+                    _defineTimeTableStudent(result);
+                } else {
+                    _showNoData();
+                }
             }
 
             @Override
             public void onFailure(String message) {
-
+                _showError();
             }
 
             @Override
@@ -273,6 +326,41 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
                 LaoSchoolShared.goBackToLoginPage(getActivity());
             }
         });
+    }
+
+
+    private void _showError() {
+        try {
+            mScrollTimeTableStudent.setVisibility(View.GONE);
+            mProgressStudent.setVisibility(View.GONE);
+            mErrorStudent.setVisibility(View.VISIBLE);
+            mNoDataStudent.setVisibility(View.GONE);
+        } catch (Exception e) {
+            Log.e(TAG, "_showError() -exception:" + e.getMessage());
+        }
+    }
+
+    private void _showNoData() {
+        try {
+            mScrollTimeTableStudent.setVisibility(View.GONE);
+            mProgressStudent.setVisibility(View.GONE);
+            mErrorStudent.setVisibility(View.GONE);
+            mNoDataStudent.setVisibility(View.VISIBLE);
+        } catch (Exception e) {
+            Log.e(TAG, "_showNoData() -exception:" + e.getMessage());
+        }
+    }
+
+    private void _showProgressLoadingStudent(boolean show) {
+        try {
+            mScrollTimeTableStudent.setVisibility(show ? View.GONE : View.VISIBLE);
+            mProgressStudent.setVisibility(show ? View.VISIBLE : View.GONE);
+            mErrorStudent.setVisibility(View.GONE);
+            mNoDataStudent.setVisibility(View.GONE);
+        } catch (Exception e) {
+            Log.e(TAG, "_showProgressLoadingStudent() -exception:" + e.getMessage());
+        }
+
     }
 
     private void _defineTimeTableStudent(List<TimeTable> result) {
@@ -283,7 +371,6 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
             lbTermStudent.setText(LaoSchoolShared.myProfile.getEclass().getTerm() + "/" + LaoSchoolShared.myProfile.getEclass().getYears());
 
             //get current Term
-            //int currentTerm = 1;
             List<Integer> dayOfweek = new ArrayList<Integer>(Arrays.asList(1, 2, 3, 4, 5, 6, 7));
             Map<Integer, List<TimeTable>> timeTablebyDayMap = new HashMap<>();
             for (Integer day : dayOfweek) {
@@ -293,7 +380,6 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
                         timeTables.add(timeTable);
                     }
                 }
-                Log.d(TAG, "_defineTimeTableStudent() -size:" + timeTables.size());
                 timeTablebyDayMap.put(day, timeTables);
             }
             List<TimeTable> session = new ArrayList<>();
@@ -303,11 +389,27 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
             session.add(new TimeTable("S4"));
             session.add(new TimeTable("S5"));
             session.add(new TimeTable("S6"));
+            session.add(new TimeTable("S6"));
+            session.add(new TimeTable("S6"));
+            session.add(new TimeTable("S6"));
+            session.add(new TimeTable("S6"));
+            session.add(new TimeTable("S6"));
+
             timeTablebyDayMap.put(0, session);
-            Log.d(TAG, "_defineTimeTableStudent() - session size:" + session.size());
             TimeTableStudentAdapter timeTableStudentAdapter = new TimeTableStudentAdapter(context, timeTablebyDayMap);
             mTimeTableStudentGrid.setAdapter(timeTableStudentAdapter);
+
+//            //Scroll to top
+            mScrollTimeTableStudent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    // Ready, move up
+                    mScrollTimeTableStudent.fullScroll(View.FOCUS_UP);
+                }
+            });
+            _showProgressLoadingStudent(false);
         } catch (Exception e) {
+            Log.e(TAG, "_defineTimeTableStudent() -exception:" + e.getMessage());
         }
     }
 
