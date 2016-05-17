@@ -640,6 +640,21 @@ public class DataAccessImpl implements DataAccessInterface {
 
     @Override
     public void getTimeTables(int filter_class_id, final AsyncCallback<List<TimeTable>> callback) {
+//        {
+//            "id": 1,
+//                "school_id": 1,
+//                "class_id": 1,
+//                "teacher_id": 1,
+//                "subject_id": 1,
+//                "session_id": 1,
+//                "weekday_id": 1,
+//                "description": "test time table",
+//                "term_id": 1,
+//                "term": "Toan",
+//                "subject": "Toan",
+//                "session": "Tiet 1",
+//                "weekday": "Thu 2"
+//        }
         String url = HOST + "/timetables?filter_class_id=" + filter_class_id;
         JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
