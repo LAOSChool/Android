@@ -27,7 +27,7 @@ import java.util.Map;
  * Created by Hue on 5/18/2016.
  */
 public class TimeTablePageAdapter extends FragmentStatePagerAdapter {
-    private static final String TAG = DayOfWeekPage.class.getSimpleName();
+    private static final String TAG = TimeTablePageAdapter.class.getSimpleName();
     private List<String> dayOfWeeks = new ArrayList<>(Arrays.asList("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"));
     Map<Integer, ArrayList<TimeTable>> timeTablebyDayMap;
     private FragmentManager fragmentManager;
@@ -53,7 +53,6 @@ public class TimeTablePageAdapter extends FragmentStatePagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         String title = dayOfWeeks.get(position);
-        Log.d(TAG, TimeTablePageAdapter.class.getSimpleName() + "getPageTitle() -title:" + title);
         return title;
     }
 
@@ -118,7 +117,6 @@ public class TimeTablePageAdapter extends FragmentStatePagerAdapter {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View view = inflater.inflate(R.layout.view_day_of_week_time_table, container, false);
-            Log.d(TAG, "onCreateView()");
             RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.mTimeTableStudentbyDayofWeek);
             TextView lbNoSession = (TextView) view.findViewById(R.id.lbNoSession);
             recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
