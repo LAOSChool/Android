@@ -31,6 +31,8 @@ import com.laoschool.view.FragmentLifecycle;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -301,10 +303,40 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
             tabStripStudent.setViewPager(mPageTimeTableStudent);
 
             _scrollToTopStudent();
+            _setTargetDisplayDay();
             _showProgressLoadingStudent(false);
         } catch (Exception e) {
             Log.e(TAG, "_defineTimeTableStudent() -exception:" + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    private void _setTargetDisplayDay() {
+        Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+        Log.d(TAG, "_setTargetDisplayDay() -day:" + day);
+        switch (day) {
+            case Calendar.MONDAY:
+                mPageTimeTableStudent.setCurrentItem(0);
+                break;
+            case Calendar.TUESDAY:
+                mPageTimeTableStudent.setCurrentItem(1);
+                break;
+            case Calendar.WEDNESDAY:
+                mPageTimeTableStudent.setCurrentItem(2);
+                break;
+            case Calendar.THURSDAY:
+                mPageTimeTableStudent.setCurrentItem(3);
+                break;
+            case Calendar.FRIDAY:
+                mPageTimeTableStudent.setCurrentItem(4);
+                break;
+            case Calendar.SATURDAY:
+                mPageTimeTableStudent.setCurrentItem(5);
+                break;
+            case Calendar.SUNDAY:
+                mPageTimeTableStudent.setCurrentItem(6);
+                break;
         }
     }
 
