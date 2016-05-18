@@ -123,7 +123,7 @@ public class TimeTablePageAdapter extends FragmentStatePagerAdapter {
             if (timeTables.size() > 0) {
                 lbNoSession.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
-                recyclerView.setAdapter(new SessionAdapter(context, 1, timeTables));
+                recyclerView.setAdapter(new SessionAdapter(context, 0, timeTables));
                 //recyclerView.setNestedScrollingEnabled(false);
             } else {
                 lbNoSession.setVisibility(View.VISIBLE);

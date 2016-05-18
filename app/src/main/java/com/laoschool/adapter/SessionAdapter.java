@@ -48,13 +48,14 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.SessionA
                 ((TextView) view.findViewById(R.id.lbSubjectName)).setText(timeTable.getSubject_Name());
                 ((TextView) view.findViewById(R.id.lbSessionName)).setText(timeTable.getSession_Name() + " - " + "08:00-09:00");
                 //((TextView) view.findViewById(R.id.lbTeacherName)).setText(timeTable.getTeacher_id());
-                //if (this.position > 0) {
-                view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        _showTimeTableDetails(timeTable);
-                    }
-                });
+                // {
+                if (this.position > 0)
+                    view.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            _showTimeTableDetails(timeTable);
+                        }
+                    });
                 // }
             } else {
                 view.setVisibility(View.GONE);
