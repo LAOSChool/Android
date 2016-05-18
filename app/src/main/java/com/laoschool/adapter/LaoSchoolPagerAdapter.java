@@ -5,13 +5,14 @@ import java.util.List;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.ViewGroup;
 
 /**
  * Created by Hue on 2/26/2016.
  */
-public class LaoSchoolPagerAdapter extends FragmentStatePagerAdapter {
+public class LaoSchoolPagerAdapter extends FragmentPagerAdapter {
 
     private List<Fragment> fragments;
     private android.support.v4.app.FragmentManager fragmentManager;
@@ -56,11 +57,6 @@ public class LaoSchoolPagerAdapter extends FragmentStatePagerAdapter {
             mCurrentFragment = ((Fragment) object);
         }
         super.setPrimaryItem(container, position, object);
-    }
-
-    @Override
-    public int getItemPosition(Object object) {
-        return LaoSchoolPagerAdapter.POSITION_NONE;
     }
 
     @Override
