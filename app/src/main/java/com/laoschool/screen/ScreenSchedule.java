@@ -5,11 +5,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,7 +23,7 @@ import android.widget.TextView;
 import com.astuetz.PagerSlidingTabStrip;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
-import com.laoschool.adapter.SessionAdapter;
+import com.laoschool.adapter.TimeTablePageAdapter;
 import com.laoschool.entities.TimeTable;
 import com.laoschool.model.AsyncCallback;
 import com.laoschool.shared.LaoSchoolShared;
@@ -67,123 +64,7 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
     private ViewPager mPageTimeTableStudent;
     private PagerSlidingTabStrip tabStripStudent;
 
-    String testDataStudentSchedule = "<table class=\"MsoTableGrid\" border=\"1\" cellspacing=\"0\" cellpadding=\"0\" width=\"400\" style=\"width: 50pt; border-collapse: collapse; border: none;\">\n" +
-            "    <tbody>\n" +
-            "        <tr>\n" +
-            "            <td valign=\"top\" style=\"width: 88.55pt; border: 1pt solid windowtext; padding: 0in 5.4pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\"><strong>THỨ\n" +
-            "            HAI</strong></p>\n" +
-            "            </td>\n" +
-            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: solid solid solid none; border-top-color: windowtext; border-right-color: windowtext; border-bottom-color: windowtext; border-top-width: 1pt; border-right-width: 1pt; border-bottom-width: 1pt; padding: 0in 5.4pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\"><strong>THỨ\n" +
-            "            BA</strong></p>\n" +
-            "            </td>\n" +
-            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: solid solid solid none; border-top-color: windowtext; border-right-color: windowtext; border-bottom-color: windowtext; border-top-width: 1pt; border-right-width: 1pt; border-bottom-width: 1pt; padding: 0in 5.4pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\"><strong>THỨ\n" +
-            "            TƯ</strong></p>\n" +
-            "            </td>\n" +
-            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: solid solid solid none; border-top-color: windowtext; border-right-color: windowtext; border-bottom-color: windowtext; border-top-width: 1pt; border-right-width: 1pt; border-bottom-width: 1pt; padding: 0in 5.4pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\"><strong>THỨ\n" +
-            "            NĂM</strong></p>\n" +
-            "            </td>\n" +
-            "            <td valign=\"top\" style=\"width: 101.2pt; border-style: solid solid solid none; border-top-color: windowtext; border-right-color: windowtext; border-bottom-color: windowtext; border-top-width: 1pt; border-right-width: 1pt; border-bottom-width: 1pt; padding: 0in 5.4pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\"><strong>THỨ\n" +
-            "            SÁU</strong></p>\n" +
-            "            </td>\n" +
-            "        </tr>\n" +
-            "        <tr>\n" +
-            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid; border-right-color: windowtext; border-bottom-color: windowtext; border-left-color: windowtext; border-right-width: 1pt; border-bottom-width: 1pt; border-left-width: 1pt; padding: 0in 5.4pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">SHDC</p>\n" +
-            "            </td>\n" +
-            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">THỂ DỤC</p>\n" +
-            "            </td>\n" +
-            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">TOÁN</p>\n" +
-            "            </td>\n" +
-            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">THỂ DỤC</p>\n" +
-            "            </td>\n" +
-            "            <td valign=\"top\" style=\"width: 101.2pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">TOÁN </p>\n" +
-            "            </td>\n" +
-            "        </tr>\n" +
-            "        <tr>\n" +
-            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid; border-right-color: windowtext; border-bottom-color: windowtext; border-left-color: windowtext; border-right-width: 1pt; border-bottom-width: 1pt; border-left-width: 1pt; padding: 0in 5.4pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">TOÁN</p>\n" +
-            "            </td>\n" +
-            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">TOÁN</p>\n" +
-            "            </td>\n" +
-            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">KĨ THUẬT</p>\n" +
-            "            </td>\n" +
-            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">TOÁN</p>\n" +
-            "            </td>\n" +
-            "            <td valign=\"top\" style=\"width: 101.2pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"text-align: justify; line-height: 150%;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LỊCH SỬ</p>\n" +
-            "            </td>\n" +
-            "        </tr>\n" +
-            "        <tr>\n" +
-            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid; border-right-color: windowtext; border-bottom-color: windowtext; border-left-color: windowtext; border-right-width: 1pt; border-bottom-width: 1pt; border-left-width: 1pt; padding: 0in 5.4pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">ĐẠO ĐỨC</p>\n" +
-            "            </td>\n" +
-            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">CHÍNH TẢ</p>\n" +
-            "            </td>\n" +
-            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">TẬP ĐỌC</p>\n" +
-            "            </td>\n" +
-            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">KHOA HỌC</p>\n" +
-            "            </td>\n" +
-            "            <td valign=\"top\" style=\"width: 101.2pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">TL VĂN</p>\n" +
-            "            </td>\n" +
-            "        </tr>\n" +
-            "        <tr>\n" +
-            "            <td colspan=\"5\" valign=\"top\" style=\"width: 455.4pt; border-style: none solid solid; border-right-color: windowtext; border-bottom-color: windowtext; border-left-color: windowtext; border-right-width: 1pt; border-bottom-width: 1pt; border-left-width: 1pt; padding: 0in 5.4pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\"><em>RA\n" +
-            "            CHƠI</em></p>\n" +
-            "            </td>\n" +
-            "        </tr>\n" +
-            "        <tr style=\"height: 24.25pt;\">\n" +
-            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid; border-right-color: windowtext; border-bottom-color: windowtext; border-left-color: windowtext; border-right-width: 1pt; border-bottom-width: 1pt; border-left-width: 1pt; padding: 0in 5.4pt; height: 24.25pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">TẬP ĐỌC</p>\n" +
-            "            </td>\n" +
-            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt; height: 24.25pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"line-height: 150%;\">&nbsp;&nbsp;&nbsp;&nbsp; LT &amp; CÂU</p>\n" +
-            "            </td>\n" +
-            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt; height: 24.25pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">ĐỊA LÝ</p>\n" +
-            "            </td>\n" +
-            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt; height: 24.25pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">LT &amp; CÂU</p>\n" +
-            "            </td>\n" +
-            "            <td valign=\"top\" style=\"width: 101.2pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt; height: 24.25pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">MĨ THUẬT</p>\n" +
-            "            </td>\n" +
-            "        </tr>\n" +
-            "        <tr>\n" +
-            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid; border-right-color: windowtext; border-bottom-color: windowtext; border-left-color: windowtext; border-right-width: 1pt; border-bottom-width: 1pt; border-left-width: 1pt; padding: 0in 5.4pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">&nbsp;ÂM NHẠC</p>\n" +
-            "            </td>\n" +
-            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">KHOA HỌC</p>\n" +
-            "            </td>\n" +
-            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">TL VĂN</p>\n" +
-            "            </td>\n" +
-            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">KỂ CHUYỆN</p>\n" +
-            "            </td>\n" +
-            "            <td valign=\"top\" style=\"width: 101.2pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
-            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">SH LỚP</p>\n" +
-            "            </td>\n" +
-            "        </tr>\n" +
-            "    </tbody>\n" +
-            "</table>";
+
     private FragmentManager fr;
 
 
@@ -415,8 +296,8 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
                 }
                 timeTablebyDayMap.put(day, timeTables);
             }
-            DayOfWeekPageAdapter dayOfWeekPageAdapter = new DayOfWeekPageAdapter(timeTablebyDayMap);
-            mPageTimeTableStudent.setAdapter(dayOfWeekPageAdapter);
+            TimeTablePageAdapter timeTablePageAdapter = new TimeTablePageAdapter(getActivity().getSupportFragmentManager(), timeTablebyDayMap);
+            mPageTimeTableStudent.setAdapter(timeTablePageAdapter);
             tabStripStudent.setViewPager(mPageTimeTableStudent);
 
             _scrollToTopStudent();
@@ -426,6 +307,7 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
             e.printStackTrace();
         }
     }
+
 
     private void _scrollToTopStudent() {
         mScrollTimeTableStudent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -446,82 +328,128 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
         return fragment;
     }
 
-    public class DayOfWeekPageAdapter extends FragmentPagerAdapter {
-        private List<String> dayOfWeeks = new ArrayList<>(Arrays.asList("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"));
-        Map<Integer, ArrayList<TimeTable>> timeTablebyDayMap;
-
-        public DayOfWeekPageAdapter(Map<Integer, ArrayList<TimeTable>> timeTablebyDayMap) {
-            super(getActivity().getSupportFragmentManager());
-            this.timeTablebyDayMap = timeTablebyDayMap;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return DayOfWeekPage.newInstance(position, timeTablebyDayMap.get(position));
-        }
-
-        @Override
-        public int getCount() {
-            return 7;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            String title = dayOfWeeks.get(position);
-            Log.d(TAG, DayOfWeekPageAdapter.class.getSimpleName() + "getPageTitle() -title:" + title);
-            return title;
-        }
+    @Override
+    public void onLowMemory() {
+        Log.e(TAG, "onLowMemory()");
+        super.onLowMemory();
     }
 
-    public static class DayOfWeekPage extends Fragment {
+    String testDataStudentSchedule = "<table class=\"MsoTableGrid\" border=\"1\" cellspacing=\"0\" cellpadding=\"0\" width=\"400\" style=\"width: 50pt; border-collapse: collapse; border: none;\">\n" +
+            "    <tbody>\n" +
+            "        <tr>\n" +
+            "            <td valign=\"top\" style=\"width: 88.55pt; border: 1pt solid windowtext; padding: 0in 5.4pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\"><strong>THá»¨\n" +
+            "            HAI</strong></p>\n" +
+            "            </td>\n" +
+            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: solid solid solid none; border-top-color: windowtext; border-right-color: windowtext; border-bottom-color: windowtext; border-top-width: 1pt; border-right-width: 1pt; border-bottom-width: 1pt; padding: 0in 5.4pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\"><strong>THá»¨\n" +
+            "            BA</strong></p>\n" +
+            "            </td>\n" +
+            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: solid solid solid none; border-top-color: windowtext; border-right-color: windowtext; border-bottom-color: windowtext; border-top-width: 1pt; border-right-width: 1pt; border-bottom-width: 1pt; padding: 0in 5.4pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\"><strong>THá»¨\n" +
+            "            TÆ¯</strong></p>\n" +
+            "            </td>\n" +
+            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: solid solid solid none; border-top-color: windowtext; border-right-color: windowtext; border-bottom-color: windowtext; border-top-width: 1pt; border-right-width: 1pt; border-bottom-width: 1pt; padding: 0in 5.4pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\"><strong>THá»¨\n" +
+            "            NÄ‚M</strong></p>\n" +
+            "            </td>\n" +
+            "            <td valign=\"top\" style=\"width: 101.2pt; border-style: solid solid solid none; border-top-color: windowtext; border-right-color: windowtext; border-bottom-color: windowtext; border-top-width: 1pt; border-right-width: 1pt; border-bottom-width: 1pt; padding: 0in 5.4pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\"><strong>THá»¨\n" +
+            "            SÃU</strong></p>\n" +
+            "            </td>\n" +
+            "        </tr>\n" +
+            "        <tr>\n" +
+            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid; border-right-color: windowtext; border-bottom-color: windowtext; border-left-color: windowtext; border-right-width: 1pt; border-bottom-width: 1pt; border-left-width: 1pt; padding: 0in 5.4pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">SHDC</p>\n" +
+            "            </td>\n" +
+            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">THá»‚ Dá»¤C</p>\n" +
+            "            </td>\n" +
+            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">TOÃN</p>\n" +
+            "            </td>\n" +
+            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">THá»‚ Dá»¤C</p>\n" +
+            "            </td>\n" +
+            "            <td valign=\"top\" style=\"width: 101.2pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">TOÃN </p>\n" +
+            "            </td>\n" +
+            "        </tr>\n" +
+            "        <tr>\n" +
+            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid; border-right-color: windowtext; border-bottom-color: windowtext; border-left-color: windowtext; border-right-width: 1pt; border-bottom-width: 1pt; border-left-width: 1pt; padding: 0in 5.4pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">TOÃN</p>\n" +
+            "            </td>\n" +
+            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">TOÃN</p>\n" +
+            "            </td>\n" +
+            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">KÄ¨ THUáº¬T</p>\n" +
+            "            </td>\n" +
+            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">TOÃN</p>\n" +
+            "            </td>\n" +
+            "            <td valign=\"top\" style=\"width: 101.2pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"text-align: justify; line-height: 150%;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Lá»ŠCH Sá»¬</p>\n" +
+            "            </td>\n" +
+            "        </tr>\n" +
+            "        <tr>\n" +
+            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid; border-right-color: windowtext; border-bottom-color: windowtext; border-left-color: windowtext; border-right-width: 1pt; border-bottom-width: 1pt; border-left-width: 1pt; padding: 0in 5.4pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">Äáº O Äá»¨C</p>\n" +
+            "            </td>\n" +
+            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">CHÃNH Táº¢</p>\n" +
+            "            </td>\n" +
+            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">Táº¬P Äá»ŒC</p>\n" +
+            "            </td>\n" +
+            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">KHOA Há»ŒC</p>\n" +
+            "            </td>\n" +
+            "            <td valign=\"top\" style=\"width: 101.2pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">TL VÄ‚N</p>\n" +
+            "            </td>\n" +
+            "        </tr>\n" +
+            "        <tr>\n" +
+            "            <td colspan=\"5\" valign=\"top\" style=\"width: 455.4pt; border-style: none solid solid; border-right-color: windowtext; border-bottom-color: windowtext; border-left-color: windowtext; border-right-width: 1pt; border-bottom-width: 1pt; border-left-width: 1pt; padding: 0in 5.4pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\"><em>RA\n" +
+            "            CHÆ I</em></p>\n" +
+            "            </td>\n" +
+            "        </tr>\n" +
+            "        <tr style=\"height: 24.25pt;\">\n" +
+            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid; border-right-color: windowtext; border-bottom-color: windowtext; border-left-color: windowtext; border-right-width: 1pt; border-bottom-width: 1pt; border-left-width: 1pt; padding: 0in 5.4pt; height: 24.25pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">Táº¬P Äá»ŒC</p>\n" +
+            "            </td>\n" +
+            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt; height: 24.25pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"line-height: 150%;\">&nbsp;&nbsp;&nbsp;&nbsp; LT &amp; CÃ‚U</p>\n" +
+            "            </td>\n" +
+            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt; height: 24.25pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">Äá»ŠA LÃ</p>\n" +
+            "            </td>\n" +
+            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt; height: 24.25pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">LT &amp; CÃ‚U</p>\n" +
+            "            </td>\n" +
+            "            <td valign=\"top\" style=\"width: 101.2pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt; height: 24.25pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">MÄ¨ THUáº¬T</p>\n" +
+            "            </td>\n" +
+            "        </tr>\n" +
+            "        <tr>\n" +
+            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid; border-right-color: windowtext; border-bottom-color: windowtext; border-left-color: windowtext; border-right-width: 1pt; border-bottom-width: 1pt; border-left-width: 1pt; padding: 0in 5.4pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">&nbsp;Ã‚M NHáº C</p>\n" +
+            "            </td>\n" +
+            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">KHOA Há»ŒC</p>\n" +
+            "            </td>\n" +
+            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">TL VÄ‚N</p>\n" +
+            "            </td>\n" +
+            "            <td valign=\"top\" style=\"width: 88.55pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">Ká»‚ CHUYá»†N</p>\n" +
+            "            </td>\n" +
+            "            <td valign=\"top\" style=\"width: 101.2pt; border-style: none solid solid none; border-bottom-color: windowtext; border-bottom-width: 1pt; border-right-color: windowtext; border-right-width: 1pt; padding: 0in 5.4pt;\">\n" +
+            "            <p class=\"MsoNormal\" style=\"text-align: center; line-height: 150%;\">SH Lá»šP</p>\n" +
+            "            </td>\n" +
+            "        </tr>\n" +
+            "    </tbody>\n" +
+            "</table>";
 
-        private static final String ARG_POSITION = "pos";
-        private static final String ARG_LIST = "list";
-        private Context context;
-        private int page;
-        private ArrayList<TimeTable> timeTables;
-
-        public DayOfWeekPage() {
-        }
-
-        public static DayOfWeekPage newInstance(int page, ArrayList<TimeTable> timeTables) {
-            Bundle args = new Bundle();
-            args.putInt(ARG_POSITION, page);
-            args.putParcelableArrayList(ARG_LIST, timeTables);
-            DayOfWeekPage fragment = new DayOfWeekPage();
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            if (getArguments() != null) {
-                page = getArguments().getInt(ARG_POSITION);
-                timeTables = getArguments().getParcelableArrayList(ARG_LIST);
-            }
-            this.context = getActivity();
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.view_day_of_week_time_table, container, false);
-            Log.d(TAG, DayOfWeekPage.class.getSimpleName() + ".onCreateView()");
-            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.mTimeTableStudentbyDayofWeek);
-            TextView lbNoSession = (TextView) view.findViewById(R.id.lbNoSession);
-            recyclerView.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false));
-            if (timeTables.size() > 0) {
-                lbNoSession.setVisibility(View.GONE);
-                recyclerView.setVisibility(View.VISIBLE);
-                recyclerView.setAdapter(new SessionAdapter(context, 1, timeTables));
-                //recyclerView.setNestedScrollingEnabled(false);
-            } else {
-                lbNoSession.setVisibility(View.VISIBLE);
-                recyclerView.setVisibility(View.GONE);
-            }
-
-
-            return view;
-        }
-    }
 }
