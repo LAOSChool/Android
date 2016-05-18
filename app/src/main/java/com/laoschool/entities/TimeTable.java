@@ -5,11 +5,6 @@ import android.os.Parcelable;
 
 import com.google.gson.Gson;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Date;
-
 /**
  * Created by Tran An on 11/03/2016.
  */
@@ -39,7 +34,7 @@ public class TimeTable implements Parcelable {
 
     String weekday;
 
-    String teacher;
+    String teacher_name;
 
     String className;
 
@@ -59,7 +54,7 @@ public class TimeTable implements Parcelable {
         this.subject = subject;
         this.session = session;
         this.weekday = weekday;
-        this.teacher = teacher;
+        this.teacher_name = teacher;
         this.className = className;
     }
 
@@ -164,11 +159,11 @@ public class TimeTable implements Parcelable {
     }
 
     public String getTeacherName() {
-        return teacher;
+        return teacher_name;
     }
 
     public void setTeacherName(String teacher) {
-        this.teacher = teacher;
+        this.teacher_name = teacher;
     }
 
     public String toJson() {
@@ -195,7 +190,7 @@ public class TimeTable implements Parcelable {
         subject = in.readString();
         session = in.readString();
         weekday = in.readString();
-        teacher = in.readString();
+        teacher_name = in.readString();
         className = in.readString();
     }
 
@@ -218,7 +213,7 @@ public class TimeTable implements Parcelable {
         dest.writeString(subject);
         dest.writeString(session);
         dest.writeString(weekday);
-        dest.writeString(teacher);
+        dest.writeString(teacher_name);
         dest.writeString(className);
     }
 
