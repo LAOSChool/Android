@@ -46,8 +46,8 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.SessionA
         try {
             if (timeTable != null) {
                 ((TextView) view.findViewById(R.id.lbSubjectName)).setText(timeTable.getSubject_Name());
-                ((TextView) view.findViewById(R.id.lbSessionName)).setText(timeTable.getSession_Name() + " - " + "08:00-09:00");
-                //((TextView) view.findViewById(R.id.lbTeacherName)).setText(timeTable.getTeacher_id());
+                ((TextView) view.findViewById(R.id.lbSessionName)).setText(timeTable.getSession_Name().replaceAll("\\@", " : "));
+                ((TextView) view.findViewById(R.id.lbTeacherName)).setText(timeTable.getTeacherName());
                 // {
                 if (this.position > 0)
                     view.setOnClickListener(new View.OnClickListener() {
