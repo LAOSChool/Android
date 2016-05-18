@@ -4,8 +4,11 @@ package com.laoschool.screen;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,11 +22,11 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.astuetz.PagerSlidingTabStrip;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
-import com.laoschool.adapter.TimeTableStudentAdapter;
+import com.laoschool.adapter.SessionAdapter;
 import com.laoschool.entities.TimeTable;
 import com.laoschool.model.AsyncCallback;
 import com.laoschool.shared.LaoSchoolShared;
@@ -50,8 +53,6 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
     private static String mime = "text/html";
     private static String encoding = "utf-8";
     private static String ASSETS = "file:///android_asset/";
-
-    private RecyclerView mTimeTableStudentGrid;
     private SwipeRefreshLayout mSwipeRefeshScheduleStudent;
 
     //
@@ -63,6 +64,8 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
     private FrameLayout mErrorStudent;
     private FrameLayout mNoDataStudent;
     private ProgressBar mProgressStudent;
+    private ViewPager mPageTimeTableStudent;
+    private PagerSlidingTabStrip tabStripStudent;
 
     String testDataStudentSchedule = "<table class=\"MsoTableGrid\" border=\"1\" cellspacing=\"0\" cellpadding=\"0\" width=\"400\" style=\"width: 50pt; border-collapse: collapse; border: none;\">\n" +
             "    <tbody>\n" +
@@ -181,6 +184,7 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
             "        </tr>\n" +
             "    </tbody>\n" +
             "</table>";
+    private FragmentManager fr;
 
 
     public ScreenSchedule() {
@@ -211,19 +215,13 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
         lbGvcnStudent = (TextView) view.findViewById(R.id.txtGvcn);
         lbTermStudent = (TextView) view.findViewById(R.id.txtClassScreenExamResults);
         mSwipeRefeshScheduleStudent = (SwipeRefreshLayout) view.findViewById(R.id.mRefeshScheduleStudent);
-        mTimeTableStudentGrid = (RecyclerView) view.findViewById(R.id.mTimeTableStudentGrid);
-        mTimeTableStudentGrid.setFocusable(false);
         mScrollTimeTableStudent = (ScrollView) view.findViewById(R.id.mScrollTimeTableStudent);
         mProgressStudent = (ProgressBar) view.findViewById(R.id.mProgress);
         mErrorStudent = (FrameLayout) view.findViewById(R.id.mError);
         mNoDataStudent = (FrameLayout) view.findViewById(R.id.mNoData);
-        //new GridLayoutManager(context, 8, GridLayoutManager.VERTICAL, false)
-        //new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
-        mTimeTableStudentGrid.setLayoutManager(new GridLayoutManager(context, 8, GridLayoutManager.VERTICAL, false));
+        mPageTimeTableStudent = (ViewPager) view.findViewById(R.id.mPageTimeTable);
+        tabStripStudent = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
 
-
-//        WebView mWebViewDetailsScheduleview = (WebView) view.findViewById(R.id.mWebViewDetailsSchedule);
-//        mWebViewDetailsScheduleview.loadDataWithBaseURL(ASSETS, testDataStudentSchedule, mime, encoding, null);
 
         _handerSwipeRefresh();
         _handlerErrorRefresh();
@@ -232,11 +230,13 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
     }
 
     private void _handerSwipeRefresh() {
+        mSwipeRefeshScheduleStudent.setEnabled(false);
         mSwipeRefeshScheduleStudent.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 mSwipeRefeshScheduleStudent.setRefreshing(false);
-                getTimeTable();
+//                getInformationStudent();
+//                getTimeTable();
             }
         });
         mScrollTimeTableStudent.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
@@ -246,13 +246,13 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
 
                 int scrollX = mScrollTimeTableStudent.getScrollX(); //for horizontalScrollView
                 int scrollY = mScrollTimeTableStudent.getScrollY(); //for verticalScrollView
-                Log.d(TAG, "_handerSwipeRefresh().onScrollChanged() scrollX:" + scrollX + ",scrollY:" + scrollY);
+                //Log.d(TAG, "_handerSwipeRefresh().onScrollChanged() scrollX:" + scrollX + ",scrollY:" + scrollY);
                 //DO SOMETHING WITH THE SCROLL COORDINATES
-                if (scrollY == 0) {
-                    mSwipeRefeshScheduleStudent.setEnabled(true);
-                } else {
-                    mSwipeRefeshScheduleStudent.setEnabled(false);
-                }
+//                if (scrollY == 0) {
+//                    mSwipeRefeshScheduleStudent.setEnabled(true);
+//                } else {
+//                    mSwipeRefeshScheduleStudent.setEnabled(false);
+//                }
 
 
             }
@@ -263,6 +263,7 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
         mErrorStudent.findViewById(R.id.mReloadData).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                getInformationStudent();
                 getTimeTable();
             }
         });
@@ -272,6 +273,7 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
         mNoDataStudent.findViewById(R.id.mReloadData).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                getInformationStudent();
                 getTimeTable();
             }
         });
@@ -301,6 +303,7 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
             Log.d(TAG, "-Container Id:" + containerId);
             Log.d(TAG, "-Role:" + currentRole);
         }
+        this.fr = getActivity().getSupportFragmentManager();
     }
 
     @Override
@@ -317,9 +320,23 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
             }
             if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
             } else {
+                getInformationStudent();
                 getTimeTable();
             }
 
+        }
+    }
+
+    private void getInformationStudent() {
+        try {
+            if (LaoSchoolShared.myProfile != null) {
+                //set infomation
+                lbSchoolNameStudent.setText(LaoSchoolShared.myProfile.getSchoolName());
+                lbGvcnStudent.setText(LaoSchoolShared.myProfile.getEclass().getHeadTeacherName());
+                lbTermStudent.setText(LaoSchoolShared.myProfile.getEclass().getTerm() + "/" + LaoSchoolShared.myProfile.getEclass().getYears());
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "getInformationStudent() -exception:" + e.getMessage());
         }
     }
 
@@ -385,44 +402,28 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
 
     private void _defineTimeTableStudent(List<TimeTable> result) {
         try {
-            //set infomation
-            lbSchoolNameStudent.setText(LaoSchoolShared.myProfile.getSchoolName());
-            lbGvcnStudent.setText(LaoSchoolShared.myProfile.getEclass().getHeadTeacherName());
-            lbTermStudent.setText(LaoSchoolShared.myProfile.getEclass().getTerm() + "/" + LaoSchoolShared.myProfile.getEclass().getYears());
-
             //get current Term
-            List<Integer> dayOfweek = new ArrayList<Integer>(Arrays.asList(1, 2, 3, 4, 5, 6, 7));
-            Map<Integer, List<TimeTable>> timeTablebyDayMap = new HashMap<>();
+            ArrayList<Integer> dayOfweek = new ArrayList<Integer>(Arrays.asList(0, 1, 2, 3, 4, 5, 6));
+            Map<Integer, ArrayList<TimeTable>> timeTablebyDayMap = new HashMap<>();
+
             for (Integer day : dayOfweek) {
-                List<TimeTable> timeTables = new ArrayList<>();
+                ArrayList<TimeTable> timeTables = new ArrayList<>();
                 for (TimeTable timeTable : result) {
-                    if (timeTable.getWeekday_id() == day) {
+                    if (timeTable.getWeekday_id() == (day + 1)) {
                         timeTables.add(timeTable);
                     }
                 }
                 timeTablebyDayMap.put(day, timeTables);
             }
-            List<TimeTable> session = new ArrayList<>();
-            session.add(new TimeTable("S1"));
-            session.add(new TimeTable("S2"));
-            session.add(new TimeTable("S3"));
-            session.add(new TimeTable("S4"));
-            session.add(new TimeTable("S5"));
-            session.add(new TimeTable("S6"));
-            session.add(new TimeTable("S6"));
-            session.add(new TimeTable("S6"));
-            session.add(new TimeTable("S6"));
-            session.add(new TimeTable("S6"));
-            session.add(new TimeTable("S6"));
+            DayOfWeekPageAdapter dayOfWeekPageAdapter = new DayOfWeekPageAdapter(timeTablebyDayMap);
+            mPageTimeTableStudent.setAdapter(dayOfWeekPageAdapter);
+            tabStripStudent.setViewPager(mPageTimeTableStudent);
 
-            timeTablebyDayMap.put(0, session);
-            TimeTableStudentAdapter timeTableStudentAdapter = new TimeTableStudentAdapter(context, timeTablebyDayMap);
-            mTimeTableStudentGrid.setAdapter(timeTableStudentAdapter);
-            
             _scrollToTopStudent();
             _showProgressLoadingStudent(false);
         } catch (Exception e) {
             Log.e(TAG, "_defineTimeTableStudent() -exception:" + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -445,5 +446,82 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
         return fragment;
     }
 
+    public class DayOfWeekPageAdapter extends FragmentPagerAdapter {
+        private List<String> dayOfWeeks = new ArrayList<>(Arrays.asList("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"));
+        Map<Integer, ArrayList<TimeTable>> timeTablebyDayMap;
 
+        public DayOfWeekPageAdapter(Map<Integer, ArrayList<TimeTable>> timeTablebyDayMap) {
+            super(getActivity().getSupportFragmentManager());
+            this.timeTablebyDayMap = timeTablebyDayMap;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return DayOfWeekPage.newInstance(position, timeTablebyDayMap.get(position));
+        }
+
+        @Override
+        public int getCount() {
+            return 7;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            String title = dayOfWeeks.get(position);
+            Log.d(TAG, DayOfWeekPageAdapter.class.getSimpleName() + "getPageTitle() -title:" + title);
+            return title;
+        }
+    }
+
+    public static class DayOfWeekPage extends Fragment {
+
+        private static final String ARG_POSITION = "pos";
+        private static final String ARG_LIST = "list";
+        private Context context;
+        private int page;
+        private ArrayList<TimeTable> timeTables;
+
+        public DayOfWeekPage() {
+        }
+
+        public static DayOfWeekPage newInstance(int page, ArrayList<TimeTable> timeTables) {
+            Bundle args = new Bundle();
+            args.putInt(ARG_POSITION, page);
+            args.putParcelableArrayList(ARG_LIST, timeTables);
+            DayOfWeekPage fragment = new DayOfWeekPage();
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            if (getArguments() != null) {
+                page = getArguments().getInt(ARG_POSITION);
+                timeTables = getArguments().getParcelableArrayList(ARG_LIST);
+            }
+            this.context = getActivity();
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            View view = inflater.inflate(R.layout.view_day_of_week_time_table, container, false);
+            Log.d(TAG, DayOfWeekPage.class.getSimpleName() + ".onCreateView()");
+            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.mTimeTableStudentbyDayofWeek);
+            TextView lbNoSession = (TextView) view.findViewById(R.id.lbNoSession);
+            recyclerView.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false));
+            if (timeTables.size() > 0) {
+                lbNoSession.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
+                recyclerView.setAdapter(new SessionAdapter(context, 1, timeTables));
+                //recyclerView.setNestedScrollingEnabled(false);
+            } else {
+                lbNoSession.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
+            }
+
+
+            return view;
+        }
+    }
 }
