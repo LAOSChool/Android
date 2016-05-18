@@ -3,14 +3,8 @@ package com.laoschool.screen;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.Point;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 
 
@@ -29,18 +23,13 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
 import com.laoschool.R;
 import com.laoschool.LaoSchoolSingleton;
-import com.laoschool.adapter.PagerAdapter;
+import com.laoschool.adapter.LaoSchoolPagerAdapter;
 
 import com.laoschool.entities.Message;
 
@@ -71,7 +60,7 @@ public class HomeActivity extends AppCompatActivity implements
     private TabHost mTabHost;
     private ViewpagerDisableSwipeLeft mViewPager;
     private HashMap<String, TabInfo> mapTabInfo = new HashMap<String, HomeActivity.TabInfo>();
-    private PagerAdapter mPagerAdapter;
+    private LaoSchoolPagerAdapter mPagerAdapter;
     private int currentPosition = 0;
     int containerId;
     private String currentRole;
@@ -263,7 +252,7 @@ public class HomeActivity extends AppCompatActivity implements
 
         fragments.add(ScreenRequestAttendance.instantiate(containerId, currentRole, this, screenAttended));
 
-        this.mPagerAdapter = new PagerAdapter(super.getSupportFragmentManager(), fragments);
+        this.mPagerAdapter = new LaoSchoolPagerAdapter(super.getSupportFragmentManager(), fragments);
         //set adapter and set handler page change
         this.mViewPager.setAdapter(this.mPagerAdapter);
 
