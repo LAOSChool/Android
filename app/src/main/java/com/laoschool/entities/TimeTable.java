@@ -1,5 +1,8 @@
 package com.laoschool.entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -10,7 +13,7 @@ import java.util.Date;
 /**
  * Created by Tran An on 11/03/2016.
  */
-public class TimeTable {
+public class TimeTable implements Parcelable {
 
     static final String Entity_Name = "timetable";
 
@@ -179,4 +182,56 @@ public class TimeTable {
         TimeTable timetable = gson.fromJson(jsonString, TimeTable.class);
         return timetable;
     }
+
+    protected TimeTable(Parcel in) {
+        id = in.readInt();
+        school_id = in.readInt();
+        class_id = in.readInt();
+        teacher_id = in.readInt();
+        subject_id = in.readInt();
+        session_id = in.readInt();
+        weekday_id = in.readInt();
+        description = in.readString();
+        subject = in.readString();
+        session = in.readString();
+        weekday = in.readString();
+        teacher = in.readString();
+        className = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeInt(school_id);
+        dest.writeInt(class_id);
+        dest.writeInt(teacher_id);
+        dest.writeInt(subject_id);
+        dest.writeInt(session_id);
+        dest.writeInt(weekday_id);
+        dest.writeString(description);
+        dest.writeString(subject);
+        dest.writeString(session);
+        dest.writeString(weekday);
+        dest.writeString(teacher);
+        dest.writeString(className);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<TimeTable> CREATOR = new Parcelable.Creator<TimeTable>() {
+        @Override
+        public TimeTable createFromParcel(Parcel in) {
+            return new TimeTable(in);
+        }
+
+        @Override
+        public TimeTable[] newArray(int size) {
+            return new TimeTable[size];
+        }
+    };
 }
