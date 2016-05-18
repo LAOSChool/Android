@@ -156,7 +156,7 @@
 
                     <com.astuetz.PagerSlidingTabStrip
                         android:id="@+id/tabs"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="30dp"
                         android:background="@color/colorAccent"
                         android:textColor="#fff"
