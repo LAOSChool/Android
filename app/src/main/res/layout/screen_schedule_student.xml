@@ -1,4 +1,5 @@
 <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mRefeshScheduleStudent"
     android:layout_width="match_parent"
@@ -7,7 +8,8 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="visible">
 
         <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
@@ -15,6 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
+            android:fillViewport="true"
             android:visibility="gone">
 
             <LinearLayout
@@ -127,10 +130,10 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#fff"
                     android:orientation="vertical"
-                    android:weightSum="1"
-                    android:background="@color/color_bg_un_read">
+                    android:weightSum="1">
 
                     <TextView
                         android:id="@+id/textView16"
@@ -143,20 +146,32 @@
                         android:textColor="@color/textColorSubHeader"
                         android:textSize="@dimen/sub_header_font_size" />
 
-                    <WebView
-                        android:id="@+id/mWebViewDetailsSchedule"
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <com.astuetz.PagerSlidingTabStrip
+                        android:id="@+id/tabs"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:background="@color/colorAccent"
+                        android:textColor="#fff"
+                        app:pstsDividerColor="#fff"
+                        app:pstsIndicatorColor="#fff"
+                        app:pstsIndicatorHeight="3dp"
+                        app:pstsShouldExpand="true"
+                        app:pstsTextAllCaps="false" />
+
+                    <android.support.v4.view.ViewPager
+                        android:id="@+id/mPageTimeTable"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:visibility="gone" />
+                        android:layout_height="match_parent">
 
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/mTimeTableStudentGrid"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:focusable="false" />
-
+                    </android.support.v4.view.ViewPager>
                 </LinearLayout>
 
             </LinearLayout>
@@ -170,6 +185,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="gone" />
+
         <include
             android:id="@+id/mError"
             layout="@layout/view_server_error"
