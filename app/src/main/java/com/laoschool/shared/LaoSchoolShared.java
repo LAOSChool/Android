@@ -323,21 +323,20 @@ public class LaoSchoolShared {
     }
 
     public static String formatDate(String exam_dt, int type) {
+        DateFormat inputFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        DateFormat outputFormatter;
+        if (type == 0) {
+            outputFormatter = new SimpleDateFormat("dd-MMM");
+        } else if (type == 1) {
+            outputFormatter = new SimpleDateFormat("dd-MMM-yyyy");
+        } else if (type == 2) {
+            outputFormatter = new SimpleDateFormat("HH:mm dd-MMM-yyyy");
+        } else if (type == 3) {
+            outputFormatter = new SimpleDateFormat("ccc");
+        } else {
+            outputFormatter = new SimpleDateFormat("HH:mm:ss dd-MMM-yyyy");
+        }
         try {
-            DateFormat inputFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-            DateFormat outputFormatter;
-            if (type == 0) {
-                outputFormatter = new SimpleDateFormat("dd-MMM");
-            } else if (type == 1) {
-                outputFormatter = new SimpleDateFormat("dd-MMM-yyyy");
-            } else if (type == 2) {
-                outputFormatter = new SimpleDateFormat("HH:mm dd-MMM-yyyy");
-            }else if (type == 3) {
-                outputFormatter = new SimpleDateFormat("ccc");
-            } else {
-                outputFormatter = new SimpleDateFormat("HH:mm:ss dd-MMM-yyyy");
-            }
-
             Date date;
             if (exam_dt != null) {
                 date = inputFormatter.parse(exam_dt);
@@ -347,7 +346,35 @@ public class LaoSchoolShared {
             String output1 = outputFormatter.format(date);
             return output1;
         } catch (ParseException e) {
-            Log.e(TAG, "formatDate() - parse exception: " + e.getMessage());
+            return formatDateForm("yyyy-MM-dd HH:mm:ss", exam_dt, 0);
+        }
+    }
+
+    private static String formatDateForm(String format, String exam_dt, int type) {
+        DateFormat inputFormatter = new SimpleDateFormat(format);
+        DateFormat outputFormatter;
+        if (type == 0) {
+            outputFormatter = new SimpleDateFormat("dd-MMM");
+        } else if (type == 1) {
+            outputFormatter = new SimpleDateFormat("dd-MMM-yyyy");
+        } else if (type == 2) {
+            outputFormatter = new SimpleDateFormat("HH:mm dd-MMM-yyyy");
+        } else if (type == 3) {
+            outputFormatter = new SimpleDateFormat("ccc");
+        } else {
+            outputFormatter = new SimpleDateFormat("HH:mm:ss dd-MMM-yyyy");
+        }
+        try {
+            Date date;
+            if (exam_dt != null) {
+                date = inputFormatter.parse(exam_dt);
+            } else {
+                date = new Date();
+            }
+            String output1 = outputFormatter.format(date);
+            return output1;
+        } catch (ParseException e) {
+            Log.e(TAG, "formatDateForm() - parse exception: " + e.getMessage());
         }
         return exam_dt;
     }
