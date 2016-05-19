@@ -158,15 +158,17 @@
                         android:id="@+id/tabs"
                         android:layout_width="match_parent"
                         android:layout_height="30dp"
-                        android:background="@color/colorAccent"
-                        android:textColor="#fff"
+                        android:background="#fff"
+                        android:textColor="@color/colorAccent"
                         android:textSize="12sp"
-                        app:pstsDividerColor="#fff"
-                        app:pstsIndicatorColor="#fff"
+                        app:paddingEnd="16dp"
+                        app:paddingStart="16dp"
+                        app:pstsTabPaddingLeftRight="18dp"
+                        app:pstsDividerColor="@color/colorAccent"
+                        app:pstsIndicatorColor="@color/colorAccent"
                         app:pstsIndicatorHeight="3dp"
-                        app:pstsShouldExpand="true"
-                        app:pstsTextAllCaps="false"
-                        />
+                        app:pstsShouldExpand="false"
+                        app:pstsTextAllCaps="false" />
 
                     <android.support.v4.view.ViewPager
                         android:id="@+id/mPageTimeTable"
