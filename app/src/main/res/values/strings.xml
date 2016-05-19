@@ -6,7 +6,7 @@
     <string name="title_screen_attended">Attendance</string>
     <string name="action_request_attendance">Your Absent</string>
     <string name="title_screen_exam_results">Exam results</string>
-    <string name="title_screen_schedule">Schedule</string>
+    <string name="title_screen_schedule">Time Table</string>
     <string name="title_screen_more">More</string>
     <string name="title_activity_screen_login">Lao school</string>
     <string name="action_create_message">Create</string>
