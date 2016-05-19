@@ -40,14 +40,12 @@ import java.util.List;
 public class ScreenMessage extends Fragment implements FragmentLifecycle {
 
     private static final String TAG = "ScreenMessage";
+    private static Context context;
     private int containerId;
     private static DataAccessInterface service;
     public static ScreenMessage thiz;
 
-    public static List<Message> messageList;
-    static Context context;
     Message message;
-    ScreenMessage screenMessage;
     static DataAccessMessage dataAccessMessage;
     static ViewpagerDisableSwipeLeft pager;
     static PagerSlidingTabStrip tabs;
