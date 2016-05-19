@@ -68,7 +68,7 @@ public class HomeActivity extends AppCompatActivity implements
     private DataAccessInterface service;
     private Bundle savedInstanceState;
     private Context thiz;
-    
+
 
     public enum DisplayButtonHome {
         show, hide;
@@ -205,7 +205,6 @@ public class HomeActivity extends AppCompatActivity implements
      */
     private void intialiseViewPager(String currentRole) {
         this.mViewPager = (ViewpagerDisableSwipeLeft) super.findViewById(R.id.viewpager);
-
         containerId = mViewPager.getId();
 
         List<Fragment> fragments = new Vector<Fragment>();
@@ -250,8 +249,11 @@ public class HomeActivity extends AppCompatActivity implements
         this.mPagerAdapter = new LaoSchoolPagerAdapter(super.getSupportFragmentManager(), fragments);
         //set adapter and set handler page change
         this.mViewPager.setAdapter(this.mPagerAdapter);
+        //disable swipe
+        mViewPager.setAllowedSwipeDirection(SwipeDirection.none);
 
         this.mViewPager.addOnPageChangeListener(this);
+
 
         getSupportActionBar().setTitle(R.string.title_screen_message);
     }
@@ -488,7 +490,6 @@ public class HomeActivity extends AppCompatActivity implements
         fragmentToHide.onPauseFragment();
 
         currentPosition = position;
-        //Log.d(TAG,"onPageSelected");
     }
 
     /* (non-Javadoc)
