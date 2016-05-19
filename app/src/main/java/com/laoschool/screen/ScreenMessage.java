@@ -122,10 +122,8 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         pager = (ViewpagerDisableSwipeLeft) view.findViewById(R.id.messageViewPage);
         tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
         pager.setAllowedSwipeDirection(HomeActivity.SwipeDirection.none);
-        if (getUserVisibleHint())
-            if (!alreadyExecuted)
-                _defineData();
-
+        if (!alreadyExecuted && getUserVisibleHint())
+            _defineData();
         return view;
     }
 
@@ -399,6 +397,18 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
             }
         } catch (Exception e) {
             Log.e(TAG, "reloadDataAfterCreateMessages() -exception:" + e.getMessage());
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        Log.d(TAG, "setUserVisibleHint() -isVisibleToUser:" + isVisibleToUser);
+        super.setUserVisibleHint(isVisibleToUser);
+        try {
+            if (!alreadyExecuted && isVisibleToUser)
+                _defineData();
+        } catch (Exception e) {
+            Log.e(TAG, "setUserVisibleHint() -exception:" + e.getMessage());
         }
     }
 }
