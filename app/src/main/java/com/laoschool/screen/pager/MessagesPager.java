@@ -69,11 +69,19 @@ public class MessagesPager extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
         //set adapter
         mRecyclerListMessage.setLayoutManager(linearLayoutManager);
-        if (messages.size() > 0) {
-            lbNoMessage.setVisibility(View.GONE);
-            mSwipeRefreshLayout.setVisibility(View.VISIBLE);
-            setListMessage(messages, position, false);
-            _handlerSwipeReload();
+        if (messages != null) {
+            if (messages.size() > 0) {
+                lbNoMessage.setVisibility(View.GONE);
+                mSwipeRefreshLayout.setVisibility(View.VISIBLE);
+                if (screenMessage != null) {
+                    setListMessage(messages, position, false);
+                    _handlerSwipeReload();
+                }
+
+            } else {
+                lbNoMessage.setVisibility(View.VISIBLE);
+                mSwipeRefreshLayout.setVisibility(View.GONE);
+            }
         } else {
             lbNoMessage.setVisibility(View.VISIBLE);
             mSwipeRefreshLayout.setVisibility(View.GONE);
