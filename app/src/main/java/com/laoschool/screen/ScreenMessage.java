@@ -81,13 +81,10 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         this.refeshListMessage = refeshListMessage;
     }
 
-
     public interface IScreenMessage {
-        void _gotoScreenCreateMessage();
+        void gotoScreenCreateMessage();
 
-        void _gotoMessageDetails(Message message);
-
-        void reLogin();
+        void gotoMessageDetails(Message message);
     }
 
     public IScreenMessage iScreenMessage;
@@ -324,7 +321,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         int id = item.getItemId();
         switch (id) {
             case R.id.action_create_message:
-                iScreenMessage._gotoScreenCreateMessage();
+                iScreenMessage.gotoScreenCreateMessage();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -381,5 +378,27 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
     public void onDetach() {
         Log.d(TAG, "onDetach()");
         super.onDetach();
+    }
+
+    public void reloadDataAfterCreateMessages() {
+        try {
+            MessagesPager notifragment = ((MessagesPagerAdapter) (pager.getAdapter())).getFragment(pager.getCurrentItem());
+            switch (pager.getCurrentItem()) {
+                case 0:
+                    List<Message> messagesForUserInbox = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
+                    notifragment.setListMessage(messagesForUserInbox, 0, true);
+                    break;
+                case 1:
+                    List<Message> messagesForUserUnread = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 0);
+                    notifragment.setListMessage(messagesForUserUnread, 1, true);
+                    break;
+                case 2:
+                    List<Message> messagesFormUser = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
+                    notifragment.setListMessage(messagesFormUser, 2, true);
+                    break;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "reloadDataAfterCreateMessages() -exception:" + e.getMessage());
+        }
     }
 }

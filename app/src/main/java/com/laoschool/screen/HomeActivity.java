@@ -70,6 +70,7 @@ public class HomeActivity extends AppCompatActivity implements
 
     private DataAccessInterface service;
     private Context thiz;
+    private int messagesCurrentTab=0;
 
     public enum Role {
         student, teacher;
@@ -524,14 +525,7 @@ public class HomeActivity extends AppCompatActivity implements
             super.onBackPressed();
         } else if (currentPage > LaoSchoolShared.POSITION_SCREEN_MORE_4) {
             if (currentPage == LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5) {
-                if (beforePosition == LaoSchoolShared.POSITION_SCREEN_MESSAGE_0) {
-                    //back to tab message
-                    _gotoPage(LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
-                } else {
-                    //back to tab attender
-                    _gotoPage(LaoSchoolShared.POSITION_SCREEN_ATTENDED_3);
-                }
-                getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
+                goBackToMessage();
             } else if (currentPage == LaoSchoolShared.POSITION_SCREEN_LIST_STUDENT_10) {
                 //back to tab create message
                 _gotoPage(LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
@@ -613,7 +607,8 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void _gotoScreenCreateMessage() {
+    public void gotoScreenCreateMessage() {
+        messagesCurrentTab=currentItem;
         beforePosition = LaoSchoolShared.POSITION_SCREEN_MESSAGE_0;
         _gotoPage(LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
     }
@@ -660,7 +655,7 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void _gotoMessageDetails(Message message) {
+    public void gotoMessageDetails(Message message) {
         _gotoPage(LaoSchoolShared.POSITION_SCREEN_MESSAGE_DETAILS_14);
 //        if (message != null)
 //            _setTitleandShowButtonBack(-1, message.getTo_user_name(), DisplayButtonHome.show);
@@ -759,19 +754,22 @@ public class HomeActivity extends AppCompatActivity implements
 
     @Override
     public void goBackToMessage() {
-        onBackPressed();
+        if (beforePosition == LaoSchoolShared.POSITION_SCREEN_MESSAGE_0) {
+            String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
+            ScreenMessage screenMessage = (ScreenMessage) getSupportFragmentManager().findFragmentByTag(tag);
+            screenMessage.reloadDataAfterCreateMessages();
+            //back to tab message
+            _gotoPage(LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
+        } else {
+            //back to tab attender
+            _gotoPage(LaoSchoolShared.POSITION_SCREEN_ATTENDED_3);
+        }
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
     }
 
     @Override
     public void gotoScheduleformMore() {
         _gotoPage(LaoSchoolShared.POSITION_SCREEN_SCHEDULE_6);
-    }
-
-    @Override
-    public void reLogin() {
-        Intent intent = new Intent(this, ScreenLogin.class);
-        startActivity(intent);
-        finish();
     }
 
     @Override
