@@ -685,7 +685,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
             View view = inflater.inflate(R.layout.view_exam_resluts_student_tab, container, false);
             recyclerView = (RecyclerView) view.findViewById(R.id.mRecyclerViewExamResultsStudentTab);
             final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false);
             recyclerView.setLayoutManager(linearLayoutManager);
 
             studentSemesterAdapter = new ExamResultsStudentSemesterAdapter(fragment, f_results);
