@@ -140,13 +140,14 @@ public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<Recy
                     RecyclerView mListScoreBySemester = (RecyclerView) view.findViewById(R.id.mListScoreBySemester);
                     //LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
 
-                    GridLayoutManager gridLayoutManager=new GridLayoutManager(context,2,GridLayoutManager.HORIZONTAL,false);
+                    GridLayoutManager gridLayoutManager=new GridLayoutManager(context,5,GridLayoutManager.VERTICAL,false);
                     mListScoreBySemester.setLayoutManager(gridLayoutManager);
 
                     txtSubjectScreenResultsStudent.setText(title);
 
                     ScoreStudentSemesterAdapter scoreStudentSemesterAdapter = new ScoreStudentSemesterAdapter(context, examsTree);
                     mListScoreBySemester.setAdapter(scoreStudentSemesterAdapter);
+                    mListScoreBySemester.setNestedScrollingEnabled(false);
                 } else {
 
                 }
