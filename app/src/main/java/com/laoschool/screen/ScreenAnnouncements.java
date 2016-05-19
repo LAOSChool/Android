@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.laoschool.R;
@@ -401,7 +402,6 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
         if (!alreadyExecuted && getUserVisibleHint()) {
             _defineData();
         }
-
     }
 
     @Override
@@ -501,16 +501,29 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.view_message_list, container, false);
-            mRecyclerListMessage = (RecyclerView) view.findViewById(R.id.mRecyclerListMessage);
+            View view = inflater.inflate(R.layout.view_notification_pager, container, false);
+            TextView lbNoNotification = (TextView) view.findViewById(R.id.lbNoNotification);
+            mRecyclerListMessage = (RecyclerView) view.findViewById(R.id.mListNotification);
             mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
             //set adapter
             mRecyclerListMessage.setLayoutManager(linearLayoutManager);
-            //
-            _setListNotification(notificationForUser, position);
+            if (notificationForUser != null) {
+                if (notificationForUser.size() > 0) {
+                    lbNoNotification.setVisibility(View.GONE);
+                    mSwipeRefreshLayout.setVisibility(View.VISIBLE);
+                    _setListNotification(notificationForUser, position);
+                    _handlerSwipeReload();
+                } else {
+                    lbNoNotification.setVisibility(View.VISIBLE);
+                    mSwipeRefreshLayout.setVisibility(View.GONE);
+                }
+            } else {
+                lbNoNotification.setVisibility(View.VISIBLE);
+                mSwipeRefreshLayout.setVisibility(View.GONE);
+            }
 
-            _handlerSwipeReload();
+
             return view;
         }
 
@@ -599,4 +612,16 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
         }
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        Log.d(TAG, "setUserVisibleHint() -isVisibleToUser:" + isVisibleToUser);
+        try {
+            if (!alreadyExecuted && isVisibleToUser) {
+                _defineData();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "setUserVisibleHint() -exception:" + e.getMessage());
+        }
+    }
 }

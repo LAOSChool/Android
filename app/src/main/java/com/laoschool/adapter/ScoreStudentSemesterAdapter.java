@@ -59,11 +59,6 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
         try {
             int month = months.get(position);
             String monthStr = _getMonthString(month);
-//            if (month < 100) {
-//                monthStr =;
-//            } else if (month == 100) {
-//                monthStr = "Final";
-//            }
             List<ExamResult> scoreList = scores.get(month);
             if (scoreList.size() > 0) {
                 final ExamResult examResult = scoreList.get(scoreList.size() - 1);
@@ -82,14 +77,13 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
                 } else {
                     Log.e(TAG, "onBindViewHolder() - score is empty");
                     view.setVisibility(View.GONE);
-                    //notifyItemRemoved(position);
+                }
+                if (examResult.getExam_type()==2){
+                    view.setBackgroundResource(R.drawable.border_row_score_by_month_final);
                 }
             } else {
                 Log.e(TAG, "onBindViewHolder() - month:" + month + " list exam is empty");
                 view.setVisibility(View.GONE);
-//                ((TextView) (view.findViewById(R.id.lbScoreMonth))).setText("");
-//                ((TextView) (view.findViewById(R.id.lbScore))).setText("");
-                // notifyItemRemoved(position);
             }
         } catch (Exception e) {
             Log.e(TAG, "onBindViewHolder() - exception=" + e.getMessage());

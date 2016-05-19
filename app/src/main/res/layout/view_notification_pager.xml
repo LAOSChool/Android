@@ -11,7 +11,7 @@
         android:layout_gravity="center">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/mRecyclerListMessage"
+            android:id="@+id/mListNotification"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#E0E0E0"></android.support.v7.widget.RecyclerView>
@@ -20,8 +20,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/msg_no_message"
-        android:id="@+id/lbNoMessage"
+        android:text="@string/msg_no_notification"
+        android:id="@+id/lbNoNotification"
         android:layout_gravity="center"
         android:visibility="gone" />
 </FrameLayout>

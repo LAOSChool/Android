@@ -685,14 +685,34 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
             View view = inflater.inflate(R.layout.view_exam_resluts_student_tab, container, false);
             recyclerView = (RecyclerView) view.findViewById(R.id.mRecyclerViewExamResultsStudentTab);
             final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
             recyclerView.setLayoutManager(linearLayoutManager);
 
             studentSemesterAdapter = new ExamResultsStudentSemesterAdapter(fragment, f_results);
             recyclerView.setAdapter(studentSemesterAdapter);
 
+
+            _handlerScrollList(mSwipeRefreshLayout);
             _handlerSwipeRefesh(mSwipeRefreshLayout);
             return view;
+        }
+
+        private void _handlerScrollList(final SwipeRefreshLayout mSwipeRefreshLayout) {
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    int topRowVerticalPosition =
+                            (recyclerView == null || recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
+                    mSwipeRefreshLayout.setEnabled(topRowVerticalPosition >= 0);
+
+                }
+
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                }
+            });
+
         }
 
 

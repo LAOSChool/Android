@@ -40,10 +40,12 @@ public class User {
 
     List<Class> classes;
 
+    String schoolName;
+
     public User() {
     }
 
-    public User(int id, String sso_id, String password, String fullname, String nickname, String state, int school_id, String roles, UserDetail userDetail, Class eclass, List<Class> classes) {
+    public User(int id, String sso_id, String password, String fullname, String nickname, String state, int school_id, String roles, UserDetail user_detail, Class eclass, List<Class> classes, String schoolName) {
         this.id = id;
         this.sso_id = sso_id;
         this.password = password;
@@ -52,9 +54,10 @@ public class User {
         this.state = state;
         this.school_id = school_id;
         this.roles = roles;
-        this.user_detail = userDetail;
+        this.user_detail = user_detail;
         this.eclass = eclass;
         this.classes = classes;
+        this.schoolName = schoolName;
     }
 
     public int getId() {
@@ -145,6 +148,14 @@ public class User {
         this.classes = classes;
     }
 
+    public String getSchoolName() {
+        return schoolName;
+    }
+
+    public void setSchoolName(String schoolName) {
+        this.schoolName = schoolName;
+    }
+
     public String toJson() {
         Gson gson = new Gson();
         String jsonString = gson.toJson(this);
@@ -157,6 +168,7 @@ public class User {
         return user;
     }
 
+
     public static User parseFromJson(String jsonString) {
         try {
             User user = new User();
@@ -168,6 +180,7 @@ public class User {
             user.setState(mainObject.getString("state"));
             user.setSchool_id(mainObject.getInt("school_id"));
             user.setRoles(mainObject.getString("roles"));
+            user.setSchoolName(mainObject.getString("schoolName"));
             // User detail
             UserDetail userDetail = new UserDetail();
             userDetail.setAddr1(mainObject.getString("addr1"));

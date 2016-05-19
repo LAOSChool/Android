@@ -196,7 +196,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
     }
 
     @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(Context activity) {
         super.onAttach(activity);
         iScreenCreateMessage = (IScreenCreateMessage) activity;
     }
@@ -261,9 +261,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                                 iScreenCreateMessage.goBackToMessage();
                             }
                             progressDialog.dismiss();
-                            _showAlertMessage(getString(R.string.msg_create_message_sucessfully));
-
-
+                            _showAlertMessage(context.getString(R.string.msg_create_message_sucessfully));
                         }
 
                         @Override
