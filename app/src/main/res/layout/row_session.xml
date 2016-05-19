@@ -17,8 +17,8 @@
             android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:id="@+id/relativeLayout3"
-            android:layout_marginRight="16dp"
-            android:layout_centerVertical="true">
+            android:layout_centerVertical="true"
+            android:layout_marginRight="8dp">
 
             <TextView
                 android:id="@+id/lbSessionName"
@@ -45,8 +45,17 @@
                 android:singleLine="false"
                 android:layout_alignRight="@+id/lbSessionName"
                 android:layout_alignEnd="@+id/lbSessionName"
-                android:gravity="center" />
+                android:gravity="center|center_vertical" />
         </RelativeLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/relativeLayout3"
+            android:layout_toEndOf="@+id/relativeLayout3"
+            android:background="#000"></LinearLayout>
 
         <TextView
             android:id="@+id/lbSubjectName"
@@ -59,7 +68,8 @@
             android:textSize="16sp"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/relativeLayout3"
-            android:layout_toEndOf="@+id/relativeLayout3" />
+            android:layout_toEndOf="@+id/relativeLayout3"
+            android:layout_marginLeft="8dp" />
 
         <TextView
             android:id="@+id/lbTeacherName"
