@@ -29,10 +29,10 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:background="#fff"
+                    android:background="#00A261"
                     android:orientation="vertical"
-                    android:paddingBottom="5dp">
+                    android:paddingBottom="5dp"
+                    android:paddingTop="8dp">
 
                     <TextView
                         android:id="@+id/textView11"
@@ -43,7 +43,8 @@
                         android:layout_marginTop="8dp"
                         android:text="Infomation"
                         android:textColor="@color/textColorSubHeader"
-                        android:textSize="@dimen/sub_header_font_size" />
+                        android:textSize="@dimen/sub_header_font_size"
+                        android:visibility="gone" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -58,7 +59,8 @@
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="16dp"
                             android:src="@drawable/ic_school_black_24dp"
-                            android:tint="@color/colorLaosBlue" />
+                            android:tint="#fff"
+                             />
 
                         <TextView
                             android:id="@+id/txtSchoolName"
@@ -68,14 +70,13 @@
                             android:layout_marginLeft="56dp"
                             android:text="Laos school"
                             android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:textColor="#000"
+                            android:textColor="#fff"
                             android:textSize="16sp" />
                     </RelativeLayout>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:background="#ffffff">
+                        android:layout_height="30dp">
 
                         <ImageView
                             android:id="@+id/imageView2"
@@ -86,7 +87,7 @@
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="16dp"
                             android:src="@drawable/ic_account_box_black_24dp"
-                            android:tint="@color/colorLaosBlue" />
+                            android:tint="#fff" />
 
                         <TextView
                             android:id="@+id/txtGvcn"
@@ -96,7 +97,7 @@
                             android:layout_marginLeft="56dp"
                             android:text="Nguyen thi A"
                             android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:textColor="#000"
+                            android:textColor="#fff"
                             android:textSize="14sp" />
                     </RelativeLayout>
 
@@ -113,7 +114,7 @@
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="16dp"
                             android:src="@drawable/ic_timer_black_24dp"
-                            android:tint="@color/colorLaosBlue" />
+                            android:tint="#fff" />
 
                         <TextView
                             android:id="@+id/txtClassScreenExamResults"
@@ -123,7 +124,7 @@
                             android:layout_marginLeft="56dp"
                             android:text="2015-2016"
                             android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:textColor="#000"
+                            android:textColor="#fff"
                             android:textSize="14sp" />
                     </RelativeLayout>
                 </LinearLayout>
@@ -131,9 +132,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#fff"
                     android:orientation="vertical"
-                    android:weightSum="1">
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/textView16"
@@ -157,12 +157,10 @@
                     <com.astuetz.PagerSlidingTabStrip
                         android:id="@+id/tabs"
                         android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:background="#fff"
-                        android:textColor="@color/colorAccent"
+                        android:layout_height="40dp"
+                        android:background="#616161"
+                        android:textColor="#fff"
                         android:textSize="12sp"
-                        app:paddingEnd="16dp"
-                        app:paddingStart="16dp"
                         app:pstsTabPaddingLeftRight="18dp"
                         app:pstsDividerColor="@color/colorAccent"
                         app:pstsIndicatorColor="@color/colorAccent"
