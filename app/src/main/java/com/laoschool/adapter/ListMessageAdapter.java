@@ -162,10 +162,10 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
                     if (message.getImp_flg() == 0) {
                         imgStar.setImageDrawable(LaoSchoolShared.getDraweble(context, R.drawable.ic_star_border_white_24dp));
-                        imgStar.setColorFilter(screenMessage.getActivity().getResources().getColor(R.color.colorPriorityLow));
+                        imgStar.setColorFilter(context.getResources().getColor(R.color.colorPriorityLow));
                     } else {
                         imgStar.setImageDrawable(LaoSchoolShared.getDraweble(context, R.drawable.ic_star_white_24dp));
-                        imgStar.setColorFilter(screenMessage.getActivity().getResources().getColor(R.color.colorPriorityHigh));
+                        imgStar.setColorFilter(context.getResources().getColor(R.color.colorPriorityHigh));
                     }
                 }
                 view.setOnClickListener(new View.OnClickListener() {
