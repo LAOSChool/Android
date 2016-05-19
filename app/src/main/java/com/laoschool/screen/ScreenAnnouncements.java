@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.laoschool.R;
@@ -501,16 +502,24 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.view_message_list, container, false);
-            mRecyclerListMessage = (RecyclerView) view.findViewById(R.id.mRecyclerListMessage);
+            View view = inflater.inflate(R.layout.view_notification_pager, container, false);
+            TextView lbNoNotification = (TextView) view.findViewById(R.id.lbNoNotification);
+            mRecyclerListMessage = (RecyclerView) view.findViewById(R.id.mListNotification);
             mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
             //set adapter
             mRecyclerListMessage.setLayoutManager(linearLayoutManager);
-            //
-            _setListNotification(notificationForUser, position);
 
-            _handlerSwipeReload();
+            if (notificationForUser.size() > 0) {
+                lbNoNotification.setVisibility(View.GONE);
+                mSwipeRefreshLayout.setVisibility(View.VISIBLE);
+                _setListNotification(notificationForUser, position);
+                _handlerSwipeReload();
+            } else {
+                lbNoNotification.setVisibility(View.VISIBLE);
+                mSwipeRefreshLayout.setVisibility(View.GONE);
+            }
+
             return view;
         }
 
