@@ -53,11 +53,11 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.SessionA
             }
             String lessonName = "";
             if (lessonId == 1)
-                lessonName = "Mor";
+                lessonName = "Morning";
             if (lessonId == 2)
-                lessonName = "Eve";
+                lessonName = "Afternoon";
             if (lessonId == 3)
-                lessonName = "Night";
+                lessonName = "Evening";
 
             lessionNameMap.put(lessonId, lessonName);
             lessionMap.put(lessonId, paList);
