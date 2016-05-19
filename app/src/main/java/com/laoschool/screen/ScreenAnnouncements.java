@@ -402,7 +402,6 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
         if (!alreadyExecuted && getUserVisibleHint()) {
             _defineData();
         }
-
     }
 
     @Override
@@ -509,16 +508,21 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
             //set adapter
             mRecyclerListMessage.setLayoutManager(linearLayoutManager);
-
-            if (notificationForUser.size() > 0) {
-                lbNoNotification.setVisibility(View.GONE);
-                mSwipeRefreshLayout.setVisibility(View.VISIBLE);
-                _setListNotification(notificationForUser, position);
-                _handlerSwipeReload();
+            if (notificationForUser != null) {
+                if (notificationForUser.size() > 0) {
+                    lbNoNotification.setVisibility(View.GONE);
+                    mSwipeRefreshLayout.setVisibility(View.VISIBLE);
+                    _setListNotification(notificationForUser, position);
+                    _handlerSwipeReload();
+                } else {
+                    lbNoNotification.setVisibility(View.VISIBLE);
+                    mSwipeRefreshLayout.setVisibility(View.GONE);
+                }
             } else {
                 lbNoNotification.setVisibility(View.VISIBLE);
                 mSwipeRefreshLayout.setVisibility(View.GONE);
             }
+
 
             return view;
         }
@@ -608,4 +612,16 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
         }
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        Log.d(TAG, "setUserVisibleHint() -isVisibleToUser:" + isVisibleToUser);
+        try {
+            if (!alreadyExecuted && isVisibleToUser) {
+                _defineData();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "setUserVisibleHint() -exception:" + e.getMessage());
+        }
+    }
 }
