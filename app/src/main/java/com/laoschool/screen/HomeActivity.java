@@ -65,16 +65,10 @@ public class HomeActivity extends AppCompatActivity implements
     int containerId;
     private String currentRole;
     public int beforePosition;
-
-    private Bundle savedInstanceState;
-
     private DataAccessInterface service;
+    private Bundle savedInstanceState;
     private Context thiz;
-    private int messagesCurrentTab=0;
-
-    public enum Role {
-        student, teacher;
-    }
+    
 
     public enum DisplayButtonHome {
         show, hide;
@@ -608,7 +602,6 @@ public class HomeActivity extends AppCompatActivity implements
 
     @Override
     public void gotoScreenCreateMessage() {
-        messagesCurrentTab=currentItem;
         beforePosition = LaoSchoolShared.POSITION_SCREEN_MESSAGE_0;
         _gotoPage(LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
     }
