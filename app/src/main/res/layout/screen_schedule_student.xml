@@ -58,7 +58,7 @@
                             android:layout_alignParentStart="true"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="16dp"
-                            android:src="@drawable/ic_school_black_24dp"
+                            android:src="@drawable/ic_class_white_24dp"
                             android:tint="#fff"
                              />
 
