@@ -214,7 +214,7 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
         try {
             if (LaoSchoolShared.myProfile != null) {
                 //set infomation
-                lbSchoolNameStudent.setText(LaoSchoolShared.myProfile.getSchoolName());
+                lbSchoolNameStudent.setText(LaoSchoolShared.myProfile.getEclass().getTitle());
                 lbGvcnStudent.setText(LaoSchoolShared.myProfile.getEclass().getHeadTeacherName());
                 lbTermStudent.setText(LaoSchoolShared.myProfile.getEclass().getTerm() + "/" + LaoSchoolShared.myProfile.getEclass().getYears());
             }
