@@ -31,45 +31,49 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.SessionA
     private Context context;
     private int position;
     private List<TimeTable> list = new ArrayList<>();
-    private List<Object> objects;
+    private List<Object> objects = new ArrayList<>();
 
     public SessionAdapter(Context context, int position, List<TimeTable> list) {
         this.context = context;
         this.position = position;
         this.list = list;
-        HashMap<Integer, List<TimeTable>> lessionMap = new LinkedHashMap<>();
-        HashMap<Integer, String> lessionNameMap = new LinkedHashMap<>();
+        try {
+            HashMap<Integer, List<TimeTable>> lessionMap = new LinkedHashMap<>();
+            HashMap<Integer, String> lessionNameMap = new LinkedHashMap<>();
 
-        for (TimeTable timeTable : list) {
-            String[] session = timeTable.getSession_Name().split("\\@");
-            int lessonId = Integer.parseInt(session[2]);
-            List<TimeTable> paList;
-            if (lessionMap.containsKey(lessonId)) {
-                paList = lessionMap.get(lessonId);
-                paList.add(timeTable);
-            } else {
-                paList = new ArrayList<>();
-                paList.add(timeTable);
+            for (TimeTable timeTable : list) {
+                String[] session = timeTable.getSession_Name().split("\\@");
+                int lessonId = Integer.parseInt(session[2]);
+                List<TimeTable> paList;
+                if (lessionMap.containsKey(lessonId)) {
+                    paList = lessionMap.get(lessonId);
+                    paList.add(timeTable);
+                } else {
+                    paList = new ArrayList<>();
+                    paList.add(timeTable);
+                }
+                String lessonName = "";
+                if (lessonId == 1)
+                    lessonName = "Morning";
+                if (lessonId == 2)
+                    lessonName = "Afternoon";
+                if (lessonId == 3)
+                    lessonName = "Evening";
+
+                lessionNameMap.put(lessonId, lessonName);
+                lessionMap.put(lessonId, paList);
             }
-            String lessonName = "";
-            if (lessonId == 1)
-                lessonName = "Morning";
-            if (lessonId == 2)
-                lessonName = "Afternoon";
-            if (lessonId == 3)
-                lessonName = "Evening";
+            //sort
+            Map<Integer, List<TimeTable>> lessionTreeMap = new TreeMap<>(lessionMap);
 
-            lessionNameMap.put(lessonId, lessonName);
-            lessionMap.put(lessonId, paList);
-        }
-        //sort
-        Map<Integer, List<TimeTable>> lessionTreeMap = new TreeMap<>(lessionMap);
-
-        objects = new ArrayList<>();
-        for (Integer lession : lessionMap.keySet()) {
-            Log.d(TAG, "-lession id:" + lession + ",lession name:" + lessionNameMap.get(lession));
-            objects.add(lessionNameMap.get(lession));
-            objects.addAll(lessionTreeMap.get(lession));
+            //objects = new ArrayList<>();
+            for (Integer lession : lessionMap.keySet()) {
+                Log.d(TAG, "-lession id:" + lession + ",lession name:" + lessionNameMap.get(lession));
+                objects.add(lessionNameMap.get(lession));
+                objects.addAll(lessionTreeMap.get(lession));
+            }
+        } catch (Exception e) {
+            objects.addAll(list);
         }
 
     }

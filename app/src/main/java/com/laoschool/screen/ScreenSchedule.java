@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -172,7 +173,21 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (currentRole != null)
+            inflater.inflate(R.menu.menu_screen_schedule, menu);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (currentRole != null) {
+            int id = item.getItemId();
+            switch (id) {
+                case R.id.action_refersh_time_table:
+                    getTimeTable();
+                    return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -214,7 +229,7 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
         try {
             if (LaoSchoolShared.myProfile != null) {
                 //set infomation
-                lbSchoolNameStudent.setText(LaoSchoolShared.myProfile.getSchoolName());
+                lbSchoolNameStudent.setText(LaoSchoolShared.myProfile.getEclass().getTitle());
                 lbGvcnStudent.setText(LaoSchoolShared.myProfile.getEclass().getHeadTeacherName());
                 lbTermStudent.setText(LaoSchoolShared.myProfile.getEclass().getTerm() + "/" + LaoSchoolShared.myProfile.getEclass().getYears());
             }
