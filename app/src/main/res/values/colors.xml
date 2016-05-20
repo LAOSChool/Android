@@ -49,4 +49,6 @@
     <color name="colorPriorityHigh">#00A261</color>
     <color name="colorPriorityLow">#808080</color>
     <color name="colorTitleUnread">#2196F3</color>
+    <color name="colorAttendanceNoReason">#D32F2F</color>
+    <color name="colorAttendanceHasReason">#00A261</color>
 </resources>

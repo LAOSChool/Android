@@ -2,15 +2,14 @@ package com.laoschool.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.laoschool.R;
@@ -81,10 +80,14 @@ public class ListAttendancesAdapter extends RecyclerView.Adapter<ListAttendances
         if(groupAttendance.getAttendances().size() == 1) {
             btnDropDown.setImageResource(R.drawable.ic_info_black_24dp);
             txbAbsent.setText("Full days");
-            if(groupAttendance.getAttendances().get(0).getExcused() == 1)
+            if(groupAttendance.getAttendances().get(0).getExcused() == 1) {
                 txbExcused.setText("Yes");
-            else
+                txbExcused.setTextColor(context.getResources().getColor(R.color.colorAttendanceHasReason));
+            }
+            else {
                 txbExcused.setText("No");
+                txbExcused.setTextColor(context.getResources().getColor(R.color.colorAttendanceNoReason));
+            }
             txbAbsent.setTextSize(12);
             txbExcused.setTextSize(12);
         } else {
@@ -99,7 +102,7 @@ public class ListAttendancesAdapter extends RecyclerView.Adapter<ListAttendances
         }
 
         if(groupAttendance.getAttendances().size() > 1) {
-            for(Attendance attendance: groupAttendance.getAttendances()) {
+            for(final Attendance attendance: groupAttendance.getAttendances()) {
                 LinearLayout relativeLayout = new LinearLayout(context);
                 relativeLayout.setBackgroundColor(Color.parseColor("#E0E0E0"));
                 RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, 120);
@@ -114,11 +117,13 @@ public class ListAttendancesAdapter extends RecyclerView.Adapter<ListAttendances
                 reason.setPadding(20, 0, 0, 0);
 
                 sessionName.setText(attendance.getSession() + " - " + attendance.getSubject());
-                if(attendance.getExcused() == 1)
+                if(attendance.getExcused() == 1) {
                     reason.setText(attendance.getNotice());
+                    reason.setTextColor(context.getResources().getColor(R.color.colorAttendanceHasReason));
+                }
                 else {
                     reason.setText("No reason");
-                    reason.setTextColor(Color.parseColor("#D32F2F"));
+                    reason.setTextColor(context.getResources().getColor(R.color.colorAttendanceNoReason));
                 }
 
                 relativeLayout.addView(sessionName);
@@ -132,6 +137,13 @@ public class ListAttendancesAdapter extends RecyclerView.Adapter<ListAttendances
 
                 sessionView.addView(relativeLayout);
                 sessionView.addView(linearLayout);
+
+                relativeLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        openAttendanceDetail(attendance);
+                    }
+                });
             }
         }
 
@@ -139,7 +151,7 @@ public class ListAttendancesAdapter extends RecyclerView.Adapter<ListAttendances
             @Override
             public void onClick(View view) {
                 if(groupAttendance.getAttendances().size() == 1) {
-
+                    openAttendanceDetail(groupAttendance.getAttendances().get(0));
                 } else {
                     if(sessionView.getVisibility() == View.GONE) {
                         sessionView.setVisibility(View.VISIBLE);
@@ -154,9 +166,54 @@ public class ListAttendancesAdapter extends RecyclerView.Adapter<ListAttendances
         });
     }
 
+    void openAttendanceDetail(Attendance attendance) {
+        final AlertDialog dialog = new AlertDialog.Builder(context).create();
+        View v = View.inflate(context, R.layout.view_attendance_detail, null);
+        dialog.setView(v);
+        dialog.show();
+
+        TextView txbAttDt = (TextView) v.findViewById(R.id.txbAttDt);
+        TextView txbSession = (TextView) v.findViewById(R.id.txbSession);
+        TextView txbReason = (TextView) v.findViewById(R.id.txbReason);
+        RelativeLayout formBtnClose = (RelativeLayout) v.findViewById(R.id.formBtnClose);
+        ImageView imgBtnClose = (ImageView) v.findViewById(R.id.imgBtnClose);
+
+        imgBtnClose.setColorFilter(Color.parseColor("#9E9E9E"));
+
+        txbAttDt.setText(attendance.getAtt_dt());
+
+        if(attendance.getSession_id() == null)
+            txbSession.setText("Full day");
+        else
+            txbSession.setText(attendance.getSession()+ " - "+ attendance.getSubject());
+
+        if(attendance.getExcused() == 1) {
+            txbReason.setText(attendance.getNotice());
+            txbReason.setTextColor(context.getResources().getColor(R.color.colorAttendanceHasReason));
+        }
+        else {
+            txbReason.setText("No reason");
+            txbReason.setTextColor(context.getResources().getColor(R.color.colorAttendanceNoReason));
+        }
+
+        formBtnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+    }
+
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
         return mDataset.size();
     }
+
+    public void swap(List<ScreenAttended.GroupAttendance> datas){
+        mDataset.clear();
+        mDataset.addAll(datas);
+        notifyDataSetChanged();
+    }
+
 }

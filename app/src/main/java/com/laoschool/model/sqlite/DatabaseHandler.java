@@ -3,7 +3,6 @@ package com.laoschool.model.sqlite;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.laoschool.entities.Image;
 import com.laoschool.entities.Message;

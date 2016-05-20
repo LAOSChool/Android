@@ -1,29 +1,11 @@
 package com.laoschool.screen.login;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.res.Configuration;
-import android.graphics.Rect;
-import android.support.v4.app.Fragment;
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.laoschool.R;
-import com.laoschool.model.AsyncCallback;
 import com.laoschool.model.DataAccessImpl;
-import com.laoschool.model.DataAccessInterface;
-import com.laoschool.screen.HomeActivity;
-import com.laoschool.shared.LaoSchoolShared;
 
 public class ScreenLogin extends AppCompatActivity {
 

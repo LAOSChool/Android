@@ -17,6 +17,8 @@ public class Attendance {
 
     String att_dt;
 
+    String session_id;
+
     int subject_id;
 
     int student_id;
@@ -111,6 +113,14 @@ public class Attendance {
 
     public void setAtt_dt(String att_dt) {
         this.att_dt = att_dt;
+    }
+
+    public String getSession_id() {
+        return session_id;
+    }
+
+    public void setSession_id(String session_id) {
+        this.session_id = session_id;
     }
 
     public int getSubject_id() {

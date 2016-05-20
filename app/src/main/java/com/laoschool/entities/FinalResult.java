@@ -2,11 +2,6 @@ package com.laoschool.entities;
 
 import com.google.gson.Gson;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Date;
-
 /**
  * Created by Tran An on 11/03/2016.
  */

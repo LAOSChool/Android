@@ -3,48 +3,114 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/fragmentBackground"
-    android:id="@+id/container"
-    android:visibility="visible">
+    android:background="@color/fragmentBackground">
 
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/fragmentBackground"
+        android:id="@+id/container"
+        android:visibility="visible">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:gravity="top"
-        android:background="#ffffff"
-        android:layout_marginTop="0dp">
+        android:background="#ffffff">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Số tiết nghỉ : 4"
-            android:id="@+id/txbTotalAbsent"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:textSize="14sp" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="130dp"
+            android:layout_height="100dp"
+            android:gravity="top"
+            android:layout_marginTop="0dp"
+            android:layout_marginLeft="25dp"
+            android:id="@+id/linearLayout2">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Có lý do: 2"
-            android:id="@+id/txbTotalExcused"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:textSize="14sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Số tiết nghỉ : 4"
+                android:id="@+id/txbTotalFullday"
+                android:layout_gravity="left"
+                android:layout_marginTop="10dp"
+                android:textSize="14sp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Không lý do: 2"
-            android:id="@+id/txbTotalNoExcused"
-            android:layout_gravity="center_horizontal"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Có lý do: 2"
+                android:id="@+id/txbTotalExcused1"
+                android:layout_gravity="left"
+                android:layout_marginTop="10dp"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Không lý do: 2"
+                android:id="@+id/txbTotalNoExcused1"
+                android:layout_gravity="left"
+                android:layout_marginTop="10dp"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="1dp"
+            android:layout_height="80dp"
+            android:background="#E0E0E0"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/linearLayout2"
+            android:layout_toEndOf="@+id/linearLayout2"
             android:layout_marginTop="10dp"
-            android:textSize="14sp" />
-    </LinearLayout>
+            android:id="@+id/linearLayout3" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="150dp"
+            android:layout_height="100dp"
+            android:gravity="top"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/linearLayout3"
+            android:layout_toEndOf="@+id/linearLayout3"
+            android:layout_marginLeft="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Số tiết nghỉ : 4"
+                android:id="@+id/txbTotalSession"
+                android:layout_gravity="left"
+                android:layout_marginTop="10dp"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Có lý do: 2"
+                android:id="@+id/txbTotalExcused2"
+                android:layout_gravity="left"
+                android:layout_marginTop="10dp"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Không lý do: 2"
+                android:id="@+id/txbTotalNoExcused2"
+                android:layout_gravity="left"
+                android:layout_marginTop="10dp"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <View android:layout_width="match_parent"
         android:background="@color/text_title_tab_indicator"
@@ -52,7 +118,8 @@
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/attendancesRefreshLayout">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/groupAttendancesView"
@@ -225,3 +292,50 @@
         android:background="@color/fragmentBackground"/>
 
 </RelativeLayout>-->
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/fragmentBackground"
+        android:id="@+id/emptyView"
+        android:visibility="gone"
+        android:gravity="center|center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="No Data Found"
+            android:id="@+id/textView20"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/colorAccent"
+            android:textSize="26dp"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:layout_marginTop="20dp"
+            android:id="@+id/btnReload">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView4"
+                android:src="@drawable/ic_replay_black_36dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Reload"
+                android:id="@+id/textView21"
+                android:layout_marginTop="10dp"
+                android:textSize="15dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

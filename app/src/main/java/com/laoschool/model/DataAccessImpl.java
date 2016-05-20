@@ -5,25 +5,33 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
-import android.util.LruCache;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.NetworkResponse;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.laoschool.LaoSchoolSingleton;
-import com.laoschool.R;
-import com.laoschool.entities.*;
+import com.laoschool.entities.Attendance;
 import com.laoschool.entities.Class;
+import com.laoschool.entities.ExamResult;
+import com.laoschool.entities.FinalResult;
+import com.laoschool.entities.Image;
+import com.laoschool.entities.ListAttendance;
+import com.laoschool.entities.ListExamResults;
+import com.laoschool.entities.ListMessages;
+import com.laoschool.entities.ListUser;
+import com.laoschool.entities.Message;
+import com.laoschool.entities.School;
+import com.laoschool.entities.TimeTable;
+import com.laoschool.entities.User;
 import com.laoschool.shared.LaoSchoolShared;
 
 import org.apache.http.HttpEntity;
@@ -39,10 +47,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -229,8 +235,9 @@ public class DataAccessImpl implements DataAccessInterface {
                             } else
                                 callback.onFailure(error.toString());
                         } catch (JSONException e) {
-                            callback.onFailure(error.toString());
+                            callback.onFailure("Server error statusCode = 500 but can not read response body");
                         } catch (UnsupportedEncodingException e) {
+                            callback.onFailure("Server error statusCode = 500 but can not read response body");
                         }
                     }
                 }
@@ -403,6 +410,73 @@ public class DataAccessImpl implements DataAccessInterface {
     }
 
     @Override
+    public void userChangePassword(final String user_id, final String oldpass, final String newpass, final AsyncCallback<String> callback) {
+        // Request a string response from the provided URL.
+        String url = HOST + "users/change_pass";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("Service/changePass()", response);
+                        callback.onSuccess(response.toString());
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && networkResponse.statusCode == 409) {
+                            // HTTP Status Code: 409 Unauthorized Oo
+                            Log.e("Service/changePass()", "error status code " + networkResponse.statusCode);
+                            callback.onAuthFail(error.toString());
+                        } else if (networkResponse != null && networkResponse.statusCode == 500) {
+                            try {
+                                String responseBody = new String(error.networkResponse.data, "utf-8");
+                                JSONObject jsonObject = new JSONObject(responseBody);
+                                String developerMessage = jsonObject.getString("developerMessage");
+                                Log.e("Service/changePass()", "error status code " + networkResponse.statusCode + ", " + developerMessage);
+                                callback.onFailure(developerMessage);
+                            } catch (JSONException e) {
+                                Log.e("Service/changePass()", "Server error statusCode = 500 but can not read response body");
+                                callback.onFailure(error.toString());
+                            } catch (UnsupportedEncodingException e) {
+                                Log.e("Service/changePass()", "Server error statusCode = 500 but can not read response body");
+                                callback.onFailure(error.toString());
+                            }
+                        } else {
+                            Log.e("Service/changePass()", error.getMessage());
+                            callback.onFailure(error.toString());
+                        }
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", getAuthKey());
+                return params;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("username", user_id);
+                params.put("old_pass", oldpass);
+                params.put("new_pass", newpass);
+                return params;
+            }
+        };
+
+        //Set a retry policy in case of SocketTimeout & ConnectionTimeout Exceptions.
+        //Volley does retry for you if you have specified the policy.
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(30000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        mRequestQueue.add(stringRequest);
+    }
+
+    @Override
     public void getMyAttendances(String filter_class_id, String filter_user_id, final AsyncCallback<List<Attendance>> callback) {
         // Request a string response from the provided URL.
         String url = HOST + "attendances/myprofile";
@@ -453,10 +527,10 @@ public class DataAccessImpl implements DataAccessInterface {
     }
 
     @Override
-    public void requestAttendance(Attendance attendance, final AsyncCallback<String> callback) {
+    public void requestAttendance(Attendance attendance, String fromDt, String toDt, final AsyncCallback<String> callback) {
         final String httpPostBody = attendance.toJson();
         // Request a string response from the provided URL.
-        String url = HOST + "attendances/request";
+        String url = HOST + "attendances/request?from_dt=" + fromDt + "&to_dt=" + toDt;
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url.trim(),
                 new Response.Listener<String>() {
                     @Override
@@ -473,6 +547,17 @@ public class DataAccessImpl implements DataAccessInterface {
                             // HTTP Status Code: 409 Unauthorized Oo
                             Log.e("Service/reqAttendance()", "error status code " + networkResponse.statusCode);
                             callback.onAuthFail(error.toString());
+                        } else if(networkResponse != null) {
+                            try {
+                                String responseBody = new String(error.networkResponse.data, "utf-8");
+                                JSONObject jsonObject = new JSONObject(responseBody);
+                                String developerMessage = jsonObject.getString("developerMessage");
+                                callback.onFailure(developerMessage);
+                            } catch (JSONException e) {
+                                callback.onFailure("Server error statusCode = 500 but can not read response body");
+                            } catch (UnsupportedEncodingException e) {
+                                callback.onFailure("Server error statusCode = 500 but can not read response body");
+                            }
                         }
                         else {
                             Log.e("Service/reqAttendance()", error.toString());
@@ -655,7 +740,7 @@ public class DataAccessImpl implements DataAccessInterface {
                 filter_to_dt, filter_to_user_id, filter_channel,
                 filter_sts, filter_from_id);
         url += makeUrl;
-        Log.d("Service/getMessages()", "url:" + url);
+//        Log.d("Service/getMessages()", "url:" + url);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url.trim(),
                 new Response.Listener<String>() {
                     @Override

@@ -3,17 +3,9 @@ package com.laoschool.screen;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.Point;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-
-
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -29,21 +21,10 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
-
-import com.laoschool.R;
 import com.laoschool.LaoSchoolSingleton;
+import com.laoschool.R;
 import com.laoschool.adapter.PagerAdapter;
-
 import com.laoschool.entities.Message;
-
 import com.laoschool.entities.User;
 import com.laoschool.model.AsyncCallback;
 import com.laoschool.model.DataAccessInterface;
@@ -54,6 +35,10 @@ import com.laoschool.screen.login.ScreenLogin;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
 import com.laoschool.view.ViewpagerDisableSwipeLeft;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
 
 public class HomeActivity extends AppCompatActivity implements
         TabHost.OnTabChangeListener, ViewPager.OnPageChangeListener, ScreenMessage.IScreenMessage,

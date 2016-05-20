@@ -2,8 +2,8 @@ package com.laoschool.screen;
 
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,7 +14,10 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,47 +42,97 @@ public class ScreenRequestAttendance extends Fragment implements FragmentLifecyc
 
     ScreenRequestAttendance thiz = this;
     LinearLayout containerView;
-    EditText txbDatePicker;
+    RelativeLayout txbDatePicker;
+    TextView txvAttDt;
     EditText txbReason;
+    ImageView imgOption;
+
+    String fromDate = "";
+    String toDate = "";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.screen_request_attendance, container, false);
         containerView = (LinearLayout) view.findViewById(R.id.container);
-        txbDatePicker = (EditText) view.findViewById(R.id.txbDatePicker);
+        txbDatePicker = (RelativeLayout) view.findViewById(R.id.txbDatePicker);
+        txvAttDt = (TextView) view.findViewById(R.id.txvAttDt);
         txbReason = (EditText) view.findViewById(R.id.txbReason);
+        final LinearLayout btnOption = (LinearLayout) view.findViewById(R.id.btnOption);
+        imgOption = (ImageView) view.findViewById(R.id.imgOption);
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd - MM - yyyy");
-        String currentDateandTime = sdf.format(new Date());
-        txbDatePicker.setText(currentDateandTime, TextView.BufferType.EDITABLE);
+        final String currentDateandTime = sdf.format(new Date());
+        txvAttDt.setText(currentDateandTime, TextView.BufferType.EDITABLE);
+        fromDate = currentDateandTime;
 
         txbDatePicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
-                //To show current date in the datepicker
-                Calendar mcurrentDate=Calendar.getInstance();
-                int mYear=mcurrentDate.get(Calendar.YEAR);
-                int mMonth=mcurrentDate.get(Calendar.MONTH);
-                int mDay=mcurrentDate.get(Calendar.DAY_OF_MONTH);
+                getDatePicker(false);
+            }
+        });
 
-                DatePickerDialog mDatePicker=new DatePickerDialog(thiz.getContext(), new DatePickerDialog.OnDateSetListener() {
-                    public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
-                        // TODO Auto-generated method stub
-                        String formatDate;
-                        if(selectedmonth < 9)
-                            formatDate = selectedday + " - 0" + (selectedmonth+1) + " - " + selectedyear;
-                        else
-                            formatDate = selectedday + " - " + (selectedmonth+1) + " - " + selectedyear;
-                        txbDatePicker.setText(formatDate, TextView.BufferType.EDITABLE);
-                    }
-                },mYear, mMonth, mDay);
-                mDatePicker.setTitle("Select date");
-                mDatePicker.show();  }
+        btnOption.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!txvAttDt.getText().toString().contains("to")) {
+                    //Creating the instance of PopupMenu
+                    PopupMenu popup = new PopupMenu(thiz.getContext(), btnOption);
+                    //Inflating the Popup using xml file
+                    popup.getMenuInflater().inflate(R.menu.menu_popup_request_attendance, popup.getMenu());
+                    popup.show();
+
+                    //registering popup with OnMenuItemClickListener
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem item) {
+                            getDatePicker(true);
+                            return true;
+                        }
+                    });
+                }  else {
+                    fromDate = currentDateandTime;
+                    toDate = "";
+                    txvAttDt.setText(currentDateandTime);
+                    txvAttDt.setTextSize(18);
+                    imgOption.setImageResource(R.drawable.ic_keyboard_arrow_down_black_24dp);
+                }
+            }
         });
 
         return view;
+    }
+
+    void getDatePicker(final boolean isSendTo) {
+        //To show current date in the datepicker
+        Calendar mcurrentDate=Calendar.getInstance();
+        int mYear=mcurrentDate.get(Calendar.YEAR);
+        int mMonth=mcurrentDate.get(Calendar.MONTH);
+        int mDay=mcurrentDate.get(Calendar.DAY_OF_MONTH);
+        DatePickerDialog mDatePicker=new DatePickerDialog(thiz.getContext(), new DatePickerDialog.OnDateSetListener() {
+            public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
+                // TODO Auto-generated method stub
+                String formatDate;
+                if(selectedmonth < 9)
+                    formatDate = selectedday + " - 0" + (selectedmonth+1) + " - " + selectedyear;
+                else
+                    formatDate = selectedday + " - " + (selectedmonth+1) + " - " + selectedyear;
+                if(!isSendTo) {
+                    txvAttDt.setText(formatDate);
+                    fromDate = formatDate;
+                    txvAttDt.setTextSize(18);
+                    imgOption.setImageResource(R.drawable.ic_keyboard_arrow_down_black_24dp);
+                }
+                else {
+                    toDate = formatDate;
+                    imgOption.setImageResource(R.drawable.ic_close_black_24dp);
+                    txvAttDt.setText(fromDate + "  to  " + formatDate);
+                    txvAttDt.setTextSize(15);
+                }
+            }
+        },mYear, mMonth, mDay);
+        mDatePicker.setTitle("Select date");
+        mDatePicker.show();
     }
 
     public static Fragment instantiate(int containerId, String currentRole, HomeActivity activity, ScreenAttended screenAttended) {
@@ -126,16 +179,25 @@ public class ScreenRequestAttendance extends Fragment implements FragmentLifecyc
             Attendance attendance = new Attendance();
             attendance.setSchool_id(LaoSchoolShared.myProfile.getSchool_id());
             attendance.setClass_id(LaoSchoolShared.myProfile.getEclass().getId());
-            String datePicker = txbDatePicker.getText().toString().replaceAll(" ", "");
+
+            String datePicker = fromDate.replaceAll(" ", "");
             String datePickers[] = datePicker.split("-");
-            String att_dt = datePickers[2]+"-"+datePickers[1]+"-"+datePickers[0]+" 00:00:00.0";
-            attendance.setAtt_dt(att_dt);
+            String fromDt = datePickers[2] + "-" + datePickers[1] + "-" + datePickers[0];
+            String toDt = "";
+            if(!toDate.equals("")) {
+                datePicker = toDate.replaceAll(" ", "");
+                String datePickers2[] = datePicker.split("-");
+                toDt = datePickers2[2] + "-" + datePickers2[1] + "-" + datePickers2[0];
+            }
+            else
+                toDt = fromDt;
+//          attendance.setAtt_dt(att_dt);
             attendance.setStudent_id(LaoSchoolShared.myProfile.getId());
             attendance.setStudent_name(LaoSchoolShared.myProfile.getFullname());
             attendance.setState(1);
             attendance.setNotice(txbReason.getText().toString());
 
-            LaoSchoolSingleton.getInstance().getDataAccessService().requestAttendance(attendance, new AsyncCallback<String>() {
+            LaoSchoolSingleton.getInstance().getDataAccessService().requestAttendance(attendance, fromDt, toDt, new AsyncCallback<String>() {
                 @Override
                 public void onSuccess(String result) {
                     ringProgressDialog.dismiss();
@@ -146,7 +208,10 @@ public class ScreenRequestAttendance extends Fragment implements FragmentLifecyc
                 @Override
                 public void onFailure(String message) {
                     ringProgressDialog.dismiss();
-                    Toast.makeText(thiz.getContext(), "Some error occur", Toast.LENGTH_SHORT).show();
+                    if(message.contains("invalid"))
+                        Toast.makeText(thiz.getContext(), "Absent date is not valid!", Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(thiz.getContext(), "Some error occur!", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -160,17 +225,15 @@ public class ScreenRequestAttendance extends Fragment implements FragmentLifecyc
 
     @Override
     public void onPauseFragment() {
-//        Toast.makeText(thiz.getContext(), "Fragment pause", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onResumeFragment() {
-//        Toast.makeText(thiz.getContext(), "Fragment resume", Toast.LENGTH_SHORT).show();
         txbReason.setText("");
         txbReason.requestFocus();
         txbReason.requestFocusFromTouch();
 
-        //Open the soft_keyboard
+        // Open the soft_keyboard
 //        Handler mHandler= new Handler();
 //        mHandler.post(
 //                new Runnable() {

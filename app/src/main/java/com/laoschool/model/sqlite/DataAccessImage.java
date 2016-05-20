@@ -7,11 +7,9 @@ import android.util.Log;
 
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.entities.Image;
-import com.laoschool.entities.Message;
 import com.laoschool.shared.LaoSchoolShared;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**

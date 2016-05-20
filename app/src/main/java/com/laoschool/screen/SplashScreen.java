@@ -1,29 +1,17 @@
 package com.laoschool.screen;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.os.Build;
-import android.os.Handler;
-import android.support.v4.util.LruCache;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
-import com.android.volley.toolbox.ImageLoader;
-import com.laoschool.LaoSchoolApplication;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.entities.User;
 import com.laoschool.model.AsyncCallback;
-import com.laoschool.model.DataAccessImpl;
-import com.laoschool.model.DataAccessInterface;
 import com.laoschool.screen.login.ScreenLogin;
 import com.laoschool.shared.LaoSchoolShared;
 
@@ -42,17 +30,11 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.SignatureException;
-import java.security.UnrecoverableEntryException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.security.interfaces.RSAPrivateKey;
 import java.util.Calendar;
-
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
 
 public class SplashScreen extends Activity {
 

@@ -13,19 +13,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/mDetaislUser"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="0dp"
         android:background="#ffffff">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Infomation"
+            android:text="User Profile"
             android:id="@+id/textView17"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="8dp"
-            android:textColor="@color/textColorSubHeader"
-            android:textSize="@dimen/sub_header_font_size" />
+            android:textColor="#2962FF"
+            android:textSize="@dimen/sub_header_font_size"
+            android:visibility="visible"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -41,7 +42,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:src="@drawable/ic_account_box_black_24dp"
-                android:id="@+id/hue" />
+                android:id="@+id/userImage" />
 
             <TextView
                 android:id="@+id/txtUserNameScreenMoreStudent"
@@ -53,8 +54,8 @@
                 android:layout_marginLeft="56dp"
                 android:layout_marginStart="56dp"
                 android:text="Aphrodite"
-                android:textSize="16sp"
-                android:textColor="@color/color_text" />
+                android:textSize="15sp"
+                android:textColor="#000000"/>
 
         </RelativeLayout>
 
@@ -66,7 +67,7 @@
             android:paddingTop="8dp">
 
             <ImageView
-                android:id="@+id/imageView8"
+                android:id="@+id/schoolImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
@@ -84,8 +85,8 @@
                 android:layout_marginLeft="56dp"
                 android:layout_marginStart="56dp"
                 android:text="Phung xa"
-                android:textSize="16sp"
-                android:textColor="@color/color_text"/>
+                android:textSize="15sp"
+                android:textColor="#000000"/>
         </RelativeLayout>
 
         <RelativeLayout
@@ -93,10 +94,11 @@
             android:layout_height="48dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:paddingTop="8dp">
+            android:paddingTop="8dp"
+            android:layout_marginBottom="5dp">
 
             <ImageView
-                android:id="@+id/imageView9"
+                android:id="@+id/termImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
@@ -114,8 +116,8 @@
                 android:layout_marginLeft="56dp"
                 android:layout_marginStart="56dp"
                 android:text="2015-1016"
-                android:textSize="16sp"
-                android:textColor="@color/color_text" />
+                android:textSize="15sp"
+                android:textColor="#000000"/>
         </RelativeLayout>
 
     </LinearLayout>

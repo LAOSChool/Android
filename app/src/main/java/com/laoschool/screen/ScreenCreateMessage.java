@@ -25,7 +25,6 @@ import android.widget.Toast;
 
 import com.laoschool.R;
 import com.laoschool.entities.Message;
-import com.laoschool.entities.User;
 import com.laoschool.model.AsyncCallback;
 import com.laoschool.model.DataAccessImpl;
 import com.laoschool.model.DataAccessInterface;

@@ -1,7 +1,6 @@
 package com.laoschool.screen;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -27,7 +26,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,10 +33,9 @@ import android.widget.Toast;
 import com.astuetz.PagerSlidingTabStrip;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
-import com.laoschool.adapter.RecylerViewScreenExamResultsAdapter;
 import com.laoschool.adapter.ExamResultsStudentSemesterAdapter;
+import com.laoschool.adapter.RecylerViewScreenExamResultsAdapter;
 import com.laoschool.entities.ExamResult;
-import com.laoschool.entities.User;
 import com.laoschool.model.AsyncCallback;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;

@@ -4,10 +4,9 @@ package com.laoschool.screen;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -21,7 +20,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.astuetz.PagerSlidingTabStrip;
 import com.laoschool.R;
 import com.laoschool.adapter.ListAttendancesAdapter;
 import com.laoschool.entities.Attendance;
@@ -46,12 +44,23 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
 
     private List<Attendance> attendanceList = new ArrayList<>();
     private List<GroupAttendance> groupAttendances = new ArrayList<>();
+    ListAttendancesAdapter mAdapter;
 
     LinearLayout containerView;
-    TextView txbTotalAbsent;
-    TextView txbTotalExcused;
-    TextView txbTotalNoExcused;
+    LinearLayout emptyView;
+    LinearLayout btnReload;
+    TextView txbTotalFullday;
+    TextView txbTotalExcused1;
+    TextView txbTotalNoExcused1;
+    TextView txbTotalSession;
+    TextView txbTotalExcused2;
+    TextView txbTotalNoExcused2;
     RecyclerView groupAttendancesView;
+    SwipeRefreshLayout attendancesRefreshLayout;
+
+    ProgressDialog ringProgressDialog;
+
+    boolean isLoad = false;
 
 //    PageFragment currentPage;
 
@@ -87,16 +96,28 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
     private IScreenAttended iScreenAttended;
 
     protected void getAttendances() {
-        final ProgressDialog ringProgressDialog = ProgressDialog.show(this.getActivity(), "Please wait ...", "Loading ...", true);
+        isLoad = true;
+        ringProgressDialog = new ProgressDialog(thiz.getContext());
+        if(attendancesRefreshLayout != null && attendancesRefreshLayout.isRefreshing() == false)
+            ringProgressDialog = ringProgressDialog.show(this.getActivity(), "Please wait ...", "Loading ...", true);
         service.getMyAttendances("", "", new AsyncCallback<List<Attendance>>() {
             @Override
             public void onSuccess(List<Attendance> result) {
                 ringProgressDialog.dismiss();
+                attendancesRefreshLayout.setRefreshing(false);
                 attendanceList.clear();
                 groupAttendances.clear();
-                attendanceList.addAll(result);
-                containerView.setVisibility(View.VISIBLE);
-                setViewData();
+
+                if(!result.isEmpty()) {
+                    attendanceList.addAll(result);
+                    containerView.setVisibility(View.VISIBLE);
+                    emptyView.setVisibility(View.GONE);
+                    setViewData();
+                }
+                else {
+                    containerView.setVisibility(View.GONE);
+                    emptyView.setVisibility(View.VISIBLE);
+                }
 
 //                if (currentPage != null)
 //                    currentPage.setData(attendanceList);
@@ -105,6 +126,9 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
             @Override
             public void onFailure(String message) {
                 ringProgressDialog.dismiss();
+                attendancesRefreshLayout.setRefreshing(false);
+                containerView.setVisibility(View.GONE);
+                emptyView.setVisibility(View.VISIBLE);
                 if (thiz.getActivity() != null)
                     Toast.makeText(thiz.getActivity(), "Some error occur !", Toast.LENGTH_SHORT).show();
             }
@@ -117,21 +141,20 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
     }
 
     void setViewData() {
-        int totalAbsent = attendanceList.size();
-        int totalExcused = 0;
-        int totalNoExcused = 0;
+        int totalFullday = 0;
+        int totalExcused1 = 0;
+        int totalNoExcused1 = 0;
+        int totalSession = 0;
+        int totalExcused2 = 0;
+        int totalNoExcused2 = 0;
 
         for(Attendance attendance: attendanceList) {
-            if(attendance.getExcused() == 1)
-                totalExcused++;
-
             boolean onGroupe = false;
             for(GroupAttendance groupAttendance: groupAttendances) {
                 if(attendance.getAtt_dt().equals(groupAttendance.getAtt_dt())) {
                     groupAttendance.getAttendances().add(attendance);
                     onGroupe = true;
                     break;
-
                 }
             }
             if(onGroupe == false) {
@@ -142,14 +165,36 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
             }
         }
 
-        totalNoExcused = totalAbsent - totalExcused;
-        txbTotalAbsent.setText("Total Attendances: " + groupAttendances.size() + " (days)");
-        txbTotalExcused.setText("Excused: " + totalExcused);
-        txbTotalNoExcused.setText("No Reason: " + totalNoExcused);
+        for(GroupAttendance groupAttendance: groupAttendances) {
+            if(groupAttendance.getAttendances().size() == 1) {
+                totalFullday++;
+                if(groupAttendance.getAttendances().get(0).getExcused() == 1)
+                    totalExcused1++;
+                else
+                    totalNoExcused1++;
+            } else {
+                for(Attendance attendance: groupAttendance.getAttendances()) {
+                    totalSession++;
+                    if(attendance.getExcused() == 1)
+                        totalExcused2++;
+                    else
+                        totalNoExcused2++;
+                }
+            }
+        }
 
-        ListAttendancesAdapter mAdapter = new ListAttendancesAdapter(groupAttendances, thiz.getContext());
-        groupAttendancesView.swapAdapter(mAdapter, false);
-//        groupAttendancesView.setAdapter(mAdapter);
+        txbTotalFullday.setText("Full day: " + totalFullday + " (days)");
+        txbTotalExcused1.setText("Excused: " + totalExcused1);
+        txbTotalNoExcused1.setText("No Reason: " + totalNoExcused1);
+        txbTotalSession.setText("Session: " + totalSession + " (sessions)");
+        txbTotalExcused2.setText("Excused: " + totalExcused2);
+        txbTotalNoExcused2.setText("No Reason: " + totalNoExcused2);
+
+        if(mAdapter == null) {
+            ListAttendancesAdapter mAdapter = new ListAttendancesAdapter(groupAttendances, thiz.getContext());
+            groupAttendancesView.setAdapter(mAdapter);
+        } else
+            mAdapter.swap(groupAttendances);
     }
 
 //    public class MyPagerAdapter extends FragmentPagerAdapter {
@@ -264,21 +309,49 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
 
             groupAttendancesView = (RecyclerView) view.findViewById(R.id.groupAttendancesView);
             containerView = (LinearLayout) view.findViewById(R.id.container);
-            txbTotalAbsent = (TextView) view.findViewById(R.id.txbTotalAbsent);
-            txbTotalExcused = (TextView) view.findViewById(R.id.txbTotalExcused);
-            txbTotalNoExcused = (TextView) view.findViewById(R.id.txbTotalNoExcused);
+            emptyView = (LinearLayout) view.findViewById(R.id.emptyView);
+            btnReload = (LinearLayout) view.findViewById(R.id.btnReload);
+            txbTotalFullday = (TextView) view.findViewById(R.id.txbTotalFullday);
+            txbTotalExcused1 = (TextView) view.findViewById(R.id.txbTotalExcused1);
+            txbTotalNoExcused1 = (TextView) view.findViewById(R.id.txbTotalNoExcused1);
+            txbTotalSession = (TextView) view.findViewById(R.id.txbTotalSession);
+            txbTotalExcused2 = (TextView) view.findViewById(R.id.txbTotalExcused2);
+            txbTotalNoExcused2 = (TextView) view.findViewById(R.id.txbTotalNoExcused2);
+            attendancesRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.attendancesRefreshLayout);
 
             // use this setting to improve performance if you know that changes
             // in content do not change the layout size of the RecyclerView
-            groupAttendancesView.setHasFixedSize(true);
+            groupAttendancesView.setHasFixedSize(false);
             // use a linear layout manager
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(thiz.getContext());
             groupAttendancesView.setLayoutManager(linearLayoutManager);
 
             containerView.setVisibility(View.INVISIBLE);
 
+            attendancesRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    refreshContent();
+                }
+            });
+
+            btnReload.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    getAttendances();
+                }
+            });
+
             return view;
         }
+    }
+
+    private void refreshContent(){
+        new Handler().postDelayed(new Runnable() {
+            @Override public void run() {
+                getAttendances();
+            }
+        }, 500);
     }
 
     @Override
@@ -292,7 +365,7 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
             Log.d(getString(R.string.title_screen_attended), "-Container Id:" + containerId);
         }
 
-        getAttendances();
+//        getAttendances();
     }
 
     @Override
@@ -327,6 +400,9 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
 
     @Override
     public void onResumeFragment() {
+        if (!isLoad && getUserVisibleHint()) {
+            getAttendances();
+        }
     }
 
     @Override

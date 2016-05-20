@@ -1,7 +1,6 @@
 package com.laoschool.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,11 +22,7 @@ import com.laoschool.model.AsyncCallback;
 import com.laoschool.model.sqlite.DataAccessMessage;
 import com.laoschool.screen.ScreenMessage;
 import com.laoschool.shared.LaoSchoolShared;
-import com.laoschool.tools.CustomNetworkImageView;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**

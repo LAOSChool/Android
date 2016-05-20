@@ -8,6 +8,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.laoschool.R;
 import com.laoschool.view.FragmentLifecycle;
@@ -27,8 +29,15 @@ public class ScreenSchoolInformation extends Fragment implements FragmentLifecyc
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.screen_school_information, container, false);
+        View view = inflater.inflate(R.layout.screen_school_information, container, false);
+        WebView myWebView = (WebView) view.findViewById(R.id.webview);
+        myWebView.setWebViewClient(new WebViewClient());
+        myWebView.getSettings().setJavaScriptEnabled(true);
+        myWebView.getSettings().setDomStorageEnabled(true);
+        myWebView.loadUrl("http://dantri.com.vn/giai-tri/nguoi-dep-dien-bikini-hut-hon-trong-nhung-shot-hinh-nong-bong-20160519114233968.htm");
+        return view;
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

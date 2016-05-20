@@ -12,7 +12,6 @@ import com.laoschool.R;
 import com.laoschool.entities.Message;
 import com.laoschool.shared.LaoSchoolShared;
 
-import java.util.Date;
 import java.util.List;
 
 /**

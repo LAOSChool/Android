@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 
 import com.laoschool.R;
 import com.laoschool.adapter.RecylerViewScreenListTeacherAdapter;
-import com.laoschool.adapter.RecylerViewScreenSettingAdapter;
 import com.laoschool.view.FragmentLifecycle;
 
 import java.util.Arrays;

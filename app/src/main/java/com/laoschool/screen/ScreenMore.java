@@ -3,7 +3,11 @@ package com.laoschool.screen;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,15 +18,17 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.laoschool.R;
 import com.laoschool.adapter.RecyclerViewScreenMoreAdapter;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
@@ -90,6 +96,31 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
 
     }
 
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... args) {
+            try {
+                Bitmap bitmapp = BitmapFactory.decodeStream((InputStream)new URL(args[0]).getContent());
+                return bitmapp;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            if(result != null)
+                bmImage.setImageBitmap(result);
+            else
+                Log.i("ScreenMore", "Can't not load user image");
+        }
+    }
+
     private View _defineSrceenMoreStudent(LayoutInflater inflater, ViewGroup container) {
         try {
 
@@ -97,17 +128,34 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
             //
             LinearLayout mDetaislUser = (LinearLayout) view.findViewById(R.id.mDetaislUser);
             TextView txtStudentName = (TextView) view.findViewById(R.id.txtUserNameScreenMoreStudent);
-            TextView txtSchoolName = (TextView) view.findViewById(R.id.txtUserNameScreenMoreStudent);
+            TextView txtSchoolName = (TextView) view.findViewById(R.id.txtSchoolNameScreenMoreStudent);
             TextView txtTerm = (TextView) view.findViewById(R.id.txtTermScreenMoreStudent);
             RecyclerView mRecylerViewFunctionMore = (RecyclerView) view.findViewById(R.id.mRecylerViewFunctionMore);
+            ImageView userImage = (ImageView) view.findViewById(R.id.userImage);
+            ImageView schoolImage = (ImageView) view.findViewById(R.id.schoolImage);
+            ImageView termImage = (ImageView) view.findViewById(R.id.termImage);
+
+            int color = Color.parseColor("#808080"); //The color u want
+            userImage.setColorFilter(color);
+            schoolImage.setColorFilter(color);
+            termImage.setColorFilter(color);
+
+            new DownloadImageTask((ImageView) view.findViewById(R.id.userImage))
+                    .execute("http://placehold.it/120x120&text=image1");
 
             //Handler goto detaisl
-            mDetaislUser.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    iScreenMore.gotoDetailsUser();
-                }
-            });
+//            mDetaislUser.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    iScreenMore.gotoDetailsUser();
+//                }
+//            });
+
+            txtStudentName.setText(LaoSchoolShared.myProfile.getFullname() + " - Class " + LaoSchoolShared.myProfile.getEclass().getTitle());
+            txtSchoolName.setText(LaoSchoolShared.myProfile.getSchoolName());
+            String split[] = LaoSchoolShared.myProfile.getEclass().getYears().split("-");
+            String years = "Năm học: " + split[0] + " - " + split[1];
+            txtTerm.setText(years);
 
             //init adapte
             List<String> more_student = Arrays.asList(getResources().getStringArray(R.array.more_student));

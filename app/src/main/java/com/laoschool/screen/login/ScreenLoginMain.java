@@ -5,12 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -21,7 +17,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,14 +27,6 @@ import com.laoschool.model.DataAccessImpl;
 import com.laoschool.model.DataAccessInterface;
 import com.laoschool.screen.HomeActivity;
 import com.laoschool.shared.LaoSchoolShared;
-
-import java.io.IOException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableEntryException;
-import java.security.cert.CertificateException;
-import java.security.interfaces.RSAPublicKey;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -160,7 +147,7 @@ public class ScreenLoginMain extends Fragment {
                     logo.setPadding(0, 0, 0, 0);
                     btnFogetPass.setVisibility(View.INVISIBLE);
                     return;
-                } else if (bottom > oldBottom && (bottom - oldBottom) > 30) {
+                } else if (bottom > oldBottom && (bottom - oldBottom) > 400) {
                     layoutContent.setGravity(Gravity.CENTER);
                     layoutContent.setPadding(0, 0, 0, 90);
                     logo.setPadding(0, 0, 0, 100);

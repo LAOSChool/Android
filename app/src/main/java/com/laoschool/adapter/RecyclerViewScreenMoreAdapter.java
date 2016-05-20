@@ -1,6 +1,7 @@
 package com.laoschool.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,17 +59,32 @@ public class RecyclerViewScreenMoreAdapter extends RecyclerView.Adapter<Recycler
                 //Define and set data
                 TextView txtMoreScreenName = (TextView) view.findViewById(R.id.row_title);
                 ImageView row_icon = (ImageView) view.findViewById(R.id.row_icon);
+
+                int color = Color.parseColor("#808080");
+                row_icon.setColorFilter(color);
+
                 if (txtMoreScreenName != null) {
                     txtMoreScreenName.setText(title);
                 }
                 if (title.equals(context.getString(R.string.title_screen_school_information))) {
+                    if (row_icon != null) {
+                        row_icon.setImageDrawable(LaoSchoolShared.getDraweble(context, R.drawable.ic_account_balance_black_24dp));
+                    }
                 } else if (title.equals(context.getString(R.string.title_screen_list_teacher))) {
                     if (row_icon != null) {
-                        row_icon.setImageDrawable(LaoSchoolShared.getDraweble(context, R.drawable.ic_list_black_24dp));
+                        row_icon.setImageDrawable(LaoSchoolShared.getDraweble(context, R.drawable.ic_people_black_24dp));
+                    }
+                }else if (title.equals(context.getString(R.string.title_screen_schedule))) {
+                    if (row_icon != null) {
+                        row_icon.setImageDrawable(LaoSchoolShared.getDraweble(context, R.drawable.ic_date_range_black_24dp));
+                    }
+                } else if (title.equals(context.getString(R.string.title_screen_final_results_student))) {
+                    if (row_icon != null) {
+                        row_icon.setImageDrawable(LaoSchoolShared.getDraweble(context, R.drawable.ic_chrome_reader_mode_black_24dp));
                     }
                 } else if (title.equals(context.getString(R.string.title_screen_setting))) {
                     if (row_icon != null) {
-                        row_icon.setImageDrawable(LaoSchoolShared.getDraweble(context, R.drawable.ic_settings_black_24dp));
+                        row_icon.setImageDrawable(LaoSchoolShared.getDraweble(context, R.drawable.ic_info_black_24dp));
                     }
                 } else if (title.equals(context.getString(R.string.action_log_out))) {
                     if (row_icon != null) {

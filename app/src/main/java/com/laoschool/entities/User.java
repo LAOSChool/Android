@@ -32,6 +32,10 @@ public class User {
 
     int school_id;
 
+    String schoolName;
+
+    String photo;
+
     String roles;
 
     UserDetail user_detail;
@@ -113,6 +117,22 @@ public class User {
         this.school_id = school_id;
     }
 
+    public String getSchoolName() {
+        return schoolName;
+    }
+
+    public void setSchoolName(String schoolName) {
+        this.schoolName = schoolName;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
     public String getRoles() {
         return roles;
     }
@@ -168,6 +188,8 @@ public class User {
             user.setState(mainObject.getString("state"));
             user.setSchool_id(mainObject.getInt("school_id"));
             user.setRoles(mainObject.getString("roles"));
+            user.setSchoolName(mainObject.getString("schoolName"));
+            user.setPhoto(mainObject.getString("photo"));
             // User detail
             UserDetail userDetail = new UserDetail();
             userDetail.setAddr1(mainObject.getString("addr1"));

@@ -1,10 +1,15 @@
 package com.laoschool.model;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 
-import com.laoschool.entities.*;
+import com.laoschool.entities.Attendance;
 import com.laoschool.entities.Class;
+import com.laoschool.entities.ExamResult;
+import com.laoschool.entities.FinalResult;
+import com.laoschool.entities.Message;
+import com.laoschool.entities.School;
+import com.laoschool.entities.TimeTable;
+import com.laoschool.entities.User;
 
 import java.util.List;
 
@@ -64,6 +69,16 @@ public interface DataAccessInterface {
      */
     public void getUserById(int user_id, AsyncCallback<User> callback);
 
+    /**
+     * User  change login password himself.
+     *
+     * @param user_id
+     * @param oldpass
+     * @param newpass
+     * @param callback return message status,
+     */
+    public void userChangePassword(String user_id, String oldpass, String newpass, AsyncCallback<String> callback);
+
     //----- Attendance -----//
 
     /**
@@ -88,7 +103,7 @@ public interface DataAccessInterface {
      * @param attendance
      * @param callback return status code
      */
-    public void requestAttendance(Attendance attendance, AsyncCallback<String> callback);
+    public void requestAttendance(Attendance attendance, String fromDt, String toDt, AsyncCallback<String> callback);
 
     /**
      * Modify an existing Attendance information.

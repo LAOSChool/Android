@@ -6,7 +6,7 @@
     <string name="title_screen_attended">Attendance</string>
     <string name="action_request_attendance">Your Absent</string>
     <string name="title_screen_exam_results">Exam results</string>
-    <string name="title_screen_schedule">Schedule</string>
+    <string name="title_screen_schedule">Timetable</string>
     <string name="title_screen_more">More</string>
     <string name="title_activity_screen_login">Lao school</string>
     <string name="action_create_message">Create</string>
@@ -18,7 +18,7 @@
     <string name="action_send_message">Send</string>
     <string name="title_screen_select_list_student">Select list student</string>
     <string name="title_screen_mark_score_student">Mark Score</string>
-    <string name="title_screen_setting">Setting</string>
+    <string name="title_screen_setting">Change Password</string>
     <string name="title_screen_list_teacher">List teacher</string>
 
     <string name="title_screen_announcements">Announcements</string>

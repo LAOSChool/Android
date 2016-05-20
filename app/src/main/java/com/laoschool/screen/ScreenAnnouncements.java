@@ -2,15 +2,12 @@ package com.laoschool.screen;
 
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,9 +23,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.astuetz.PagerSlidingTabStrip;
-import com.laoschool.R;
 import com.laoschool.LaoSchoolSingleton;
-import com.laoschool.adapter.ListMessageAdapter;
+import com.laoschool.R;
 import com.laoschool.adapter.ListNotificationAdapter;
 import com.laoschool.entities.Message;
 import com.laoschool.listener.OnLoadMoreListener;

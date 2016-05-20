@@ -2,7 +2,6 @@ package com.laoschool;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.v4.util.LruCache;
 
 import com.android.volley.Cache;
 import com.android.volley.Network;
@@ -11,12 +10,9 @@ import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.Volley;
 import com.laoschool.model.DataAccessImpl;
 import com.laoschool.model.DataAccessInterface;
-import com.laoschool.model.sqlite.DataAccessImage;
 import com.laoschool.model.sqlite.DatabaseHandler;
-import com.laoschool.tools.LruBitmapCache;
 
 /**
  * Created by Hue on 4/20/2016.

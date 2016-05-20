@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Số tiết nghỉ : 4"
-            android:id="@+id/txbTotalAbsent"
+            android:id="@+id/txbTotalFullday"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
             android:textSize="14sp" />
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Có lý do: 2"
-            android:id="@+id/txbTotalExcused"
+            android:id="@+id/txbTotalExcused1"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
             android:textSize="14sp" />
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Không lý do: 2"
-            android:id="@+id/txbTotalNoExcused"
+            android:id="@+id/txbTotalNoExcused1"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
             android:textSize="14sp" />
