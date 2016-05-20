@@ -99,8 +99,7 @@
                 android:layout_below="@+id/txtToUserNameMessageDetails"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_gravity="right|top"
-                android:layout_marginLeft="56dp" />
+                android:layout_gravity="right|top" />
         </RelativeLayout>
 
         <LinearLayout
