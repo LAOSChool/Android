@@ -1,12 +1,10 @@
 package com.laoschool.screen;
 
-
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,10 +27,11 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.astuetz.PagerSlidingTabStrip;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
+import com.laoschool.adapter.ExamResultsByTermPagerAdapter;
+import com.laoschool.adapter.RecylerViewScreenExamResultsAdapter;
 import com.laoschool.adapter.ExamResultsStudentSemesterAdapter;
 import com.laoschool.adapter.RecylerViewScreenExamResultsAdapter;
 import com.laoschool.entities.ExamResult;
@@ -47,7 +46,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -332,7 +330,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         }
 
         //difine pager
-        ExamScorePagerAdapter sampleFragmentPagerAdapter = new ExamScorePagerAdapter(fr, hashterms, mapTermExam);
+        ExamResultsByTermPagerAdapter sampleFragmentPagerAdapter = new ExamResultsByTermPagerAdapter(fr, hashterms, mapTermExam);
         mViewPageStudent.setAdapter(sampleFragmentPagerAdapter);
         // Attach the view pager to the tab strip
         tabsStrip.setViewPager(mViewPageStudent);
@@ -586,77 +584,35 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         cbx.setAdapter(dataAdapterclassTest);
     }
 
-
-    public static class ExamScorePagerAdapter extends FragmentStatePagerAdapter {
-        private List<Integer> termIds = new ArrayList<>();
-        private List<String> terms = new ArrayList<>();
-        private List<ArrayList<ExamResult>> lists = new ArrayList<>();
-
-        public ExamScorePagerAdapter(FragmentManager fm, HashMap<Integer, String> hashterms, Map<Integer, ArrayList<ExamResult>> examResultList) {
-            super(fm);
-            Map<Integer, String> treeterms = new TreeMap<>(hashterms);
-            for (Integer key : treeterms.keySet()) {
-                ArrayList<ExamResult> exams = examResultList.get(key);
-                termIds.add(key);
-                terms.add(hashterms.get(key));
-                lists.add(exams);
-                Log.d(TAG, "ExamScorePagerAdapter() -Term:" + key + ",Exam f_results:" + exams.size());
-            }
-
-        }
-
-        @Override
-        public int getCount() {
-            return terms.size();
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            if (position == 0)
-                return ScoreFragment.newInstance(0, termIds.get(0), lists.get(0));
-            else if (position == 1)
-                return ScoreFragment.newInstance(1, termIds.get(1), lists.get(1));
-            else
-                return null;
-
-
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            // Generate title based on item position
-            return terms.get(position);
-        }
-
-        public int getItemPosition(Object object) {
-            return POSITION_NONE;
-        }
-
-
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        Log.d(TAG, "setUserVisibleHint(" + isVisibleToUser + ")");
+        super.setUserVisibleHint(isVisibleToUser);
     }
 
-    public static class ScoreFragment extends Fragment {
+    public static class ExamResultsByTermPager extends Fragment {
         public static final String ARG_PAGE = "ARG_PAGE";
         private static final String ARG_LIST = "list";
         private static final String ARG_SEMESTER_ID = "semesterId";
-        private static final String S_TAG = ScoreFragment.class.getSimpleName();
+        private static final String TAG = ExamResultsByTermPager.class.getSimpleName();
         private int position;
-        ScoreFragment fragment;
+        ExamResultsByTermPager fragment;
         private Context context;
         private RecyclerView recyclerView;
         private ExamResultsStudentSemesterAdapter studentSemesterAdapter;
         private List<ExamResult> f_results;
         int semesterId;
 
-        public ScoreFragment() {
+        public ExamResultsByTermPager() {
+
         }
 
-        public static ScoreFragment newInstance(int page, int semesterId, ArrayList<ExamResult> results) {
+        public static ExamResultsByTermPager newInstance(int page, int semesterId, ArrayList<ExamResult> results) {
             Bundle args = new Bundle();
             args.putInt(ARG_PAGE, page);
             args.putParcelableArrayList(ARG_LIST, results);
             args.putInt(ARG_SEMESTER_ID, semesterId);
-            ScoreFragment fragment = new ScoreFragment();
+            ExamResultsByTermPager fragment = new ExamResultsByTermPager();
             fragment.setArguments(args);
             return fragment;
         }
@@ -678,18 +634,38 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         // Set the associated text for the title
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
-            Log.d(TAG, S_TAG + ".onCreateView() position: " + position);
+            Log.d(ExamResultsByTermPagerAdapter.TAG, TAG + ".onCreateView() position: " + position);
             View view = inflater.inflate(R.layout.view_exam_resluts_student_tab, container, false);
             recyclerView = (RecyclerView) view.findViewById(R.id.mRecyclerViewExamResultsStudentTab);
             final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
             recyclerView.setLayoutManager(linearLayoutManager);
 
             studentSemesterAdapter = new ExamResultsStudentSemesterAdapter(fragment, f_results);
             recyclerView.setAdapter(studentSemesterAdapter);
 
+            //handler Scroll list and swipe refersh
+            _handlerScrollList(mSwipeRefreshLayout);
             _handlerSwipeRefesh(mSwipeRefreshLayout);
             return view;
+        }
+
+        private void _handlerScrollList(final SwipeRefreshLayout mSwipeRefreshLayout) {
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    int topRowVerticalPosition =
+                            (recyclerView == null || recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
+                    mSwipeRefreshLayout.setEnabled(topRowVerticalPosition >= 0);
+
+                }
+
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                }
+            });
+
         }
 
 
@@ -714,13 +690,13 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
                             alreadyExecuted = true;
 
                         } else {
-                            Log.d(TAG, S_TAG + ".getMyExamResult(" + position + ").onAuthFail() message:NUll");
+                            Log.d(ExamResultsByTermPagerAdapter.TAG, TAG + ".getMyExamResult(" + position + ").onAuthFail() message:NUll");
                             _showProgressLoadingStudent(false);
                             _showNoDataStudent();
                             alreadyExecuted = true;
                         }
                     } else {
-                        Log.d(TAG, S_TAG + ".getMyExamResult(" + position + ").onAuthFail() message:Size==0");
+                        Log.d(ExamResultsByTermPagerAdapter.TAG, TAG + ".getMyExamResult(" + position + ").onAuthFail() message:Size==0");
                         _showProgressLoadingStudent(false);
                         _showNoDataStudent();
                         alreadyExecuted = true;
@@ -730,7 +706,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
 
                 @Override
                 public void onFailure(String message) {
-                    Log.e(TAG, S_TAG + ".getMyExamResult(" + position + ").onFailure() message:" + message);
+                    Log.e(ExamResultsByTermPagerAdapter.TAG, TAG + ".getMyExamResult(" + position + ").onFailure() message:" + message);
                     _showProgressLoadingStudent(false);
                     _showErrorStudent();
                     alreadyExecuted = true;
@@ -738,7 +714,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
 
                 @Override
                 public void onAuthFail(String message) {
-                    Log.e(TAG, S_TAG + "._getMyExamResult(" + position + ").onAuthFail() message:" + message);
+                    Log.e(ExamResultsByTermPagerAdapter.TAG, TAG + "._getMyExamResult(" + position + ").onAuthFail() message:" + message);
                     LaoSchoolShared.goBackToLoginPage(context);
                     _showProgressLoadingStudent(false);
                     alreadyExecuted = true;
@@ -747,36 +723,19 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         }
 
         private void _refeshData(List<ExamResult> result) {
-            recyclerView.swapAdapter(new ExamResultsStudentSemesterAdapter(this, _hashDatafromSemestes(result)), true);
+            recyclerView.swapAdapter(new ExamResultsStudentSemesterAdapter(this, hashDatafromSemestes(result)), true);
 
         }
 
-        private ArrayList<ExamResult> _hashDatafromSemestes(List<ExamResult> result) {
+        private ArrayList<ExamResult> hashDatafromSemestes(List<ExamResult> result) {
             ArrayList<ExamResult> examResults = new ArrayList<>();
             for (ExamResult examResult : result) {
                 if (examResult.getTerm_id() == semesterId) {
                     examResults.add(examResult);
                 }
             }
-            Log.d(TAG, "_hashDatafromSemestes() semesterId=" + semesterId + " ,size=" + examResults.size());
+            Log.d(TAG, "hashDatafromSemestes() -semesterId=" + semesterId + " ,size=" + examResults.size());
             return examResults;
         }
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        Log.d(TAG, "setUserVisibleHint(" + isVisibleToUser + ")");
-        super.setUserVisibleHint(isVisibleToUser);
-//        if (isVisibleToUser) {
-//            if (!alreadyExecuted) {
-//                if (currentRole != null)
-//                    if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
-//
-//                    } else {
-//
-//                    }
-//            }
-//
-//        }
     }
 }

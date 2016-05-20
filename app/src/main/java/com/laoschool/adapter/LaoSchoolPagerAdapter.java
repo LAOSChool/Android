@@ -1,17 +1,17 @@
 package com.laoschool.adapter;
 
+import java.util.List;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.ViewGroup;
-
-import java.util.List;
 
 /**
  * Created by Hue on 2/26/2016.
  */
-public class PagerAdapter extends FragmentPagerAdapter {
+public class LaoSchoolPagerAdapter extends FragmentPagerAdapter {
 
     private List<Fragment> fragments;
     private android.support.v4.app.FragmentManager fragmentManager;
@@ -20,7 +20,7 @@ public class PagerAdapter extends FragmentPagerAdapter {
      * @param fm
      * @param fragments
      */
-    public PagerAdapter(FragmentManager fm, List<Fragment> fragments) {
+    public LaoSchoolPagerAdapter(FragmentManager fm, List<Fragment> fragments) {
         super(fm);
         this.fragments = fragments;
         this.fragmentManager = fm;
@@ -32,12 +32,11 @@ public class PagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         Fragment fragment = this.fragments.get(position);
-        //Log.d("Page", "-Tag:" + fragment.getTag());
         return fragment;
     }
 
     /* (non-Javadoc)
-     * @see android.support.v4.view.PagerAdapter#getCount()
+     * @see android.support.v4.view.LaoSchoolPagerAdapter#getCount()
      */
     @Override
     public int getCount() {
@@ -59,11 +58,10 @@ public class PagerAdapter extends FragmentPagerAdapter {
         super.setPrimaryItem(container, position, object);
     }
 
+    @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        if (position > 5) {
+        if (position > 4)
             super.destroyItem(container, position, object);
-        }
-
     }
 }
 

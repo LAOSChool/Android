@@ -1,5 +1,7 @@
 package com.laoschool.entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.provider.BaseColumns;
 
 import com.google.gson.Gson;
@@ -7,12 +9,13 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Tran An on 23/03/2016.
  */
-public class Message {
+public class Message implements Parcelable {
 
     static final String Entity_Name = "message";
 
@@ -333,6 +336,92 @@ public class Message {
             return message;
         }
     }
+
+    protected Message(Parcel in) {
+        id = in.readInt();
+        school_id = in.readInt();
+        class_id = in.readInt();
+        from_usr_id = in.readInt();
+        from_user_name = in.readString();
+        to_usr_id = in.readInt();
+        to_user_name = in.readString();
+        content = in.readString();
+        channel = in.readInt();
+        is_sent = in.readInt();
+        sent_dt = in.readString();
+        is_read = in.readInt();
+        read_dt = in.readString();
+        other = in.readString();
+        msg_type_id = in.readInt();
+        imp_flg = in.readInt();
+        title = in.readString();
+        schoolName = in.readString();
+        messageType = in.readString();
+        cc_list = in.readString();
+        cId = in.readInt();
+        type = in.readInt();
+        if (in.readByte() == 0x01) {
+            notifyImages = new ArrayList<Image>();
+            in.readList(notifyImages, Image.class.getClassLoader());
+        } else {
+            notifyImages = null;
+        }
+        task_id = in.readInt();
+        frm_user_photo = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(Entity_Name);
+        dest.writeInt(id);
+        dest.writeInt(school_id);
+        dest.writeInt(class_id);
+        dest.writeInt(from_usr_id);
+        dest.writeString(from_user_name);
+        dest.writeInt(to_usr_id);
+        dest.writeString(to_user_name);
+        dest.writeString(content);
+        dest.writeInt(channel);
+        dest.writeInt(is_sent);
+        dest.writeString(sent_dt);
+        dest.writeInt(is_read);
+        dest.writeString(read_dt);
+        dest.writeString(other);
+        dest.writeInt(msg_type_id);
+        dest.writeInt(imp_flg);
+        dest.writeString(title);
+        dest.writeString(schoolName);
+        dest.writeString(messageType);
+        dest.writeString(cc_list);
+        dest.writeInt(cId);
+        dest.writeInt(type);
+        if (notifyImages == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(notifyImages);
+        }
+        dest.writeInt(task_id);
+        dest.writeString(frm_user_photo);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Message> CREATOR = new Parcelable.Creator<Message>() {
+        @Override
+        public Message createFromParcel(Parcel in) {
+            return new Message(in);
+        }
+
+        @Override
+        public Message[] newArray(int size) {
+            return new Message[size];
+        }
+    };
 
 
     /* Inner class that defines the table contents */

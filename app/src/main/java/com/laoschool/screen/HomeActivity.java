@@ -21,9 +21,13 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.laoschool.LaoSchoolSingleton;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
 import com.laoschool.R;
-import com.laoschool.adapter.PagerAdapter;
+import com.laoschool.LaoSchoolSingleton;
+import com.laoschool.adapter.LaoSchoolPagerAdapter;
+
 import com.laoschool.entities.Message;
 import com.laoschool.entities.User;
 import com.laoschool.model.AsyncCallback;
@@ -56,20 +60,15 @@ public class HomeActivity extends AppCompatActivity implements
     private TabHost mTabHost;
     private ViewpagerDisableSwipeLeft mViewPager;
     private HashMap<String, TabInfo> mapTabInfo = new HashMap<String, HomeActivity.TabInfo>();
-    private PagerAdapter mPagerAdapter;
+    private LaoSchoolPagerAdapter mPagerAdapter;
     private int currentPosition = 0;
     int containerId;
     private String currentRole;
     public int beforePosition;
-
-    private Bundle savedInstanceState;
-
     private DataAccessInterface service;
+    private Bundle savedInstanceState;
     private Context thiz;
 
-    public enum Role {
-        student, teacher;
-    }
 
     public enum DisplayButtonHome {
         show, hide;
@@ -206,7 +205,6 @@ public class HomeActivity extends AppCompatActivity implements
      */
     private void intialiseViewPager(String currentRole) {
         this.mViewPager = (ViewpagerDisableSwipeLeft) super.findViewById(R.id.viewpager);
-
         containerId = mViewPager.getId();
 
         List<Fragment> fragments = new Vector<Fragment>();
@@ -248,11 +246,14 @@ public class HomeActivity extends AppCompatActivity implements
 
         fragments.add(ScreenRequestAttendance.instantiate(containerId, currentRole, this, screenAttended));
 
-        this.mPagerAdapter = new PagerAdapter(super.getSupportFragmentManager(), fragments);
+        this.mPagerAdapter = new LaoSchoolPagerAdapter(super.getSupportFragmentManager(), fragments);
         //set adapter and set handler page change
         this.mViewPager.setAdapter(this.mPagerAdapter);
+        //disable swipe
+        mViewPager.setAllowedSwipeDirection(SwipeDirection.none);
 
         this.mViewPager.addOnPageChangeListener(this);
+
 
         getSupportActionBar().setTitle(R.string.title_screen_message);
     }
@@ -489,7 +490,6 @@ public class HomeActivity extends AppCompatActivity implements
         fragmentToHide.onPauseFragment();
 
         currentPosition = position;
-        //Log.d(TAG,"onPageSelected");
     }
 
     /* (non-Javadoc)
@@ -520,14 +520,7 @@ public class HomeActivity extends AppCompatActivity implements
             super.onBackPressed();
         } else if (currentPage > LaoSchoolShared.POSITION_SCREEN_MORE_4) {
             if (currentPage == LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5) {
-                if (beforePosition == LaoSchoolShared.POSITION_SCREEN_MESSAGE_0) {
-                    //back to tab message
-                    _gotoPage(LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
-                } else {
-                    //back to tab attender
-                    _gotoPage(LaoSchoolShared.POSITION_SCREEN_ATTENDED_3);
-                }
-                getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
+                goBackToMessage();
             } else if (currentPage == LaoSchoolShared.POSITION_SCREEN_LIST_STUDENT_10) {
                 //back to tab create message
                 _gotoPage(LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
@@ -609,7 +602,7 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void _gotoScreenCreateMessage() {
+    public void gotoScreenCreateMessage() {
         beforePosition = LaoSchoolShared.POSITION_SCREEN_MESSAGE_0;
         _gotoPage(LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
     }
@@ -656,7 +649,7 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void _gotoMessageDetails(Message message) {
+    public void gotoMessageDetails(Message message) {
         _gotoPage(LaoSchoolShared.POSITION_SCREEN_MESSAGE_DETAILS_14);
 //        if (message != null)
 //            _setTitleandShowButtonBack(-1, message.getTo_user_name(), DisplayButtonHome.show);
@@ -755,19 +748,22 @@ public class HomeActivity extends AppCompatActivity implements
 
     @Override
     public void goBackToMessage() {
-        onBackPressed();
+        if (beforePosition == LaoSchoolShared.POSITION_SCREEN_MESSAGE_0) {
+            String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
+            ScreenMessage screenMessage = (ScreenMessage) getSupportFragmentManager().findFragmentByTag(tag);
+            screenMessage.reloadDataAfterCreateMessages();
+            //back to tab message
+            _gotoPage(LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
+        } else {
+            //back to tab attender
+            _gotoPage(LaoSchoolShared.POSITION_SCREEN_ATTENDED_3);
+        }
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
     }
 
     @Override
     public void gotoScheduleformMore() {
         _gotoPage(LaoSchoolShared.POSITION_SCREEN_SCHEDULE_6);
-    }
-
-    @Override
-    public void reLogin() {
-        Intent intent = new Intent(this, ScreenLogin.class);
-        startActivity(intent);
-        finish();
     }
 
     @Override

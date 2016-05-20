@@ -20,7 +20,7 @@
     <color name="textColorSubHeader">@color/colorLaosBlue</color>k
     <color name="colorLaosRed">#B71C1C</color>
     <color name="colorLaosRed1">#ce1126</color>
-    <color name="colorLaosBlue">#FF002868</color>
+    <color name="colorLaosBlue">#002868</color>
     <color name="color_text">#000000</color>
 
     <color name="color_divider">#E0E0E0</color>

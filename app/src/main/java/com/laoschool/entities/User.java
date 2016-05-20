@@ -47,7 +47,7 @@ public class User {
     public User() {
     }
 
-    public User(int id, String sso_id, String password, String fullname, String nickname, String state, int school_id, String roles, UserDetail userDetail, Class eclass, List<Class> classes) {
+    public User(int id, String sso_id, String password, String fullname, String nickname, String state, int school_id, String roles, UserDetail user_detail, Class eclass, List<Class> classes, String schoolName) {
         this.id = id;
         this.sso_id = sso_id;
         this.password = password;
@@ -56,9 +56,10 @@ public class User {
         this.state = state;
         this.school_id = school_id;
         this.roles = roles;
-        this.user_detail = userDetail;
+        this.user_detail = user_detail;
         this.eclass = eclass;
         this.classes = classes;
+        this.schoolName = schoolName;
     }
 
     public int getId() {
@@ -176,6 +177,7 @@ public class User {
         User user = gson.fromJson(jsonString, User.class);
         return user;
     }
+
 
     public static User parseFromJson(String jsonString) {
         try {
