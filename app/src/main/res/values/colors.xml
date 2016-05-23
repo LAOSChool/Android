@@ -51,4 +51,6 @@
     <color name="colorTitleUnread">#2196F3</color>
     <color name="colorAttendanceNoReason">#D32F2F</color>
     <color name="colorAttendanceHasReason">#00A261</color>
+    <color name="colorSenderRead">#000</color>
+    <color name="colorTitleRead">#000</color>
 </resources>
