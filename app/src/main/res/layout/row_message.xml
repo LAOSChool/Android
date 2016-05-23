@@ -6,7 +6,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="85dp"
+        android:layout_height="78dp"
         android:orientation="vertical"
         android:paddingBottom="8dp"
         android:paddingLeft="16dp"
@@ -30,18 +30,19 @@
         <TextView
             android:id="@+id/txbSender"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="20dp"
             android:text="Sender"
             android:textColor="@android:color/black"
             android:textSize="16sp"
             android:textStyle="normal"
             android:layout_marginLeft="56dp"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:gravity="fill_vertical" />
 
         <TextView
             android:id="@+id/txbContent"
             android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
+            android:layout_height="40dp"
             android:text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
             android:textColor="@color/colorDefault"
             android:textSize="14sp"
@@ -57,14 +58,15 @@
         <TextView
             android:id="@+id/txtDateSend"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="20dp"
             android:singleLine="true"
             android:text="Date"
             android:textColor="#2962FF"
             android:textSize="12sp"
             android:layout_above="@+id/imgFlagMessage"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentEnd="true"
+            android:gravity="top" />
 
         <com.android.volley.toolbox.NetworkImageView
             android:id="@+id/imgUserAvata"
@@ -78,7 +80,7 @@
         <ImageView
             android:id="@+id/imgFlagMessage"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="20dp"
             android:src="@drawable/ic_keyboard_arrow_right_black_24dp"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
@@ -86,7 +88,7 @@
 
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="20dp"
             android:id="@+id/imgStar"
             android:src="@drawable/ic_star_border_white_24dp"
             android:layout_alignParentBottom="true"
