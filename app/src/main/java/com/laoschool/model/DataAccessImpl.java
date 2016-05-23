@@ -805,7 +805,7 @@ public class DataAccessImpl implements DataAccessInterface {
                 filter_to_dt, filter_to_user_id, filter_channel,
                 filter_sts, filter_from_id);
         url += makeUrl;
-//        Log.d("Service/getMessages()", "url:" + url);
+       Log.d("Service/getMessages()", "url:" + url);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url.trim(),
                 new Response.Listener<String>() {
                     @Override
