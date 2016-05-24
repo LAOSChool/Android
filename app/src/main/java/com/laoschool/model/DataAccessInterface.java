@@ -132,7 +132,7 @@ public interface DataAccessInterface {
      *
      * @param callback return list of exam result if success,
      */
-    public void getMyExamResults(AsyncCallback<List<ExamResult>> callback);
+    public void getMyExamResults(int filter_class_id,AsyncCallback<List<ExamResult>> callback);
 
     /**
      * Get class for a specific Exam Result ID

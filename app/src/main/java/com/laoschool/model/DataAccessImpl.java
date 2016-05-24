@@ -661,8 +661,8 @@ public class DataAccessImpl implements DataAccessInterface {
     }
 
     @Override
-    public void getMyExamResults(final AsyncCallback<List<ExamResult>> callback) {
-        String url = HOST + "exam_results/myprofile";
+    public void getMyExamResults(int filter_class_id, final AsyncCallback<List<ExamResult>> callback) {
+        String url = HOST + "exam_results/myprofile?filter_class_id=" + filter_class_id;
         Log.d("Service", TAG + ".getMyExamResults() -url:" + url);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url.trim(),
                 new Response.Listener<String>() {
