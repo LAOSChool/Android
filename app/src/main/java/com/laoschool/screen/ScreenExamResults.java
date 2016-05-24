@@ -27,13 +27,13 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.astuetz.PagerSlidingTabStrip;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.adapter.ExamResultsByTermPagerAdapter;
 import com.laoschool.adapter.RecylerViewScreenExamResultsAdapter;
 import com.laoschool.adapter.ExamResultsStudentSemesterAdapter;
-import com.laoschool.adapter.RecylerViewScreenExamResultsAdapter;
 import com.laoschool.entities.ExamResult;
 import com.laoschool.model.AsyncCallback;
 import com.laoschool.shared.LaoSchoolShared;
@@ -200,6 +200,18 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
 
         _handlerOnclickNodata();
 
+        if (!alreadyExecuted && getUserVisibleHint()) {
+            if (currentRole == null) {
+                Log.d(TAG, "onResumeFragment() - current role null");
+                currentRole = LaoSchoolShared.ROLE_STUDENT;
+            }
+            if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
+            } else {
+                _definePageSemesterStudent();
+            }
+
+        }
+
         return view;
     }
 
@@ -259,7 +271,8 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         if (positon == -1)
             _showProgressLoadingStudent(true);
 
-        LaoSchoolSingleton.getInstance().getDataAccessService().getMyExamResults(new AsyncCallback<List<ExamResult>>() {
+        int filter_class_id = LaoSchoolShared.myProfile.getEclass().getId();
+        LaoSchoolSingleton.getInstance().getDataAccessService().getMyExamResults(filter_class_id, new AsyncCallback<List<ExamResult>>() {
             @Override
             public void onSuccess(List<ExamResult> result) {
                 if (result.size() > 0) {
@@ -365,15 +378,18 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
 
 
     private static void _showProgressLoadingStudent(boolean b) {
-        if (b) {
-            mProgressStudent.setVisibility(View.VISIBLE);
-            mExamResultsStudent.setVisibility(View.GONE);
-        } else {
-            mProgressStudent.setVisibility(View.GONE);
-            mExamResultsStudent.setVisibility(View.VISIBLE);
+        try {
+            if (b) {
+                mProgressStudent.setVisibility(View.VISIBLE);
+                mExamResultsStudent.setVisibility(View.GONE);
+            } else {
+                mProgressStudent.setVisibility(View.GONE);
+                mExamResultsStudent.setVisibility(View.VISIBLE);
+            }
+            mError.setVisibility(View.GONE);
+            mNoData.setVisibility(View.GONE);
+        } catch (Exception e) {
         }
-        mError.setVisibility(View.GONE);
-        mNoData.setVisibility(View.GONE);
     }
 
     private View _defineScreenExamResultsTeacher(LayoutInflater inflater, ViewGroup container) {
@@ -402,7 +418,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
 
         txtTerm = (TextView) view.findViewById(R.id.txtTermScreenExamResults);
         txtSubject = (TextView) view.findViewById(R.id.txtSubjectScreenExamResults);
-        txtClass = (TextView) view.findViewById(R.id.txtClassScreenExamResults);
+        txtClass = (TextView) view.findViewById(R.id.lbTotalTerm);
 
         //
         searchStudent.setIconifiedByDefault(false);
@@ -680,7 +696,8 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         }
 
         private void getMyExamResult(final int position) {
-            LaoSchoolSingleton.getInstance().getDataAccessService().getMyExamResults(new AsyncCallback<List<ExamResult>>() {
+            int filter_class_id = LaoSchoolShared.myProfile.getEclass().getId();
+            LaoSchoolSingleton.getInstance().getDataAccessService().getMyExamResults(filter_class_id, new AsyncCallback<List<ExamResult>>() {
                 @Override
                 public void onSuccess(List<ExamResult> result) {
                     if (result.size() > 0) {
