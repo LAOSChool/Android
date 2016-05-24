@@ -60,22 +60,26 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
             if (scoreList.size() > 0) {
                 final ExamResult examResult = scoreList.get(scoreList.size() - 1);
                 String score = examResult.getSresult();
-                if (!score.trim().isEmpty()) {
-                    ((TextView) (view.findViewById(R.id.lbScoreMonth))).setText(monthStr);
-                    ((TextView) (view.findViewById(R.id.lbScore))).setText(score);
+                ((TextView) (view.findViewById(R.id.lbScoreMonth))).setText(monthStr);
+                if (score != null) {
+                    if (!score.trim().isEmpty()) {
+                        ((TextView) (view.findViewById(R.id.lbScore))).setText(score);
+                        view.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                _showDetailsExamResults(examResult);
 
-                    view.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            _showDetailsExamResults(examResult);
-
-                        }
-                    });
+                            }
+                        });
+                    } else {
+                        Log.e(TAG, "onBindViewHolder() - score is empty");
+                        view.setVisibility(View.GONE);
+                    }
                 } else {
-                    Log.e(TAG, "onBindViewHolder() - score is empty");
-                    view.setVisibility(View.GONE);
+                    Log.e(TAG, "onBindViewHolder() - score is null");
                 }
-                if (examResult.getExam_type()==2){
+
+                if (monthStr.equals("Final")) {
                     view.setBackgroundResource(R.drawable.border_row_score_by_month_final);
                 }
             } else {
