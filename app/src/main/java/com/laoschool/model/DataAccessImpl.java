@@ -272,10 +272,10 @@ public class DataAccessImpl implements DataAccessInterface {
     }
 
     @Override
-    public void getUsers(int filter_class_id, int filter_user_role, int filter_sts, final AsyncCallback<List<User>> callback) {
+    public void getUsers(int filter_class_id, String filter_user_role, String filter_sts, int filter_from_id, final AsyncCallback<List<User>> callback) {
         // Request a string response from the provided URL.
         String url = HOST + "users";
-        url += _makeUrlgetUsers(filter_class_id, filter_user_role, filter_sts);
+        url += _makeUrlgetUsers(filter_class_id, filter_user_role, filter_sts, filter_from_id);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
@@ -312,26 +312,39 @@ public class DataAccessImpl implements DataAccessInterface {
         mRequestQueue.add(stringRequest);
     }
 
-    private String _makeUrlgetUsers(int filter_class_id, int filter_user_role, int filter_sts) {
+    private String _makeUrlgetUsers(int filter_class_id, String filter_user_role, String filter_sts, int filter_from_id) {
         StringBuilder stringBuilder = new StringBuilder();
-        int _filter_class_id = 0, _filter_user_role = 0;
-
-        if (filter_class_id > -1) {
+        if(filter_class_id > -1) {
             stringBuilder.append("?filter_class_id=" + filter_class_id);
-            _filter_class_id = 1;
+            if(filter_user_role.equals(User.USER_ROLE_STUDENT) || filter_user_role.equals(User.USER_ROLE_TEACHER))
+                stringBuilder.append("&filter_user_role=" + filter_user_role);
+            if(filter_from_id > -1)
+                stringBuilder.append("&filter_from_id=" + filter_from_id);
+
+            return stringBuilder.toString();
         }
-        if (filter_class_id > -1 && _filter_class_id == 0) {
-            stringBuilder.append("?filter_user_role=" + filter_user_role);
-            _filter_user_role = 1;
-        } else {
-            stringBuilder.append("&filter_user_role=" + filter_user_role);
-        }
-        if (filter_user_role > -1 && _filter_user_role == 0) {
-            stringBuilder.append("?filter_sts=" + filter_sts);
-        } else {
-            stringBuilder.append("&filter_sts=" + filter_sts);
-        }
-        return stringBuilder.toString();
+        else
+            return "";
+
+
+//        int _filter_class_id = 0, _filter_user_role = 0;
+//
+//        if (filter_class_id > -1) {
+//            stringBuilder.append("?filter_class_id=" + filter_class_id);
+//            _filter_class_id = 1;
+//        }
+//        if (filter_class_id > -1 && _filter_class_id == 0) {
+//            stringBuilder.append("?filter_user_role=" + filter_user_role);
+//            _filter_user_role = 1;
+//        } else {
+//            stringBuilder.append("&filter_user_role=" + filter_user_role);
+//        }
+//        if (filter_user_role > -1 && _filter_user_role == 0) {
+//            stringBuilder.append("?filter_sts=" + filter_sts);
+//        } else {
+//            stringBuilder.append("&filter_sts=" + filter_sts);
+//        }
+//        return stringBuilder.toString();
     }
 
     @Override
@@ -449,7 +462,7 @@ public class DataAccessImpl implements DataAccessInterface {
                                 callback.onFailure(error.toString());
                             }
                         } else {
-                            Log.e("Service/changePass()", error.getMessage());
+                            Log.e("Service/changePass()", error.toString());
                             callback.onFailure(error.toString());
                         }
                     }
@@ -990,6 +1003,8 @@ public class DataAccessImpl implements DataAccessInterface {
         jsonObject.addProperty("content", message.getContent());
         jsonObject.addProperty("from_usr_id", message.getFrom_usr_id());
         jsonObject.addProperty("to_usr_id", message.getTo_usr_id());
+        if(!message.getCc_list().isEmpty())
+            jsonObject.addProperty("cc_list", message.getCc_list());
         Gson gson = new Gson();
         String jsonString = gson.toJson(jsonObject);
         Log.d("", "makeMessagetoJson():" + jsonString);

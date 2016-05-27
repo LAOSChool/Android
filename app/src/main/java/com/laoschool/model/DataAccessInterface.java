@@ -45,12 +45,13 @@ public interface DataAccessInterface {
      * - Role: Admin
      * - Pagination: Yes ( tham khảo Common => Pagination )
      *
-     * @param filter_class_id  (optional)
-     * @param filter_user_role (optional)
-     * @param filter_sts       (optional)
+     * @param filter_class_id  (require if use filter) -1 is default
+     * @param filter_user_role (optional) "" is default
+     * @param filter_sts       (optional) "" is default
+     * @param filter_from_id   (optional) -1 is default
      * @param callback         return list users if success,
      */
-    public void getUsers(int filter_class_id, int filter_user_role, int filter_sts, AsyncCallback<List<User>> callback);
+    public void getUsers(int filter_class_id, String filter_user_role, String filter_sts, int filter_from_id, AsyncCallback<List<User>> callback);
 
     /**
      * Get current user information.

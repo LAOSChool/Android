@@ -1,66 +1,93 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".screen.ScreenSetting"
-    android:orientation="vertical"
-    android:padding="10dp"
-    android:focusable="true"
-    android:focusableInTouchMode="true"
-    android:id="@+id/rootLayout">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/scrollView">
 
-    <!--<android.support.v7.widget.RecyclerView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/mRecylerViewScreenSetting"
-        android:layout_gravity="center" />-->
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Please re-enter your password:"
-        android:id="@+id/textView22"
-        android:layout_marginTop="10dp"
-        android:textSize="15dp"/>
-
-    <EditText
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:inputType="textPassword"
-        android:ems="10"
-        android:id="@+id/txbOldPassword"
-        android:background="@drawable/shape"
-        android:layout_marginTop="10dp"
-        android:paddingLeft="10dp"/>
+        android:layout_height="match_parent"
+        tools:context=".screen.ScreenSetting"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:id="@+id/rootLayout">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Enter your new password:"
-        android:id="@+id/textView23"
-        android:layout_marginTop="20dp"
-        android:textSize="15dp"/>
+        <!--<android.support.v7.widget.RecyclerView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/mRecylerViewScreenSetting"
+            android:layout_gravity="center" />-->
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:inputType="textPassword"
-        android:ems="10"
-        android:id="@+id/txbNewPassword"
-        android:layout_gravity="center_horizontal"
-        android:background="@drawable/shape"
-        android:layout_marginTop="10dp"
-        android:paddingLeft="10dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Please re-enter your password:"
+            android:id="@+id/textView22"
+            android:layout_marginTop="10dp"
+            android:textSize="15dp"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Submit"
-        android:id="@+id/btnSubmit"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="40dp"
-        android:textColor="@color/colorLaosBlue"/>
-</LinearLayout>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:id="@+id/txbOldPassword"
+            android:background="@drawable/shape"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="10dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Enter your new password:"
+            android:id="@+id/textView23"
+            android:layout_marginTop="15dp"
+            android:textSize="15dp"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:id="@+id/txbNewPassword"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/shape"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="10dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Confirm your new password:"
+            android:id="@+id/textView30"
+            android:layout_marginTop="15dp"
+            android:textSize="15dp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:id="@+id/txbConfirmPassword"
+            android:background="@drawable/shape"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Submit"
+            android:id="@+id/btnSubmit"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="60dp"
+            android:textColor="@color/colorLaosBlue"/>
+    </LinearLayout>
+</ScrollView>

@@ -39,7 +39,7 @@
     <color name="black_overlay">#66000000</color>
 
     <color name="color_bg_un_read">#FFF9C4</color>
-    <color name="color_bg_read">#eee</color>
+    <color name="color_bg_read">#eeeeee</color>
 
     <color name="colorRead">#808080</color>
     <color name="colorUnread">@android:color/black</color>
