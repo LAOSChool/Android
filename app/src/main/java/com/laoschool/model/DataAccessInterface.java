@@ -266,4 +266,6 @@ public interface DataAccessInterface {
     public void updateMessageIsRead(Message message, AsyncCallback<Message> callback);
 
     public void updateMessageIsFlag(Message message, AsyncCallback<Message> callback);
+
+    public void getMyFinalResults(int filter_school_year,AsyncCallback<List<FinalResult>> callback);
 }
