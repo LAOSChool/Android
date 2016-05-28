@@ -552,7 +552,7 @@ public class DataAccessImpl implements DataAccessInterface {
                             // HTTP Status Code: 409 Unauthorized Oo
                             Log.e("Service/reqAttendance()", "error status code " + networkResponse.statusCode);
                             callback.onAuthFail(error.toString());
-                        } else if(networkResponse != null) {
+                        } else if (networkResponse != null) {
                             try {
                                 String responseBody = new String(error.networkResponse.data, "utf-8");
                                 JSONObject jsonObject = new JSONObject(responseBody);
@@ -563,8 +563,7 @@ public class DataAccessImpl implements DataAccessInterface {
                             } catch (UnsupportedEncodingException e) {
                                 callback.onFailure("Server error statusCode = 500 but can not read response body");
                             }
-                        }
-                        else {
+                        } else {
                             Log.e("Service/reqAttendance()", error.toString());
                             callback.onFailure(error.toString());
                         }
@@ -717,7 +716,7 @@ public class DataAccessImpl implements DataAccessInterface {
 
     @Override
     public void getFinalResults(int filter_class_id, int filter_user_id, AsyncCallback<List<FinalResult>> callback) {
-
+        // https://192.168.0.202:9443/laoschoolws/api/final_results/myprofile?filter_school_year=2015
     }
 
     @Override
@@ -805,7 +804,7 @@ public class DataAccessImpl implements DataAccessInterface {
                 filter_to_dt, filter_to_user_id, filter_channel,
                 filter_sts, filter_from_id);
         url += makeUrl;
-       Log.d("Service/getMessages()", "url:" + url);
+        Log.d("Service/getMessages()", "url:" + url);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url.trim(),
                 new Response.Listener<String>() {
                     @Override
@@ -1400,6 +1399,44 @@ public class DataAccessImpl implements DataAccessInterface {
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Service/updateMessage()", error.toString());
                         callback.onFailure(error.toString());
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", getAuthKey());
+                return params;
+            }
+        };
+
+        mRequestQueue.add(stringRequest);
+    }
+
+    @Override
+    public void getMyFinalResults(int filter_school_year, final AsyncCallback<List<FinalResult>> callback) {
+        // Request a string response from the provided URL.
+        String url = HOST + "final_results/myprofile?filter_school_year=" + filter_school_year;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("Service", "getMyFinalResults().onResponse() -response:" + response);
+                        callback.onSuccess(new ArrayList<FinalResult>());
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        NetworkResponse networkResponse = error.networkResponse;
+                        Log.e("Service", TAG + ".getMyFinalResults().onErrorResponse() - code: " + networkResponse.statusCode + ",messages: " + error.toString());
+                        if (networkResponse != null && networkResponse.statusCode == 409) {
+                            // HTTP Status Code: 409 Unauthorized Oo
+                            callback.onAuthFail(error.toString());
+                        } else {
+                            callback.onFailure(error.toString());
+                        }
                     }
                 }
         ) {
