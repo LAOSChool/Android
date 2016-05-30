@@ -596,7 +596,7 @@ public class DataAccessImpl implements DataAccessInterface {
     }
 
     @Override
-    public void getExamResults(int filter_class_id, int filter_user_id, final AsyncCallback<List<ExamResult>> callback) {
+    public void getExamResults(int filter_class_id, int filter_user_id,int filter_subject_id, final AsyncCallback<List<ExamResult>> callback) {
         String url = HOST + "exam_results";
         StringBuilder stringBuilder = new StringBuilder();
         int check = 0;
@@ -609,6 +609,14 @@ public class DataAccessImpl implements DataAccessInterface {
                 stringBuilder.append("?filter_user_id=" + filter_user_id);
             } else if (check == 1) {
                 stringBuilder.append("&filter_user_id=" + filter_user_id);
+                check = 1;
+            }
+        }
+        if (filter_subject_id > -1) {
+            if (check == 0) {
+                stringBuilder.append("?filter_subject_id=" + filter_subject_id);
+            } else if (check == 1) {
+                stringBuilder.append("&filter_subject_id=" + filter_subject_id);
             }
         }
         url += stringBuilder.toString();
