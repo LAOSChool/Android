@@ -32,6 +32,7 @@ import com.laoschool.entities.ListAttendance;
 import com.laoschool.entities.ListExamResults;
 import com.laoschool.entities.ListMessages;
 import com.laoschool.entities.ListUser;
+import com.laoschool.entities.Master;
 import com.laoschool.entities.Message;
 import com.laoschool.entities.School;
 import com.laoschool.entities.TimeTable;
@@ -1450,5 +1451,55 @@ public class DataAccessImpl implements DataAccessInterface {
         };
 
         mRequestQueue.add(stringRequest);
+    }
+
+    @Override
+    public void getMasterTablebyName(String tableName, final AsyncCallback<List<Master>> callback) {
+        String url = HOST + "masters/" + tableName;
+        JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    if (response != null) {
+                        int total_count = response.getInt("total_count");
+                        List<Master> masters = new ArrayList<>();
+                        if (total_count > 0) {
+                            JSONArray listMaster = response.getJSONArray("list");
+                            for (int i = 0; i < listMaster.length(); i++) {
+                                JSONObject objMaster = listMaster.getJSONObject(i);
+                                masters.add(Master.fromJson(objMaster.toString()));
+                            }
+                            callback.onSuccess(masters);
+                        } else {
+                            callback.onSuccess(masters);
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                NetworkResponse networkResponse = error.networkResponse;
+                if (networkResponse != null && networkResponse.statusCode == 409) {
+                    // HTTP Status Code: 409 Unauthorized Oo
+                    Log.e("Service", "getMasterTablebyName() -error status code " + networkResponse.statusCode);
+                    callback.onAuthFail(error.toString());
+                } else {
+                    Log.e("Service", "getMasterTablebyName() " + error.toString());
+                    callback.onFailure(error.toString());
+                }
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", getAuthKey());
+                return params;
+            }
+        };
+        mRequestQueue.add(jsonArrayRequest);
     }
 }
