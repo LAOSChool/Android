@@ -6,6 +6,7 @@ import com.laoschool.entities.Attendance;
 import com.laoschool.entities.Class;
 import com.laoschool.entities.ExamResult;
 import com.laoschool.entities.FinalResult;
+import com.laoschool.entities.Master;
 import com.laoschool.entities.Message;
 import com.laoschool.entities.School;
 import com.laoschool.entities.TimeTable;
@@ -84,9 +85,10 @@ public interface DataAccessInterface {
     /**
      * Get the list of available attendances of current user.
      * Only available for student
+     *
      * @param filter_class_id
      * @param filter_user_id
-     * @param callback return list my attendances if success,
+     * @param callback        return list my attendances if success,
      */
     public void getMyAttendances(String filter_class_id, String filter_user_id, AsyncCallback<List<Attendance>> callback);
 
@@ -94,14 +96,13 @@ public interface DataAccessInterface {
      * Get attendance for a specific ID
      *
      * @param attendance_id
-     * @param callback return attendance match the id if success,
+     * @param callback      return attendance match the id if success,
      */
     public void getAttendanceById(int attendance_id, AsyncCallback<Attendance> callback);
 
     /**
-     *
      * @param attendance
-     * @param callback return status code
+     * @param callback   return status code
      */
     public void requestAttendance(Attendance attendance, String fromDt, String toDt, AsyncCallback<String> callback);
 
@@ -132,7 +133,7 @@ public interface DataAccessInterface {
      *
      * @param callback return list of exam result if success,
      */
-    public void getMyExamResults(int filter_class_id,AsyncCallback<List<ExamResult>> callback);
+    public void getMyExamResults(int filter_class_id, AsyncCallback<List<ExamResult>> callback);
 
     /**
      * Get class for a specific Exam Result ID
@@ -267,5 +268,7 @@ public interface DataAccessInterface {
 
     public void updateMessageIsFlag(Message message, AsyncCallback<Message> callback);
 
-    public void getMyFinalResults(int filter_school_year,AsyncCallback<List<FinalResult>> callback);
+    public void getMyFinalResults(int filter_school_year, AsyncCallback<List<FinalResult>> callback);
+
+    public void getMasterTablebyName(String tableName, AsyncCallback<List<Master>> callback);
 }
