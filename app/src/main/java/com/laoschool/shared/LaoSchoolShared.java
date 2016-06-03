@@ -39,7 +39,9 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -377,4 +379,35 @@ public class LaoSchoolShared {
         }
         return exam_dt;
     }
+
+    public static String getMonthString(Integer month) {
+        if (month == 100)
+            return "Final";
+        DateFormat inputFormatter1 = new SimpleDateFormat("MMMM", Locale.US);
+        Calendar cal = Calendar.getInstance();
+        cal.set(2016, month - 1, 10);
+        String monthParse = inputFormatter1.format(cal.getTime());
+        return monthParse;
+    }
+
+    public static Long getLongDate(Integer exam_month, int exam_year) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(exam_year, exam_month, 0, 0, 0, 0);
+        long longDate = cal.getTime().getTime();
+        Log.d(TAG, "getLongDate() -exam_month:" + exam_month + ",exam_year:" + exam_year + ",date:" + longDate);
+        return longDate / 1000;
+    }
+
+    public static int getMonth(Long longDateInputExamResult) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(longDateInputExamResult * 1000);
+        return cal.get(Calendar.MONTH) + 1;
+    }
+
+    public static int getYear(Long longDateInputExamResult) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(longDateInputExamResult * 1000);
+        return cal.get(Calendar.YEAR);
+    }
+
 }
