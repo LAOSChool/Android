@@ -5,10 +5,14 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,16 +32,22 @@ import java.util.List;
 public class TableStudents extends View {
 
     Context context;
+    RecyclerView tableStudentView;
+    ListStudentsAdapter mAdapter;
     CheckBox checkBox;
+    EditText edtSearch;
 
-    List<User> userList = new ArrayList<>();
+    List<User> userList;
     List<User> selectedStudents = new ArrayList<>();
+
+    User recentSelectedUser;
 
     LinearLayout formDialog;
 
     public interface TableStudentsListener {
         void onBtnDoneClick(List<User> selectedStudents);
         void onBtnCancelClick();
+        void onSearch(List<User> searchList);
     }
 
     private TableStudentsListener listener;
@@ -48,37 +58,27 @@ public class TableStudents extends View {
         this.listener = listener;
     }
 
-    public View getView(List<User> list_students, List<User> selected_students) {
+    public View getView() {
         final View v = View.inflate(context, R.layout.table_students, null);
-        userList.addAll(list_students);
-        selectedStudents.addAll(selected_students);
+
+        tableStudentView = (RecyclerView) v.findViewById(R.id.tableStudentView);
+        checkBox = (CheckBox) v.findViewById(R.id.checkBox);
+        formDialog = (LinearLayout) v.findViewById(R.id.formDialog);
+        edtSearch = (EditText) v.findViewById(R.id.edtSearch);
 
         ImageView imgClass = (ImageView) v.findViewById(R.id.imgClass);
         TextView txbClassName = (TextView) v.findViewById(R.id.txbClassName);
-        RecyclerView tableStudentView = (RecyclerView) v.findViewById(R.id.tableStudentView);
-        checkBox = (CheckBox) v.findViewById(R.id.checkBox);
         LinearLayout btnDone = (LinearLayout) v.findViewById(R.id.btnDone);
         LinearLayout btnCancel = (LinearLayout) v.findViewById(R.id.btnCancel);
-
-        formDialog = (LinearLayout) v.findViewById(R.id.formDialog);
 
         int color = Color.parseColor("#ffffff");
         imgClass.setColorFilter(color);
         tableStudentView.setHasFixedSize(true);
         txbClassName.setText("Class "+ LaoSchoolShared.selectedClass.getTitle());
 
-        if(userList.size() == selectedStudents.size())
-            checkBox.setChecked(true);
-        else
-            checkBox.setChecked(false);
-
         // use a linear layout manager
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(context);
+        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(context);
         tableStudentView.setLayoutManager(mLayoutManager);
-
-        // specify an adapter (see also next example)
-        final ListStudentsAdapter mAdapter = new ListStudentsAdapter(this, userList, selectedStudents, context);
-        tableStudentView.setAdapter(mAdapter);
 
         btnDone.setOnClickListener(new OnClickListener() {
             @Override
@@ -123,7 +123,58 @@ public class TableStudents extends View {
             }
         });
 
+        edtSearch.addTextChangedListener(new TextWatcher() {
+             public void afterTextChanged(Editable s) {
+             }
+
+             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                 /*This method is called to notify you that, within s, the count characters beginning at start are about to be replaced by new text with length after. It is an error to attempt to make changes to s from this callback.*/
+             }
+
+             public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                 Log.i("edtSearch", "key press!");
+                 if(edtSearch.getText().length() == 0) {
+                     mAdapter.swap(userList, selectedStudents);
+                     if(listener != null)
+                         listener.onSearch(userList);
+
+                     mLayoutManager.scrollToPositionWithOffset(userList.indexOf(recentSelectedUser), 20);
+                 } else {
+                     List<User> searchList = new ArrayList<User>();
+                     for(User student: userList)
+                         if(student.getFullname().contains(edtSearch.getText()))
+                             searchList.add(student);
+                     mAdapter.swap(searchList, selectedStudents);
+                     if(listener != null)
+                         listener.onSearch(searchList);
+                 }
+             }
+        });
+
         return v;
+    }
+
+    public void setData(List<User> list_students, List<User> selected_students) {
+        userList = list_students;
+        selectedStudents.clear();
+        selectedStudents.addAll(selected_students);
+        edtSearch.getText().clear();
+
+        if(userList.size() == selectedStudents.size())
+            checkBox.setChecked(true);
+        else
+            checkBox.setChecked(false);
+
+        if(mAdapter == null) {
+            mAdapter = new ListStudentsAdapter(this, userList, selectedStudents, context);
+            tableStudentView.setAdapter(mAdapter);
+        } else {
+            mAdapter.swap(userList, selectedStudents);
+        }
+    }
+
+    public void reset() {
+        tableStudentView.smoothScrollToPosition(0);
     }
 
     public void setSelectedStudents(boolean isSelect, User student) {
@@ -140,6 +191,11 @@ public class TableStudents extends View {
             checkBox.setChecked(true);
         else
             checkBox.setChecked(false);
+
+        recentSelectedUser = student;
+        edtSearch.getText().clear();
+        if(listener != null)
+            listener.onSearch(userList);
 
         View v = formDialog;
         formDialog.requestFocus();

@@ -61,7 +61,7 @@ public class RecyclerViewScreenMoreAdapter extends RecyclerView.Adapter<Recycler
                 ImageView row_icon = (ImageView) view.findViewById(R.id.row_icon);
 
                 int color = Color.parseColor("#808080");
-                row_icon.setColorFilter(color);
+                row_icon.setColorFilter(context.getResources().getColor(R.color.colorIconOnFragment));
 
                 if (txtMoreScreenName != null) {
                     txtMoreScreenName.setText(title);

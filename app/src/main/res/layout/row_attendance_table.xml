@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.daimajia.swipe.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="50dp">
+    <!-- Bottom View Start-->
+    <LinearLayout
+        android:background="#eeeeee"
+        android:id="@+id/bottom_wrapper"
+        android:layout_width="211dp"
+        android:weightSum="1"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+        <!--What you want to show-->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:background="@color/text_title_tab_indicator"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/icDH"
+            android:layout_toStartOf="@+id/icDH" />
+
+        <RelativeLayout
+            android:layout_width="70dp"
+            android:layout_height="match_parent"
+            android:background="@color/colorAttendanceHasReason">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="DH"
+                android:id="@+id/textView47"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:textColor="#ffffff"
+                android:textSize="14dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="70dp"
+            android:layout_height="match_parent"
+            android:background="@color/colorStar">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="CP"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:textColor="#ffffff"
+                android:textSize="14dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="70dp"
+            android:layout_height="match_parent"
+            android:background="@color/colorAttendanceNoReason">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="KP"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:textColor="#ffffff"
+                android:textSize="14dp" />
+        </RelativeLayout>
+
+    </LinearLayout>
+    <!-- Bottom View End-->
+
+    <!-- Surface View Start -->
+    <RelativeLayout
+        android:background="@color/color_bg_un_read"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <!--What you want to show in SurfaceView-->
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imgStudent"
+            android:src="@drawable/ic_account_circle_black_36dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="15dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Student Name"
+            android:id="@+id/txtStudentName"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/imgStudent"
+            android:layout_toEndOf="@+id/imgStudent"
+            android:layout_marginLeft="10dp"
+            android:textSize="14dp" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:background="@color/text_title_tab_indicator"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/icDH"
+            android:layout_toStartOf="@+id/icDH"
+            android:layout_marginRight="10dp"></LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="KP"
+            android:id="@+id/icKP"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="15dp"
+            android:src="@drawable/ic_done_black_18dp"
+            android:visibility="invisible" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="CP"
+            android:id="@+id/icCP"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/icKP"
+            android:layout_toStartOf="@+id/icKP"
+            android:layout_marginRight="25dp"
+            android:src="@drawable/ic_done_black_18dp"
+            android:visibility="invisible" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="DH"
+            android:id="@+id/icDH"
+            android:layout_alignTop="@+id/icCP"
+            android:layout_toLeftOf="@+id/icCP"
+            android:layout_toStartOf="@+id/icCP"
+            android:layout_marginRight="25dp"
+            android:src="@drawable/ic_done_black_18dp"
+            android:visibility="invisible" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:background="@color/text_title_tab_indicator"
+            android:layout_alignParentBottom="true"
+            android:layout_toLeftOf="@+id/icKP"
+            android:layout_toStartOf="@+id/icKP"
+            android:layout_marginRight="10dp"
+            android:id="@+id/linearLayout6" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:background="@color/text_title_tab_indicator"
+            android:layout_toLeftOf="@+id/icCP"
+            android:layout_toStartOf="@+id/icCP"
+            android:layout_alignTop="@+id/linearLayout6"
+            android:layout_marginRight="10dp" />
+
+        <View android:layout_width="match_parent"
+            android:background="@color/text_title_tab_indicator"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+    </RelativeLayout>
+    <!-- Surface View End -->
+</com.daimajia.swipe.SwipeLayout>

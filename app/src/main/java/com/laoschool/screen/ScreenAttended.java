@@ -2,11 +2,13 @@ package com.laoschool.screen;
 
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,20 +18,34 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.laoschool.R;
+import com.laoschool.adapter.ListAttendanceTableAdapter;
 import com.laoschool.adapter.ListAttendancesAdapter;
 import com.laoschool.entities.Attendance;
+import com.laoschool.entities.AttendanceRollup;
+import com.laoschool.entities.TimeTable;
+import com.laoschool.entities.User;
 import com.laoschool.model.AsyncCallback;
 import com.laoschool.model.DataAccessImpl;
 import com.laoschool.model.DataAccessInterface;
+import com.laoschool.screen.view.AttendanceStart;
+import com.laoschool.screen.view.TableSubject;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -42,10 +58,15 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
     int containerId;
     private String currentRole;
 
+    //Data for student
     private List<Attendance> attendanceList = new ArrayList<>();
     private List<GroupAttendance> groupAttendances = new ArrayList<>();
-    ListAttendancesAdapter mAdapter;
 
+    //Data for teacher
+    private AttendanceRollup attendanceRollup;
+    private TimeTable selectedTimetable;
+
+    ListAttendancesAdapter mAdapter;
     LinearLayout containerView;
     LinearLayout emptyView;
     LinearLayout btnReload;
@@ -57,10 +78,16 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
     TextView txbTotalNoExcused2;
     RecyclerView groupAttendancesView;
     SwipeRefreshLayout attendancesRefreshLayout;
-
     ProgressDialog ringProgressDialog;
 
+    RecyclerView tableStudentView;
+    ListAttendanceTableAdapter mAdapterTeacherAttendance;
+    LinearLayout formHeader;
+    RelativeLayout btnScrolldown;
+
     boolean isLoad = false;
+
+    AttendanceStart attendanceStart;
 
 //    PageFragment currentPage;
 
@@ -131,6 +158,29 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                 emptyView.setVisibility(View.VISIBLE);
                 if (thiz.getActivity() != null)
                     Toast.makeText(thiz.getActivity(), "Some error occur !", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAuthFail(String message) {
+                LaoSchoolShared.goBackToLoginPage(thiz.getContext());
+            }
+        });
+    }
+
+    protected void getAttendanceRollup(int class_id, String date) {
+        final ProgressDialog ringProgressDialog = ProgressDialog.show(this.getActivity(), "Please wait ...", "Loading ...", true);
+        service.rollupAttendance(class_id, date, new AsyncCallback<AttendanceRollup>() {
+            @Override
+            public void onSuccess(AttendanceRollup result) {
+                ringProgressDialog.dismiss();
+                attendanceRollup = result;
+                mAdapterTeacherAttendance = new ListAttendanceTableAdapter(result.getStudents(), thiz.getContext());
+                tableStudentView.setAdapter(mAdapterTeacherAttendance);
+            }
+
+            @Override
+            public void onFailure(String message) {
+                ringProgressDialog.dismiss();
             }
 
             @Override
@@ -279,71 +329,199 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
         if (currentRole == null)
             return inflater.inflate(R.layout.screen_error_application, container, false);
         else {
-//            // Inflate the layout for this fragment
-//            View view = inflater.inflate(R.layout.screen_attenden, container, false);
-//            view.findViewById(R.id.btnCreateMessge).setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    iScreenAttended.gotoCreateMessageFormScreenAttended();
-//                }
-//            });
-//            return view;
-//        }
-
-//        Inflate the layout for this fragment
-//        view.findViewById(R.id.btnCreateMessge).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                iScreenAttended.gotoCreateMessageFormScreenAttended();
-//            }
-//        });
-//            ViewPager vpPager = (ViewPager) view.findViewById(R.id.viewPage);
-//            MyPagerAdapter adapterViewPager = new MyPagerAdapter(this.getActivity().getSupportFragmentManager());
-//            vpPager.setAdapter(adapterViewPager);
-//
-//            // Bind the tabs to the ViewPager
-//            PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
-//            tabs.setViewPager(vpPager);
-
-            View view = inflater.inflate(R.layout.screen_attendance, container, false);
-
-            groupAttendancesView = (RecyclerView) view.findViewById(R.id.groupAttendancesView);
-            containerView = (LinearLayout) view.findViewById(R.id.container);
-            emptyView = (LinearLayout) view.findViewById(R.id.emptyView);
-            btnReload = (LinearLayout) view.findViewById(R.id.btnReload);
-            txbTotalFullday = (TextView) view.findViewById(R.id.txbTotalFullday);
-            txbTotalExcused1 = (TextView) view.findViewById(R.id.txbTotalExcused1);
-            txbTotalNoExcused1 = (TextView) view.findViewById(R.id.txbTotalNoExcused1);
-            txbTotalSession = (TextView) view.findViewById(R.id.txbTotalSession);
-            txbTotalExcused2 = (TextView) view.findViewById(R.id.txbTotalExcused2);
-            txbTotalNoExcused2 = (TextView) view.findViewById(R.id.txbTotalNoExcused2);
-            attendancesRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.attendancesRefreshLayout);
-
-            // use this setting to improve performance if you know that changes
-            // in content do not change the layout size of the RecyclerView
-            groupAttendancesView.setHasFixedSize(false);
-            // use a linear layout manager
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(thiz.getContext());
-            groupAttendancesView.setLayoutManager(linearLayoutManager);
-
-            containerView.setVisibility(View.INVISIBLE);
-
-            attendancesRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    refreshContent();
-                }
-            });
-
-            btnReload.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    getAttendances();
-                }
-            });
-
-            return view;
+            if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
+                return _defineScreenTeacher(inflater, container);
+            } else {
+                return _defineScreenStudent(inflater, container);
+            }
         }
+    }
+
+    private View _defineScreenTeacher(LayoutInflater inflater, ViewGroup container) {
+        View view = inflater.inflate(R.layout.screen_attendance_teacher, container, false);
+
+        final TextView txtAttendanceDate = (TextView) view.findViewById(R.id.txtAttendanceDate);
+        final TextView txtClassName = (TextView) view.findViewById(R.id.txtClassName);
+        final TextView txtSession = (TextView) view.findViewById(R.id.txtSession);
+        ImageView imgClass = (ImageView) view.findViewById(R.id.imgClass);
+        ImageView imgAttDt = (ImageView) view.findViewById(R.id.imgAttDt);
+        ImageView imgSession = (ImageView) view.findViewById(R.id.imgSession);
+        ImageView imgDropdown1 = (ImageView) view.findViewById(R.id.imgDropdown1);
+        ImageView imgDropdown2 = (ImageView) view.findViewById(R.id.imgDropdown2);
+        RelativeLayout btnAttendanceDate = (RelativeLayout) view.findViewById(R.id.btnAttendanceDate);
+        RelativeLayout btnSession = (RelativeLayout) view.findViewById(R.id.btnSession);
+        tableStudentView = (RecyclerView) view.findViewById(R.id.tableStudentView);
+        formHeader = (LinearLayout) view.findViewById(R.id.formHeader);
+        btnScrolldown = (RelativeLayout) view.findViewById(R.id.btnScrolldown);
+        final TextView txtClassN = (TextView) view.findViewById(R.id.txtClassN);
+        final TextView txtSubjectN = (TextView) view.findViewById(R.id.txtSubjectN);
+        final RelativeLayout btnStartAttendance = (RelativeLayout) view.findViewById(R.id.btnStartAttendance);
+
+//        imgClass.setColorFilter(getResources().getColor(R.color.colorIconOnFragment));
+//        imgAttDt.setColorFilter(getResources().getColor(R.color.colorIconOnFragment));
+//        imgSession.setColorFilter(getResources().getColor(R.color.colorIconOnFragment));
+        imgDropdown1.setColorFilter(getResources().getColor(R.color.colorIconOnFragment));
+        imgDropdown2.setColorFilter(getResources().getColor(R.color.colorIconOnFragment));
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd - MM - yyyy");
+        final String currentDateandTime = sdf.format(new Date());
+        txtAttendanceDate.setText(currentDateandTime);
+        txtClassName.setText("Class "+ LaoSchoolShared.selectedClass.getTitle());
+
+        // use a linear layout manager
+        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(thiz.getContext());
+        tableStudentView.setLayoutManager(mLayoutManager);
+        tableStudentView.setHasFixedSize(true);
+
+        btnAttendanceDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    DateFormat df = new SimpleDateFormat("dd - MM - yyyy");
+                    Calendar mcurrentDate = Calendar.getInstance();
+                    mcurrentDate.setTime(df.parse(txtAttendanceDate.getText().toString()));
+                    int mYear = mcurrentDate.get(Calendar.YEAR);
+                    int mMonth = mcurrentDate.get(Calendar.MONTH);
+                    int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
+                    DatePickerDialog mDatePicker=new DatePickerDialog(thiz.getContext(), new DatePickerDialog.OnDateSetListener() {
+                        public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
+                            // TODO Auto-generated method stub
+                            String formatDate;
+                            String sendDate;
+                            if(selectedmonth < 9) {
+                                formatDate = selectedday + " - 0" + (selectedmonth + 1) + " - " + selectedyear;
+                                sendDate = selectedyear + "-0" + (selectedmonth + 1) + "-" + selectedday;
+                            }
+                            else {
+                                formatDate = selectedday + " - " + (selectedmonth + 1) + " - " + selectedyear;
+                                sendDate = selectedyear + "-" + (selectedmonth + 1) + "-" + selectedday;
+                            }
+                            if(!formatDate.equals(txtAttendanceDate.getText().toString())) {
+                                txtAttendanceDate.setText(formatDate);
+                                txtSession.setText("Chose Subject");
+                                getAttendanceRollup(LaoSchoolShared.selectedClass.getId(), sendDate);
+                            }
+                        }
+                    },mYear, mMonth, mDay);
+                    mDatePicker.setTitle("Select date");
+                    mDatePicker.show();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        btnSession.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final AlertDialog dialog = new AlertDialog.Builder(thiz.getContext()).create();
+                TableSubject tableSubject = new TableSubject(thiz.getContext(), new TableSubject.TableSubjectListener() {
+                    @Override
+                    public void onSelectSubject(TimeTable timeTable) {
+                        selectedTimetable = timeTable;
+                        txtSession.setText("Tiet "+ (attendanceRollup.getTimetables().indexOf(timeTable)+1)+ " - "+ timeTable.getSubject_Name());
+                        formHeader.setVisibility(View.GONE);
+                        btnScrolldown.setVisibility(View.VISIBLE);
+                        txtClassN.setText(txtClassName.getText());
+                        txtSubjectN.setText("Mon "+ timeTable.getSubject_Name());
+                        dialog.dismiss();
+                    }
+                });
+                dialog.setView(tableSubject.getView());
+                dialog.show();
+
+                tableSubject.setListSubject(attendanceRollup.getTimetables());
+            }
+        });
+
+        btnScrolldown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btnScrolldown.setVisibility(View.GONE);
+                formHeader.setVisibility(View.VISIBLE);
+            }
+        });
+
+        btnStartAttendance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final AlertDialog dialog = new AlertDialog.Builder(thiz.getContext()).create();
+                attendanceStart = new AttendanceStart(thiz.getContext(), new AttendanceStart.AttendanceStartListener() {
+                    @Override
+                    public void onPresentClick(User student) {
+                        dialog.dismiss();
+                        int index = attendanceRollup.getStudents().indexOf(student);
+                        if(index != attendanceRollup.getStudents().size()-1) {
+                            attendanceStart.setStudent(attendanceRollup.getStudents().get(index + 1));
+                            new Handler().postDelayed(new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    dialog.show();
+                                }
+                            }, 300);
+                        }
+                        else {
+                            btnStartAttendance.setVisibility(View.GONE);
+                            mAdapterTeacherAttendance.swap();
+
+                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                                    LinearLayout.LayoutParams.MATCH_PARENT,
+                                    LinearLayout.LayoutParams.MATCH_PARENT
+                            );
+                            params.setMargins(0, 0, 0, 0);
+                            tableStudentView.setLayoutParams(params);
+                        }
+                    }
+                });
+                dialog.setView(attendanceStart.getView(txtClassName.getText()+ " - Tiet "+ selectedTimetable.getSubject_Name()));
+                attendanceStart.setStudent(attendanceRollup.getStudents().get(0));
+                dialog.show();
+            }
+        });
+
+        return view;
+    }
+
+    private View _defineScreenStudent(LayoutInflater inflater, ViewGroup container) {
+        View view = inflater.inflate(R.layout.screen_attendance, container, false);
+
+        groupAttendancesView = (RecyclerView) view.findViewById(R.id.groupAttendancesView);
+        containerView = (LinearLayout) view.findViewById(R.id.container);
+        emptyView = (LinearLayout) view.findViewById(R.id.emptyView);
+        btnReload = (LinearLayout) view.findViewById(R.id.btnReload);
+        txbTotalFullday = (TextView) view.findViewById(R.id.txbTotalFullday);
+        txbTotalExcused1 = (TextView) view.findViewById(R.id.txbTotalExcused1);
+        txbTotalNoExcused1 = (TextView) view.findViewById(R.id.txbTotalNoExcused1);
+        txbTotalSession = (TextView) view.findViewById(R.id.txbTotalSession);
+        txbTotalExcused2 = (TextView) view.findViewById(R.id.txbTotalExcused2);
+        txbTotalNoExcused2 = (TextView) view.findViewById(R.id.txbTotalNoExcused2);
+        attendancesRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.attendancesRefreshLayout);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        groupAttendancesView.setHasFixedSize(false);
+        // use a linear layout manager
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(thiz.getContext());
+        groupAttendancesView.setLayoutManager(linearLayoutManager);
+
+        containerView.setVisibility(View.INVISIBLE);
+
+        attendancesRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshContent();
+            }
+        });
+
+        btnReload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getAttendances();
+            }
+        });
+
+        return view;
     }
 
     private void refreshContent(){
@@ -370,7 +548,8 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_screen_attendance, menu);
+        if(currentRole.equals(LaoSchoolShared.ROLE_STUDENT))
+            inflater.inflate(R.menu.menu_screen_attendance, menu);
     }
 
     @Override
@@ -401,7 +580,14 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
     @Override
     public void onResumeFragment() {
         if (!isLoad && getUserVisibleHint()) {
-            getAttendances();
+            if(currentRole.equals(LaoSchoolShared.ROLE_STUDENT))
+                getAttendances();
+            else {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                final String currentDateandTime = sdf.format(new Date());
+                if(attendanceRollup == null)
+                    getAttendanceRollup(LaoSchoolShared.selectedClass.getId(), currentDateandTime);
+            }
         }
     }
 

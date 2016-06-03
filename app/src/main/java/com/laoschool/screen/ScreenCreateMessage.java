@@ -66,6 +66,8 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
     //dbsql
     DataAccessMessage dataAccessMessage;
 
+    AlertDialog dialog;
+    TableStudents tableStudents;
     List<User> listStudents = new ArrayList<>();
     List<User> selectedStudents = new ArrayList<>();
 
@@ -167,28 +169,49 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
         btnStudentPicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final AlertDialog dialog = new AlertDialog.Builder(context).create();
-                TableStudents tableStudents = new TableStudents(context, new TableStudents.TableStudentsListener() {
-                    @Override
-                    public void onBtnDoneClick(List<User> result) {
-                        selectedStudents.clear();
-                        selectedStudents.addAll(result);
-                        dialog.dismiss();
-                        String sendTo = "";
-                        for(User student: selectedStudents) {
-                            sendTo = sendTo + student.getFullname() + ", ";
+                if(dialog == null)
+                    dialog = new AlertDialog.Builder(context).create();
+                if(tableStudents == null) {
+                    tableStudents = new TableStudents(context, new TableStudents.TableStudentsListener() {
+                        @Override
+                        public void onBtnDoneClick(List<User> result) {
+                            selectedStudents.clear();
+                            selectedStudents.addAll(result);
+                            dialog.dismiss();
+                            String sendTo = "";
+                            for (User student : selectedStudents) {
+                                sendTo = sendTo + student.getFullname() + ", ";
+                            }
+                            if (selectedStudents.size() == listStudents.size())
+                                txtMessageTo.setText("Class " + LaoSchoolShared.selectedClass.getTitle());
+                            else
+                                txtMessageTo.setText(sendTo);
                         }
-                        if(selectedStudents.size() == listStudents.size())
-                            txtMessageTo.setText("Class "+ LaoSchoolShared.selectedClass.getTitle());
-                        else
-                            txtMessageTo.setText(sendTo);
-                    }
 
-                    @Override
-                    public void onBtnCancelClick() {
-                        dialog.dismiss();
-                    }
-                });
+                        @Override
+                        public void onBtnCancelClick() {
+                            dialog.dismiss();
+                        }
+
+                        @Override
+                        public void onSearch(List<User> searchList) {
+                            if(searchList.size() > 4) {
+                                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                                lp.copyFrom(dialog.getWindow().getAttributes());
+                                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                                lp.height = 980;
+                                dialog.getWindow().setAttributes(lp);
+                            } else {
+                                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                                lp.copyFrom(dialog.getWindow().getAttributes());
+                                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                                lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                                dialog.getWindow().setAttributes(lp);
+                            }
+                        }
+                    });
+                    dialog.setView(tableStudents.getView());
+                }
 
 //                List<User> students = new ArrayList<User>();
 //                for(int i = 1; i<=6;i++) {
@@ -198,7 +221,8 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
 //                }
 
 //                Log.i("StudentList", listStudents.size()+","+selectedStudents.size());
-                dialog.setView(tableStudents.getView(listStudents, selectedStudents));
+
+                tableStudents.setData(listStudents, selectedStudents);
                 dialog.show();
                 dialog.setCanceledOnTouchOutside(true);
 
@@ -497,6 +521,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
             selectedStudents.clear();
             selectedStudents.addAll(listStudents);
             txtMessageTo.setText("Class "+ LaoSchoolShared.selectedClass.getTitle());
+            tableStudents.reset();
         } else {
             txtMessageTitleStudent.getText().clear();
             txtMessageContentStudent.getText().clear();

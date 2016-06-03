@@ -27,7 +27,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="8dp"
-                android:textColor="#5C6BC0"
+                android:textColor="#2962FF"
                 android:textSize="@dimen/sub_header_font_size"
                 android:visibility="visible"/>
 
@@ -150,7 +150,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/mRecylerViewFunctionMore"
-        android:layout_marginTop="0dp"
-        android:background="#ffffff" />
+        android:layout_marginTop="10dp"
+        android:background="@color/fragmentBackground" />
 
 </LinearLayout>

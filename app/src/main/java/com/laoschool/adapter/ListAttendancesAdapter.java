@@ -72,7 +72,7 @@ public class ListAttendancesAdapter extends RecyclerView.Adapter<ListAttendances
         final LinearLayout sessionView = (LinearLayout) v.findViewById(R.id.sessionView);
 
         int color = Color.parseColor("#808080"); //The color u want
-        btnDropDown.setColorFilter(color);
+        btnDropDown.setColorFilter(context.getResources().getColor(R.color.colorIconOnFragment));
 
         final ScreenAttended.GroupAttendance groupAttendance = mDataset.get(position);
 

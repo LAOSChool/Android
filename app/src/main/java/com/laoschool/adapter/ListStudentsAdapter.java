@@ -8,11 +8,13 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +29,7 @@ import com.laoschool.shared.LaoSchoolShared;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -40,9 +43,6 @@ public class ListStudentsAdapter extends RecyclerView.Adapter<ListStudentsAdapte
     private Context context;
 
     private List<CheckBox> checkBoxes = new ArrayList<>();
-
-    Bitmap bitmap;
-    ImageView imgStudent;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -77,13 +77,15 @@ public class ListStudentsAdapter extends RecyclerView.Adapter<ListStudentsAdapte
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         View v = holder.mView;
 
-        imgStudent = (ImageView) v.findViewById(R.id.imgStudent);
-        TextView studentName = (TextView) v.findViewById(R.id.txbStudentName);
+        final ProgressBar progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
+        final ImageView imgStudent = (ImageView) v.findViewById(R.id.imgStudent);
+        final TextView studentName = (TextView) v.findViewById(R.id.txbStudentName);
         RelativeLayout btnSelected = (RelativeLayout) v.findViewById(R.id.btnSelected);
         final CheckBox cbStudentPicker = (CheckBox) v.findViewById(R.id.cbStudentPicker);
+
         checkBoxes.add(cbStudentPicker);
 
         final User student = userList.get(position);
@@ -112,23 +114,60 @@ public class ListStudentsAdapter extends RecyclerView.Adapter<ListStudentsAdapte
             }
         });
 
-        LaoSchoolSingleton.getInstance().getDataAccessService().getImageBitmap(student.getPhoto(), new AsyncCallback<Bitmap>() {
-            @Override
-            public void onSuccess(Bitmap result) {
-                if(result != null)
-                    imgStudent.setImageBitmap(result);
-            }
+        if(student.getUserPhoto() == null) {
+//            Log.i("ListStudent", "positon running: "+position);
+            LaoSchoolSingleton.getInstance().getDataAccessService().getImageBitmap(student.getPhoto(), new AsyncCallback<Bitmap>() {
+                @Override
+                public void onSuccess(Bitmap result) {
+                    if (result != null) {
+                        student.setUserPhoto(result);
+                        imgStudent.setImageBitmap(student.getUserPhoto());
+                        imgStudent.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
+                        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        params.addRule(RelativeLayout.RIGHT_OF, imgStudent.getId());
+                        params.addRule(RelativeLayout.END_OF, imgStudent.getId());
+                        params.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+                        params.setMargins(30, 0, 0, 0);
+                        studentName.setLayoutParams(params);
+                    }
+                }
 
-            @Override
-            public void onFailure(String message) {
+                @Override
+                public void onFailure(String message) {
+                    Bitmap icon = BitmapFactory.decodeResource(context.getResources(),
+                            R.drawable.ic_account_circle_black_36dp);
+                    student.setUserPhoto(icon);
+                    imgStudent.setImageBitmap(student.getUserPhoto());
+                    imgStudent.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                            RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    params.addRule(RelativeLayout.RIGHT_OF, imgStudent.getId());
+                    params.addRule(RelativeLayout.END_OF, imgStudent.getId());
+                    params.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+                    params.setMargins(30, 0, 0, 0);
+                    studentName.setLayoutParams(params);
+                }
 
-            }
-
-            @Override
-            public void onAuthFail(String message) {
-
-            }
-        });
+                @Override
+                public void onAuthFail(String message) {
+                    LaoSchoolShared.goBackToLoginPage(context);
+                }
+            });
+        } else {
+            imgStudent.setImageBitmap(student.getUserPhoto());
+            imgStudent.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            params.addRule(RelativeLayout.RIGHT_OF, imgStudent.getId());
+            params.addRule(RelativeLayout.END_OF, imgStudent.getId());
+            params.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+            params.setMargins(30, 0, 0, 0);
+            studentName.setLayoutParams(params);
+        }
     }
 
     void HandlerCheckEvent(CheckBox checkBox, User student) {
@@ -153,5 +192,11 @@ public class ListStudentsAdapter extends RecyclerView.Adapter<ListStudentsAdapte
             for(CheckBox checkBox: checkBoxes)
                 checkBox.setChecked(false);
         }
+    }
+
+    public void swap(List<User> userList, List<User> selectedUserList){
+        this.userList = userList;
+        this.selectedUserList = selectedUserList;
+        notifyDataSetChanged();
     }
 }

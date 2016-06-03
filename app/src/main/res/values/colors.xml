@@ -51,4 +51,5 @@
     <color name="colorTitleUnread">#2196F3</color>
     <color name="colorAttendanceNoReason">#D32F2F</color>
     <color name="colorAttendanceHasReason">#00A261</color>
+    <color name="colorIconOnFragment">#757575</color>
 </resources>

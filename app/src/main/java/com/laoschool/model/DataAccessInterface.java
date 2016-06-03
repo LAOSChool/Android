@@ -3,6 +3,7 @@ package com.laoschool.model;
 import android.graphics.Bitmap;
 
 import com.laoschool.entities.Attendance;
+import com.laoschool.entities.AttendanceRollup;
 import com.laoschool.entities.Class;
 import com.laoschool.entities.ExamResult;
 import com.laoschool.entities.FinalResult;
@@ -113,6 +114,14 @@ public interface DataAccessInterface {
      * @param callback   return update attendance if success,
      */
     public void updateAttendance(Attendance attendance, AsyncCallback<Attendance> callback);
+
+    /**
+     *
+     * @param filter_class_id (require)
+     * @param filter_date (require)
+     * @param callback return AttendanceRollup mixed data,
+     */
+    public void rollupAttendance(int filter_class_id, String filter_date, AsyncCallback<AttendanceRollup> callback);
 
     //----- ExamResult -----//
 

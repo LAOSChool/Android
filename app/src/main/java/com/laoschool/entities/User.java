@@ -1,5 +1,6 @@
 package com.laoschool.entities;
 
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -30,6 +31,8 @@ public class User {
 
     String nickname;
 
+    String phone;
+
     String state;
 
     int school_id;
@@ -45,6 +48,8 @@ public class User {
     Class eclass;
 
     List<Class> classes;
+
+    transient Bitmap userPhoto;
 
     public User() {
     }
@@ -102,6 +107,14 @@ public class User {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getState() {
@@ -168,6 +181,14 @@ public class User {
         this.classes = classes;
     }
 
+    public Bitmap getUserPhoto() {
+        return userPhoto;
+    }
+
+    public void setUserPhoto(Bitmap userPhoto) {
+        this.userPhoto = userPhoto;
+    }
+
     public String toJson() {
         Gson gson = new Gson();
         String jsonString = gson.toJson(this);
@@ -189,6 +210,7 @@ public class User {
             user.setSso_id(mainObject.getString("sso_id"));
             user.setFullname(mainObject.getString("fullname"));
             user.setNickname(mainObject.getString("nickname"));
+            user.setPhone(mainObject.getString("phone"));
             user.setState(mainObject.getString("state"));
             user.setSchool_id(mainObject.getInt("school_id"));
             user.setRoles(mainObject.getString("roles"));
@@ -237,5 +259,9 @@ public class User {
         }
     }
 
+//    @Override
+//    public boolean equals(Object other) {
+//        return (other != null && other instanceof User && ((User) other).id == id);
+//    }
 
 }

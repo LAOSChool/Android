@@ -24,6 +24,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.entities.Attendance;
+import com.laoschool.entities.AttendanceRollup;
 import com.laoschool.entities.Class;
 import com.laoschool.entities.ExamResult;
 import com.laoschool.entities.FinalResult;
@@ -357,6 +358,9 @@ public class DataAccessImpl implements DataAccessInterface {
                     public void onResponse(String response) {
                         Log.d("Service/gUserProfile()", response);
                         User user = User.parseFromJson(response);
+
+                        LaoSchoolShared.selectedClass = user.getEclass();
+
                         callback.onSuccess(user);
                     }
                 },
@@ -606,6 +610,56 @@ public class DataAccessImpl implements DataAccessInterface {
     @Override
     public void updateAttendance(Attendance attendance, AsyncCallback<Attendance> callback) {
 
+    }
+
+    @Override
+    public void rollupAttendance(int filter_class_id, String filter_date, final AsyncCallback<AttendanceRollup> callback) {
+        if(filter_class_id >= 0 && !filter_date.isEmpty()) {
+            // Request a string response from the provided URL.
+            String url = HOST + "attendances/rollup?filter_class_id=" + filter_class_id + "&filter_date=" + filter_date;
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url.trim(),
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.d("Service/rollupAtten()", response);
+                            try {
+                                JSONObject mainObject = new JSONObject(response);
+                                JSONObject messageObject = mainObject.getJSONObject("messageObject");
+                                AttendanceRollup attendanceRollup = AttendanceRollup.fromJson(messageObject.toString());
+                                callback.onSuccess(attendanceRollup);
+                            } catch (JSONException e) {
+                                callback.onFailure("Can not parse json object data");
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            NetworkResponse networkResponse = error.networkResponse;
+                            if (networkResponse != null && networkResponse.statusCode == 409) {
+                                // HTTP Status Code: 409 Unauthorized Oo
+                                Log.e("Service/rollupAtten()", "error status code " + networkResponse.statusCode);
+                                callback.onAuthFail(error.toString());
+                            } else {
+                                Log.e("Service/rollupAtten()", error.toString());
+                                callback.onFailure(error.toString());
+                            }
+                        }
+                    }
+            ) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("api_key", api_key);
+                    params.put("auth_key", getAuthKey());
+                    return params;
+                }
+            };
+
+            mRequestQueue.add(stringRequest);
+        } else {
+            Log.d("Service/rollupAtten()", "filter_class_id or filter_date is empty.");
+        }
     }
 
     @Override

@@ -29,8 +29,8 @@
             android:id="@+id/txbStudentName"
             android:textSize="16dp"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/imgStudent"
-            android:layout_toEndOf="@+id/imgStudent"
+            android:layout_toRightOf="@+id/progressBar"
+            android:layout_toEndOf="@+id/progressBar"
             android:layout_marginLeft="10dp" />
 
         <ImageView
@@ -40,7 +40,16 @@
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:src="@drawable/ic_account_circle_black_36dp" />
+            android:src="@drawable/ic_account_circle_black_36dp"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBar"
+            android:layout_marginTop="8dp"
+            android:visibility="visible" />
+
     </RelativeLayout>
 
     <LinearLayout

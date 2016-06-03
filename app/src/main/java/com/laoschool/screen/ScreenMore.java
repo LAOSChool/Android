@@ -138,10 +138,10 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
 
             int color = Color.parseColor("#808080");
             int color2 = Color.parseColor("#424242");
-            userImage.setColorFilter(color);
-            schoolImage.setColorFilter(color);
-            termImage.setColorFilter(color);
-            imgEditProfile.setColorFilter(color2);
+            userImage.setColorFilter(getResources().getColor(R.color.colorIconOnFragment));
+            schoolImage.setColorFilter(getResources().getColor(R.color.colorIconOnFragment));
+            termImage.setColorFilter(getResources().getColor(R.color.colorIconOnFragment));
+            imgEditProfile.setColorFilter(getResources().getColor(R.color.colorIconOnFragment));
 
             new DownloadImageTask((ImageView) view.findViewById(R.id.userImage))
                     .execute("http://placehold.it/120x120&text=image1");
