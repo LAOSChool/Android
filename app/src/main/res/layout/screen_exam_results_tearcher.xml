@@ -1,4 +1,5 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -27,281 +28,216 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/mContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal|top"
         android:orientation="vertical">
 
-        <RelativeLayout
-            android:id="@+id/mShowFitler"
-            android:layout_width="match_parent"
-            android:layout_height="88dp"
-            android:background="#ffffff"
-            android:paddingBottom="8dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingTop="8dp"
-            android:visibility="gone">
-
-            <ImageView
-                android:id="@+id/imgShowFilter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="16dp"
-                android:src="@drawable/ic_keyboard_arrow_down_black_24dp" />
-
-            <TextView
-                android:id="@+id/txtTermScreenExamResults"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="New Text"
-                android:textColor="#000000"
-                android:textSize="16sp"
-                android:layout_alignTop="@+id/textView14"
-                android:layout_alignLeft="@+id/txtClassScreenExamResults"
-                android:layout_alignStart="@+id/txtClassScreenExamResults" />
-
-            <TextView
-                android:id="@+id/txtSubjectScreenExamResults"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="New Text"
-                android:textColor="#000000"
-                android:textSize="16sp"
-                android:layout_alignBaseline="@+id/textView15"
-                android:layout_alignBottom="@+id/textView15"
-                android:layout_alignLeft="@+id/txtClassScreenExamResults"
-                android:layout_alignStart="@+id/txtClassScreenExamResults" />
-
-            <TextView
-                android:id="@+id/txtClassScreenExamResults"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="New Text"
-                android:textColor="#000000"
-                android:textSize="16sp"
-
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="72dp" />
-
-            <TextView
-                android:id="@+id/textView13"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:text="Class:"
-                android:textColor="@color/textColorSubHeader" />
-
-            <TextView
-                android:id="@+id/textView14"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/textView13"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:text="Term:"
-                android:textColor="@color/textColorSubHeader" />
-
-            <TextView
-                android:id="@+id/textView15"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/textView13"
-                android:text="Subject:"
-                android:textColor="@color/textColorSubHeader" />
-
-        </RelativeLayout>
-
         <LinearLayout
-            android:id="@+id/mFitlerTerm"
+            android:id="@+id/mFilter"
             android:layout_width="match_parent"
-            android:layout_height="192dp"
-            android:animateLayoutChanges="true"
-            android:background="#ffffff"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|top"
             android:orientation="vertical">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:paddingRight="16dp">
-
-                <TextView
-                    android:id="@+id/textView12"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginStart="16dp"
-                    android:text="Term:"
-                    android:textColor="@color/textColorSubHeader" />
-
-                <Spinner
-                    android:id="@+id/cbxTerm"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="72dp"
-                    android:dropDownSelector="@drawable/ic_keyboard_arrow_down_black_24dp"
-                    android:spinnerMode="dialog" />
-
-            </RelativeLayout>
-
-
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginLeft="72dp"
-                android:background="#ebebeb"
-                android:orientation="vertical" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp">
-
-                <TextView
-                    android:id="@+id/textView3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:text="Class:"
-                    android:textColor="@color/textColorSubHeader" />
-
-                <Spinner
-                    android:id="@+id/cbxClass"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="56dp"
-                    android:layout_marginStart="56dp"
-                    android:spinnerMode="dialog" />
-            </RelativeLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginLeft="72dp"
-                android:background="#ebebeb"
-                android:orientation="vertical" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp">
-
-                <TextView
-                    android:id="@+id/textView4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:text="Subject:"
-                    android:textColor="@color/textColorSubHeader" />
-
-                <Spinner
-                    android:id="@+id/cbxSubject"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="56dp"
-                    android:layout_marginStart="56dp"
-                    android:spinnerMode="dialog" />
-            </RelativeLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#ebebeb"
-                android:orientation="vertical"></LinearLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:orientation="vertical"
-                android:paddingBottom="8dp"
-                android:paddingRight="16dp"
-                android:paddingTop="4dp">
-
-                <Button
-                    android:id="@+id/btnFilterSubmit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_gravity="center_horizontal"
-                    android:background="@color/colorLaosRed"
-                    android:text="Show list"
-                    android:textColor="#ffffff" />
-
-            </RelativeLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#ebebeb"
-            android:orientation="vertical" />
-
-        <LinearLayout
-            android:id="@+id/mSearch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#ffffff"
-            android:orientation="vertical"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:visibility="gone">
-
-            <!--<SearchView-->
-            <!--android:id="@+id/mSearchExamResults"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:background="#ffffff"-->
-            <!--android:imeOptions="actionSearch"-->
-            <!--android:queryHint="Search"-->
-            <!--android:focusableInTouchMode="true" />-->
-
-            <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content">-->
-            <android.support.v7.widget.SearchView
-                android:id="@+id/mSearchExamResults"
+                android:id="@+id/mFitlerTerm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:elevation="2dp"
-                android:background="#ebebeb" />
+                android:animateLayoutChanges="true"
+                android:background="#ffffff"
+                android:orientation="vertical">
 
-            <!--</LinearLayout>-->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:paddingRight="16dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/textView12"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
+                        android:text="Term:"
+                        android:textColor="@color/textColorSubHeader" />
+
+                    <Spinner
+                        android:id="@+id/cbxTerm"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="72dp"
+                        android:dropDownSelector="@drawable/ic_keyboard_arrow_down_black_24dp"
+                        android:spinnerMode="dialog" />
+
+                </RelativeLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="72dp"
+                    android:background="#ebebeb"
+                    android:orientation="vertical"
+                    android:visibility="gone" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp">
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:text="Class:"
+                        android:textColor="@color/textColorSubHeader" />
+
+                    <Spinner
+                        android:id="@+id/cbxClass"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginLeft="56dp"
+                        android:layout_marginStart="56dp"
+                        android:spinnerMode="dialog" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="72dp"
+                    android:background="#ebebeb"
+                    android:orientation="vertical" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp">
+
+                    <TextView
+                        android:id="@+id/textView4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:text="Subject:"
+                        android:textColor="@color/textColorSubHeader" />
+
+                    <Spinner
+                        android:id="@+id/cbxSubject"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginLeft="56dp"
+                        android:layout_marginStart="56dp"
+                        android:dropDownVerticalOffset="35dp"
+                        android:spinnerMode="dropdown" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#ebebeb"
+                    android:orientation="vertical"></LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:orientation="vertical"
+                    android:paddingBottom="8dp"
+                    android:paddingRight="16dp"
+                    android:paddingTop="4dp"
+                    android:visibility="gone">
+
+                    <Button
+                        android:id="@+id/btnFilterSubmit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/bg_button_show_list_filter_exam_results"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:text="Show list"
+                        android:textColor="#ffffff" />
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#ebebeb"
+                    android:orientation="vertical"></LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#ebebeb"
+                android:orientation="vertical" />
+
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/mRecylerViewExamResults"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#ffffff" />
+        <LinearLayout
+            android:id="@+id/mData"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/color_bg_un_read"
+            android:orientation="vertical"
+            >
+            <include layout="@layout/view_information_filter_exam_results" android:visibility="gone"/>
+            <include layout="@layout/view_toolbox_exam_results" />
+
+            <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
+                android:id="@+id/mRecylerViewExamResults"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/color_bg_un_read"
+                android:scrollbars="none" />
+
+        </LinearLayout>
     </LinearLayout>
 
+    <include
+        android:id="@+id/mError"
+        layout="@layout/view_server_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+    <ProgressBar
+        android:id="@+id/mProgress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/mNoData"
+        layout="@layout/view_no_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:visibility="gone" />
 </FrameLayout>
