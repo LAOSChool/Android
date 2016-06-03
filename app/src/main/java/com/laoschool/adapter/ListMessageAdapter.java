@@ -132,7 +132,7 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                             imgGotoDetails.setColorFilter(context.getResources().getColor(R.color.colorUnread));
                             view.setBackgroundColor(context.getResources().getColor(R.color.color_bg_un_read));
                         } else {
-                            txbSender.setTextColor(context.getResources().getColor(R.color.colorRead));
+                            txbSender.setTextColor(context.getResources().getColor(R.color.colorSenderRead));
                             txbTitle.setTextColor(context.getResources().getColor(R.color.colorRead));
                             txtDateSend.setTextColor(context.getResources().getColor(R.color.colorRead));
                             txbSender.setTypeface(null, Typeface.NORMAL);

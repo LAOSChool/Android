@@ -18,45 +18,68 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
- * Created by Hue on 5/9/2016.
+ * Created by Hue on 6/1/2016.
  */
-public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStudentSemesterAdapter.ScoreStudentSemesterAdapterViewHolder> {
-    private static final String TAG = ScoreStudentSemesterAdapter.class.getSimpleName();
+public class ScoreCurrentSemesterAdapter extends RecyclerView.Adapter<ScoreCurrentSemesterAdapter.ScoreCurrentSemesterAdapterViewHolder> {
+    private static final String TAG = ScoreCurrentSemesterAdapter.class.getSimpleName();
     Context context;
-    Map<Integer, ArrayList<ExamResult>> scores;
-    List<Integer> months = new ArrayList<>();
+    Map<Long, ArrayList<ExamResult>> scores;
+    List<Long> exam_dates = new ArrayList<>();
 
-    public ScoreStudentSemesterAdapter(Context context, Map<Integer, ArrayList<ExamResult>> scores) {
+    public ScoreCurrentSemesterAdapter(Context context, Map<Integer, ArrayList<ExamResult>> scores) {
         this.context = context;
-        this.scores = scores;
-        for (Integer key : scores.keySet()) {
-            Log.d(TAG, " -month:" + key);
-            months.add(key);
+
+        List<ExamResult> examResults = scores.get(LaoSchoolShared.myProfile.getEclass().getTerm());
+        Map<Long, ArrayList<ExamResult>> examByMonthList = new HashMap<>();
+        for (ExamResult examResult : examResults) {
+            int exam_month = examResult.getExam_month();
+            int exam_year = examResult.getExam_year();
+            long exam_date = LaoSchoolShared.getLongDate(exam_month, exam_year);
+            Log.d(TAG, exam_month + "/" + exam_year + "-exam_date:" + exam_date);
+            ArrayList<ExamResult> examTermList = null;
+            if (examByMonthList.containsKey(exam_date)) {
+                examTermList = examByMonthList.get(exam_date);
+                if (examTermList == null)
+                    examTermList = new ArrayList();
+                examTermList.add(examResult);
+            } else {
+                examTermList = new ArrayList();
+                examTermList.add(examResult);
+            }
+            if (examTermList.size() > 0)
+                examByMonthList.put(exam_date, examTermList);
+
         }
 
-        Log.d(TAG, " -exam size:" + scores.size());
+        Map<Long, ArrayList<ExamResult>> examsTree = new TreeMap<>(examByMonthList);
+        this.scores = examsTree;
+        for (Long key : examsTree.keySet()) {
+            exam_dates.add(key);
+        }
     }
 
 
     @Override
-    public ScoreStudentSemesterAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ScoreCurrentSemesterAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_score_by_month, parent, false); //Inflating the layout
-        ScoreStudentSemesterAdapterViewHolder scoreStudentSemesterAdapterViewHolder = new ScoreStudentSemesterAdapterViewHolder(view, viewType);
+        ScoreCurrentSemesterAdapterViewHolder scoreStudentSemesterAdapterViewHolder = new ScoreCurrentSemesterAdapterViewHolder(view, viewType);
         return scoreStudentSemesterAdapterViewHolder;
     }
 
     @Override
-    public void onBindViewHolder(ScoreStudentSemesterAdapterViewHolder holder, int position) {
+    public void onBindViewHolder(ScoreCurrentSemesterAdapterViewHolder holder, int position) {
         View view = holder.view;
         try {
-            int month = months.get(position);
-            String monthStr = _getMonthString(month);
-            List<ExamResult> scoreList = scores.get(month);
+            long exam_date = exam_dates.get(position);
+            String monthStr = getMonthString(exam_date);
+            List<ExamResult> scoreList = scores.get(exam_date);
             if (scoreList.size() > 0) {
                 final ExamResult examResult = scoreList.get(scoreList.size() - 1);
                 String score = examResult.getSresult();
@@ -67,7 +90,7 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
                         view.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                _showDetailsExamResults(examResult);
+                             //   _showDetailsExamResults(examResult);
 
                             }
                         });
@@ -79,11 +102,12 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
                     Log.e(TAG, "onBindViewHolder() - score is null");
                 }
 
-                if (monthStr.equals("Final")) {
+                if (examResult.getExam_type() == 2) {
+                    ((TextView) (view.findViewById(R.id.lbScoreMonth))).setText("Final");
                     view.setBackgroundResource(R.drawable.border_row_score_by_month_final);
                 }
             } else {
-                Log.e(TAG, "onBindViewHolder() - month:" + month + " list exam is empty");
+                Log.e(TAG, "onBindViewHolder() - exam_date:" + exam_date + " list exam is empty");
                 view.setVisibility(View.GONE);
             }
         } catch (Exception e) {
@@ -117,14 +141,12 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
 
     }
 
-    private String _getMonthString(int month) {
-        if (month == 100)
-            return "Final";
+    private String getMonthString(long date) {
         DateFormat inputFormatter1 = new SimpleDateFormat("MMM", Locale.US);
         Calendar cal = Calendar.getInstance();
-        cal.set(2016, month - 1, 10);
+        cal.setTimeInMillis(date * 1000);
         String monthParse = inputFormatter1.format(cal.getTime());
-        Log.d(TAG, " _getMonthString() - monnt:" + month + ",month parse:" + monthParse);
+        //Log.d(TAG, " getMonthString() - month:" + month + ",month parse:" + monthParse);
         return monthParse;
     }
 
@@ -133,14 +155,17 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
         return scores.size();
     }
 
-    public class ScoreStudentSemesterAdapterViewHolder extends RecyclerView.ViewHolder {
+    public class ScoreCurrentSemesterAdapterViewHolder extends RecyclerView.ViewHolder {
         View view;
         int viewType;
 
-        public ScoreStudentSemesterAdapterViewHolder(View itemView, int viewType) {
+        public ScoreCurrentSemesterAdapterViewHolder(View itemView, int viewType) {
             super(itemView);
             this.view = itemView;
             this.viewType = viewType;
         }
     }
+
+
 }
+
