@@ -154,7 +154,6 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         activity = (HomeActivity) getActivity();
         mActionBar = activity.getSupportActionBar();
         progressDialog = new ProgressDialog(context);
-        activity.mViewPager.setAllowedSwipeDirection(HomeActivity.SwipeDirection.none);
     }
 
     @Override

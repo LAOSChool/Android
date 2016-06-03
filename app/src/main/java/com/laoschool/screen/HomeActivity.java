@@ -24,6 +24,7 @@ import android.widget.Toast;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
+
 import com.laoschool.R;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.adapter.LaoSchoolPagerAdapter;
@@ -250,10 +251,10 @@ public class HomeActivity extends AppCompatActivity implements
         //set adapter and set handler page change
         this.mViewPager.setAdapter(this.mPagerAdapter);
         //disable swipe
-        mViewPager.setAllowedSwipeDirection(SwipeDirection.none);
 
         this.mViewPager.addOnPageChangeListener(this);
 
+        mViewPager.setAllowedSwipeDirection(SwipeDirection.none);
 
         getSupportActionBar().setTitle(R.string.title_screen_message);
     }
@@ -474,14 +475,14 @@ public class HomeActivity extends AppCompatActivity implements
         this.mTabHost.setCurrentTab(position);
         this._changeTitleActionBar(position);
         if (position == LaoSchoolShared.POSITION_SCREEN_MORE_4) {
-            mViewPager.setAllowedSwipeDirection(SwipeDirection.left);
+            // mViewPager.setAllowedSwipeDirection(SwipeDirection.left);
             mTabHost.getTabWidget().setVisibility(View.VISIBLE);
         } else if (position > LaoSchoolShared.POSITION_SCREEN_MORE_4) {
-            mViewPager.setAllowedSwipeDirection(SwipeDirection.none);
+            //  mViewPager.setAllowedSwipeDirection(SwipeDirection.none);
             mTabHost.getTabWidget().setVisibility(View.GONE);
         } else {
             mTabHost.getTabWidget().setVisibility(View.VISIBLE);
-            mViewPager.setAllowedSwipeDirection(SwipeDirection.all);
+            // mViewPager.setAllowedSwipeDirection(SwipeDirection.all);
         }
         FragmentLifecycle fragmentToShow = (FragmentLifecycle) mPagerAdapter.getItem(position);
         fragmentToShow.onResumeFragment();
@@ -780,5 +781,13 @@ public class HomeActivity extends AppCompatActivity implements
         finish();
         Intent reloadApplication = new Intent(this, SplashScreen.class);
         startActivity(reloadApplication);
+    }
+
+    public void hideBottomBar() {
+        mTabHost.getTabWidget().setVisibility(View.GONE);
+    }
+
+    public void showBottomBar() {
+        mTabHost.getTabWidget().setVisibility(View.VISIBLE);
     }
 }
