@@ -1,11 +1,17 @@
 package com.laoschool.screen;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,25 +22,31 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.TranslateAnimation;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
+
 import com.astuetz.PagerSlidingTabStrip;
+import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
+import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
+import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.adapter.ExamResultsByTermPagerAdapter;
-import com.laoschool.adapter.RecylerViewScreenExamResultsAdapter;
+import com.laoschool.adapter.ExamResultsforClassbySubjectAdapter;
 import com.laoschool.adapter.ExamResultsStudentSemesterAdapter;
-import com.laoschool.adapter.RecylerViewScreenExamResultsAdapter;
+import com.laoschool.adapter.SubjectDropDownAdapter;
 import com.laoschool.entities.ExamResult;
+import com.laoschool.entities.Master;
 import com.laoschool.model.AsyncCallback;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
@@ -46,6 +58,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -56,9 +69,21 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     private ScreenExamResults screenExamResults;
     private int containerId;
     private String data;
-    private String currentRole;
+    private static String currentRole;
     private static Context context;
     private static boolean alreadyExecuted = false;
+    private static LinearLayout mContainer;
+    private LinearLayout mFilter;
+    private LinearLayout mData;
+    private ActionBar mActionBar;
+    private RelativeLayout mDataInfomation;
+    private LinearLayout btnSelectedDateInput;
+    private ImageView btnShowSearch;
+    private LinearLayout mActionSubmitCancel;
+    private TextView btnCancelInputExamResult;
+    private TextView btnSubmitInputExamResult;
+    private Long longDateInputExamResult;
+    private boolean typeInputExam = false;
 
     public ScreenExamResults() {
         alreadyExecuted = false;
@@ -79,25 +104,29 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     }
 
     public IScreenExamResults iScreenExamResults;
+    HomeActivity activity;
 
-    //
-    RelativeLayout mFillerDescription;
     LinearLayout mFilterTerm;
 
     Spinner cbxTerm;
     Spinner cbxClass;
     Spinner cbxSubject;
+    Button btnFilterSubmitTeacher;
+    RelativeLayout mToolBox;
 
-    TextView txtTerm;
-    TextView txtSubject;
+
     TextView txtClass;
     static ViewpagerDisableSwipeLeft mViewPageStudent;
     static PagerSlidingTabStrip tabsStrip;
     static LinearLayout mExamResultsStudent;
-    static ProgressBar mProgressStudent;
+    static ProgressBar mProgress;
     static FrameLayout mError;
     static FrameLayout mNoData;
+    private ObservableRecyclerView mResultListStudentBySuject;
+    private int subjectIdSeleted = 0;
 
+    private ExamResultsforClassbySubjectAdapter resultsforClassbySubjectAdapter;
+    ProgressDialog progressDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -122,6 +151,9 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         this.context = getActivity();
         this.screenExamResults = this;
         this.fr = getActivity().getSupportFragmentManager();
+        activity = (HomeActivity) getActivity();
+        mActionBar = activity.getSupportActionBar();
+        progressDialog = new ProgressDialog(context);
     }
 
     @Override
@@ -139,6 +171,11 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     @Override
     public void onPauseFragment() {
         Log.d(TAG, "onPauseFragment()");
+        if (!mActionBar.isShowing())
+            mActionBar.show();
+        if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
+            cancelInputExamResults(false);
+        }
 
     }
 
@@ -151,6 +188,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
                 currentRole = LaoSchoolShared.ROLE_STUDENT;
             }
             if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
+                fillDataForTeacher();
             } else {
                 _definePageSemesterStudent();
             }
@@ -188,7 +226,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         View view = inflater.inflate(R.layout.screen_exam_results_student, container, false);
 
         mExamResultsStudent = (LinearLayout) view.findViewById(R.id.mExamResultsStudent);
-        mProgressStudent = (ProgressBar) view.findViewById(R.id.mProgressExamResultsStudent);
+        mProgress = (ProgressBar) view.findViewById(R.id.mProgressExamResultsStudent);
         mError = (FrameLayout) view.findViewById(R.id.mError);
         mNoData = (FrameLayout) view.findViewById(R.id.mNoData);
 
@@ -200,6 +238,18 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
 
         _handlerOnclickNodata();
 
+        if (!alreadyExecuted && getUserVisibleHint()) {
+            if (currentRole == null) {
+                Log.d(TAG, "onResumeFragment() - current role null");
+                currentRole = LaoSchoolShared.ROLE_STUDENT;
+            }
+            if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
+            } else {
+                _definePageSemesterStudent();
+            }
+
+        }
+
         return view;
     }
 
@@ -207,7 +257,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         mError.findViewById(R.id.mReloadData).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                _showProgressLoadingStudent(true);
+                showProgressLoading(true);
                 _getMyExamResult();
             }
         });
@@ -217,14 +267,14 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         mNoData.findViewById(R.id.mReloadData).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                _showProgressLoadingStudent(true);
+                showProgressLoading(true);
                 _getMyExamResult();
             }
         });
     }
 
     private void _getExamResult() {
-        LaoSchoolSingleton.getInstance().getDataAccessService().getExamResults(-1, -1, new AsyncCallback<List<ExamResult>>() {
+        LaoSchoolSingleton.getInstance().getDataAccessService().getExamResults(-1, -1, -1, new AsyncCallback<List<ExamResult>>() {
             @Override
             public void onSuccess(List<ExamResult> result) {
                 if (result != null) {
@@ -232,21 +282,21 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
                 } else {
                     Log.d(TAG, "_definePageSemesterStudent()/getExamResults()/onSuccess() message:NUll");
                 }
-                _showProgressLoadingStudent(false);
+                showProgressLoading(false);
             }
 
             @Override
             public void onFailure(String message) {
                 Log.e(TAG, "_definePageSemesterStudent()/getExamResults()/onFailure() message:" + message);
-                _showProgressLoadingStudent(false);
-                _showErrorStudent();
+                showProgressLoading(false);
+                showError();
             }
 
             @Override
             public void onAuthFail(String message) {
                 Log.e(TAG, "_definePageSemesterStudent()/getExamResults()/onAuthFail() message:" + message);
                 LaoSchoolShared.goBackToLoginPage(context);
-                _showProgressLoadingStudent(false);
+                showProgressLoading(false);
             }
         });
     }
@@ -257,27 +307,28 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
 
     private void _getMyExamResult(final int positon) {
         if (positon == -1)
-            _showProgressLoadingStudent(true);
+            showProgressLoading(true);
 
-        LaoSchoolSingleton.getInstance().getDataAccessService().getMyExamResults(new AsyncCallback<List<ExamResult>>() {
+        int filter_class_id = LaoSchoolShared.myProfile.getEclass().getId();
+        LaoSchoolSingleton.getInstance().getDataAccessService().getMyExamResults(filter_class_id, new AsyncCallback<List<ExamResult>>() {
             @Override
             public void onSuccess(List<ExamResult> result) {
                 if (result.size() > 0) {
                     if (result != null) {
                         _setDataforPageSemester(result, positon);
-                        _showProgressLoadingStudent(false);
+                        showProgressLoading(false);
                         alreadyExecuted = true;
 
                     } else {
                         Log.d(TAG, "getMyExamResults(" + positon + ")/onAuthFail() message:NUll");
-                        _showProgressLoadingStudent(false);
-                        _showNoDataStudent();
+                        showProgressLoading(false);
+                        showNoData();
                         alreadyExecuted = true;
                     }
                 } else {
                     Log.d(TAG, "getMyExamResults(" + positon + ")/onAuthFail() message:Size==0");
-                    _showProgressLoadingStudent(false);
-                    _showNoDataStudent();
+                    showProgressLoading(false);
+                    showNoData();
                     alreadyExecuted = true;
                 }
 
@@ -286,8 +337,8 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
             @Override
             public void onFailure(String message) {
                 Log.e(TAG, "getMyExamResults(" + positon + ")/onFailure() message:" + message);
-                _showProgressLoadingStudent(false);
-                _showErrorStudent();
+                showProgressLoading(false);
+                showError();
                 alreadyExecuted = true;
             }
 
@@ -295,7 +346,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
             public void onAuthFail(String message) {
                 Log.e(TAG, "getMyExamResults(" + positon + ")/onAuthFail() message:" + message);
                 LaoSchoolShared.goBackToLoginPage(context);
-                _showProgressLoadingStudent(false);
+                showProgressLoading(false);
                 alreadyExecuted = true;
             }
         });
@@ -349,231 +400,512 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         _getMyExamResult();
     }
 
-    private static void _showErrorStudent() {
+    private static void showError() {
         mError.setVisibility(View.VISIBLE);
-        mProgressStudent.setVisibility(View.GONE);
-        mExamResultsStudent.setVisibility(View.GONE);
+        mProgress.setVisibility(View.GONE);
         mNoData.setVisibility(View.GONE);
+
+        if (currentRole.equals(LaoSchoolShared.ROLE_STUDENT)) {
+            mExamResultsStudent.setVisibility(View.GONE);
+        }
+        if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
+            mContainer.setVisibility(View.GONE);
+        }
     }
 
-    private static void _showNoDataStudent() {
+    private static void showNoData() {
         mNoData.setVisibility(View.VISIBLE);
         mError.setVisibility(View.GONE);
-        mProgressStudent.setVisibility(View.GONE);
-        mExamResultsStudent.setVisibility(View.GONE);
+        mProgress.setVisibility(View.GONE);
+
+        if (currentRole.equals(LaoSchoolShared.ROLE_STUDENT)) {
+            mExamResultsStudent.setVisibility(View.GONE);
+        }
+        if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
+            mContainer.setVisibility(View.GONE);
+        }
+
+
     }
 
 
-    private static void _showProgressLoadingStudent(boolean b) {
-        if (b) {
-            mProgressStudent.setVisibility(View.VISIBLE);
-            mExamResultsStudent.setVisibility(View.GONE);
-        } else {
-            mProgressStudent.setVisibility(View.GONE);
-            mExamResultsStudent.setVisibility(View.VISIBLE);
+    public static void showProgressLoading(boolean show) {
+        try {
+            if (show) {
+                mProgress.setVisibility(View.VISIBLE);
+                if (currentRole.equals(LaoSchoolShared.ROLE_STUDENT)) {
+                    mExamResultsStudent.setVisibility(View.GONE);
+                }
+                if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
+                    mContainer.setVisibility(View.GONE);
+                }
+            } else {
+                mProgress.setVisibility(View.GONE);
+                if (currentRole.equals(LaoSchoolShared.ROLE_STUDENT))
+                    mExamResultsStudent.setVisibility(View.GONE);
+                if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
+                    mContainer.setVisibility(View.VISIBLE);
+                }
+            }
+            mError.setVisibility(View.GONE);
+            mNoData.setVisibility(View.GONE);
+        } catch (Exception e) {
         }
-        mError.setVisibility(View.GONE);
-        mNoData.setVisibility(View.GONE);
     }
 
     private View _defineScreenExamResultsTeacher(LayoutInflater inflater, ViewGroup container) {
         View view = inflater.inflate(R.layout.screen_exam_results_tearcher, container, false);
-        view.findViewById(R.id.btnGotoMarkScore).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_MARK_SCORE_STUDENT_11);
-                Log.d(getString(R.string.title_screen_exam_results), tag);
-                setData("Hello " + getString(R.string.title_screen_mark_score_student));
-                iScreenExamResults.sendData("Hello " + getString(R.string.title_screen_mark_score_student));
-            }
-        });
-
-        //Define item
-        mFillerDescription = (RelativeLayout) view.findViewById(R.id.mShowFitler);
+        //difine container
+        mContainer = (LinearLayout) view.findViewById(R.id.mContainer);
+        mFilter = (LinearLayout) view.findViewById(R.id.mFilter);
+        mData = (LinearLayout) view.findViewById(R.id.mData);
         mFilterTerm = (LinearLayout) view.findViewById(R.id.mFitlerTerm);
-
+        mDataInfomation = (RelativeLayout) view.findViewById(R.id.mDataInfomation);
+        mDataInfomation.setVisibility(View.GONE);
         cbxTerm = (Spinner) view.findViewById(R.id.cbxTerm);
         cbxClass = (Spinner) view.findViewById(R.id.cbxClass);
         cbxSubject = (Spinner) view.findViewById(R.id.cbxSubject);
 
-        Button btnFilterSubmit = (Button) view.findViewById(R.id.btnFilterSubmit);
+        //difine progee,erorr,nodata
+        mProgress = (ProgressBar) view.findViewById(R.id.mProgress);
+        mError = (FrameLayout) view.findViewById(R.id.mError);
+        mNoData = (FrameLayout) view.findViewById(R.id.mNoData);
+
+
+        btnFilterSubmitTeacher = (Button) view.findViewById(R.id.btnFilterSubmit);
+        txtClass = (TextView) view.findViewById(R.id.lbTotalTerm);
+
+        //define toolbox
+        mToolBox = (RelativeLayout) view.findViewById(R.id.mToolBox);
+        btnShowSearch = (ImageView) view.findViewById(R.id.btnShowSearch);
         SearchView searchStudent = (SearchView) view.findViewById(R.id.mSearchExamResults);
-        final LinearLayout mSearch = (LinearLayout) view.findViewById(R.id.mSearch);
+        btnSelectedDateInput = (LinearLayout) view.findViewById(R.id.btnMarkScoreAll);
+        mActionSubmitCancel = (LinearLayout) view.findViewById(R.id.mActionSubmitCancel);
+        btnCancelInputExamResult = (TextView) view.findViewById(R.id.btnCancelInputExamResult);
+        btnSubmitInputExamResult = (TextView) view.findViewById(R.id.btnSubmitInputExamResult);
+        handlerSubmitInputExam();
 
-        txtTerm = (TextView) view.findViewById(R.id.txtTermScreenExamResults);
-        txtSubject = (TextView) view.findViewById(R.id.txtSubjectScreenExamResults);
-        txtClass = (TextView) view.findViewById(R.id.txtClassScreenExamResults);
-
-        //
-        searchStudent.setIconifiedByDefault(false);
-        searchStudent.setIconified(false);
-        searchStudent.clearFocus();
         searchStudent.setQueryHint(getString(R.string.hint_search_exam_resutls));
-
+        searchStudent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                hideFilterShowData();
+            }
+        });
 
         //set search plate color..
         ViewGroup search_plate = (ViewGroup) searchStudent.findViewById(R.id.search_plate);
         if (search_plate != null) {
-            search_plate.setBackgroundColor(Color.parseColor("#ebebeb"));
+            search_plate.setBackgroundColor(Color.parseColor("#ffffff"));
         }
 
-        //
-        final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.mRecylerViewExamResults);
+        mResultListStudentBySuject = (ObservableRecyclerView) view.findViewById(R.id.mRecylerViewExamResults);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 1);
+        mResultListStudentBySuject.setLayoutManager(gridLayoutManager);
 
-        //
-
-
-        // Creating adapter for spinner Term
-        final List<String> terms = Arrays.asList(getResources().getStringArray(R.array.termTest));
-        _fillDataForSpinerFilter(cbxTerm, terms);
-        cbxTerm.setSelection(1);
-
-        //Handler on item Selected
-        cbxTerm.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position > 0) {
-                    List<String> classTest = Arrays.asList(getResources().getStringArray(R.array.classTest));
-                    _fillDataForSpinerFilter(cbxClass, classTest);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-        cbxClass.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position > 0) {
-                    List<String> classTest = Arrays.asList(getResources().getStringArray(R.array.subjectTest));
-                    _fillDataForSpinerFilter(cbxSubject, classTest);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-        final boolean[] flagSummit = {false};
         //Handler on submit filter
-        btnFilterSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String _term = cbxTerm.getSelectedItem().toString();
-                if (!_term.equals(getString(R.string.selected))) {
-                    String _class = cbxClass.getSelectedItem().toString();
-                    if (!_class.equals(getString(R.string.selected))) {
-                        String _subject = cbxSubject.getSelectedItem().toString();
-                        if (!_subject.equals(getString(R.string.selected))) {
-                            flagSummit[0] = true;
-                            Toast.makeText(context, "Term:" + _term + "-Class:" + _class + "-Subject:" + _subject, Toast.LENGTH_SHORT).show();
-                            txtTerm.setText(_term);
-                            txtClass.setText(_class);
-                            txtSubject.setText(_subject);
-                            _fillDataForListResultFilter(recyclerView);
-                            mSearch.setVisibility(View.VISIBLE);
-                            _showFilterDescription();
-                        } else {
-                            flagSummit[0] = false;
-                            cbxSubject.performClick();
-                        }
-                    } else {
-                        flagSummit[0] = false;
-                        cbxClass.performClick();
-                    }
-                } else {
-                    //Show dropdown view
-                    flagSummit[0] = false;
-                    cbxTerm.performClick();
-                }
-            }
-        });
-        View.OnClickListener showHideFilter = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mFilterTerm.isShown()) {
-                    Log.d(TAG, "Show description");
-                    _showFilterDescription();
-                } else {
-                    Log.d(TAG, "Show filter");
-                    _showFilterTerm();
-                }
-            }
-        };
-        mFillerDescription.setOnClickListener(showHideFilter);
-//        txtTerm.setOnClickListener(showHideFilter);
-//        txtClass.setOnClickListener(showHideFilter);
-//        txtSubject.setOnClickListener(showHideFilter);
-//        mFilterTerm.setOnClickListener(showHideFilter);
+//        handlerSubmitFilterMarkScoreForTeacher();
 
+        if (!alreadyExecuted && getUserVisibleHint()) {
+            if (currentRole == null) {
+                Log.d(TAG, "onResumeFragment() - current role null");
+                currentRole = LaoSchoolShared.ROLE_STUDENT;
+            }
+            if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
+                fillDataForTeacher();
+            }
+
+        }
         return view;
     }
 
-    public void _showFilterDescription() {
-        //
-        TranslateAnimation hideFilter = new TranslateAnimation(0, 0, 0, mFilterTerm.getHeight());
-        hideFilter.setDuration(200);
-        hideFilter.setFillAfter(true);
-        TranslateAnimation showFilterDescription = new TranslateAnimation(0, 0, mFillerDescription.getHeight(), 0);
-        showFilterDescription.setDuration(200);
-        showFilterDescription.setFillAfter(true);
-
-        //mFilterTerm.startAnimation(hideFilter);
-        mFilterTerm.setVisibility(View.GONE);
-
-        //mFillerDescription.startAnimation(showFilterDescription);
-        mFillerDescription.setVisibility(View.VISIBLE);
-        ///
-        //
-        txtTerm.setVisibility(View.VISIBLE);
-        txtClass.setVisibility(View.VISIBLE);
-        txtSubject.setVisibility(View.VISIBLE);
-
-        cbxClass.setVisibility(View.GONE);
-        cbxSubject.setVisibility(View.GONE);
-        cbxTerm.setVisibility(View.GONE);
+    private void fillDataForTeacher() {
+        List<String> classTest = Arrays.asList(LaoSchoolShared.myProfile.getEclass().getTitle());
+        _fillDataForSpinerFilter(cbxClass, classTest);
+        cbxClass.setEnabled(false);
+        getFilterSubject();
     }
 
-    public void _showFilterTerm() {
+    private void handlerSubmitInputExam() {
+        View.OnClickListener actionSubmitInput = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LaoSchoolShared.hideSoftKeyboard(getActivity());
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle(R.string.title_msg_comfirm_submit_input_exam_results);
+                builder.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
 
-        ///
-//        TranslateAnimation showFilterDescription = new TranslateAnimation(0, 0, 0, mFillerDescription.getHeight());
-//        showFilterDescription.setDuration(200);
-//        showFilterDescription.setFillAfter(true);
-//        mFillerDescription.startAnimation(showFilterDescription);
+                        cancelInputExamResults(true);
+                        dialogInterface.dismiss();
+                    }
+                });
+                builder.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (resultsforClassbySubjectAdapter.getInputExamResults().size() > 0) {
+                            Log.d(TAG, "-input type exam size:" + resultsforClassbySubjectAdapter.getInputExamResults().size());
+                            List<ExamResult> examResults = resultsforClassbySubjectAdapter.getInputExamResults();
+                            inputExamResults(examResults);
+                        }
+                        dialogInterface.dismiss();
+                    }
+                });
+                builder.create().show();
+            }
+        };
+        View.OnClickListener actionCancelInput = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LaoSchoolShared.hideSoftKeyboard(getActivity());
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle(R.string.title_msg_comfirm_submit_input_exam_results);
+                builder.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+                builder.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        cancelInputExamResults(true);
+                        dialogInterface.dismiss();
+                    }
+                });
+                builder.create().show();
+            }
+        };
 
-
-        //
-//        TranslateAnimation hideFilter = new TranslateAnimation(0, 0, 0, mFilterTerm.getHeight());
-//        hideFilter.setDuration(200);
-//        hideFilter.setFillAfter(true);
-//        mFilterTerm.startAnimation(hideFilter);
-        mFilterTerm.setVisibility(View.VISIBLE);
-        mFillerDescription.setVisibility(View.GONE);
-
-        txtTerm.setVisibility(View.GONE);
-        txtClass.setVisibility(View.GONE);
-        txtSubject.setVisibility(View.GONE);
-
-        cbxClass.setVisibility(View.VISIBLE);
-        cbxSubject.setVisibility(View.VISIBLE);
-        cbxTerm.setVisibility(View.VISIBLE);
+        btnSubmitInputExamResult.setOnClickListener(actionSubmitInput);
+        btnCancelInputExamResult.setOnClickListener(actionCancelInput);
     }
 
-    private void _fillDataForListResultFilter(RecyclerView recyclerView) {
-        //init adapter
-        final List<String> strings = new ArrayList<String>();
-        strings.add(context.getString(R.string.row_sub_header));
-        strings.addAll(Arrays.asList(getResources().getStringArray(R.array.listTeacher)));
-        RecylerViewScreenExamResultsAdapter adapter = new RecylerViewScreenExamResultsAdapter(this, strings);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 1);
+    private void cancelInputExamResults(final boolean show) {
+        if (show)
+            progressDialog.show();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mActionSubmitCancel.setVisibility(View.GONE);
+                btnSelectedDateInput.setVisibility(View.VISIBLE);
+                btnShowSearch.setVisibility(View.VISIBLE);
+                resultsforClassbySubjectAdapter.setTYPE_DIPSLAY(ExamResultsforClassbySubjectAdapter.DISPLAY_LIST_0);
+                typeInputExam = false;
+                LaoSchoolShared.hideSoftKeyboard(getActivity());
+                if (show)
+                    progressDialog.dismiss();
 
-        //set adapter
-        recyclerView.setLayoutManager(gridLayoutManager);
-        recyclerView.setAdapter(adapter);
+            }
+        }, LaoSchoolShared.LOADING_TIME);
+
+    }
+
+    private void inputExamResults(final List<ExamResult> examResults) {
+        int monthEx = 0;
+        int yearEx = 0;
+        int teacherId = LaoSchoolShared.myProfile.getId();
+        if (longDateInputExamResult != null) {
+            monthEx = LaoSchoolShared.getMonth(longDateInputExamResult);
+            yearEx = LaoSchoolShared.getYear(longDateInputExamResult);
+        }
+        Log.d(TAG, "inputExamResults() -month:" + monthEx + ",year:" + yearEx);
+        progressDialog.show();
+        if (monthEx > 0 && yearEx > 0) {
+            final int size = examResults.size();
+            for (int i = 0; i < size; i++) {
+                final ExamResult examResult = examResults.get(i);
+                examResult.setExam_month(monthEx);
+                examResult.setTeacher_id(teacherId);
+                examResult.setExam_year(yearEx);
+
+                Log.d(TAG, "inputExamResults() -exam:" + examResult.toString());
+
+                callInputExamResults(size, i, examResult);
+            }
+        } else {
+            Log.d(TAG, "inputExamResults() -parse date error.");
+        }
+
+    }
+
+    private void callInputExamResults(final int size, final int index, ExamResult examResult) {
+        LaoSchoolSingleton.getInstance().getDataAccessService().inputExamResults(examResult, new AsyncCallback<ExamResult>() {
+            @Override
+            public void onSuccess(ExamResult result) {
+                if (index == (size - 1)) {
+                    Log.d(TAG, "callInputExamResults().onSuccess() -input " + size + " ok");
+                    finishInputExamResults();
+                    progressDialog.dismiss();
+                }
+
+            }
+
+            @Override
+            public void onFailure(String message) {
+                Log.d(TAG, "callInputExamResults().onFailure() -message" + message);
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onAuthFail(String message) {
+                Log.d(TAG, "callInputExamResults().onAuthFail() -message" + message);
+                progressDialog.dismiss();
+            }
+        });
+    }
+
+    private void finishInputExamResults() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mActionSubmitCancel.setVisibility(View.GONE);
+                btnSelectedDateInput.setVisibility(View.VISIBLE);
+                btnShowSearch.setVisibility(View.VISIBLE);
+                resultsforClassbySubjectAdapter.setTYPE_DIPSLAY(ExamResultsforClassbySubjectAdapter.DISPLAY_LIST_0);
+                LaoSchoolShared.hideSoftKeyboard(getActivity());
+                typeInputExam = false;
+                getExamResultsbySubject(true, subjectIdSeleted);
+            }
+        }, LaoSchoolShared.LOADING_TIME);
+
+
+    }
+
+    //get subject for filter mard score
+    private void getFilterSubject() {
+        Log.d(TAG, "getFilterSubject()");
+        showProgressLoading(true);
+        LaoSchoolSingleton.getInstance().getDataAccessService().getMasterTablebyName("m_subject", new AsyncCallback<List<Master>>() {
+            @Override
+            public void onSuccess(List<Master> result) {
+                Log.d(TAG, "getFilterSubject().onSuccess() -results size:" + result.size());
+                SubjectDropDownAdapter subjectDropDownAdapter = new SubjectDropDownAdapter(context, android.R.layout.simple_spinner_item, result);
+                cbxSubject.setAdapter(subjectDropDownAdapter);
+                handlerSelectedSubject();
+                showProgressLoading(false);
+            }
+
+
+            @Override
+            public void onFailure(String message) {
+                Log.e(ExamResultsByTermPagerAdapter.TAG, "getFilterSubject().onFailure() -message:" + message);
+            }
+
+            @Override
+            public void onAuthFail(String message) {
+                Log.e(ExamResultsByTermPagerAdapter.TAG, "getFilterSubject().onAuthFail() -message:" + message);
+                LaoSchoolShared.goBackToLoginPage(context);
+            }
+
+        });
+
+    }
+
+
+    private void handlerSelectedSubject() {
+        Log.d(TAG, "handlerSelectedSubject()");
+        cbxSubject.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.d(TAG, "handlerSelectedSubject().onItemSelected()");
+                subjectIdSeleted = view.getId();
+                Master subjects = (Master) cbxSubject.getSelectedItem();
+                getExamResultsbySubject(true, subjectIdSeleted);
+                fillInformationClass(subjects.getSval());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+    }
+
+    private void handlerSelectedDateInputExamResults(final Map<Long, String> groupMonth) {
+        final List<String> exam_months = new ArrayList<>();
+        final List<Long> exam_dates = new ArrayList<>();
+        for (Long date : (new TreeMap<Long, String>(groupMonth)).keySet()) {
+            String monthStr = groupMonth.get(date);
+            exam_months.add(monthStr);
+            exam_dates.add(date);
+        }
+        exam_months.remove(exam_months.size() - 1);
+        exam_months.add("Final");
+        btnSelectedDateInput.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDialogSelectDateInputExam(exam_months, exam_dates);
+            }
+
+
+        });
+    }
+
+    private void showDialogSelectDateInputExam(final List<String> month, final List<Long> dates) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(R.string.title_selected_type_input_exam_results);
+        builder.setItems(month.toArray(new String[0]), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(final DialogInterface dialogInterface, final int i) {
+
+                progressDialog.show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        String m = month.get(i);
+                        longDateInputExamResult = dates.get(i);
+                        showInputExamResultsMode(m, longDateInputExamResult);
+                        dialogInterface.dismiss();
+                    }
+                }, LaoSchoolShared.LOADING_TIME);
+            }
+        });
+        builder.show();
+    }
+
+    private void showInputExamResultsMode(String month, Long longDateInputExamResult) {
+        final TextView lbInputSubmit = (TextView) mActionSubmitCancel.findViewById(R.id.lbInputSubmit);
+        hideFilterShowData();
+        btnSelectedDateInput.setVisibility(View.GONE);
+        btnShowSearch.setVisibility(View.GONE);
+        mActionSubmitCancel.setVisibility(View.VISIBLE);
+        lbInputSubmit.setText("Date input exam : " + month);
+        resultsforClassbySubjectAdapter.setEditDisplay(longDateInputExamResult);
+        Log.d(TAG, "showInputExamResultsMode() -date seleted:" + longDateInputExamResult);
+        typeInputExam = true;
+        progressDialog.dismiss();
+    }
+
+
+    private void fillInformationClass(String subjectName) {
+        ((TextView) mDataInfomation.findViewById(R.id.lbClassName)).setText(LaoSchoolShared.myProfile.getEclass().getTitle() + " - Term:" + LaoSchoolShared.myProfile.getEclass().getTerm());
+        ((TextView) mDataInfomation.findViewById(R.id.lbSubject)).setText("Subject:" + subjectName);
+        mDataInfomation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (typeInputExam) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle(R.string.title_msg_comfirm_submit_input_exam_results);
+                    builder.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+                    builder.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            showFilterExamResults();
+                            finishInputExamResults();
+                            dialogInterface.dismiss();
+                        }
+                    });
+                    builder.create().show();
+                } else {
+                    showFilterExamResults();
+                }
+
+            }
+        });
+    }
+
+
+    private void getExamResultsbySubject(boolean showProgress, int subjectId) {
+        Log.d(TAG, "getExamResultsbySubject()");
+        if (showProgress) {
+            progressDialog.show();
+        }
+        final ProgressDialog finalProgressDialog = progressDialog;
+        LaoSchoolSingleton.getInstance().getDataAccessService().getExamResults(LaoSchoolShared.myProfile.getEclass().getId(), -1, subjectId, new AsyncCallback<List<ExamResult>>() {
+            @Override
+            public void onSuccess(List<ExamResult> result) {
+                if (result != null) {
+                    //Group data
+                    Map<Integer, List<ExamResult>> groupStudentMap = groupExamResultbyStudentId(result);
+                    Map<Long, String> groupMonth = groupMonth(result);
+
+                    //
+                    _fillDataForListResultFilter(mResultListStudentBySuject, groupStudentMap);
+                    handlerSelectedDateInputExamResults(groupMonth);
+                    handlerScroll();
+                } else {
+                    Log.d(TAG, "getExamResultsbySubject().onSuccess() message:NUll");
+                }
+                if (finalProgressDialog != null)
+                    finalProgressDialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(String message) {
+                Log.e(TAG, "getExamResultsbySubject().onFailure() message:" + message);
+                if (finalProgressDialog != null)
+                    finalProgressDialog.dismiss();
+                showProgressLoading(false);
+                showError();
+            }
+
+            @Override
+            public void onAuthFail(String message) {
+                Log.e(TAG, "getExamResultsbySubject().onAuthFail() message:" + message);
+                if (finalProgressDialog != null)
+                    finalProgressDialog.dismiss();
+                LaoSchoolShared.goBackToLoginPage(context);
+                showProgressLoading(false);
+            }
+        });
+    }
+
+    private Map<Long, String> groupMonth(List<ExamResult> result) {
+        Map<Long, String> groupMonth = new HashMap<Long, String>();
+        for (ExamResult examResult : result) {
+            int exam_month = examResult.getExam_month();
+            int exam_year = examResult.getExam_year();
+            if (examResult.getTerm_id() == LaoSchoolShared.myProfile.getEclass().getTerm()) {
+                long longDate = LaoSchoolShared.getLongDate(exam_month, exam_year);
+                if (!groupMonth.containsKey(longDate)) {
+                    groupMonth.put(longDate, LaoSchoolShared.getMonthString(exam_month));
+                }
+            }
+        }
+        return groupMonth;
+    }
+
+    private Map<Integer, List<ExamResult>> groupExamResultbyStudentId(List<ExamResult> result) {
+        Map<Integer, List<ExamResult>> groupStudentMap = new HashMap<Integer, List<ExamResult>>();
+        for (ExamResult examResult : result) {
+            List<ExamResult> temp;
+            Integer studentId = examResult.getStudent_id();
+            if (groupStudentMap.containsKey(studentId)) {
+                temp = groupStudentMap.get(studentId);
+                temp.add(examResult);
+            } else {
+                temp = new ArrayList<>();
+                temp.add(examResult);
+            }
+            groupStudentMap.put(studentId, temp);
+        }
+        return groupStudentMap;
+    }
+
+//    private void handlerSubmitFilterMarkScoreForTeacher() {
+//        btnFilterSubmitTeacher.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Log.d(TAG, "handlerSubmitFilterMarkScoreForTeacher() -subject seleted:" + subjectIdSeleted);
+//                if (subjectIdSeleted > 0) {
+//                    getExamResultsbySubject(false, subjectIdSeleted);
+//                }
+//            }
+//        });
+//    }
+
+
+    private void _fillDataForListResultFilter(RecyclerView recyclerView, Map<Integer, List<ExamResult>> result) {
+        resultsforClassbySubjectAdapter = new ExamResultsforClassbySubjectAdapter(this, result);
+        recyclerView.setAdapter(resultsforClassbySubjectAdapter);
+        //hide loading
+        showProgressLoading(false);
     }
 
     private void _fillDataForSpinerFilter(Spinner cbx, List<String> classTest) {
@@ -680,25 +1012,26 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         }
 
         private void getMyExamResult(final int position) {
-            LaoSchoolSingleton.getInstance().getDataAccessService().getMyExamResults(new AsyncCallback<List<ExamResult>>() {
+            int filter_class_id = LaoSchoolShared.myProfile.getEclass().getId();
+            LaoSchoolSingleton.getInstance().getDataAccessService().getMyExamResults(filter_class_id, new AsyncCallback<List<ExamResult>>() {
                 @Override
                 public void onSuccess(List<ExamResult> result) {
                     if (result.size() > 0) {
                         if (result != null) {
                             _refeshData(result);
-                            _showProgressLoadingStudent(false);
+                            showProgressLoading(false);
                             alreadyExecuted = true;
 
                         } else {
                             Log.d(ExamResultsByTermPagerAdapter.TAG, TAG + ".getMyExamResult(" + position + ").onAuthFail() message:NUll");
-                            _showProgressLoadingStudent(false);
-                            _showNoDataStudent();
+                            showProgressLoading(false);
+                            showNoData();
                             alreadyExecuted = true;
                         }
                     } else {
                         Log.d(ExamResultsByTermPagerAdapter.TAG, TAG + ".getMyExamResult(" + position + ").onAuthFail() message:Size==0");
-                        _showProgressLoadingStudent(false);
-                        _showNoDataStudent();
+                        showProgressLoading(false);
+                        showNoData();
                         alreadyExecuted = true;
                     }
 
@@ -707,8 +1040,8 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
                 @Override
                 public void onFailure(String message) {
                     Log.e(ExamResultsByTermPagerAdapter.TAG, TAG + ".getMyExamResult(" + position + ").onFailure() message:" + message);
-                    _showProgressLoadingStudent(false);
-                    _showErrorStudent();
+                    showProgressLoading(false);
+                    showError();
                     alreadyExecuted = true;
                 }
 
@@ -716,7 +1049,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
                 public void onAuthFail(String message) {
                     Log.e(ExamResultsByTermPagerAdapter.TAG, TAG + "._getMyExamResult(" + position + ").onAuthFail() message:" + message);
                     LaoSchoolShared.goBackToLoginPage(context);
-                    _showProgressLoadingStudent(false);
+                    showProgressLoading(false);
                     alreadyExecuted = true;
                 }
             });
@@ -738,4 +1071,69 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
             return examResults;
         }
     }
+
+    private void handlerScroll() {
+        mResultListStudentBySuject.setScrollViewCallbacks(new ObservableScrollViewCallbacks() {
+            @Override
+            public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
+
+            }
+
+            @Override
+            public void onDownMotionEvent() {
+
+            }
+
+            @Override
+            public void onUpOrCancelMotionEvent(ScrollState scrollState) {
+                try {
+                    if (scrollState == ScrollState.UP) {
+                        if (mActionBar.isShowing()) {
+                            hideFilterShowData();
+                        }
+                    } else if (scrollState == ScrollState.DOWN) {
+//                        if (!mActionBar.isShowing()) {
+//                            mActionBar.show();
+//                            mFilter.setVisibility(View.VISIBLE);
+//                            mDataInfomation.setVisibility(View.GONE);
+//                            activity.showBottomBar();
+//                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                                Window window = getActivity().getWindow();
+//                                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//                                window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+//                            }
+//                        }
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "handlerScroll().onUpOrCancelMotionEvent() -exception : " + e.getMessage());
+                }
+            }
+        });
+
+    }
+
+    private void hideFilterShowData() {
+        mActionBar.hide();
+        mFilter.setVisibility(View.GONE);
+        mDataInfomation.setVisibility(View.VISIBLE);
+        activity.hideBottomBar();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getActivity().getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(getResources().getColor(R.color.colorPriorityHigh));
+        }
+    }
+
+    private void showFilterExamResults() {
+        mActionBar.show();
+        mFilter.setVisibility(View.VISIBLE);
+        mDataInfomation.setVisibility(View.GONE);
+        activity.showBottomBar();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getActivity().getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+        }
+    }
+
 }

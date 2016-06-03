@@ -251,6 +251,22 @@ public class ExamResult implements Parcelable {
     }
 
 
+    @Override
+    public String toString() {
+        return "ExamResult{" +
+                "school_id=" + school_id +
+                ", class_id=" + class_id +
+                ", exam_type=" + exam_type +
+                ", subject_id=" + subject_id +
+                ", teacher_id=" + teacher_id +
+                ", student_id=" + student_id +
+                ", sresult='" + sresult + '\'' +
+                ", term_id=" + term_id +
+                ", exam_year=" + exam_year +
+                ", exam_month=" + exam_month +
+                '}';
+    }
+
     protected ExamResult(Parcel in) {
 
         id = in.readInt();

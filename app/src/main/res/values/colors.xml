@@ -52,4 +52,7 @@
     <color name="colorAttendanceNoReason">#D32F2F</color>
     <color name="colorAttendanceHasReason">#00A261</color>
     <color name="colorIconOnFragment">#757575</color>
+    <color name="colorSenderRead">#000</color>
+    <color name="colorTitleRead">#000</color>
+
 </resources>

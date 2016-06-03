@@ -82,13 +82,11 @@
             android:layout_below="@+id/lbSubjectName"
             android:gravity="center_vertical"
             android:singleLine="true"
-            android:text="TeacherName"
             android:textSize="14sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="20dp"
-            android:text="Description"
             android:id="@+id/lbSessionDesciption"
             android:layout_below="@+id/lbTeacherName"
             android:layout_alignLeft="@+id/lbTeacherName"

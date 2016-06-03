@@ -79,6 +79,8 @@ public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<Recy
                         examTermList.add(examResult);
                     } else if (exam_type == 2) {
                         end_exam_semester.add(examResult);
+                    } else {
+                        examTermList.add(new ExamResult());
                     }
                 } else {
                     examTermList = new ArrayList();
@@ -86,6 +88,8 @@ public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<Recy
                         examTermList.add(examResult);
                     } else if (exam_type == 2) {
                         end_exam_semester.add(examResult);
+                    } else {
+                        examTermList.add(new ExamResult());
                     }
                 }
                 if (examTermList.size() > 0)
@@ -140,7 +144,7 @@ public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<Recy
                     RecyclerView mListScoreBySemester = (RecyclerView) view.findViewById(R.id.mListScoreBySemester);
                     //LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
 
-                    GridLayoutManager gridLayoutManager=new GridLayoutManager(context,5,GridLayoutManager.VERTICAL,false);
+                    GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 5, GridLayoutManager.VERTICAL, false);
                     mListScoreBySemester.setLayoutManager(gridLayoutManager);
 
                     txtSubjectScreenResultsStudent.setText(title);
