@@ -596,7 +596,7 @@ public class DataAccessImpl implements DataAccessInterface {
     }
 
     @Override
-    public void getExamResults(int filter_class_id, int filter_user_id,int filter_subject_id, final AsyncCallback<List<ExamResult>> callback) {
+    public void getExamResults(int filter_class_id, int filter_user_id, int filter_subject_id, final AsyncCallback<List<ExamResult>> callback) {
         String url = HOST + "exam_results";
         StringBuilder stringBuilder = new StringBuilder();
         int check = 0;
@@ -1509,5 +1509,52 @@ public class DataAccessImpl implements DataAccessInterface {
             }
         };
         mRequestQueue.add(jsonArrayRequest);
+    }
+
+    @Override
+    public void inputExamResults(final ExamResult examResult, final AsyncCallback<ExamResult> callback) {
+        // Request a string response from the provided URL.
+        String url = HOST + "exam_results/input";
+        final String httpPostBody = "";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        ExamResult result = ExamResult.fromJson(response);
+                        callback.onSuccess(result);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && networkResponse.statusCode == 409) {
+                            // HTTP Status Code: 409 Unauthorized Oo
+                            Log.e("Service", "inputExamResults().onErrorResponse() -error status code " + networkResponse.statusCode);
+                            callback.onAuthFail(error.toString());
+                        } else {
+                            Log.e("Service", "inputExamResults().onErrorResponse() error:" + error.toString());
+                            callback.onFailure(error.toString());
+                        }
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", getAuthKey());
+                params.put("Content-Type", "application/json");
+                return params;
+            }
+
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                return examResult.toJson().getBytes();
+            }
+        };
+
+        mRequestQueue.add(stringRequest);
     }
 }
