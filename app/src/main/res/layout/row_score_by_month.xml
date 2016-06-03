@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="50dp"
     android:layout_height="45dp"
-    android:layout_marginLeft="8dp"
     android:background="@drawable/border_row_score_by_month"
     android:orientation="vertical"
     android:layout_marginBottom="4dp"
@@ -24,7 +23,6 @@
         android:layout_height="25dp"
         android:background="#ffffff"
         android:gravity="center"
-        android:text="10"
         android:textColor="@color/colorTitleUnread"
         android:textSize="12dp"
         android:paddingBottom="5dp" />
