@@ -124,7 +124,7 @@ public interface DataAccessInterface {
      * @param filter_user_id  (optional)
      * @param callback        return list of exam result if success,
      */
-    public void getExamResults(int filter_class_id, int filter_user_id,int filter_subject_id, AsyncCallback<List<ExamResult>> callback);
+    public void getExamResults(int filter_class_id, int filter_user_id, int filter_subject_id, AsyncCallback<List<ExamResult>> callback);
 
 
     /**
@@ -271,5 +271,7 @@ public interface DataAccessInterface {
     public void getMyFinalResults(int filter_school_year, AsyncCallback<List<FinalResult>> callback);
 
     public void getMasterTablebyName(String tableName, AsyncCallback<List<Master>> callback);
+
+    public void inputExamResults(ExamResult examResult, AsyncCallback<ExamResult> callback);
 
 }
