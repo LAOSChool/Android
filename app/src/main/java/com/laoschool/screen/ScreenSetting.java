@@ -34,6 +34,7 @@ public class ScreenSetting extends Fragment implements FragmentLifecycle {
 
     EditText txbOldPassword;
     EditText txbNewPassword;
+    EditText txbConfirmPassword;
 
     public ScreenSetting() {
         // Required empty public constructor
@@ -60,6 +61,7 @@ public class ScreenSetting extends Fragment implements FragmentLifecycle {
         final LinearLayout rootLayout = (LinearLayout) view.findViewById(R.id.rootLayout);
         txbOldPassword = (EditText) view.findViewById(R.id.txbOldPassword);
         txbNewPassword = (EditText) view.findViewById(R.id.txbNewPassword);
+        txbConfirmPassword = (EditText) view.findViewById(R.id.txbConfirmPassword);
         TextView btnSubmit = (TextView) view.findViewById(R.id.btnSubmit);
 
         rootLayout.setOnTouchListener(new View.OnTouchListener() {
@@ -81,46 +83,54 @@ public class ScreenSetting extends Fragment implements FragmentLifecycle {
                 InputMethodManager imm = (InputMethodManager) thiz.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
-                final ProgressDialog dialog = ProgressDialog.show(thiz.getActivity(), "Please wait ...", "Sending ...", true);
-
                 String user_id = LaoSchoolShared.myProfile.getSso_id();
                 String old_pass = txbOldPassword.getText().toString();
                 String new_pass = txbNewPassword.getText().toString();
-                LaoSchoolSingleton.getInstance().getDataAccessService().userChangePassword(user_id, old_pass, new_pass, new AsyncCallback<String>() {
-                    @Override
-                    public void onSuccess(String result) {
-                        dialog.dismiss();
-                        new AlertDialog.Builder(thiz.getContext())
-                                .setTitle("")
-                                .setMessage("Your password has been change.")
-                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.cancel();
-                                    }
-                                })
+                String confirm_pass = txbConfirmPassword.getText().toString();
+
+                if(new_pass.length() < 4)
+                    Toast.makeText(thiz.getContext(), "Password is at least 4 character!", Toast.LENGTH_SHORT).show();
+                else if(!new_pass.equals(confirm_pass)) {
+                    Toast.makeText(thiz.getContext(), "New password and confirm password not match!", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    final ProgressDialog dialog = ProgressDialog.show(thiz.getActivity(), "Please wait ...", "Sending ...", true);
+                    LaoSchoolSingleton.getInstance().getDataAccessService().userChangePassword(user_id, old_pass, new_pass, new AsyncCallback<String>() {
+                        @Override
+                        public void onSuccess(String result) {
+                            dialog.dismiss();
+                            new AlertDialog.Builder(thiz.getContext())
+                                    .setTitle("")
+                                    .setMessage("Your password has been change.")
+                                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.cancel();
+                                        }
+                                    })
 //                                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
 //                                    public void onClick(DialogInterface dialog, int which) {
 //                                        // do nothing
 //                                    }
 //                                })
-                                .setIcon(android.R.drawable.ic_dialog_alert)
-                                .show();
-                    }
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .show();
+                        }
 
-                    @Override
-                    public void onFailure(String message) {
-                        dialog.dismiss();
-                        if(message.contains("password is not correct"))
-                            Toast.makeText(thiz.getContext(), message, Toast.LENGTH_SHORT).show();
-                        else
-                            Toast.makeText(thiz.getContext(), "Some error occur!", Toast.LENGTH_SHORT).show();
-                    }
+                        @Override
+                        public void onFailure(String message) {
+                            dialog.dismiss();
+                            if (message.contains("password is not correct"))
+                                Toast.makeText(thiz.getContext(), message, Toast.LENGTH_SHORT).show();
+                            else
+                                Toast.makeText(thiz.getContext(), "Some error occur!", Toast.LENGTH_SHORT).show();
+                        }
 
-                    @Override
-                    public void onAuthFail(String message) {
-                        LaoSchoolShared.goBackToLoginPage(thiz.getContext());
-                    }
-                });
+                        @Override
+                        public void onAuthFail(String message) {
+                            LaoSchoolShared.goBackToLoginPage(thiz.getContext());
+                        }
+                    });
+                }
             }
         });
 
@@ -150,5 +160,6 @@ public class ScreenSetting extends Fragment implements FragmentLifecycle {
     public void onResumeFragment() {
         txbOldPassword.setText("");
         txbNewPassword.setText("");
+        txbConfirmPassword.setText("");
     }
 }

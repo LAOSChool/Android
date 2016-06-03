@@ -17,6 +17,8 @@ import java.util.List;
 public class User {
 
     static final String Entity_Name = "user";
+    public static final String USER_ROLE_STUDENT = "STUDENT";
+    public static final String USER_ROLE_TEACHER = "TEACHER";
 
     int id;
 

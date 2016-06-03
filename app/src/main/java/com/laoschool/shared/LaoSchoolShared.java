@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
+import com.laoschool.entities.Class;
 import com.laoschool.entities.Image;
 import com.laoschool.entities.Message;
 import com.laoschool.entities.User;
@@ -57,6 +58,7 @@ public class LaoSchoolShared {
     public static final int SELECT_CAMERA = 101;
     public static final long LOADING_TIME = 1500;
     public static User myProfile;
+    public static Class selectedClass;
     public static final String SHARED_PREFERENCES_TAG = "com.laoshcool.app";
     public static final String KEY_STORE_ALIAS = "LAOSCHOOL_KEY";
 

@@ -20,42 +20,46 @@
 
         <LinearLayout
             android:orientation="vertical"
-            android:layout_width="130dp"
+            android:layout_width="100dp"
             android:layout_height="100dp"
-            android:gravity="top"
-            android:layout_marginTop="0dp"
-            android:layout_marginLeft="25dp"
-            android:id="@+id/linearLayout2">
+            android:id="@+id/linearLayout2"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/linearLayout4"
+            android:layout_toStartOf="@+id/linearLayout4"
+            android:gravity="center_horizontal">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Số tiết nghỉ : 4"
+                android:text="Full days (4)"
                 android:id="@+id/txbTotalFullday"
                 android:layout_gravity="left"
                 android:layout_marginTop="10dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:gravity="center" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Có lý do: 2"
+                android:text="2"
                 android:id="@+id/txbTotalExcused1"
                 android:layout_gravity="left"
                 android:layout_marginTop="10dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:gravity="center" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Không lý do: 2"
+                android:text="2"
                 android:id="@+id/txbTotalNoExcused1"
                 android:layout_gravity="left"
                 android:layout_marginTop="10dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:gravity="center" />
         </LinearLayout>
 
         <LinearLayout
@@ -67,47 +71,94 @@
             android:layout_toRightOf="@+id/linearLayout2"
             android:layout_toEndOf="@+id/linearLayout2"
             android:layout_marginTop="10dp"
-            android:id="@+id/linearLayout3" />
+            android:id="@+id/linearLayout3"
+            android:visibility="gone" />
 
         <LinearLayout
             android:orientation="vertical"
-            android:layout_width="150dp"
+            android:layout_width="100dp"
             android:layout_height="100dp"
             android:gravity="top"
             android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/linearLayout3"
-            android:layout_toEndOf="@+id/linearLayout3"
-            android:layout_marginLeft="20dp">
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:id="@+id/linearLayout4"
+            android:layout_marginRight="10dp">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Số tiết nghỉ : 4"
+                android:text="Sessions (4)"
                 android:id="@+id/txbTotalSession"
                 android:layout_gravity="left"
                 android:layout_marginTop="10dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:gravity="center" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Có lý do: 2"
+                android:text="2"
                 android:id="@+id/txbTotalExcused2"
                 android:layout_gravity="left"
                 android:layout_marginTop="10dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:gravity="center" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Không lý do: 2"
+                android:text="2"
                 android:id="@+id/txbTotalNoExcused2"
                 android:layout_gravity="left"
                 android:layout_marginTop="10dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/linearLayout5"
+            android:gravity="center_horizontal"
+            android:layout_below="@+id/linearLayout3"
+            android:layout_marginLeft="10dp">
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/imgAttendance"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/ic_event_available_black_24dp" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Excused"
+                android:id="@+id/textView37"
+                android:layout_gravity="left"
+                android:layout_marginTop="8dp"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:textColor="@color/colorAttendanceHasReason"/>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="No Excused"
+                android:id="@+id/textView38"
+                android:layout_gravity="left"
+                android:layout_marginTop="10dp"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:textColor="@color/colorAttendanceNoReason"
+                android:paddingLeft="2dp" />
         </LinearLayout>
 
     </RelativeLayout>

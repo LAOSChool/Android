@@ -183,12 +183,12 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
             }
         }
 
-        txbTotalFullday.setText("Full day: " + totalFullday + " (days)");
-        txbTotalExcused1.setText("Excused: " + totalExcused1);
-        txbTotalNoExcused1.setText("No Reason: " + totalNoExcused1);
-        txbTotalSession.setText("Session: " + totalSession + " (sessions)");
-        txbTotalExcused2.setText("Excused: " + totalExcused2);
-        txbTotalNoExcused2.setText("No Reason: " + totalNoExcused2);
+        txbTotalFullday.setText("Full days (" + totalFullday + ")");
+        txbTotalExcused1.setText(totalExcused1 + "");
+        txbTotalNoExcused1.setText(totalNoExcused1 + "");
+        txbTotalSession.setText("Sessions (" + totalSession + ")");
+        txbTotalExcused2.setText(totalExcused2 + "");
+        txbTotalNoExcused2.setText(totalNoExcused2 + "");
 
         if(mAdapter == null) {
             ListAttendancesAdapter mAdapter = new ListAttendancesAdapter(groupAttendances, thiz.getContext());
