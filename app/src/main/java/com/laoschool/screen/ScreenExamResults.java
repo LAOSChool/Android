@@ -1,9 +1,11 @@
 package com.laoschool.screen;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -30,6 +32,8 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -77,13 +81,17 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     private LinearLayout mData;
     private ActionBar mActionBar;
     private RelativeLayout mDataInfomation;
-    private LinearLayout btnSelectedDateInput;
+    private RelativeLayout btnSelectedDateInput;
     private ImageView btnShowSearch;
     private LinearLayout mActionSubmitCancel;
     private TextView btnCancelInputExamResult;
     private TextView btnSubmitInputExamResult;
     private Long longDateInputExamResult;
     private boolean typeInputExam = false;
+    private TextView lbSubjectSeleted;
+    private View mSelectedSubject;
+    private TextView txtClassAndTermName;
+    private RelativeLayout headerInputExam;
 
     public ScreenExamResults() {
         alreadyExecuted = false;
@@ -107,11 +115,6 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     HomeActivity activity;
 
     LinearLayout mFilterTerm;
-
-    Spinner cbxTerm;
-    Spinner cbxClass;
-    Spinner cbxSubject;
-    Button btnFilterSubmitTeacher;
     RelativeLayout mToolBox;
 
 
@@ -124,6 +127,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     static FrameLayout mNoData;
     private ObservableRecyclerView mResultListStudentBySuject;
     private int subjectIdSeleted = 0;
+    private Dialog dialogSelectdSubject;
 
     private ExamResultsforClassbySubjectAdapter resultsforClassbySubjectAdapter;
     ProgressDialog progressDialog;
@@ -390,11 +394,6 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
             mViewPageStudent.setCurrentItem(positon);
     }
 
-    private Map<Integer, List<ExamResult>> _hashExamResultsbyTerm(List<ExamResult> result) {
-
-        return null;
-    }
-
     private void _definePageSemesterStudent() {
         Log.d(TAG, "_definePageSemesterStudent()");
         _getMyExamResult();
@@ -462,33 +461,39 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         mFilterTerm = (LinearLayout) view.findViewById(R.id.mFitlerTerm);
         mDataInfomation = (RelativeLayout) view.findViewById(R.id.mDataInfomation);
         mDataInfomation.setVisibility(View.GONE);
-        cbxTerm = (Spinner) view.findViewById(R.id.cbxTerm);
-        cbxClass = (Spinner) view.findViewById(R.id.cbxClass);
-        cbxSubject = (Spinner) view.findViewById(R.id.cbxSubject);
-
+        lbSubjectSeleted = (TextView) view.findViewById(R.id.lbSubjectSeleted);
+        mSelectedSubject = view.findViewById(R.id.mSelectedSubject);
         //difine progee,erorr,nodata
         mProgress = (ProgressBar) view.findViewById(R.id.mProgress);
         mError = (FrameLayout) view.findViewById(R.id.mError);
         mNoData = (FrameLayout) view.findViewById(R.id.mNoData);
+        txtClassAndTermName = (TextView) view.findViewById(R.id.txtClassAndTermName);
+        headerInputExam = (RelativeLayout) view.findViewById(R.id.header_input_exam);
+        headerInputExam.setVisibility(View.GONE);
 
-
-        btnFilterSubmitTeacher = (Button) view.findViewById(R.id.btnFilterSubmit);
         txtClass = (TextView) view.findViewById(R.id.lbTotalTerm);
 
         //define toolbox
         mToolBox = (RelativeLayout) view.findViewById(R.id.mToolBox);
         btnShowSearch = (ImageView) view.findViewById(R.id.btnShowSearch);
         SearchView searchStudent = (SearchView) view.findViewById(R.id.mSearchExamResults);
-        btnSelectedDateInput = (LinearLayout) view.findViewById(R.id.btnMarkScoreAll);
+        btnSelectedDateInput = (RelativeLayout) view.findViewById(R.id.btnMarkScoreAll);
         mActionSubmitCancel = (LinearLayout) view.findViewById(R.id.mActionSubmitCancel);
+        mActionSubmitCancel.setVisibility(View.GONE);
         btnCancelInputExamResult = (TextView) view.findViewById(R.id.btnCancelInputExamResult);
         btnSubmitInputExamResult = (TextView) view.findViewById(R.id.btnSubmitInputExamResult);
         handlerSubmitInputExam();
 
         searchStudent.setQueryHint(getString(R.string.hint_search_exam_resutls));
-        searchStudent.setOnClickListener(new View.OnClickListener() {
+        searchStudent.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                hideFilterShowData();
+            }
+        });
+        searchStudent.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
                 hideFilterShowData();
             }
         });
@@ -520,10 +525,13 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     }
 
     private void fillDataForTeacher() {
-        List<String> classTest = Arrays.asList(LaoSchoolShared.myProfile.getEclass().getTitle());
-        _fillDataForSpinerFilter(cbxClass, classTest);
-        cbxClass.setEnabled(false);
+        String className = LaoSchoolShared.myProfile.getEclass().getTitle();
+        String termName = String.valueOf("Term " + LaoSchoolShared.myProfile.getEclass().getTerm());
+        String year = String.valueOf(LaoSchoolShared.myProfile.getEclass().getYears());
+
+        txtClassAndTermName.setText(className + " - " + termName + "/" + year);
         getFilterSubject();
+
     }
 
     private void handlerSubmitInputExam() {
@@ -555,26 +563,12 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
                 builder.create().show();
             }
         };
+
         View.OnClickListener actionCancelInput = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 LaoSchoolShared.hideSoftKeyboard(getActivity());
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle(R.string.title_msg_comfirm_submit_input_exam_results);
-                builder.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                });
-                builder.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        cancelInputExamResults(true);
-                        dialogInterface.dismiss();
-                    }
-                });
-                builder.create().show();
+                cancelInputExamResults(true);
             }
         };
 
@@ -590,15 +584,18 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
             public void run() {
                 mActionSubmitCancel.setVisibility(View.GONE);
                 btnSelectedDateInput.setVisibility(View.VISIBLE);
-                btnShowSearch.setVisibility(View.VISIBLE);
+                btnShowSearch.setVisibility(View.GONE);
                 resultsforClassbySubjectAdapter.setTYPE_DIPSLAY(ExamResultsforClassbySubjectAdapter.DISPLAY_LIST_0);
                 typeInputExam = false;
                 LaoSchoolShared.hideSoftKeyboard(getActivity());
+                //(mDataInfomation.findViewById(R.id.btnShowFilter)).setVisibility(View.VISIBLE);
+                // (mDataInfomation.findViewById(R.id.btnCancelInputMode)).setVisibility(View.GONE);
+                headerInputExam.setVisibility(View.GONE);
                 if (show)
                     progressDialog.dismiss();
 
             }
-        }, LaoSchoolShared.LOADING_TIME);
+        }, 150);
 
     }
 
@@ -662,13 +659,16 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
             public void run() {
                 mActionSubmitCancel.setVisibility(View.GONE);
                 btnSelectedDateInput.setVisibility(View.VISIBLE);
-                btnShowSearch.setVisibility(View.VISIBLE);
+                btnShowSearch.setVisibility(View.GONE);
                 resultsforClassbySubjectAdapter.setTYPE_DIPSLAY(ExamResultsforClassbySubjectAdapter.DISPLAY_LIST_0);
                 LaoSchoolShared.hideSoftKeyboard(getActivity());
                 typeInputExam = false;
                 getExamResultsbySubject(true, subjectIdSeleted);
+                //(mDataInfomation.findViewById(R.id.btnShowFilter)).setVisibility(View.VISIBLE);
+                // (mDataInfomation.findViewById(R.id.btnCancelInputMode)).setVisibility(View.GONE);
+                headerInputExam.setVisibility(View.GONE);
             }
-        }, LaoSchoolShared.LOADING_TIME);
+        }, 150);
 
 
     }
@@ -681,9 +681,12 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
             @Override
             public void onSuccess(List<Master> result) {
                 Log.d(TAG, "getFilterSubject().onSuccess() -results size:" + result.size());
-                SubjectDropDownAdapter subjectDropDownAdapter = new SubjectDropDownAdapter(context, android.R.layout.simple_spinner_item, result);
-                cbxSubject.setAdapter(subjectDropDownAdapter);
-                handlerSelectedSubject();
+                int subjectId = result.get(0).getId();
+                String subjectName = result.get(0).getSval();
+                getExamResultsbySubject(true, subjectId);
+                lbSubjectSeleted.setText(subjectName);
+                fillInformationClass(subjectName);
+                handlerSelectedSubject(result);
                 showProgressLoading(false);
             }
 
@@ -704,22 +707,52 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     }
 
 
-    private void handlerSelectedSubject() {
+    private void handlerSelectedSubject(final List<Master> result) {
         Log.d(TAG, "handlerSelectedSubject()");
-        cbxSubject.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.d(TAG, "handlerSelectedSubject().onItemSelected()");
-                subjectIdSeleted = view.getId();
-                Master subjects = (Master) cbxSubject.getSelectedItem();
-                getExamResultsbySubject(true, subjectIdSeleted);
-                fillInformationClass(subjects.getSval());
-            }
 
+        final List<String> subjectNames = new ArrayList<>();
+        for (Master master : result) {
+            subjectNames.add(master.getSval());
+        }
+        dialogSelectdSubject = makeDialogSelectdSubject(result, subjectNames);
+        mSelectedSubject.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
+            public void onClick(View view) {
+                dialogSelectdSubject.show();
             }
         });
+
+    }
+
+    private Dialog makeDialogSelectdSubject(final List<Master> result, final List<String> subjectNames) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(R.string.title_selected_type_input_exam_results);
+        View header = View.inflate(context, R.layout.custom_hearder_dialog, null);
+        ((ImageView) header.findViewById(R.id.imgIcon)).setImageDrawable(LaoSchoolShared.getDraweble(context, R.drawable.ic_subject_white_24dp));
+        ((TextView) header.findViewById(R.id.txbTitleDialog)).setText("Seleted subject");
+
+
+        builder.setCustomTitle(header);
+        final ListAdapter subjectListAdapter = new ArrayAdapter<String>(context, R.layout.item_subject, subjectNames);
+
+        builder.setAdapter(subjectListAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(final DialogInterface dialogInterface, final int i) {
+                String subjectName = subjectNames.get(i);
+                int subjectId = result.get(i).getId();
+                lbSubjectSeleted.setText(subjectName);
+                fillInformationClass(subjectName);
+                getExamResultsbySubject(true, subjectId);
+            }
+        });
+        final AlertDialog dialog = builder.create();
+        ((ImageView) header.findViewById(R.id.imgCloseDialog)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        return dialog;
     }
 
     private void handlerSelectedDateInputExamResults(final Map<Long, String> groupMonth) {
@@ -730,8 +763,10 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
             exam_months.add(monthStr);
             exam_dates.add(date);
         }
-        exam_months.remove(exam_months.size() - 1);
-        exam_months.add("Final");
+        if (exam_months.size() > 1) {
+            exam_months.remove(exam_months.size() - 1);
+            exam_months.add("1/2017 - Score test final");
+        }
         btnSelectedDateInput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -745,7 +780,14 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     private void showDialogSelectDateInputExam(final List<String> month, final List<Long> dates) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(R.string.title_selected_type_input_exam_results);
-        builder.setItems(month.toArray(new String[0]), new DialogInterface.OnClickListener() {
+        View header = View.inflate(context, R.layout.custom_hearder_dialog, null);
+        ((ImageView) header.findViewById(R.id.imgIcon)).setImageDrawable(LaoSchoolShared.getDraweble(context, R.drawable.ic_subject_white_24dp));
+        ((TextView) header.findViewById(R.id.txbTitleDialog)).setText("Seleted date");
+
+        builder.setCustomTitle(header);
+        final ListAdapter subjectListAdapter = new ArrayAdapter<String>(context, R.layout.item_subject, month);
+
+        builder.setAdapter(subjectListAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(final DialogInterface dialogInterface, final int i) {
 
@@ -753,15 +795,22 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        String m = month.get(i);
+                        String selected = month.get(i);
                         longDateInputExamResult = dates.get(i);
-                        showInputExamResultsMode(m, longDateInputExamResult);
+                        showInputExamResultsMode(selected, longDateInputExamResult);
                         dialogInterface.dismiss();
                     }
-                }, LaoSchoolShared.LOADING_TIME);
+                }, 300);
             }
         });
-        builder.show();
+        final AlertDialog dialog = builder.create();
+        ((ImageView) header.findViewById(R.id.imgCloseDialog)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     private void showInputExamResultsMode(String month, Long longDateInputExamResult) {
@@ -774,6 +823,9 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         resultsforClassbySubjectAdapter.setEditDisplay(longDateInputExamResult);
         Log.d(TAG, "showInputExamResultsMode() -date seleted:" + longDateInputExamResult);
         typeInputExam = true;
+        // (mDataInfomation.findViewById(R.id.btnShowFilter)).setVisibility(View.GONE);
+        //(mDataInfomation.findViewById(R.id.btnCancelInputMode)).setVisibility(View.GONE);
+        headerInputExam.setVisibility(View.VISIBLE);
         progressDialog.dismiss();
     }
 
@@ -784,28 +836,8 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         mDataInfomation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (typeInputExam) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setTitle(R.string.title_msg_comfirm_submit_input_exam_results);
-                    builder.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                        }
-                    });
-                    builder.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            showFilterExamResults();
-                            finishInputExamResults();
-                            dialogInterface.dismiss();
-                        }
-                    });
-                    builder.create().show();
-                } else {
-                    showFilterExamResults();
-                }
-
+                showFilterExamResults();
+                cancelInputExamResults(typeInputExam);
             }
         });
     }
@@ -825,7 +857,6 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
                     Map<Integer, List<ExamResult>> groupStudentMap = groupExamResultbyStudentId(result);
                     Map<Long, String> groupMonth = groupMonth(result);
 
-                    //
                     _fillDataForListResultFilter(mResultListStudentBySuject, groupStudentMap);
                     handlerSelectedDateInputExamResults(groupMonth);
                     handlerScroll();
@@ -861,10 +892,10 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         for (ExamResult examResult : result) {
             int exam_month = examResult.getExam_month();
             int exam_year = examResult.getExam_year();
-            if (examResult.getTerm_id() == LaoSchoolShared.myProfile.getEclass().getTerm()) {
+            if (examResult.getTerm_id() == 1) {
                 long longDate = LaoSchoolShared.getLongDate(exam_month, exam_year);
                 if (!groupMonth.containsKey(longDate)) {
-                    groupMonth.put(longDate, LaoSchoolShared.getMonthString(exam_month));
+                    groupMonth.put(longDate, LaoSchoolShared.getMonthString(exam_month) + "," + exam_year);
                 }
             }
         }
@@ -887,19 +918,6 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         }
         return groupStudentMap;
     }
-
-//    private void handlerSubmitFilterMarkScoreForTeacher() {
-//        btnFilterSubmitTeacher.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Log.d(TAG, "handlerSubmitFilterMarkScoreForTeacher() -subject seleted:" + subjectIdSeleted);
-//                if (subjectIdSeleted > 0) {
-//                    getExamResultsbySubject(false, subjectIdSeleted);
-//                }
-//            }
-//        });
-//    }
-
 
     private void _fillDataForListResultFilter(RecyclerView recyclerView, Map<Integer, List<ExamResult>> result) {
         resultsforClassbySubjectAdapter = new ExamResultsforClassbySubjectAdapter(this, result);
