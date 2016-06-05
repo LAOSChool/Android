@@ -112,5 +112,7 @@
     <string name="hint_input_exam_results">Please input</string>
     <string name="action_submit">Submit</string>
     <string name="title_msg_comfirm_submit_input_exam_results">Are you sure?</string>
-    <string name="btnSelectedDate" ><u>Selected date</u></string>
+    <string name="btnSelectedDate">Selected date</string>
+    <string name="sub_header_student_name">Name</string>
+    <string name="sub_header_score">Score</string>
 </resources>
