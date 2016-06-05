@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,14 +25,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -48,7 +44,6 @@ import com.laoschool.R;
 import com.laoschool.adapter.ExamResultsByTermPagerAdapter;
 import com.laoschool.adapter.ExamResultsforClassbySubjectAdapter;
 import com.laoschool.adapter.ExamResultsStudentSemesterAdapter;
-import com.laoschool.adapter.SubjectDropDownAdapter;
 import com.laoschool.entities.ExamResult;
 import com.laoschool.entities.Master;
 import com.laoschool.model.AsyncCallback;
@@ -57,7 +52,6 @@ import com.laoschool.view.FragmentLifecycle;
 import com.laoschool.view.ViewpagerDisableSwipeLeft;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -733,7 +727,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
 
 
         builder.setCustomTitle(header);
-        final ListAdapter subjectListAdapter = new ArrayAdapter<String>(context, R.layout.item_subject, subjectNames);
+        final ListAdapter subjectListAdapter = new ArrayAdapter<String>(context, R.layout.row_selected_subject, subjectNames);
 
         builder.setAdapter(subjectListAdapter, new DialogInterface.OnClickListener() {
             @Override
@@ -785,7 +779,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         ((TextView) header.findViewById(R.id.txbTitleDialog)).setText("Seleted date");
 
         builder.setCustomTitle(header);
-        final ListAdapter subjectListAdapter = new ArrayAdapter<String>(context, R.layout.item_subject, month);
+        final ListAdapter subjectListAdapter = new ArrayAdapter<String>(context, R.layout.row_selected_subject, month);
 
         builder.setAdapter(subjectListAdapter, new DialogInterface.OnClickListener() {
             @Override

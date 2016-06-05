@@ -48,58 +48,22 @@
                 android:background="#ffffff"
                 android:orientation="vertical">
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:paddingRight="16dp"
-                    android:visibility="gone">
-
-                    <TextView
-                        android:id="@+id/textView12"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginStart="16dp"
-                        android:text="Term:"
-                        android:textColor="@color/textColorSubHeader" />
-
-                    <Spinner
-                        android:id="@+id/cbxTerm"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="72dp"
-                        android:dropDownSelector="@drawable/ic_keyboard_arrow_down_black_24dp"
-                        android:spinnerMode="dialog" />
-
-                </RelativeLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginLeft="72dp"
-                    android:background="#ebebeb"
-                    android:orientation="vertical"
-                    android:visibility="gone" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="40dp"
+                    android:background="#00A261"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp">
 
-                    <TextView
+                    <ImageView
                         android:id="@+id/textView3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
-                        android:text="Class:"
+                        android:src="@drawable/ic_class_white_24dp"
                         android:textColor="@color/textColorSubHeader" />
 
                     <Spinner
@@ -112,7 +76,19 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginLeft="56dp"
                         android:layout_marginStart="56dp"
-                        android:spinnerMode="dialog" />
+                        android:spinnerMode="dialog"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/txtClassAndTermName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="56dp"
+                        android:text="New Text"
+                        android:textColor="#fff" />
                 </RelativeLayout>
 
                 <LinearLayout
@@ -120,23 +96,27 @@
                     android:layout_height="1dp"
                     android:layout_marginLeft="72dp"
                     android:background="#ebebeb"
-                    android:orientation="vertical" />
+                    android:orientation="vertical"
+                    android:visibility="gone" />
 
                 <RelativeLayout
+                    android:id="@+id/mSelectedSubject"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="40dp"
+                    android:background="#00A261"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp">
 
-                    <TextView
+                    <ImageView
                         android:id="@+id/textView4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
-                        android:text="Subject:"
-                        android:textColor="@color/textColorSubHeader" />
+                        android:src="@drawable/ic_library_books_black_24dp"
+                        android:textColor="@color/textColorSubHeader"
+                        android:tint="@android:color/white" />
 
                     <Spinner
                         android:id="@+id/cbxSubject"
@@ -149,36 +129,28 @@
                         android:layout_marginLeft="56dp"
                         android:layout_marginStart="56dp"
                         android:dropDownVerticalOffset="35dp"
-                        android:spinnerMode="dropdown" />
-                </RelativeLayout>
+                        android:spinnerMode="dropdown"
+                        android:visibility="gone" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#ebebeb"
-                    android:orientation="vertical"></LinearLayout>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:orientation="vertical"
-                    android:paddingBottom="8dp"
-                    android:paddingRight="16dp"
-                    android:paddingTop="4dp"
-                    android:visibility="gone">
-
-                    <Button
-                        android:id="@+id/btnFilterSubmit"
+                    <TextView
+                        android:id="@+id/lbSubjectSeleted"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_centerHorizontal="true"
-                        android:layout_gravity="center_horizontal"
-                        android:background="@drawable/bg_button_show_list_filter_exam_results"
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp"
-                        android:text="Show list"
-                        android:textColor="#ffffff" />
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="56dp"
+                        android:text="New Text"
+                        android:textColor="#fff" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical|right"
+                        android:layout_marginLeft="16dp"
+                        android:src="@drawable/ic_keyboard_arrow_down_white_24dp" />
 
                 </RelativeLayout>
 
@@ -186,14 +158,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="#ebebeb"
-                    android:orientation="vertical"></LinearLayout>
-            </LinearLayout>
+                    android:orientation="vertical"
+                    android:visibility="gone"></LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#ebebeb"
-                android:orientation="vertical" />
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -202,16 +170,81 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/color_bg_un_read"
-            android:orientation="vertical"
-            >
-            <include layout="@layout/view_information_filter_exam_results" android:visibility="gone"/>
+            android:orientation="vertical">
+
+            <include
+                layout="@layout/view_information_filter_exam_results"
+                android:visibility="gone" />
+
             <include layout="@layout/view_toolbox_exam_results" />
+
+
+            <include
+                layout="@layout/view_button_submit_cancel_input_exam_results"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true" />
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="#00A261"
+                android:paddingBottom="5dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="5dp"
+                android:visibility="gone">
+
+                <EditText
+                    android:id="@+id/edtSearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/search_shape"
+                    android:drawableLeft="@drawable/ic_search_black_24dp"
+                    android:drawablePadding="5dp"
+                    android:hint="Search"
+                    android:paddingBottom="2dp"
+                    android:paddingLeft="8dp"
+                    android:paddingTop="2dp"
+                    android:textSize="16dp" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#00A261"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <android.support.v7.widget.SearchView
+
+                    android:id="@+id/mSearchExamResults"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_search_student_exam"
+                    android:iconifiedByDefault="false"
+                    android:visibility="gone"
+                    app:iconifiedByDefault="false" />
+
+            </LinearLayout>
+
+            <include
+                android:id="@+id/header_input_exam"
+                layout="@layout/view_header_input_exam_results" />
 
             <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
                 android:id="@+id/mRecylerViewExamResults"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/color_bg_un_read"
+                android:background="#fff"
                 android:scrollbars="none" />
 
         </LinearLayout>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/mInoutExamResults"
-    android:layout_width="wrap_content"
+    android:layout_width="70dp"
     android:layout_height="50dp"
     android:layout_alignEnd="@+id/row_title"
     android:layout_alignLeft="@+id/row_title"
@@ -21,12 +21,13 @@
         android:layout_centerVertical="true"
         android:text="Input exam :"
         android:textColor="#000"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:visibility="gone" />
 
     <EditText
         android:id="@+id/txtInputExamResults"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="70dp"
+        android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"

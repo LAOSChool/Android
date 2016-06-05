@@ -21,9 +21,10 @@
         android:id="@+id/lbScore"
         android:layout_width="match_parent"
         android:layout_height="25dp"
-        android:background="#ffffff"
+        android:background="#FFF9C4"
         android:gravity="center"
         android:textColor="@color/colorTitleUnread"
         android:textSize="12dp"
-        android:paddingBottom="5dp" />
+        android:paddingBottom="5dp"
+        android:autoText="true" />
 </LinearLayout>
