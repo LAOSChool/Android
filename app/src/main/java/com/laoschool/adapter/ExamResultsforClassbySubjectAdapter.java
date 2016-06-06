@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
@@ -19,7 +18,7 @@ import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.entities.ExamResult;
 import com.laoschool.entities.User;
-import com.laoschool.model.AsyncCallback;
+import com.laoschool.entities.UserDetail;
 import com.laoschool.screen.ScreenExamResults;
 import com.laoschool.shared.LaoSchoolShared;
 
@@ -59,6 +58,7 @@ public class ExamResultsforClassbySubjectAdapter extends RecyclerView.Adapter<Ex
         for (Integer studentId : sortgroupExamByStudent.keySet()) {
             studentIds.add(studentId);
             mapInputExam.put(studentId, 0f);
+            Log.d(TAG, "-student id:" + studentId);
             //mapExam.put(studentId, null);
         }
 
@@ -92,38 +92,45 @@ public class ExamResultsforClassbySubjectAdapter extends RecyclerView.Adapter<Ex
                 row_title.setTextColor(context.getResources().getColor(R.color.textColorSubHeader));
             }
         } catch (Exception e) {
-            Log.d(TAG, "onBindViewHolder() -exception:" + e.getMessage());
+            Log.e(TAG, "onBindViewHolder() -exception:" + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    private void defineRowbyStudentProfile(final View view, int studentId) {
+    private void defineRowbyStudentProfile(final View view, final int studentId) {
         List<ExamResult> examResultByStudentId = groupExamByStudent.get(studentId);
-        Map<Integer, ArrayList<ExamResult>> groupExamByTerm = groupDataByTerm(examResultByStudentId);
+        final Map<Integer, ArrayList<ExamResult>> groupExamByTerm = groupDataByTerm(examResultByStudentId);
         String userName = examResultByStudentId.get(0).getStudent_name();
+        Log.d(TAG, "defineRowbyStudentProfile() -student name:" + userName);
+        TextView row_title = (TextView) view.findViewById(R.id.row_title);
+        //fill data exam results
+        row_title.setText(userName);
 
         //Define view
-        TextView row_title = (TextView) view.findViewById(R.id.row_title);
         RelativeLayout mInputExamResults = (RelativeLayout) view.findViewById(R.id.mInoutExamResults);
         defineInputExamResults(mInputExamResults, studentId, groupExamByDate(examResultByStudentId));
+
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.mListScoreBySemester);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(gridLayoutManager);
 
 
-        //fill data exam results
-        row_title.setText(userName);
-        ScoreCurrentSemesterAdapter scoreStudentSemesterAdapter = new ScoreCurrentSemesterAdapter(context, groupExamByTerm);
-        recyclerView.setAdapter(scoreStudentSemesterAdapter);
+        if (groupExamByTerm != null) {
+            ScoreCurrentSemesterAdapter scoreStudentSemesterAdapter = new ScoreCurrentSemesterAdapter(context, groupExamByTerm);
+            recyclerView.setAdapter(scoreStudentSemesterAdapter);
+        }
+
         View row_action = view.findViewById(R.id.row_action);
         //handler display
         if (TYPE_DIPSLAY == DISPLAY_LIST_0) {
             recyclerView.setVisibility(View.VISIBLE);
             row_action.setVisibility(View.VISIBLE);
             mInputExamResults.setVisibility(View.GONE);
+            getStudentProfileById(null, view);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(context, "All", Toast.LENGTH_SHORT).show();
+                    iScreenExamResults.gotoScreenInputExamResults();
                 }
             });
         } else if (TYPE_DIPSLAY == DISPLAY_EIDIT_1) {
@@ -132,25 +139,6 @@ public class ExamResultsforClassbySubjectAdapter extends RecyclerView.Adapter<Ex
             mInputExamResults.setVisibility(View.VISIBLE);
             view.setOnClickListener(null);
         }
-
-
-        LaoSchoolSingleton.getInstance().getDataAccessService().getUserById(studentId, new AsyncCallback<User>() {
-            @Override
-            public void onSuccess(User result) {
-                getStudentProfileById(result, view);
-
-            }
-
-            @Override
-            public void onFailure(String message) {
-
-            }
-
-            @Override
-            public void onAuthFail(String message) {
-
-            }
-        });
     }
 
     private void defineInputExamResults(RelativeLayout mInputExamResults, final int studentId, Map<Long, ArrayList<ExamResult>> groupExamByTerm) {
@@ -183,9 +171,18 @@ public class ExamResultsforClassbySubjectAdapter extends RecyclerView.Adapter<Ex
                 if (!txtInputExamResults.getText().toString().trim().isEmpty()) {
                     float exam = Float.parseFloat(txtInputExamResults.getText().toString());
                     if (finalExamResult != null) {
-                        finalExamResult.setSresult(String.valueOf(exam));
-                        mapInputExam.put(studentId, exam);
-                        mapExam.put(studentId, finalExamResult);
+                        if (finalExamResult.getSresult() != null) {
+                            if (Float.parseFloat(finalExamResult.getSresult()) != (exam)) {
+                                finalExamResult.setSresult(String.valueOf(exam));
+                                mapInputExam.put(studentId, exam);
+                                mapExam.put(studentId, finalExamResult);
+                            }
+                        } else {
+                            finalExamResult.setSresult(String.valueOf(exam));
+                            mapInputExam.put(studentId, exam);
+                            mapExam.put(studentId, finalExamResult);
+                        }
+
                     }
 
                 }
@@ -193,13 +190,16 @@ public class ExamResultsforClassbySubjectAdapter extends RecyclerView.Adapter<Ex
         });
     }
 
-    private void getStudentProfileById(final User result, final View view) {
+    private void getStudentProfileById(User result, final View view) {
         final NetworkImageView imgUserAvata = (NetworkImageView) view.findViewById(R.id.row_icon);
         //Load photo student
+        result = new User();
+        UserDetail userDetail = new UserDetail();
+        userDetail.setPhoto("http://222.255.29.25:9091/eschool_content/avatar/student2.png");
+        result.setUserDetail(userDetail);
         if (result.getUserDetail().getPhoto() != null) {
             LaoSchoolSingleton.getInstance().getImageLoader().get(result.getUserDetail().getPhoto(), ImageLoader.getImageListener(imgUserAvata,
-                    R.drawable.ic_account_circle_black_36dp, android.R.drawable
-                            .ic_dialog_alert));
+                    R.drawable.ic_account_circle_black_36dp, R.drawable.ic_account_circle_black_36dp));
             imgUserAvata.setImageUrl(result.getUserDetail().getPhoto(), LaoSchoolSingleton.getInstance().getImageLoader());
         } else {
             imgUserAvata.setDefaultImageResId(R.drawable.ic_account_circle_black_36dp);
@@ -282,7 +282,7 @@ public class ExamResultsforClassbySubjectAdapter extends RecyclerView.Adapter<Ex
             int exam_month = examResult.getExam_month();
             int exam_year = examResult.getExam_year();
             long exam_date = LaoSchoolShared.getLongDate(exam_month, exam_year);
-            Log.d(TAG, exam_month + "/" + exam_year + "-exam_date:" + exam_date);
+            //Log.d(TAG, exam_month + "/" + exam_year + "-exam_date:" + exam_date);
             ArrayList<ExamResult> examTermList = null;
             if (examByMonthList.containsKey(exam_date)) {
                 examTermList = examByMonthList.get(exam_date);
