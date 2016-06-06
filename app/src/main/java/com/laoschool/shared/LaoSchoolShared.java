@@ -177,10 +177,13 @@ public class LaoSchoolShared {
     }
 
     public static void hideSoftKeyboard(Activity activity) {
-        InputMethodManager inputMethodManager = (InputMethodManager) activity
-                .getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus()
-                .getWindowToken(), 0);
+        try {
+            InputMethodManager inputMethodManager = (InputMethodManager) activity
+                    .getSystemService(Activity.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus()
+                    .getWindowToken(), 0);
+        } catch (Exception e) {
+        }
     }
 
     public static String encrypt(String plainText, RSAPublicKey publicKey)
@@ -396,7 +399,7 @@ public class LaoSchoolShared {
         Calendar cal = Calendar.getInstance();
         cal.set(exam_year, exam_month, 0, 0, 0, 0);
         long longDate = cal.getTime().getTime();
-        Log.d(TAG, "getLongDate() -exam_month:" + exam_month + ",exam_year:" + exam_year + ",date:" + longDate);
+        //Log.d(TAG, "getLongDate() -exam_month:" + exam_month + ",exam_year:" + exam_year + ",date:" + longDate);
         return longDate / 1000;
     }
 
