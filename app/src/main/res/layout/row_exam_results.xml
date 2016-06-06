@@ -89,9 +89,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#9E9E9E"
-        android:orientation="vertical"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"></LinearLayout>
+        android:orientation="vertical"></LinearLayout>
 
 
 
