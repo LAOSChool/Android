@@ -284,4 +284,6 @@ public interface DataAccessInterface {
 
     public void inputExamResults(ExamResult examResult, AsyncCallback<ExamResult> callback);
 
+    public void getListSubjectbyClassId(int classId, AsyncCallback<List<Master>> callback);
+
 }
