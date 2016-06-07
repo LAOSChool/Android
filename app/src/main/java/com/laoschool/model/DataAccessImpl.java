@@ -316,16 +316,15 @@ public class DataAccessImpl implements DataAccessInterface {
 
     private String _makeUrlgetUsers(int filter_class_id, String filter_user_role, String filter_sts, int filter_from_id) {
         StringBuilder stringBuilder = new StringBuilder();
-        if(filter_class_id > -1) {
+        if (filter_class_id > -1) {
             stringBuilder.append("?filter_class_id=" + filter_class_id);
-            if(filter_user_role.equals(User.USER_ROLE_STUDENT) || filter_user_role.equals(User.USER_ROLE_TEACHER))
+            if (filter_user_role.equals(User.USER_ROLE_STUDENT) || filter_user_role.equals(User.USER_ROLE_TEACHER))
                 stringBuilder.append("&filter_user_role=" + filter_user_role);
-            if(filter_from_id > -1)
+            if (filter_from_id > -1)
                 stringBuilder.append("&filter_from_id=" + filter_from_id);
 
             return stringBuilder.toString();
-        }
-        else
+        } else
             return "";
 
 
@@ -614,7 +613,7 @@ public class DataAccessImpl implements DataAccessInterface {
 
     @Override
     public void rollupAttendance(int filter_class_id, String filter_date, final AsyncCallback<AttendanceRollup> callback) {
-        if(filter_class_id >= 0 && !filter_date.isEmpty()) {
+        if (filter_class_id >= 0 && !filter_date.isEmpty()) {
             // Request a string response from the provided URL.
             String url = HOST + "attendances/rollup?filter_class_id=" + filter_class_id + "&filter_date=" + filter_date;
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url.trim(),
@@ -661,7 +660,7 @@ public class DataAccessImpl implements DataAccessInterface {
             Log.d("Service/rollupAtten()", "filter_class_id or filter_date is empty.");
         }
     }
-    
+
     public void getExamResults(int filter_class_id, int filter_user_id, int filter_subject_id, final AsyncCallback<List<ExamResult>> callback) {
         String url = HOST + "exam_results";
         StringBuilder stringBuilder = new StringBuilder();
@@ -1064,7 +1063,7 @@ public class DataAccessImpl implements DataAccessInterface {
         jsonObject.addProperty("content", message.getContent());
         jsonObject.addProperty("from_usr_id", message.getFrom_usr_id());
         jsonObject.addProperty("to_usr_id", message.getTo_usr_id());
-        if(!message.getCc_list().isEmpty())
+        if (!message.getCc_list().isEmpty())
             jsonObject.addProperty("cc_list", message.getCc_list());
         Gson gson = new Gson();
         String jsonString = gson.toJson(jsonObject);
@@ -1624,5 +1623,50 @@ public class DataAccessImpl implements DataAccessInterface {
         };
 
         mRequestQueue.add(stringRequest);
+    }
+
+    @Override
+    public void getListSubjectbyClassId(int classId, final AsyncCallback<List<Master>> callback) {
+        String url = HOST + "timetables/subjects?filter_class_id=" + classId;
+        JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    if (response != null) {
+                        List<Master> masters = new ArrayList<>();
+                        JSONArray listMaster = response.getJSONArray("messageObject");
+                        for (int i = 0; i < listMaster.length(); i++) {
+                            JSONObject objMaster = listMaster.getJSONObject(i);
+                            masters.add(Master.fromJson(objMaster.toString()));
+                        }
+                        callback.onSuccess(masters);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                NetworkResponse networkResponse = error.networkResponse;
+                if (networkResponse != null && networkResponse.statusCode == 409) {
+                    // HTTP Status Code: 409 Unauthorized Oo
+                    Log.e("Service", "getMasterTablebyName() -error status code " + networkResponse.statusCode);
+                    callback.onAuthFail(error.toString());
+                } else {
+                    Log.e("Service", "getMasterTablebyName() " + error.toString());
+                    callback.onFailure(error.toString());
+                }
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", getAuthKey());
+                return params;
+            }
+        };
+        mRequestQueue.add(jsonArrayRequest);
     }
 }
