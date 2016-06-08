@@ -662,7 +662,7 @@ public class DataAccessImpl implements DataAccessInterface {
     }
 
     public void getExamResults(int filter_class_id, int filter_user_id, int filter_subject_id, final AsyncCallback<List<ExamResult>> callback) {
-        String url = HOST + "exam_results";
+        String url = HOST + "exam_results/marks";
         StringBuilder stringBuilder = new StringBuilder();
         int check = 0;
         if (filter_class_id > -1) {
@@ -693,10 +693,14 @@ public class DataAccessImpl implements DataAccessInterface {
                         Log.d("S/getExamResults()", response);
                         try {
                             JSONObject mainObject = new JSONObject(response);
-                            int total_count = mainObject.getInt("total_count");
-                            if (total_count > 0) {
-                                ListExamResults examResults = ListExamResults.fromJson(response);
-                                callback.onSuccess(examResults.getList());
+                            JSONArray jsonArray = mainObject.getJSONArray("messageObject");
+                            if (jsonArray != null) {
+                                List<ExamResult> resultExams = new ArrayList<>();
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject objectExam = jsonArray.getJSONObject(i);
+                                    resultExams.add(ExamResult.fromJson(objectExam.toString()));
+                                }
+                                callback.onSuccess(resultExams);
                             } else {
                                 callback.onSuccess(new ArrayList<ExamResult>());
                             }
@@ -743,11 +747,14 @@ public class DataAccessImpl implements DataAccessInterface {
                     public void onResponse(String response) {
                         try {
                             JSONObject mainObject = new JSONObject(response);
-                            int total_count = mainObject.getInt("total_count");
-                            Log.d("Service", TAG + ".getMyExamResults() onResponse() -total_count:" + total_count);
-                            if (total_count > 0) {
-                                ListExamResults examResults = ListExamResults.fromJson(response);
-                                callback.onSuccess(examResults.getList());
+                            JSONArray jsonArray = mainObject.getJSONArray("messageObject");
+                            if (jsonArray != null) {
+                                List<ExamResult> resultExams = new ArrayList<>();
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject objectExam = jsonArray.getJSONObject(i);
+                                    resultExams.add(ExamResult.fromJson(objectExam.toString()));
+                                }
+                                callback.onSuccess(resultExams);
                             } else {
                                 callback.onSuccess(new ArrayList<ExamResult>());
                             }
