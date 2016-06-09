@@ -23,19 +23,34 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="16dp" />
 
-        <TextView
-            android:id="@+id/row_title"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:singleLine="true"
-            android:text="Nguyen Van A"
-            android:textColor="#000000"
-            android:textSize="16sp"
-            android:textStyle="bold"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="72dp"
-            android:layout_toLeftOf="@+id/row_action"
-            android:layout_toStartOf="@+id/row_action" />
+            android:layout_toLeftOf="@+id/txtInputExamResults"
+            android:layout_toStartOf="@+id/txtInputExamResults">
+
+
+            <TextView
+                android:id="@+id/row_title"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/txtInputExamResults"
+                android:layout_toStartOf="@+id/txtInputExamResults"
+                android:singleLine="true"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/lbNickName"
+                android:textSize="12sp" />
+        </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -65,23 +80,27 @@
 
     </RelativeLayout>
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/mListScoreBySemester"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_alignEnd="@+id/row_title"
+        android:layout_alignLeft="@+id/row_title"
+        android:layout_alignRight="@+id/row_title"
+        android:layout_alignStart="@+id/row_title"
+        android:layout_below="@+id/row_title"
+        android:padding="2dp"
+        android:layout_marginLeft="72dp"
+        android:layout_marginRight="16dp" />
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingLeft="72dp"
-        android:paddingRight="16dp">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/mListScoreBySemester"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_alignEnd="@+id/row_title"
-            android:layout_alignLeft="@+id/row_title"
-            android:layout_alignRight="@+id/row_title"
-            android:layout_alignStart="@+id/row_title"
-            android:layout_below="@+id/row_title"
-            android:padding="2dp" />
+        android:paddingRight="16dp"
+        android:id="@+id/mListLayout"
+        android:visibility="gone">
 
     </LinearLayout>
 
