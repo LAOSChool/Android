@@ -2,8 +2,10 @@ package com.laoschool.entities;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 /**
  * Created by Tran An on 11/03/2016.
@@ -87,7 +89,7 @@ public class ExamResult implements Parcelable {
     public ExamResult() {
     }
 
-    public ExamResult(int id, int school_id, int class_id, int exam_type, String exam_dt, int subject_id, int teacher_id, int student_id, String student_name, String notice, int result_type_id, int iresult, float fresult, String sresult, int term_id, String term, String subject, int exam_month, int exam_year, String teacher, int exam_id, String std_photo, String std_nickname,String exam_name) {
+    public ExamResult(int id, int school_id, int class_id, int exam_type, String exam_dt, int subject_id, int teacher_id, int student_id, String student_name, String notice, int result_type_id, int iresult, float fresult, String sresult, int term_id, String term, String subject, int exam_month, int exam_year, String teacher, int exam_id, String std_photo, String std_nickname, String exam_name) {
         this.id = id;
         this.school_id = school_id;
         this.class_id = class_id;
@@ -111,7 +113,7 @@ public class ExamResult implements Parcelable {
         this.exam_id = exam_id;
         this.std_photo = std_photo;
         this.std_nickname = std_nickname;
-        this.exam_name=exam_name;
+        this.exam_name = exam_name;
     }
 
     public int getId() {
@@ -323,15 +325,13 @@ public class ExamResult implements Parcelable {
     public String toString() {
         return "ExamResult{" +
                 "school_id=" + school_id +
+                ", term_id=" + term_id +
                 ", class_id=" + class_id +
-                ", exam_type=" + exam_type +
                 ", subject_id=" + subject_id +
                 ", teacher_id=" + teacher_id +
                 ", student_id=" + student_id +
+                ", exam_id=" + exam_id +
                 ", sresult='" + sresult + '\'' +
-                ", term_id=" + term_id +
-                ", exam_year=" + exam_year +
-                ", exam_month=" + exam_month +
                 '}';
     }
 
@@ -358,9 +358,9 @@ public class ExamResult implements Parcelable {
         exam_year = in.readInt();
         teacher = in.readString();
         exam_id = in.readInt();
-        std_photo=in.readString();
-        std_nickname=in.readString();
-        exam_name=in.readString();
+        std_photo = in.readString();
+        std_nickname = in.readString();
+        exam_name = in.readString();
     }
 
     @Override
@@ -410,4 +410,22 @@ public class ExamResult implements Parcelable {
         }
     };
 
+    public String toCreateJson() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("school_id", school_id);
+        jsonObject.addProperty("class_id", class_id);
+        jsonObject.addProperty("sresult", sresult);
+
+        jsonObject.addProperty("student_id", student_id);
+        jsonObject.addProperty("subject_id", subject_id);
+
+        jsonObject.addProperty("exam_id", exam_id);
+        jsonObject.addProperty("teacher_id", teacher_id);
+        jsonObject.addProperty("term_id", term_id);
+
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(jsonObject);
+        Log.d("", "toCreateJson():" + jsonString);
+        return jsonString;
+    }
 }
