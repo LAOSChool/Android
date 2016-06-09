@@ -42,10 +42,10 @@ public class InputExamResultsAdapter extends RecyclerView.Adapter<InputExamResul
     private List<ExamResult> inputExamResults = new ArrayList<>(studentIds.size());
     private Map<Integer, Float> mapInputExam = new HashMap<>();
     private Map<Integer, ExamResult> mapExam = new HashMap<>();
-    private Long exam_date_input;
+    private int exam_date_input;
     List<Long> exam_dates;
 
-    public InputExamResultsAdapter(Context context, Map<Integer, ExamResult> groupExamByStudent, Long selectedDateInputExamResult) {
+    public InputExamResultsAdapter(Context context, Map<Integer, ExamResult> groupExamByStudent, int selectedDateInputExamResult) {
         Map<Integer, ExamResult> sortgroupExamByStudent = new TreeMap<>(groupExamByStudent);
         this.groupExamByStudent = sortgroupExamByStudent;
         this.exam_date_input = selectedDateInputExamResult;
@@ -175,13 +175,6 @@ public class InputExamResultsAdapter extends RecyclerView.Adapter<InputExamResul
             row_title = (TextView) view.findViewById(R.id.row_title);
             lbNickName = (TextView) view.findViewById(R.id.lbNickName);
         }
-    }
-
-    public void setEditDisplay(long date_exam) {
-        inputExamResults.clear();
-        mapExam.clear();
-        exam_date_input = date_exam;
-        notifyDataSetChanged();
     }
 
     public void clearData() {
