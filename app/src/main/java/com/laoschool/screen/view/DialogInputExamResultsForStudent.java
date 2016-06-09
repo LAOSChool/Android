@@ -71,21 +71,7 @@ public class DialogInputExamResultsForStudent extends DialogFragment {
         } else {
             imgIcon.setDefaultImageResId(R.drawable.ic_account_circle_black_36dp);
         }
-
-        //set month
-        int exam_month = examResult.getExam_month();
-        int exam_type = examResult.getExam_type();
-        String monthStr = "DEF";
-        if (exam_month > 0) {
-            monthStr = LaoSchoolShared.formatMonth(examResult.getExam_month());
-        }
-        if (exam_type == 2) {
-            lbMonthOfExam.setText("Final");
-        } else if (exam_type == 3) {
-            lbMonthOfExam.setText("AVG");
-        } else if (exam_type == 4) {
-            lbMonthOfExam.setText("AVG");
-        } else lbMonthOfExam.setText(monthStr);
+        lbMonthOfExam.setText(examResult.getExam_name());
 
         //set score & notice
         txtScoreOfExam.setText(examResult.getSresult());
@@ -105,6 +91,7 @@ public class DialogInputExamResultsForStudent extends DialogFragment {
                 if (!notice.trim().toString().isEmpty()) {
                     examResult.setNotice(notice);
                 }
+                examResult.setTeacher_id(LaoSchoolShared.myProfile.getId());
                 Log.d(TAG, "-submit examResult:" + examResult.toJson());
                 inputExamResults(examResult);
 
