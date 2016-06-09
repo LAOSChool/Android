@@ -37,6 +37,7 @@ import java.io.ByteArrayOutputStream;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.text.DateFormat;
+import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -391,6 +392,18 @@ public class LaoSchoolShared {
         DateFormat inputFormatter1 = new SimpleDateFormat("MMMM", Locale.US);
         Calendar cal = Calendar.getInstance();
         cal.set(2016, month - 1, 10);
+        String monthParse = inputFormatter1.format(cal.getTime());
+        return monthParse;
+    }
+    public static String formatMonth(int month) {
+        DateFormatSymbols dateFormatSymbols = new DateFormatSymbols(Locale.UK);
+        String monthParse = dateFormatSymbols.getMonths()[month - 1];
+        return monthParse;
+    }
+    public static String getMonthString(Long date) {
+        DateFormat inputFormatter1 = new SimpleDateFormat("MMMM , yyyy", Locale.US);
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(date);
         String monthParse = inputFormatter1.format(cal.getTime());
         return monthParse;
     }
