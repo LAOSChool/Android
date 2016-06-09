@@ -32,6 +32,7 @@ import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.adapter.InputExamResultsAdapter;
 import com.laoschool.entities.ExamResult;
+import com.laoschool.entities.ExamType;
 import com.laoschool.entities.Master;
 import com.laoschool.model.AsyncCallback;
 import com.laoschool.shared.LaoSchoolShared;
@@ -77,6 +78,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
     private View mContainer;
     private TextView lbClassName;
     private SearchView mSearchStudentName;
+    private int selectedExamTypeId;
 
     interface IScreenInputExamResults {
         void cancelInputExamResults();
@@ -189,6 +191,26 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         }
     }
 
+    private void getExamType(final List<ExamResult> examResults) {
+        int classId = LaoSchoolShared.myProfile.getEclass().getId();
+        LaoSchoolSingleton.getInstance().getDataAccessService().getExamType(classId, new AsyncCallback<List<ExamType>>() {
+            @Override
+            public void onSuccess(List<ExamType> result) {
+                fillDataDateInputExamResults(examResults, result);
+            }
+
+            @Override
+            public void onFailure(String message) {
+
+            }
+
+            @Override
+            public void onAuthFail(String message) {
+
+            }
+        });
+    }
+
     private void fillDataSubject(List<Master> listSubject, int selectedSubjectId) {
         final List<String> subjectNames = new ArrayList<>();
         Map<Integer, String> subs = new HashMap<>();
@@ -297,61 +319,54 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
     }
 
     private void inputExamResults(final List<ExamResult> examResults) {
-        int monthEx = 0;
-        int yearEx = 0;
+
         int teacherId = LaoSchoolShared.myProfile.getId();
-        if (selectedDateInputExamResult != null) {
-            monthEx = LaoSchoolShared.getMonth(selectedDateInputExamResult);
-            yearEx = 2016;
-        }
-        Log.d(TAG, "inputExamResults() -month:" + monthEx + ",year:" + yearEx);
+        Log.d(TAG, "teacherId:" + teacherId);
         progressDialog.show();
-        if (monthEx > 0 && yearEx > 0) {
-            final int size = examResults.size();
-            for (int i = 0; i < size; i++) {
-                final ExamResult examResult = examResults.get(i);
-                examResult.setExam_month(monthEx);
-                examResult.setTeacher_id(teacherId);
-                examResult.setExam_year(yearEx);
-                Log.d(TAG, "inputExamResults() -exam:" + examResult.toString());
-                callInputExamResults(size, i, examResult);
-            }
-        } else {
-            Log.d(TAG, "inputExamResults() -parse date error.");
+        final int size = examResults.size();
+        for (int i = 0; i < size; i++) {
+            final ExamResult examResult = examResults.get(i);
+            ExamResult score = new ExamResult();
+            score.setTeacher_id(teacherId);
+            score.setSresult(examResult.getSresult());
+            score.setClass_id(examResult.getClass_id());
+            score.setExam_id(examResult.getExam_id());
+            score.setSchool_id(examResult.getSchool_id());
+            score.setStudent_id(examResult.getStudent_id());
+            score.setTerm_id(examResult.getTerm_id());
+            score.setSubject_id(examResult.getSubject_id());
+            callInputExamResults(size, i, score);
+            Log.d(TAG, "inputExamResults() -exam:" + score.toJson());
+
         }
+
 
     }
 
     private void callInputExamResults(final int size, final int index, ExamResult examResult) {
-        Log.d(TAG, "callInputExamResults().onSuccess() -input: " + examResult.toJson());
-        if (index == (size - 1)) {
-            Log.d(TAG, "callInputExamResults().onSuccess() -input " + size + " ok");
-            finishInputExamResults();
-            progressDialog.dismiss();
-        }
-//        LaoSchoolSingleton.getInstance().getDataAccessService().inputExamResults(examResult, new AsyncCallback<ExamResult>() {
-//            @Override
-//            public void onSuccess(ExamResult result) {
-//                Log.d(TAG, "callInputExamResults().onSuccess() -result: " + result.toJson());
-//                if (index == (size - 1)) {
-//                    Log.d(TAG, "callInputExamResults().onSuccess() -input " + size + " ok");
-//                    finishInputExamResults();
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onFailure(String message) {
-//                Log.d(TAG, "callInputExamResults().onFailure() -message" + message);
-//                progressDialog.dismiss();
-//            }
-//
-//            @Override
-//            public void onAuthFail(String message) {
-//                Log.d(TAG, "callInputExamResults().onAuthFail() -message" + message);
-//                progressDialog.dismiss();
-//            }
-//        });
+        LaoSchoolSingleton.getInstance().getDataAccessService().inputExamResults(examResult, new AsyncCallback<ExamResult>() {
+            @Override
+            public void onSuccess(ExamResult result) {
+                Log.d(TAG, "callInputExamResults().onSuccess() -result: " + result.toJson());
+                if (index == (size - 1)) {
+                    Log.d(TAG, "callInputExamResults().onSuccess() -input " + size + " ok");
+                    finishInputExamResults();
+                }
+
+            }
+
+            @Override
+            public void onFailure(String message) {
+                Log.d(TAG, "callInputExamResults().onFailure() -message" + message);
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onAuthFail(String message) {
+                Log.d(TAG, "callInputExamResults().onAuthFail() -message" + message);
+                progressDialog.dismiss();
+            }
+        });
     }
 
     private void finishInputExamResults() {
@@ -376,11 +391,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
             public void onSuccess(List<ExamResult> result) {
                 if (result != null) {
                     //Group data
-                    groupStudentMap = groupExamResultbyStudentId(result);
-                    Map<Long, String> groupMonth = groupMonth(result);
-
-                    fillDataDateInputExamResults(groupMonth);
-                    fillDataExamStudent(groupStudentMap);
+                    getExamType(result);
 
                 } else {
                     Log.d(TAG, "getExamResultsbySubject().onSuccess() message:NUll");
@@ -407,27 +418,22 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         });
     }
 
-    private void fillDataDateInputExamResults(Map<Long, String> groupMonth) {
+    private void fillDataDateInputExamResults(List<ExamResult> examResults, List<ExamType> examTypes) {
         exam_months = new ArrayList<>();
         exam_dates = new ArrayList<>();
-        for (Long month : (new TreeMap<Long, String>(groupMonth)).keySet()) {
-            String monthStr = groupMonth.get(month);
-            exam_months.add(monthStr);
-            exam_dates.add(month);
+        for (ExamType examType : examTypes) {
+            if (examType.getEx_type() <= 2 || examType.getEx_type() == 6)
+                exam_months.add(examType.getEx_name());
         }
-        if (exam_months.size() > 1) {
-            // String monthStr = groupMonth.get(exam_dates.get(exam_dates.size() - 1));
-//            exam_months.remove(exam_months.size() - 1);
-//            exam_months.add("Test final");
-        }
+
         if (exam_months.size() > 0) {
             //first
             lbInputDate.setText(exam_months.get(0));
             lbInputSubmit.setText(exam_months.get(0));
-            selectedDateInputExamResult = exam_dates.get(0);
-
+            selectedExamTypeId = examTypes.get(0).getId();
+            fillDataExamStudent(groupExamResultbyStudentId(examResults, selectedExamTypeId), selectedExamTypeId);
             //
-            dialogSelectedInputTypeDate = makeDialogSelectdInputExamType(exam_months, exam_dates);
+            dialogSelectedInputTypeDate = makeDialogSelectdInputExamType(examResults, exam_months, examTypes);
             mToolBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -446,7 +452,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         LaoSchoolShared.hideSoftKeyboard(getActivity());
     }
 
-    private Dialog makeDialogSelectdInputExamType(final List<String> exam_months, final List<Long> exam_dates) {
+    private Dialog makeDialogSelectdInputExamType(final List<ExamResult> examResults, final List<String> exam_months, final List<ExamType> examTypes) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         // builder.setTitle(R.string.title_selected_type_input_exam_results);
         View header = View.inflate(context, R.layout.custom_hearder_dialog, null);
@@ -460,19 +466,19 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
 
         builder.setAdapter(subjectListAdapter, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(final DialogInterface dialogInterface, final int i) {
-                String selected = exam_months.get(i);
-                selectedDateInputExamResult = exam_dates.get(i);
-                Log.d(TAG, "-selected month:" + selectedDateInputExamResult);
+            public void onClick(final DialogInterface dialogInterface, final int position) {
+                String selected = exam_months.get(position);
+                selectedExamTypeId = examTypes.get(position).getId();
+                Log.d(TAG, "-selected exam type Id:" + selectedExamTypeId);
                 lbInputDate.setText(selected);
                 lbInputSubmit.setText(selected);
-                fillDataExamStudent(groupStudentMap, selectedDateInputExamResult);
+                fillDataExamStudent(groupExamResultbyStudentId(examResults, selectedExamTypeId), selectedExamTypeId);
 
 
             }
         });
         final AlertDialog dialog = builder.create();
-        ((ImageView) header.findViewById(R.id.imgCloseDialog)).setOnClickListener(new View.OnClickListener() {
+        (header.findViewById(R.id.imgCloseDialog)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
@@ -481,16 +487,9 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         return dialog;
     }
 
-    private void fillDataExamStudent(Map<Integer, ExamResult> groupStudentMap, Long selectedDateInputExamResult) {
-        resultsforClassbySubjectAdapter = new InputExamResultsAdapter(context, groupStudentMap, selectedDateInputExamResult);
+    private void fillDataExamStudent(Map<Integer, ExamResult> groupStudentMap, int selectedExamTypeId) {
+        resultsforClassbySubjectAdapter = new InputExamResultsAdapter(context, groupStudentMap, selectedExamTypeId);
         listExamByStudent.setAdapter(resultsforClassbySubjectAdapter);
-    }
-
-    private void fillDataExamStudent(Map<Integer, ExamResult> groupStudentMap) {
-        resultsforClassbySubjectAdapter = new InputExamResultsAdapter(context, groupStudentMap, selectedDateInputExamResult);
-        listExamByStudent.setAdapter(resultsforClassbySubjectAdapter);
-
-
     }
 
     private Map<Long, String> groupMonth(List<ExamResult> result) {
@@ -510,10 +509,10 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         return monthParse;
     }
 
-    private Map<Integer, ExamResult> groupExamResultbyStudentId(List<ExamResult> result) {
+    private Map<Integer, ExamResult> groupExamResultbyStudentId(List<ExamResult> result, int selectedExamTypeId) {
         Map<Integer, ExamResult> groupStudentMap = new HashMap<Integer, ExamResult>();
         for (ExamResult examResult : result) {
-            if (examResult.getExam_type() <= 2) {
+            if (examResult.getExam_type() == selectedExamTypeId) {
                 Integer studentId = examResult.getStudent_id();
                 groupStudentMap.put(studentId, examResult);
             }
