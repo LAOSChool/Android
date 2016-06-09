@@ -1,5 +1,6 @@
 package com.laoschool.adapter;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.support.v7.app.AlertDialog;
@@ -9,12 +10,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.laoschool.R;
 import com.laoschool.entities.ExamResult;
+import com.laoschool.screen.ScreenExamResults;
+import com.laoschool.screen.view.DialogInputExamResultsForStudent;
 import com.laoschool.shared.LaoSchoolShared;
 
 import java.text.DateFormat;
+import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,40 +34,32 @@ import java.util.TreeMap;
  */
 public class ScoreCurrentSemesterAdapter extends RecyclerView.Adapter<ScoreCurrentSemesterAdapter.ScoreCurrentSemesterAdapterViewHolder> {
     private static final String TAG = ScoreCurrentSemesterAdapter.class.getSimpleName();
+    private final Activity activity;
     Context context;
-    Map<Long, ArrayList<ExamResult>> scores;
-    List<Long> exam_dates = new ArrayList<>();
+    List<ExamResult> scores;
+    List<Integer> exam_Ids = new ArrayList<>();
+    ScreenExamResults.IScreenExamResults iScreenExamResults;
 
-    public ScoreCurrentSemesterAdapter(Context context, Map<Integer, ArrayList<ExamResult>> scores) {
-        this.context = context;
+    public interface OnItemClickListener {
+        void onItemClick(View item);
+    }
 
-        List<ExamResult> examResults = scores.get(LaoSchoolShared.myProfile.getEclass().getTerm());
-        Map<Long, ArrayList<ExamResult>> examByMonthList = new HashMap<>();
-        for (ExamResult examResult : examResults) {
-            int exam_month = examResult.getExam_month();
-            int exam_year = examResult.getExam_year();
-            long exam_date = LaoSchoolShared.getLongDate(exam_month, exam_year);
-            Log.d(TAG, exam_month + "/" + exam_year + "-exam_date:" + exam_date);
-            ArrayList<ExamResult> examTermList = null;
-            if (examByMonthList.containsKey(exam_date)) {
-                examTermList = examByMonthList.get(exam_date);
-                if (examTermList == null)
-                    examTermList = new ArrayList();
-                examTermList.add(examResult);
-            } else {
-                examTermList = new ArrayList();
-                examTermList.add(examResult);
-            }
-            if (examTermList.size() > 0)
-                examByMonthList.put(exam_date, examTermList);
-
-        }
-
-        Map<Long, ArrayList<ExamResult>> examsTree = new TreeMap<>(examByMonthList);
-        this.scores = examsTree;
-        for (Long key : examsTree.keySet()) {
-            exam_dates.add(key);
-        }
+    public ScoreCurrentSemesterAdapter(Activity activity, ScreenExamResults.IScreenExamResults iScreenExamResults, List<ExamResult> scores) {
+        this.activity = activity;
+        this.context = activity.getApplicationContext();
+        this.iScreenExamResults = iScreenExamResults;
+//        List<ExamResult> examResults = scores.get(LaoSchoolShared.myProfile.getEclass().getTerm());
+//        Map<Integer, ExamResult> examByMonthList = new HashMap<>();
+//        for (ExamResult examResult : examResults) {
+//            int exam_id = examResult.getExam_id();
+//            examByMonthList.put(exam_id, examResult);
+//        }
+//
+//        Map<Integer, ExamResult> examsTree = new TreeMap<>(examByMonthList);
+        this.scores = scores;
+//        for (Integer examId : examsTree.keySet()) {
+//            exam_Ids.add(examId);
+//        }
     }
 
 
@@ -74,45 +71,54 @@ public class ScoreCurrentSemesterAdapter extends RecyclerView.Adapter<ScoreCurre
     }
 
     @Override
-    public void onBindViewHolder(ScoreCurrentSemesterAdapterViewHolder holder, int position) {
+    public void onBindViewHolder(final ScoreCurrentSemesterAdapterViewHolder holder, final int position) {
         View view = holder.view;
-        try {
-            long exam_date = exam_dates.get(position);
-            String monthStr = getMonthString(exam_date);
-            List<ExamResult> scoreList = scores.get(exam_date);
-            if (scoreList.size() > 0) {
-                final ExamResult examResult = scoreList.get(scoreList.size() - 1);
-                String score = examResult.getSresult();
-                ((TextView) (view.findViewById(R.id.lbScoreMonth))).setText(monthStr);
-                if (score != null) {
-                    if (!score.trim().isEmpty()) {
-                        ((TextView) (view.findViewById(R.id.lbScore))).setText(score);
-                        view.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                             //   _showDetailsExamResults(examResult);
+        final ExamResult examResult = scores.get(position);
+        int exam_month = examResult.getExam_month();
+        int exam_type = examResult.getExam_type();
 
-                            }
-                        });
-                    } else {
-                        Log.e(TAG, "onBindViewHolder() - score is empty");
-                        view.setVisibility(View.GONE);
-                    }
-                } else {
-                    Log.e(TAG, "onBindViewHolder() - score is null");
-                }
-
-                if (examResult.getExam_type() == 2) {
-                    ((TextView) (view.findViewById(R.id.lbScoreMonth))).setText("Final");
-                    view.setBackgroundResource(R.drawable.border_row_score_by_month_final);
-                }
-            } else {
-                Log.e(TAG, "onBindViewHolder() - exam_date:" + exam_date + " list exam is empty");
-                view.setVisibility(View.GONE);
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "onBindViewHolder() - exception=" + e.getMessage());
+        String monthStr = "DEF";
+        if (exam_month > 0) {
+            monthStr = getMonthString(examResult.getExam_month());
         }
+        String score = examResult.getSresult();
+
+        View mScoreOfMonth = view.findViewById(R.id.mScoreOfMonth);
+        TextView lbScoreMonth = ((TextView) (view.findViewById(R.id.lbScoreMonth)));
+        TextView lbScore = ((TextView) (view.findViewById(R.id.lbScore)));
+
+        if (exam_type == 2) {
+            lbScoreMonth.setText("Final");
+            view.setBackgroundResource(R.drawable.border_row_score_by_month_final);
+        } else if (exam_type == 3) {
+            lbScoreMonth.setText("AVG");
+        } else if (exam_type == 4) {
+            lbScoreMonth.setText("AVG");
+            view.setBackgroundResource(R.drawable.border_row_score_by_month_final);
+        } else lbScoreMonth.setText(monthStr);
+
+        if (score != null && !score.trim().isEmpty()) {
+            lbScore.setText(score);
+        } else {
+            lbScore.setText("");
+        }
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick " + position);
+//                _showDetailsExamResults(examResult);
+            }
+        });
+        view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Log.d(TAG, "onLongClick " + position);
+                DialogInputExamResultsForStudent dialogInputExamResultsForStudent = new DialogInputExamResultsForStudent(examResult);
+                dialogInputExamResultsForStudent.show(activity.getFragmentManager(), DialogInputExamResultsForStudent.TAG);
+                return false;
+            }
+        });
+
     }
 
     private void _showDetailsExamResults(ExamResult examResult) {
@@ -141,12 +147,9 @@ public class ScoreCurrentSemesterAdapter extends RecyclerView.Adapter<ScoreCurre
 
     }
 
-    private String getMonthString(long date) {
-        DateFormat inputFormatter1 = new SimpleDateFormat("MMM", Locale.US);
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(date * 1000);
-        String monthParse = inputFormatter1.format(cal.getTime());
-        //Log.d(TAG, " getMonthString() - month:" + month + ",month parse:" + monthParse);
+    private String getMonthString(int month) {
+        DateFormatSymbols dateFormatSymbols = new DateFormatSymbols(Locale.UK);
+        String monthParse = dateFormatSymbols.getShortMonths()[month - 1];
         return monthParse;
     }
 
@@ -155,7 +158,7 @@ public class ScoreCurrentSemesterAdapter extends RecyclerView.Adapter<ScoreCurre
         return scores.size();
     }
 
-    public class ScoreCurrentSemesterAdapterViewHolder extends RecyclerView.ViewHolder {
+    public class ScoreCurrentSemesterAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         View view;
         int viewType;
 
@@ -163,6 +166,12 @@ public class ScoreCurrentSemesterAdapter extends RecyclerView.Adapter<ScoreCurre
             super(itemView);
             this.view = itemView;
             this.viewType = viewType;
+            //this.view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+
         }
     }
 
