@@ -37,10 +37,8 @@ public class ExamResultsforClassbySubjectAdapter extends RecyclerView.Adapter<Ex
     private List<Integer> studentIds = new ArrayList<>();
     private List<List<ExamResult>> listExam = new ArrayList<>();
     private Map<Integer, List<ExamResult>> groupExamByStudent;
-    private int TYPE_SUB_HEADER = 0;
     private static final int TYPE_SEARCH = 0;
     private int TYPE_EXAM = 1;
-    private int TYPE_LINE = 2;
 
     public ExamResultsforClassbySubjectAdapter(ScreenExamResults screenExamResults, Map<Integer, List<ExamResult>> groupExamByStudent) {
         this.screenExamResults = screenExamResults;
