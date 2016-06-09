@@ -5,7 +5,9 @@
     android:background="@drawable/border_row_score_by_month"
     android:orientation="vertical"
     android:layout_marginBottom="4dp"
-  >
+    android:id="@+id/mScoreOfMonth"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <TextView
         android:id="@+id/lbScoreMonth"
@@ -13,9 +15,10 @@
         android:layout_height="20dp"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="Final"
+        android:text="D"
         android:textColor="#fff"
-        android:textSize="8dp" />
+        android:textSize="8dp"
+         />
 
     <TextView
         android:id="@+id/lbScore"
@@ -26,5 +29,5 @@
         android:textColor="@color/colorTitleUnread"
         android:textSize="12dp"
         android:paddingBottom="5dp"
-        android:autoText="true" />
+        />
 </LinearLayout>
