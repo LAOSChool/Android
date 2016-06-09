@@ -117,10 +117,9 @@ public interface DataAccessInterface {
     public void updateAttendance(Attendance attendance, AsyncCallback<Attendance> callback);
 
     /**
-     *
      * @param filter_class_id (require)
-     * @param filter_date (require)
-     * @param callback return AttendanceRollup mixed data,
+     * @param filter_date     (require)
+     * @param callback        return AttendanceRollup mixed data,
      */
     public void rollupAttendance(int filter_class_id, String filter_date, AsyncCallback<AttendanceRollup> callback);
 
@@ -285,5 +284,7 @@ public interface DataAccessInterface {
     public void inputExamResults(ExamResult examResult, AsyncCallback<ExamResult> callback);
 
     public void getListSubjectbyClassId(int classId, AsyncCallback<List<Master>> callback);
+
+    public void getExamResultsforMark(int filter_class_id, int filter_user_id, int filter_subject_id, AsyncCallback<List<ExamResult>> callback);
 
 }
