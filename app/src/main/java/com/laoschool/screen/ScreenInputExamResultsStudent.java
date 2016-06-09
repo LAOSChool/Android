@@ -13,7 +13,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,7 +22,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,41 +42,32 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ScreenInputExamResultsStudent extends Fragment implements FragmentLifecycle {
-
-
     private static final String TAG = ScreenInputExamResultsStudent.class.getSimpleName();
     private Context context;
     private int containerId;
+
     private TextView lbTermName;
-
-    private View mSelectedSubject;
-    private TextView lbSubjectSeleted;
-
-    private Dialog dialogSelectedSubject;
-    private View mToolBox;
-    private ProgressDialog progressDialog;
-    private List<String> exam_months;
-    private List<Long> exam_dates;
-    private TextView lbInputDate;
-    private Dialog dialogSelectedInputTypeDate;
-    private Long selectedDateInputExamResult;
-    private RecyclerView listExamByStudent;
-    InputExamResultsAdapter resultsforClassbySubjectAdapter;
-    private TextView lbInputSubmit;
-    private View btnCancelInputExamResult;
-    private View btnSubmitInputExamResult;
-    private int selectedSubjectId;
-    Map<Integer, ExamResult> groupStudentMap;
-    private View mContainer;
     private TextView lbClassName;
-    private SearchView mSearchStudentName;
+    private View mSelectedSubject;
+    private View mToolBox;
+    private TextView lbInputDate;
+    private TextView lbSubjectSeleted;
+    private RecyclerView listExamByStudent;
+
+    private ProgressDialog progressDialog;
+    private Dialog dialogSelectedSubject;
+
+    private List<String> exam_months;
+    private Dialog dialogSelectedInputTypeDate;
+
+    private int selectedSubjectId;
     private int selectedExamTypeId;
+    InputExamResultsAdapter resultsforClassbySubjectAdapter;
 
     interface IScreenInputExamResults {
         void cancelInputExamResults();
@@ -111,30 +100,15 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         HomeActivity activity = (HomeActivity) getActivity();
         activity.hideBottomBar();
 
-        mContainer = view.findViewById(R.id.mContainer);
+        View customActionBar = View.inflate(context, R.layout.view_custom_action_bar_input_exam_results, null);
+        activity.getSupportActionBar().setCustomView(customActionBar);
 
-
-        lbTermName = (TextView) view.findViewById(R.id.lbClassAndTermName);
-        lbClassName = (TextView) view.findViewById(R.id.lbClassName);
+        lbTermName = (TextView) customActionBar.findViewById(R.id.lbClassAndTermName);
+        lbClassName = (TextView) customActionBar.findViewById(R.id.lbClassName);
 
         mSelectedSubject = view.findViewById(R.id.mSelectedSubject);
         lbSubjectSeleted = (TextView) mSelectedSubject.findViewById(R.id.lbSubjectSeleted);
 
-        //
-        mSearchStudentName = (SearchView) view.findViewById(R.id.mSearchStudentName);
-        SearchView.SearchAutoComplete autoCompleteTextView = (SearchView.SearchAutoComplete) mSearchStudentName.findViewById(R.id.search_src_text);
-        autoCompleteTextView.setTextColor(getResources().getColor(android.R.color.white));
-        //Custom search
-        // Hide icon search in searchView and set clear text icon
-        ImageView search_close_btn = (ImageView) mSearchStudentName.findViewById(R.id.search_close_btn);
-        if (search_close_btn != null) {
-            search_close_btn.setImageDrawable(LaoSchoolShared.getDraweble(context, R.drawable.ic_close_black_24dp));
-        }
-        ImageView magImage = (ImageView) mSearchStudentName.findViewById(R.id.search_mag_icon);
-        if (magImage != null) {
-            magImage.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
-            magImage.setVisibility(View.GONE);
-        }
         //define toolbox
         mToolBox = view.findViewById(R.id.mToolBox);
         lbInputDate = (TextView) mToolBox.findViewById(R.id.lbInputDate);
@@ -144,27 +118,21 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
 
         listExamByStudent.setLayoutManager(new LinearLayoutManager(context));
 
-        lbInputSubmit = (TextView) view.findViewById(R.id.lbInputSubmit);
-
-        btnCancelInputExamResult = view.findViewById(R.id.btnCancelInputExamResult);
-        btnSubmitInputExamResult = view.findViewById(R.id.btnSubmitInputExamResult);
-
-        submitInputExamResults();
         return view;
     }
 
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_screen_mark_score_student, menu);
+        inflater.inflate(R.menu.menu_screen_input_exam_results_student, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.action_done_mark_score:
-                iScreenInputExamResults.cancelInputExamResults();
+            case R.id.action_submit_input_exam_results:
+                submitInputExamResults();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -182,10 +150,14 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
             String year = String.valueOf(LaoSchoolShared.myProfile.getEclass().getYears());
             String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_EXAM_RESULTS_2);
             ScreenExamResults screenExamResults = (ScreenExamResults) getFragmentManager().findFragmentByTag(tag);
-            fillDataSubject(screenExamResults.listSubject, screenExamResults.selectedSubjectId);
-            Log.d(TAG, "-screenExamResults.selectedSubjectId:" + screenExamResults.selectedSubjectId);
+
             lbTermName.setText(termName + " / " + year);
             lbClassName.setText(className);
+
+            List<Master> subjectList = screenExamResults.listSubject;
+            if (subjectList != null) {
+                fillDataSubject(screenExamResults.listSubject, screenExamResults.selectedSubjectId);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -271,50 +243,82 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
     }
 
     private void submitInputExamResults() {
-        View.OnClickListener actionSubmitInput = new View.OnClickListener() {
+//        View.OnClickListener actionSubmitInput = new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                LaoSchoolShared.hideSoftKeyboard(getActivity());
+//                if (getActivity().getCurrentFocus() != null) {
+//                    getActivity().getCurrentFocus().clearFocus();
+//                }
+//                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//                builder.setTitle(R.string.title_msg_comfirm_submit_input_exam_results);
+//                builder.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//
+//                        dialogInterface.dismiss();
+//                    }
+//                });
+//                builder.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        if (resultsforClassbySubjectAdapter.getInputExamResults().size() > 0) {
+//                            Log.d(TAG, "-input type exam size:" + resultsforClassbySubjectAdapter.getInputExamResults().size());
+//                            List<ExamResult> examResults = resultsforClassbySubjectAdapter.getInputExamResults();
+//                            inputExamResults(examResults);
+//                        } else {
+//
+//                        }
+//                        dialogInterface.dismiss();
+//                    }
+//                });
+//                builder.create().show();
+//            }
+//        };
+//
+//
+//        View.OnClickListener actionCancelInput = new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                LaoSchoolShared.hideSoftKeyboard(getActivity());
+//                //Go back
+//                cancelInputExamResults();
+//            }
+//        };
+
+//        btnSubmitInputExamResult.setOnClickListener(actionSubmitInput);
+//        btnCancelInputExamResult.setOnClickListener(actionCancelInput);
+
+        LaoSchoolShared.hideSoftKeyboard(getActivity());
+        if (getActivity().getCurrentFocus() != null) {
+            getActivity().getCurrentFocus().clearFocus();
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(R.string.title_msg_comfirm_submit_input_exam_results);
+        builder.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                LaoSchoolShared.hideSoftKeyboard(getActivity());
-                if (getActivity().getCurrentFocus() != null) {
-                    getActivity().getCurrentFocus().clearFocus();
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                dialogInterface.dismiss();
+            }
+        });
+        builder.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (resultsforClassbySubjectAdapter.getInputExamResults().size() > 0) {
+                    Log.d(TAG, "-input type exam size:" + resultsforClassbySubjectAdapter.getInputExamResults().size());
+                    List<ExamResult> examResults = resultsforClassbySubjectAdapter.getInputExamResults();
+                    inputExamResults(examResults);
+                } else {
+
                 }
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle(R.string.title_msg_comfirm_submit_input_exam_results);
-                builder.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                        dialogInterface.dismiss();
-                    }
-                });
-                builder.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if (resultsforClassbySubjectAdapter.getInputExamResults().size() > 0) {
-                            Log.d(TAG, "-input type exam size:" + resultsforClassbySubjectAdapter.getInputExamResults().size());
-                            List<ExamResult> examResults = resultsforClassbySubjectAdapter.getInputExamResults();
-                            inputExamResults(examResults);
-                        } else {
-
-                        }
-                        dialogInterface.dismiss();
-                    }
-                });
-                builder.create().show();
+                dialogInterface.dismiss();
             }
-        };
+        });
+        Dialog dialog = builder.create();
+        //builder.create().show();
+        dialog.show();
 
-        View.OnClickListener actionCancelInput = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LaoSchoolShared.hideSoftKeyboard(getActivity());
-                //Go back
-                cancelInputExamResults();
-            }
-        };
-
-        btnSubmitInputExamResult.setOnClickListener(actionSubmitInput);
-        btnCancelInputExamResult.setOnClickListener(actionCancelInput);
 
     }
 
@@ -371,9 +375,57 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
 
     private void finishInputExamResults() {
         resultsforClassbySubjectAdapter.clearData();
-        getExamResultsbySubjectId(false, selectedSubjectId);
-        Toast.makeText(context, R.string.msg_input_exam_results_successfully, Toast.LENGTH_SHORT).show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(R.string.msg_input_exam_results_successfully);
+        builder.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                getExamResultsbySubjectId(false, selectedSubjectId, selectedExamTypeId);
+            }
+        });
+        Dialog dialog = builder.create();
+        dialog.show();
 
+
+    }
+
+    private void getExamResultsbySubjectId(boolean showProgress, int selectedSubjectId, final int selectedExamTypeId) {
+        Log.d(TAG, "getExamResultsbySubject()");
+        if (showProgress) {
+            progressDialog.show();
+        }
+        final ProgressDialog finalProgressDialog = progressDialog;
+        LaoSchoolSingleton.getInstance().getDataAccessService().getExamResultsforMark(LaoSchoolShared.myProfile.getEclass().getId(), -1, selectedSubjectId, new AsyncCallback<List<ExamResult>>() {
+            @Override
+            public void onSuccess(List<ExamResult> result) {
+                if (result != null) {
+                    //Group data
+                    fillDataExamStudent(groupExamResultbyStudentId(result, selectedExamTypeId), selectedExamTypeId);
+
+                } else {
+                    Log.d(TAG, "getExamResultsbySubject().onSuccess() message:NUll");
+                }
+                if (finalProgressDialog != null)
+                    finalProgressDialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(String message) {
+                Log.e(TAG, "getExamResultsbySubject().onFailure() message:" + message);
+                if (finalProgressDialog != null)
+                    finalProgressDialog.dismiss();
+            }
+
+            @Override
+            public void onAuthFail(String message) {
+                Log.e(TAG, "getExamResultsbySubject().onAuthFail() message:" + message);
+                if (finalProgressDialog != null)
+                    finalProgressDialog.dismiss();
+                LaoSchoolShared.goBackToLoginPage(context);
+
+            }
+        });
     }
 
     private void cancelInputExamResults() {
@@ -420,7 +472,6 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
 
     private void fillDataDateInputExamResults(List<ExamResult> examResults, List<ExamType> examTypes) {
         exam_months = new ArrayList<>();
-        exam_dates = new ArrayList<>();
         for (ExamType examType : examTypes) {
             if (examType.getEx_type() <= 2 || examType.getEx_type() == 6)
                 exam_months.add(examType.getEx_name());
@@ -429,7 +480,6 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         if (exam_months.size() > 0) {
             //first
             lbInputDate.setText(exam_months.get(0));
-            lbInputSubmit.setText(exam_months.get(0));
             selectedExamTypeId = examTypes.get(0).getId();
             fillDataExamStudent(groupExamResultbyStudentId(examResults, selectedExamTypeId), selectedExamTypeId);
             //
@@ -471,7 +521,6 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
                 selectedExamTypeId = examTypes.get(position).getId();
                 Log.d(TAG, "-selected exam type Id:" + selectedExamTypeId);
                 lbInputDate.setText(selected);
-                lbInputSubmit.setText(selected);
                 fillDataExamStudent(groupExamResultbyStudentId(examResults, selectedExamTypeId), selectedExamTypeId);
 
 
