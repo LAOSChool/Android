@@ -33,7 +33,7 @@
     <string name="row_sub_header">sub header</string>
     <string name="action_search">Search</string>
     <string name="action_edit">Edit</string>
-    <string name="action_done_mark_score">Done</string>
+    <string name="action_submit_input_exam_results">SUBMIT</string>
     <string name="hint_search_exam_resutls">Search student</string>
     <string name="action_sort_by">Sort by</string>
     <string name="hint_message_subject">Subject</string>
