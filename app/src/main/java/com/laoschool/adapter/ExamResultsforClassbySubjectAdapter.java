@@ -101,12 +101,6 @@ public class ExamResultsforClassbySubjectAdapter extends RecyclerView.Adapter<Ex
                     } else {
                         imgUserAvata.setDefaultImageResId(R.drawable.ic_account_circle_black_36dp);
                     }
-                    view.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Toast.makeText(context, "Click", Toast.LENGTH_SHORT).show();
-                        }
-                    });
                     recyclerView.setAdapter(examAdpter);
                     recyclerView.setNestedScrollingEnabled(false);
                 }
