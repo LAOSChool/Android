@@ -422,6 +422,7 @@ public class ExamResult implements Parcelable {
         jsonObject.addProperty("exam_id", exam_id);
         jsonObject.addProperty("teacher_id", teacher_id);
         jsonObject.addProperty("term_id", term_id);
+        jsonObject.addProperty("notice", notice);
 
         Gson gson = new Gson();
         String jsonString = gson.toJson(jsonObject);
