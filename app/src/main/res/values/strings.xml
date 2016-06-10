@@ -122,5 +122,6 @@
     <string name="msg_input_exam_results_successfully">Input successfully</string>
     <string name="score_exam">Score</string>
     <string name="notice_exam">Notice</string>
-    <string name="subject_exam" >Subject</string>
+    <string name="subject_exam">Subject</string>
+    <string name="action_add_notice_exam_results"><u>Add</u></string>
 </resources>
