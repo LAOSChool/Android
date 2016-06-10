@@ -103,10 +103,17 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         activity.hideBottomBar();
 
         View customActionBar = View.inflate(context, R.layout.view_custom_action_bar_input_exam_results, null);
-        activity.getSupportActionBar().setCustomView(customActionBar);
-
         lbTermName = (TextView) customActionBar.findViewById(R.id.lbClassAndTermName);
         lbClassName = (TextView) customActionBar.findViewById(R.id.lbClassName);
+        String className = LaoSchoolShared.myProfile.getEclass().getTitle();
+        String termName = String.valueOf("Term " + LaoSchoolShared.myProfile.getEclass().getTerm());
+        String year = String.valueOf(LaoSchoolShared.myProfile.getEclass().getYears());
+
+        lbTermName.setText(termName + " / " + year);
+        lbClassName.setText(className);
+        activity.getSupportActionBar().setCustomView(customActionBar);
+
+
 
         mSelectedSubject = view.findViewById(R.id.mSelectedSubject);
         lbSubjectSeleted = (TextView) mSelectedSubject.findViewById(R.id.lbSubjectSeleted);
@@ -147,14 +154,8 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
     @Override
     public void onResumeFragment() {
         try {
-            String className = LaoSchoolShared.myProfile.getEclass().getTitle();
-            String termName = String.valueOf("Term " + LaoSchoolShared.myProfile.getEclass().getTerm());
-            String year = String.valueOf(LaoSchoolShared.myProfile.getEclass().getYears());
             String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_EXAM_RESULTS_2);
             ScreenExamResults screenExamResults = (ScreenExamResults) getFragmentManager().findFragmentByTag(tag);
-
-            lbTermName.setText(termName + " / " + year);
-            lbClassName.setText(className);
 
             List<Master> subjectList = screenExamResults.listSubject;
             if (subjectList != null) {
@@ -318,7 +319,6 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
             }
         });
         Dialog dialog = builder.create();
-        //builder.create().show();
         dialog.show();
 
 
