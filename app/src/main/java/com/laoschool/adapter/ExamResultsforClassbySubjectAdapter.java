@@ -75,7 +75,7 @@ public class ExamResultsforClassbySubjectAdapter extends RecyclerView.Adapter<Ex
                     View view = infomationViewHolder.view;
                     int studentId = studentIds.get(position);
                     final List<ExamResult> examResultByStudentId = groupExamByStudent.get(studentId);
-                    ScoreCurrentSemesterAdapter examAdpter = new ScoreCurrentSemesterAdapter(screenExamResults.getActivity(), iScreenExamResults, examResultByStudentId);
+                    ScoreCurrentSemesterAdapter examAdpter = new ScoreCurrentSemesterAdapter(screenExamResults.getActivity(),context, iScreenExamResults, examResultByStudentId);
 
                     ExamResult examResult = examResultByStudentId.get(0);
                     String userName = examResult.getStudent_name();
@@ -84,7 +84,7 @@ public class ExamResultsforClassbySubjectAdapter extends RecyclerView.Adapter<Ex
                     TextView lbNickName = (TextView) view.findViewById(R.id.lbNickName);
                     NetworkImageView imgUserAvata = (NetworkImageView) view.findViewById(R.id.row_icon);
                     RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.mListScoreBySemester);
-                    GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 5, GridLayoutManager.VERTICAL, false);
+                    GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false);
                     recyclerView.setLayoutManager(gridLayoutManager);
 
                     //fill data exam results
