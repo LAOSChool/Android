@@ -3,7 +3,9 @@ package com.laoschool.screen;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -41,10 +43,6 @@ import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
 import com.laoschool.view.ViewpagerDisableSwipeLeft;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
-
 public class HomeActivity extends AppCompatActivity implements
         TabHost.OnTabChangeListener, ViewPager.OnPageChangeListener, ScreenMessage.IScreenMessage,
         ScreenCreateMessage.IScreenCreateMessage,
@@ -54,7 +52,7 @@ public class HomeActivity extends AppCompatActivity implements
         ScreenAttended.IScreenAttended,
         ScreenMore.IScreenMore,
         ScreenListTeacher.IScreenListTeacher,
-        ScreenMarkScoreStudent.IScreenMarkScoreStudent,
+        ScreenInputExamResultsStudent.IScreenInputExamResults,
         IScreenCreateAnnouncement {
     private static final String TAG = "HomeScreen";
 
@@ -233,7 +231,7 @@ public class HomeActivity extends AppCompatActivity implements
 
         fragments.add(ScreenSelectListStudent.instantiate(containerId, currentRole));
 
-        fragments.add(ScreenMarkScoreStudent.instantiate(containerId, currentRole));
+        fragments.add(ScreenInputExamResultsStudent.instantiate(containerId, currentRole));
 
         fragments.add(ScreenSetting.instantiate(containerId, currentRole));
 
@@ -388,6 +386,8 @@ public class HomeActivity extends AppCompatActivity implements
                 break;
             case LaoSchoolShared.POSITION_SCREEN_EXAM_RESULTS_2:
                 _setTitleandShowButtonBack(R.string.title_screen_exam_results, null, DisplayButtonHome.hide);
+                getSupportActionBar().setDisplayShowCustomEnabled(false);
+                getSupportActionBar().setBackgroundDrawable(new ColorDrawable(this.getResources().getColor(R.color.colorPrimary)));
                 break;
             case LaoSchoolShared.POSITION_SCREEN_ATTENDED_3:
                 _setTitleandShowButtonBack(R.string.title_screen_attended, null, DisplayButtonHome.hide);
@@ -415,7 +415,10 @@ public class HomeActivity extends AppCompatActivity implements
                 _setTitleandShowButtonBack(R.string.title_screen_select_list_student, null, DisplayButtonHome.show);
                 break;
             case LaoSchoolShared.POSITION_SCREEN_MARK_SCORE_STUDENT_11:
-                _setTitleandShowButtonBack(R.string.title_screen_mark_score_student, null, DisplayButtonHome.hide);
+                _setTitleandShowButtonBack(-1, null, DisplayButtonHome.show);
+                getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_36dp);
+                getSupportActionBar().setDisplayShowCustomEnabled(true);
+                getSupportActionBar().setBackgroundDrawable(new ColorDrawable(this.getResources().getColor(R.color.colorPriorityHigh)));
                 break;
             case LaoSchoolShared.POSITION_SCREEN_SETTING_12:
                 _setTitleandShowButtonBack(R.string.title_screen_setting, null, DisplayButtonHome.show);
@@ -533,7 +536,6 @@ public class HomeActivity extends AppCompatActivity implements
             } else if (currentPage == LaoSchoolShared.POSITION_SCREEN_MARK_SCORE_STUDENT_11) {
                 //back to tab exam
                 _gotoPage(LaoSchoolShared.POSITION_SCREEN_EXAM_RESULTS_2);
-                getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
             } else if (currentPage == LaoSchoolShared.POSITION_SCREEN_MESSAGE_DETAILS_14) {
                 //
                 String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
@@ -634,19 +636,10 @@ public class HomeActivity extends AppCompatActivity implements
         this.mViewPager.setCurrentItem(position, false);
     }
 
+
     @Override
-    public void sendData(String message) {
-        mViewPager.setCurrentItem(LaoSchoolShared.POSITION_SCREEN_MARK_SCORE_STUDENT_11);
-        //set data
-        String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_MARK_SCORE_STUDENT_11);
-        Log.d(TAG, "ScreenMarkScoreStudent tag=" + tag);
-        ScreenMarkScoreStudent screenMarkScoreStudent = (ScreenMarkScoreStudent) getSupportFragmentManager().findFragmentByTag(tag);
-        if (screenMarkScoreStudent != null) {
-            screenMarkScoreStudent.setDataMessage(message);
-        } else {
-            Log.d(TAG, "ScreenMarkScoreStudent is Null");
-            Toast.makeText(this, "ScreenMarkScoreStudent is Null", Toast.LENGTH_SHORT).show();
-        }
+    public void gotoScreenInputExamResults() {
+        _gotoPage(LaoSchoolShared.POSITION_SCREEN_MARK_SCORE_STUDENT_11);
     }
 
     @Override
@@ -733,7 +726,7 @@ public class HomeActivity extends AppCompatActivity implements
 
     String student;
 
-    @Override
+
     public void gotoScreenMarkScoreStudentFromExamResults(String student) {
         this.student = student;
         _gotoPage(LaoSchoolShared.POSITION_SCREEN_MARK_SCORE_STUDENT_11);
@@ -741,9 +734,11 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void doneMarkScoreStudent() {
+    public void cancelInputExamResults() {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
         _gotoPage(LaoSchoolShared.POSITION_SCREEN_EXAM_RESULTS_2);
+        if (!getSupportActionBar().isShowing())
+            getSupportActionBar().show();
 
     }
 
@@ -790,4 +785,5 @@ public class HomeActivity extends AppCompatActivity implements
     public void showBottomBar() {
         mTabHost.getTabWidget().setVisibility(View.VISIBLE);
     }
+
 }
