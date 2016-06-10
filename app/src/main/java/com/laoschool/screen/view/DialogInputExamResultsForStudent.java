@@ -20,6 +20,7 @@ import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.entities.ExamResult;
 import com.laoschool.model.AsyncCallback;
+import com.laoschool.screen.ScreenExamResults;
 import com.laoschool.shared.LaoSchoolShared;
 
 /**
@@ -29,9 +30,13 @@ import com.laoschool.shared.LaoSchoolShared;
 public class DialogInputExamResultsForStudent extends DialogFragment {
     public static final String TAG = DialogInputExamResultsForStudent.class.getSimpleName();
     private final ExamResult examResult;
+    private final int subjectId;
+    private ScreenExamResults screenExamResults;
 
-    public DialogInputExamResultsForStudent(ExamResult examResult) {
+    public DialogInputExamResultsForStudent(ScreenExamResults screenExamResults, int subjectId, ExamResult examResult) {
         this.examResult = examResult;
+        this.subjectId=subjectId;
+        this.screenExamResults = screenExamResults;
     }
 
     @Nullable
@@ -126,6 +131,7 @@ public class DialogInputExamResultsForStudent extends DialogFragment {
             public void onSuccess(ExamResult result) {
                 Log.d(TAG, "inputExamResults().onSuccess() -result:" + result.toJson());
                 getDialog().dismiss();
+                screenExamResults.reloadDataAfterInputSingleScore(subjectId);
             }
 
             @Override

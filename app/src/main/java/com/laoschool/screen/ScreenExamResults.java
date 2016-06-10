@@ -9,7 +9,6 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -35,20 +34,15 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
-import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
-import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.adapter.ExamResultsByTermPagerAdapter;
 import com.laoschool.adapter.ExamResultsforClassbySubjectAdapter;
 import com.laoschool.adapter.ExamResultsStudentSemesterAdapter;
-import com.laoschool.adapter.ScoreCurrentSemesterAdapter;
 import com.laoschool.entities.ExamResult;
 import com.laoschool.entities.Master;
 import com.laoschool.model.AsyncCallback;
@@ -107,7 +101,6 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         this.data = data;
     }
 
-
     public interface IScreenExamResults {
         void gotoScreenInputExamResults();
     }
@@ -129,8 +122,6 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     private ObservableRecyclerView mResultListStudentBySuject;
     private int subjectIdSeleted = 0;
     private Dialog dialogSelectdSubject;
-
-    private ExamResultsforClassbySubjectAdapter resultsforClassbySubjectAdapter;
     ProgressDialog progressDialog;
 
     @Override
@@ -213,10 +204,10 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
             }
 
         }
-        reloadDatafterInputSucessfuly();
+        reloadDatAfterInputSucessfuly();
     }
 
-    private void reloadDatafterInputSucessfuly() {
+    private void reloadDatAfterInputSucessfuly() {
         if (getUserVisibleHint()) {
             String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_MARK_SCORE_STUDENT_11);
             ScreenInputExamResultsStudent inputExamResultsStudent = (ScreenInputExamResultsStudent) getFragmentManager().findFragmentByTag(tag);
@@ -548,6 +539,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
                 listSubject = result;
                 Log.d(TAG, "getFilterSubject().onSuccess() -results size:" + result.size());
                 int subjectId = result.get(0).getId();
+                selectedSubjectId = subjectId;
                 String subjectName = result.get(0).getSval();
                 getExamResultsbySubject(false, subjectId);
                 lbSubjectSeleted.setText(subjectName);
@@ -642,7 +634,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     }
 
 
-    private void getExamResultsbySubject(boolean showProgress, int subjectId) {
+    private void getExamResultsbySubject(boolean showProgress, final int subjectId) {
         Log.d(TAG, "getExamResultsbySubject()");
         if (showProgress) {
             progressDialog.show();
@@ -655,7 +647,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
                     //Group data
                     Map<Integer, List<ExamResult>> groupStudentMap = groupExamResultbyStudentId(result);
 
-                    _fillDataForListResultFilter(mResultListStudentBySuject, new TreeMap<Integer, List<ExamResult>>(groupStudentMap));
+                    _fillDataForListResultFilter(subjectId, mResultListStudentBySuject, new TreeMap<>(groupStudentMap));
                 } else {
                     Log.d(TAG, "getExamResultsbySubject().onSuccess() message:NUll");
                 }
@@ -717,8 +709,8 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         return groupStudentMap;
     }
 
-    private void _fillDataForListResultFilter(RecyclerView recyclerView, Map<Integer, List<ExamResult>> result) {
-        resultsforClassbySubjectAdapter = new ExamResultsforClassbySubjectAdapter(this, result);
+    private void _fillDataForListResultFilter(int subjectId, RecyclerView recyclerView, Map<Integer, List<ExamResult>> result) {
+        ExamResultsforClassbySubjectAdapter resultsforClassbySubjectAdapter = new ExamResultsforClassbySubjectAdapter(this, subjectId, result);
         recyclerView.setAdapter(resultsforClassbySubjectAdapter);
         //hide loading
         showProgressLoading(false);
@@ -898,4 +890,8 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         }
     }
 
+    public void reloadDataAfterInputSingleScore(int subjectId) {
+        Log.d(TAG, "reloadDataAfterInputSingleScore() -subjectId:" + subjectId);
+        getExamResultsbySubject(true, subjectId);
+    }
 }

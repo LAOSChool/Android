@@ -39,13 +39,15 @@ public class ExamResultsforClassbySubjectAdapter extends RecyclerView.Adapter<Ex
     private Map<Integer, List<ExamResult>> groupExamByStudent;
     private static final int TYPE_SEARCH = 0;
     private int TYPE_EXAM = 1;
+    private int subjectId;
 
-    public ExamResultsforClassbySubjectAdapter(ScreenExamResults screenExamResults, Map<Integer, List<ExamResult>> groupExamByStudent) {
+    public ExamResultsforClassbySubjectAdapter(ScreenExamResults screenExamResults, int subjectId, Map<Integer, List<ExamResult>> groupExamByStudent) {
         this.screenExamResults = screenExamResults;
         this.context = screenExamResults.getActivity();
         this.iScreenExamResults = screenExamResults.iScreenExamResults;
         this.groupExamByStudent = groupExamByStudent;
         studentIds.add(0);
+        this.subjectId = subjectId;
         for (Integer studentId : groupExamByStudent.keySet()) {
             studentIds.add(studentId);
             listExam.add(groupExamByStudent.get(studentId));
@@ -75,8 +77,7 @@ public class ExamResultsforClassbySubjectAdapter extends RecyclerView.Adapter<Ex
                     View view = infomationViewHolder.view;
                     int studentId = studentIds.get(position);
                     final List<ExamResult> examResultByStudentId = groupExamByStudent.get(studentId);
-                    ScoreCurrentSemesterAdapter examAdpter = new ScoreCurrentSemesterAdapter(screenExamResults.getActivity(),context, iScreenExamResults, examResultByStudentId);
-
+                    ScoreCurrentSemesterAdapter examAdpter = new ScoreCurrentSemesterAdapter(screenExamResults, subjectId, context, iScreenExamResults, examResultByStudentId);
                     ExamResult examResult = examResultByStudentId.get(0);
                     String userName = examResult.getStudent_name();
 
@@ -86,6 +87,7 @@ public class ExamResultsforClassbySubjectAdapter extends RecyclerView.Adapter<Ex
                     RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.mListScoreBySemester);
                     GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false);
                     recyclerView.setLayoutManager(gridLayoutManager);
+                    recyclerView.setAdapter(examAdpter);
 
                     //fill data exam results
                     lbNickName.setText(examResult.getStd_nickname());
@@ -101,8 +103,7 @@ public class ExamResultsforClassbySubjectAdapter extends RecyclerView.Adapter<Ex
                     } else {
                         imgUserAvata.setDefaultImageResId(R.drawable.ic_account_circle_black_36dp);
                     }
-                    recyclerView.setAdapter(examAdpter);
-                    recyclerView.setNestedScrollingEnabled(false);
+
                 }
             }
         } catch (Exception e) {

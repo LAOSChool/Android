@@ -35,14 +35,19 @@ import java.util.TreeMap;
 public class ScoreCurrentSemesterAdapter extends RecyclerView.Adapter<ScoreCurrentSemesterAdapter.ScoreCurrentSemesterAdapterViewHolder> {
     private static final String TAG = ScoreCurrentSemesterAdapter.class.getSimpleName();
     private final Activity activity;
+    private final ScreenExamResults screenExamResults;
+    private final int subjectId;
     Context context;
     List<ExamResult> scores;
     ScreenExamResults.IScreenExamResults iScreenExamResults;
 
-    public ScoreCurrentSemesterAdapter(Activity activity, Context context, ScreenExamResults.IScreenExamResults iScreenExamResults, List<ExamResult> scores) {
-        this.activity = activity;
+    public ScoreCurrentSemesterAdapter(ScreenExamResults screenExamResults, int subjectId, Context context, ScreenExamResults.IScreenExamResults iScreenExamResults, List<ExamResult> scores) {
+        this.activity = screenExamResults.getActivity();
+        this.screenExamResults=screenExamResults;
         this.context = context;
         this.iScreenExamResults = iScreenExamResults;
+        this.subjectId=subjectId;
+
 //        List<ExamResult> examResults = scores.get(LaoSchoolShared.myProfile.getEclass().getTerm());
 //        Map<Integer, ExamResult> examByMonthList = new HashMap<>();
 //        for (ExamResult examResult : examResults) {
@@ -108,7 +113,7 @@ public class ScoreCurrentSemesterAdapter extends RecyclerView.Adapter<ScoreCurre
             @Override
             public boolean onLongClick(View view) {
                 if (examResult.getExam_type() <= 2) {
-                    DialogInputExamResultsForStudent dialogInputExamResultsForStudent = new DialogInputExamResultsForStudent(examResult);
+                    DialogInputExamResultsForStudent dialogInputExamResultsForStudent = new DialogInputExamResultsForStudent(screenExamResults,subjectId,examResult);
                     dialogInputExamResultsForStudent.show(activity.getFragmentManager(), DialogInputExamResultsForStudent.TAG);
 
                 } else {
