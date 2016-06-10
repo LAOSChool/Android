@@ -6,6 +6,7 @@ import com.laoschool.entities.Attendance;
 import com.laoschool.entities.AttendanceRollup;
 import com.laoschool.entities.Class;
 import com.laoschool.entities.ExamResult;
+import com.laoschool.entities.ExamType;
 import com.laoschool.entities.FinalResult;
 import com.laoschool.entities.Master;
 import com.laoschool.entities.Message;
@@ -286,5 +287,7 @@ public interface DataAccessInterface {
     public void getListSubjectbyClassId(int classId, AsyncCallback<List<Master>> callback);
 
     public void getExamResultsforMark(int filter_class_id, int filter_user_id, int filter_subject_id, AsyncCallback<List<ExamResult>> callback);
+
+    public void getExamType(int filter_class_id, AsyncCallback<List<ExamType>> callback);
 
 }
