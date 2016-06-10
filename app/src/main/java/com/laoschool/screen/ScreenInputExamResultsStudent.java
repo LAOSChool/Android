@@ -114,7 +114,6 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         activity.getSupportActionBar().setCustomView(customActionBar);
 
 
-
         mSelectedSubject = view.findViewById(R.id.mSelectedSubject);
         lbSubjectSeleted = (TextView) mSelectedSubject.findViewById(R.id.lbSubjectSeleted);
 
@@ -172,16 +171,20 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
             @Override
             public void onSuccess(List<ExamType> result) {
                 fillDataDateInputExamResults(examResults, result);
+                if (progressDialog != null)
+                    progressDialog.dismiss();
             }
 
             @Override
             public void onFailure(String message) {
-
+                if (progressDialog != null)
+                    progressDialog.dismiss();
             }
 
             @Override
             public void onAuthFail(String message) {
-
+                if (progressDialog != null)
+                    progressDialog.dismiss();
             }
         });
     }
@@ -236,7 +239,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
             }
         });
         final AlertDialog dialog = builder.create();
-        ((ImageView) header.findViewById(R.id.imgCloseDialog)).setOnClickListener(new View.OnClickListener() {
+        (header.findViewById(R.id.imgCloseDialog)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
@@ -246,52 +249,6 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
     }
 
     private void submitInputExamResults() {
-//        View.OnClickListener actionSubmitInput = new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                LaoSchoolShared.hideSoftKeyboard(getActivity());
-//                if (getActivity().getCurrentFocus() != null) {
-//                    getActivity().getCurrentFocus().clearFocus();
-//                }
-//                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-//                builder.setTitle(R.string.title_msg_comfirm_submit_input_exam_results);
-//                builder.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//
-//                        dialogInterface.dismiss();
-//                    }
-//                });
-//                builder.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        if (resultsforClassbySubjectAdapter.getInputExamResults().size() > 0) {
-//                            Log.d(TAG, "-input type exam size:" + resultsforClassbySubjectAdapter.getInputExamResults().size());
-//                            List<ExamResult> examResults = resultsforClassbySubjectAdapter.getInputExamResults();
-//                            inputExamResults(examResults);
-//                        } else {
-//
-//                        }
-//                        dialogInterface.dismiss();
-//                    }
-//                });
-//                builder.create().show();
-//            }
-//        };
-//
-//
-//        View.OnClickListener actionCancelInput = new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                LaoSchoolShared.hideSoftKeyboard(getActivity());
-//                //Go back
-//                cancelInputExamResults();
-//            }
-//        };
-
-//        btnSubmitInputExamResult.setOnClickListener(actionSubmitInput);
-//        btnCancelInputExamResult.setOnClickListener(actionCancelInput);
-
         LaoSchoolShared.hideSoftKeyboard(getActivity());
         if (getActivity().getCurrentFocus() != null) {
             getActivity().getCurrentFocus().clearFocus();
@@ -452,8 +409,6 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
                 } else {
                     Log.d(TAG, "getExamResultsbySubject().onSuccess() message:NUll");
                 }
-                if (finalProgressDialog != null)
-                    finalProgressDialog.dismiss();
             }
 
             @Override
