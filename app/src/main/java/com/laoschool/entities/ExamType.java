@@ -102,4 +102,17 @@ public class ExamType {
         ExamType examType = gson.fromJson(jsonString, ExamType.class);
         return examType;
     }
+
+    @Override
+    public String toString() {
+        return "ExamType{" +
+                "id=" + id +
+                ", school_id=" + school_id +
+                ", term_val=" + term_val +
+                ", ex_month=" + ex_month +
+                ", ex_type=" + ex_type +
+                ", ex_name='" + ex_name + '\'' +
+                ", cls_levels='" + cls_levels + '\'' +
+                '}';
+    }
 }
