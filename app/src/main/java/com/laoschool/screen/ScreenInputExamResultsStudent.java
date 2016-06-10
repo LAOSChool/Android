@@ -67,9 +67,10 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
     private List<String> exam_months;
     private Dialog dialogSelectedInputTypeDate;
 
-    private int selectedSubjectId;
-    private int selectedExamTypeId;
     InputExamResultsAdapter resultsforClassbySubjectAdapter;
+    public int selectedSubjectId;
+    private int selectedExamTypeId;
+    public boolean onchange = false;
 
     interface IScreenInputExamResults {
         void cancelInputExamResults();
@@ -153,6 +154,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
     @Override
     public void onResumeFragment() {
         try {
+            onchange = false;
             String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_EXAM_RESULTS_2);
             ScreenExamResults screenExamResults = (ScreenExamResults) getFragmentManager().findFragmentByTag(tag);
 
@@ -335,6 +337,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
     }
 
     private void finishInputExamResults() {
+        onchange = true;
         resultsforClassbySubjectAdapter.clearData();
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(R.string.msg_input_exam_results_successfully);
