@@ -92,6 +92,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     private TextView lbInputDate;
     public List<Master> listSubject;
     public int selectedSubjectId;
+    Map<Integer, String> mapSubject;
 
 
     public ScreenExamResults() {
@@ -211,6 +212,21 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
                 _definePageSemesterStudent();
             }
 
+        }
+        reloadDatafterInputSucessfuly();
+    }
+
+    private void reloadDatafterInputSucessfuly() {
+        if (getUserVisibleHint()) {
+            String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_MARK_SCORE_STUDENT_11);
+            ScreenInputExamResultsStudent inputExamResultsStudent = (ScreenInputExamResultsStudent) getFragmentManager().findFragmentByTag(tag);
+            if (inputExamResultsStudent != null)
+                if (inputExamResultsStudent.onchange) {
+                    int subjectId = inputExamResultsStudent.selectedSubjectId;
+                    String subjectName = mapSubject.get(subjectId);
+                    lbSubjectSeleted.setText(subjectName);
+                    getExamResultsbySubject(true, subjectId);
+                }
         }
     }
 
@@ -559,10 +575,12 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
 
     private void handlerSelectedSubject(final List<Master> result) {
         Log.d(TAG, "handlerSelectedSubject()");
-
         final List<String> subjectNames = new ArrayList<>();
+        mapSubject = new HashMap<>();
         for (Master master : result) {
             subjectNames.add(master.getSval());
+            mapSubject.put(master.getId(), master.getSval());
+
         }
         dialogSelectdSubject = makeDialogSelectdSubject(result, subjectNames);
         mSelectedSubject.setOnClickListener(new View.OnClickListener() {
@@ -636,7 +654,6 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
                 if (result != null) {
                     //Group data
                     Map<Integer, List<ExamResult>> groupStudentMap = groupExamResultbyStudentId(result);
-                    Map<Long, String> groupMonth = groupMonth(result);
 
                     _fillDataForListResultFilter(mResultListStudentBySuject, new TreeMap<Integer, List<ExamResult>>(groupStudentMap));
                 } else {
