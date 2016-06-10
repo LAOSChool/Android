@@ -86,14 +86,20 @@ public class DialogInputExamResultsForStudent extends DialogFragment {
                 String exam = txtScoreOfExam.getText().toString();
                 String notice = txtNoticeOfExam.getText().toString();
                 if (!exam.trim().toString().isEmpty()) {
-                    examResult.setSresult(exam);
+                    Float score = Float.valueOf(exam);
+                    if (score > 0 && score < 10) {
+                        examResult.setSresult(exam);
+                        if (!notice.trim().toString().isEmpty()) {
+                            examResult.setNotice(notice);
+                        }
+                        examResult.setTeacher_id(LaoSchoolShared.myProfile.getId());
+                        Log.d(TAG, "-submit examResult:" + examResult.toJson());
+                        inputExamResults(examResult);
+                    } else {
+                        txtScoreOfExam.setError("Score > 0  and score < 10");
+                    }
                 }
-                if (!notice.trim().toString().isEmpty()) {
-                    examResult.setNotice(notice);
-                }
-                examResult.setTeacher_id(LaoSchoolShared.myProfile.getId());
-                Log.d(TAG, "-submit examResult:" + examResult.toJson());
-                inputExamResults(examResult);
+
 
             }
         });
