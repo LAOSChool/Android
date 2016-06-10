@@ -46,7 +46,6 @@ public class ExamResultsforClassbySubjectAdapter extends RecyclerView.Adapter<Ex
         this.context = screenExamResults.getActivity();
         this.iScreenExamResults = screenExamResults.iScreenExamResults;
         this.groupExamByStudent = groupExamByStudent;
-        studentIds.add(0);
         this.subjectId = subjectId;
         for (Integer studentId : groupExamByStudent.keySet()) {
             studentIds.add(studentId);
