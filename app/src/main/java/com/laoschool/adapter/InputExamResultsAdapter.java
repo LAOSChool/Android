@@ -97,6 +97,10 @@ public class InputExamResultsAdapter extends RecyclerView.Adapter<InputExamResul
                 public void afterTextChanged(Editable editable) {
                     if (!editable.toString().trim().isEmpty()) {
                         Float exam = Float.valueOf(editable.toString());
+                        if (exam < 0 || exam > 10) {
+                            holder.txtInputExamResults.setError(context.getString(R.string.err_limit_input_score));
+                            return;
+                        }
                         Log.d(TAG, "addTextChangedListener().afterTextChanged(" + position + ") -exam:" + exam);
                         if (examResults != null) {
                             if (examResults.getSresult() != null) {
@@ -147,7 +151,7 @@ public class InputExamResultsAdapter extends RecyclerView.Adapter<InputExamResul
 
     private Dialog makeDialogInputNotice(final ExamResult examResults) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        
+
         View inputNotice = View.inflate(context, R.layout.view_input_notice_exam_results, null);
         final EditText txtNoticeOfExam = (EditText) inputNotice.findViewById(R.id.txtNoticeOfExam);
         txtNoticeOfExam.setText(examResults.getNotice());
