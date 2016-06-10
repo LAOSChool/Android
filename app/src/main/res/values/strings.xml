@@ -124,4 +124,5 @@
     <string name="notice_exam">Notice</string>
     <string name="subject_exam">Subject</string>
     <string name="action_add_notice_exam_results"><u>Add</u></string>
+    <string name="err_limit_input_score"><![CDATA[Score > 0 and score < 10]]></string>
 </resources>
