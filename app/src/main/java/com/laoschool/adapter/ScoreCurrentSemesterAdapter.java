@@ -37,16 +37,11 @@ public class ScoreCurrentSemesterAdapter extends RecyclerView.Adapter<ScoreCurre
     private final Activity activity;
     Context context;
     List<ExamResult> scores;
-    List<Integer> exam_Ids = new ArrayList<>();
     ScreenExamResults.IScreenExamResults iScreenExamResults;
 
-    public interface OnItemClickListener {
-        void onItemClick(View item);
-    }
-
-    public ScoreCurrentSemesterAdapter(Activity activity, ScreenExamResults.IScreenExamResults iScreenExamResults, List<ExamResult> scores) {
+    public ScoreCurrentSemesterAdapter(Activity activity, Context context, ScreenExamResults.IScreenExamResults iScreenExamResults, List<ExamResult> scores) {
         this.activity = activity;
-        this.context = activity.getApplicationContext();
+        this.context = context;
         this.iScreenExamResults = iScreenExamResults;
 //        List<ExamResult> examResults = scores.get(LaoSchoolShared.myProfile.getEclass().getTerm());
 //        Map<Integer, ExamResult> examByMonthList = new HashMap<>();
@@ -112,39 +107,43 @@ public class ScoreCurrentSemesterAdapter extends RecyclerView.Adapter<ScoreCurre
         view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                Log.d(TAG, "onLongClick " + position);
-                DialogInputExamResultsForStudent dialogInputExamResultsForStudent = new DialogInputExamResultsForStudent(examResult);
-                dialogInputExamResultsForStudent.show(activity.getFragmentManager(), DialogInputExamResultsForStudent.TAG);
+                if (examResult.getExam_type() <= 2) {
+                    DialogInputExamResultsForStudent dialogInputExamResultsForStudent = new DialogInputExamResultsForStudent(examResult);
+                    dialogInputExamResultsForStudent.show(activity.getFragmentManager(), DialogInputExamResultsForStudent.TAG);
+
+                } else {
+                    _showDetailsExamResults(examResult);
+                }
                 return false;
             }
         });
 
+
     }
 
     private void _showDetailsExamResults(ExamResult examResult) {
-        AlertDialog.Builder bDetails = new AlertDialog.Builder(context);
-        View examResultDetails = View.inflate(context, R.layout.view_exam_results_details, null);
-        ((TextView) examResultDetails.findViewById(R.id.lbExamSubject)).setText(String.valueOf(examResult.getSubjectName()));
-        if (examResult.getExam_type() == 2)
-            ((TextView) examResultDetails.findViewById(R.id.lbExamDate)).setText(examResult.getTermName());
-        else {
-            ((TextView) examResultDetails.findViewById(R.id.lbExamDate)).setText(String.valueOf(examResult.getExam_month() + "/" + examResult.getExam_year()));
+        try {
+            AlertDialog.Builder bDetails = new AlertDialog.Builder(context);
+            View examResultDetails = View.inflate(context, R.layout.view_exam_results_details, null);
+            ((TextView) examResultDetails.findViewById(R.id.lbExamSubject)).setText(String.valueOf(examResult.getSubjectName()));
+            ((TextView) examResultDetails.findViewById(R.id.lbExamDate)).setText(examResult.getExam_name());
+            String score = examResult.getSresult();
+            ((TextView) examResultDetails.findViewById(R.id.lbExamScore)).setText(String.valueOf(score));
+            ((TextView) examResultDetails.findViewById(R.id.lbExamTecherName)).setText(String.valueOf(examResult.getTeacherName()));
+            ((TextView) examResultDetails.findViewById(R.id.lbExamDateUpdateScore)).setText(" - " + LaoSchoolShared.formatDate(examResult.getExam_dt(), 2));
+            ((TextView) examResultDetails.findViewById(R.id.lbExamNotice)).setText(String.valueOf(examResult.getNotice()));
+            bDetails.setView(examResultDetails);
+            final Dialog dialog = bDetails.create();
+            (examResultDetails.findViewById(R.id.lbExamClose)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                }
+            });
+            dialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        String score = examResult.getSresult();
-        ((TextView) examResultDetails.findViewById(R.id.lbExamScore)).setText(String.valueOf(score));
-        ((TextView) examResultDetails.findViewById(R.id.lbExamTecherName)).setText(String.valueOf(examResult.getTeacherName()));
-        ((TextView) examResultDetails.findViewById(R.id.lbExamDateUpdateScore)).setText(" - " + LaoSchoolShared.formatDate(examResult.getExam_dt(), 2));
-        ((TextView) examResultDetails.findViewById(R.id.lbExamNotice)).setText(String.valueOf(examResult.getNotice()));
-        bDetails.setCustomTitle(examResultDetails);
-        final Dialog dialog = bDetails.create();
-        ((TextView) examResultDetails.findViewById(R.id.lbExamClose)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
-
     }
 
     private String getMonthString(int month) {
