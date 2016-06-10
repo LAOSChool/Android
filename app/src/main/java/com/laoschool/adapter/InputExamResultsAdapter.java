@@ -1,6 +1,9 @@
 package com.laoschool.adapter;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -9,8 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
@@ -46,6 +51,7 @@ public class InputExamResultsAdapter extends RecyclerView.Adapter<InputExamResul
     List<Long> exam_dates;
 
     public InputExamResultsAdapter(Context context, Map<Integer, ExamResult> groupExamByStudent, int selectedDateInputExamResult) {
+        this.context = context;
         Map<Integer, ExamResult> sortgroupExamByStudent = new TreeMap<>(groupExamByStudent);
         this.groupExamByStudent = sortgroupExamByStudent;
         this.exam_date_input = selectedDateInputExamResult;
@@ -122,11 +128,51 @@ public class InputExamResultsAdapter extends RecyclerView.Adapter<InputExamResul
             } else {
                 holder.imgUserAvata.setDefaultImageResId(R.drawable.ic_account_circle_black_36dp);
             }
+
+            holder.btnAddNoticeExamResutls.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Dialog dialog = makeDialogInputNotice(examResults);
+                    dialog.show();
+
+                }
+            });
+
             holder.setIsRecyclable(false);
         } catch (Exception e) {
             Log.e(TAG, "onBindViewHolder() -exception:" + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private Dialog makeDialogInputNotice(final ExamResult examResults) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        
+        View inputNotice = View.inflate(context, R.layout.view_input_notice_exam_results, null);
+        final EditText txtNoticeOfExam = (EditText) inputNotice.findViewById(R.id.txtNoticeOfExam);
+        txtNoticeOfExam.setText(examResults.getNotice());
+        builder.setView(inputNotice);
+
+        builder.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String notice = txtNoticeOfExam.getText().toString();
+                if (!notice.trim().isEmpty()) {
+                    examResults.setNotice(notice);
+                }
+                dialogInterface.dismiss();
+            }
+        });
+
+        builder.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        Dialog dialog = builder.create();
+
+        return dialog;
     }
 
 
@@ -165,6 +211,7 @@ public class InputExamResultsAdapter extends RecyclerView.Adapter<InputExamResul
         NetworkImageView imgUserAvata;
         TextView row_title;
         TextView lbNickName;
+        ImageView btnAddNoticeExamResutls;
 
         public ViewHolder(View itemView, int viewType) {
             super(itemView);
@@ -174,6 +221,7 @@ public class InputExamResultsAdapter extends RecyclerView.Adapter<InputExamResul
             imgUserAvata = (NetworkImageView) view.findViewById(R.id.row_icon);
             row_title = (TextView) view.findViewById(R.id.row_title);
             lbNickName = (TextView) view.findViewById(R.id.lbNickName);
+            btnAddNoticeExamResutls = (ImageView) view.findViewById(R.id.btnAddNoticeExamResutls);
         }
     }
 
