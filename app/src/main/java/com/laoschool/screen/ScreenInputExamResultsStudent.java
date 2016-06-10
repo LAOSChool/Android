@@ -342,6 +342,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
             score.setStudent_id(examResult.getStudent_id());
             score.setTerm_id(examResult.getTerm_id());
             score.setSubject_id(examResult.getSubject_id());
+            score.setNotice(examResult.getNotice());
             callInputExamResults(size, i, score);
             Log.d(TAG, "inputExamResults() -exam:" + score.toJson());
 
