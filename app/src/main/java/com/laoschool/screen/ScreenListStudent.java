@@ -1,34 +1,36 @@
 package com.laoschool.screen;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
-import com.laoschool.adapter.ExamResultsByTermPagerAdapter;
 import com.laoschool.adapter.ListStudentOfClassAdapter;
-import com.laoschool.adapter.RecylerViewScreenListTeacherAdapter;
 import com.laoschool.entities.User;
 import com.laoschool.model.AsyncCallback;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Hue on 6/13/2016.
  */
-public class ScreenListStudent extends Fragment implements FragmentLifecycle {
+public class ScreenListStudent extends Fragment implements FragmentLifecycle, SearchView.OnQueryTextListener, SearchView.OnCloseListener {
     private static final String TAG = ScreenListStudent.class.getSimpleName();
     private ScreenListStudent listStudent;
     RecyclerView mListStudent;
@@ -38,6 +40,12 @@ public class ScreenListStudent extends Fragment implements FragmentLifecycle {
     View mError;
     View mProgress;
     View mNoData;
+
+    ListStudentOfClassAdapter mAdapter;
+    private List<User> userList;
+
+    SearchView mSearch;
+
 
     public interface IScreenListStudentOfClass {
         void gotoDetailsStudent(User user);
@@ -70,11 +78,6 @@ public class ScreenListStudent extends Fragment implements FragmentLifecycle {
         mProgress = view.findViewById(R.id.mProgress);
         mNoData = view.findViewById(R.id.mNoData);
 
-
-        if (getUserVisibleHint()) {
-            int classId = LaoSchoolShared.myProfile.getEclass().getId();
-            getStudentOfClass(classId);
-        }
         handlerErrorAndNodata();
 
         return view;
@@ -113,7 +116,7 @@ public class ScreenListStudent extends Fragment implements FragmentLifecycle {
 
             @Override
             public void onAuthFail(String message) {
-                Log.e(ExamResultsByTermPagerAdapter.TAG, "getFilterSubject().onAuthFail() -message:" + message);
+                Log.e(TAG, "getStudentOfClass().onAuthFail() -message:" + message);
                 LaoSchoolShared.goBackToLoginPage(context);
             }
         });
@@ -148,13 +151,22 @@ public class ScreenListStudent extends Fragment implements FragmentLifecycle {
     }
 
     private void fillData(List<User> result) {
-        ListStudentOfClassAdapter listStudentOfClassAdapter = new ListStudentOfClassAdapter(listStudent, result);
-        mListStudent.setAdapter(listStudentOfClassAdapter);
+        mAdapter = new ListStudentOfClassAdapter(listStudent, result);
+        mListStudent.setAdapter(mAdapter);
+        this.userList = result;
+        mSearch.setOnQueryTextListener(this);
+        mSearch.setOnCloseListener(this);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
         inflater.inflate(R.menu.menu_screen_list_student_of_class, menu);
+        MenuItem item = menu.findItem(R.id.action_search);
+        mSearch = new SearchView(((HomeActivity) getActivity()).getSupportActionBar().getThemedContext());
+        MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+        MenuItemCompat.setActionView(item, mSearch);
+
     }
 
     @Override
@@ -177,5 +189,35 @@ public class ScreenListStudent extends Fragment implements FragmentLifecycle {
         super.onAttach(context);
         iScreenListStudentOfClass = (IScreenListStudentOfClass) context;
     }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String query) {
+        Log.d(TAG, "-query:" + query);
+        mAdapter.filter(query);
+        return true;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (getUserVisibleHint()) {
+            int classId = LaoSchoolShared.myProfile.getEclass().getId();
+            getStudentOfClass(classId);
+        }
+    }
+
+    @Override
+    public boolean onClose() {
+        Log.d(TAG, "onClose()");
+        fillData(userList);
+        return true;
+    }
+
 }
 
