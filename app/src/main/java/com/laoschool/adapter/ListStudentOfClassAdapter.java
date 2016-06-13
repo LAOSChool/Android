@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
@@ -15,7 +14,10 @@ import com.laoschool.R;
 import com.laoschool.entities.User;
 import com.laoschool.screen.ScreenListStudent;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
 /**
  * Created by Hue on 6/13/2016.
  */
@@ -23,6 +25,7 @@ public class ListStudentOfClassAdapter extends RecyclerView.Adapter<ListStudentO
     private ScreenListStudent screenListStudent;
     private Context context;
     private List<User> userList;
+    private List<User> ogi_UserList;
     private int TYPE_SUB_HEADER = 0;
     private int TYPE_TITLE = 1;
     private int TYPE_LINE = 2;
@@ -31,6 +34,8 @@ public class ListStudentOfClassAdapter extends RecyclerView.Adapter<ListStudentO
         this.screenListStudent = screenListStudent;
         this.context = screenListStudent.getActivity();
         this.userList = users;
+        this.ogi_UserList = new ArrayList<>();
+        this.ogi_UserList.addAll(userList);
     }
 
     @Override
@@ -94,14 +99,7 @@ public class ListStudentOfClassAdapter extends RecyclerView.Adapter<ListStudentO
 
     @Override
     public int getItemViewType(int position) {
-//        String item = userList.get(position);
-//        if (item.equals(context.getString(R.string.row_sub_header)))
-//            return TYPE_SUB_HEADER;
-//        else if (!item.equals(context.getString(R.string.row_line)))
         return TYPE_TITLE;
-//        else
-//            return TYPE_LINE;
-
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -113,6 +111,25 @@ public class ListStudentOfClassAdapter extends RecyclerView.Adapter<ListStudentO
             this.view = itemView;
             this.viewType = viewType;
         }
+    }
+
+    public void filter(String charText) {
+
+        charText = charText.toLowerCase(Locale.getDefault());
+
+        userList.clear();
+        if (charText.length() == 0) {
+            userList.addAll(ogi_UserList);
+        } else {
+            for (User user : ogi_UserList) {
+                if (charText.length() != 0 && user.getFullname().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    userList.add(user);
+                } else if (charText.length() != 0 && user.getFullname().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    userList.add(user);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 }
 
