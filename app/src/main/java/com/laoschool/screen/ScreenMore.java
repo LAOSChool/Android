@@ -62,6 +62,8 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
         void gotoSchoolRecordbyYearformMore();
 
         void gotoScheduleformMore();
+
+        void gotoListStudentformMore();
     }
 
     public IScreenMore iScreenMore;
