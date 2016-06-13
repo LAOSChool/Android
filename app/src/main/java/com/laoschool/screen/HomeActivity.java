@@ -52,7 +52,8 @@ public class HomeActivity extends AppCompatActivity implements
         ScreenMore.IScreenMore,
         ScreenListTeacher.IScreenListTeacher,
         ScreenInputExamResultsStudent.IScreenInputExamResults,
-        IScreenCreateAnnouncement {
+        IScreenCreateAnnouncement,
+        ScreenListStudent.IScreenListStudentOfClass {
     private static final String TAG = "HomeScreen";
 
     private TabHost mTabHost;
@@ -794,5 +795,10 @@ public class HomeActivity extends AppCompatActivity implements
     @Override
     public void gotoListStudentformMore() {
         _gotoPage(LaoSchoolShared.POSITION_SCREEN_LIST_STUDENT_OF_CLASS_18);
+    }
+
+    @Override
+    public void gotoDetailsStudent() {
+        _gotoPage(LaoSchoolShared.POSITION_SCREEN_PROFILE_13);
     }
 }
