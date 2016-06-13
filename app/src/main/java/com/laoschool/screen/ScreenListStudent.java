@@ -21,7 +21,6 @@ import com.laoschool.model.AsyncCallback;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -31,6 +30,13 @@ public class ScreenListStudent extends Fragment implements FragmentLifecycle {
     private boolean alreadyExecuted = false;
     private ScreenListStudent listStudent;
     RecyclerView mListStudent;
+
+    public interface IScreenListStudentOfClass {
+        void gotoDetailsStudent();
+    }
+
+    public IScreenListStudentOfClass iScreenListStudentOfClass;
+
 
     public ScreenListStudent() {
     }
@@ -101,6 +107,7 @@ public class ScreenListStudent extends Fragment implements FragmentLifecycle {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        iScreenListStudentOfClass = (IScreenListStudentOfClass) context;
     }
 }
 
