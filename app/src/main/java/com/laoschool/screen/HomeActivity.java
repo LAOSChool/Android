@@ -557,6 +557,9 @@ public class HomeActivity extends AppCompatActivity implements
                 if (beforePosition == LaoSchoolShared.POSITION_SCREEN_LIST_TEACHER_9) {
                     //back to tab message
                     _gotoPage(LaoSchoolShared.POSITION_SCREEN_LIST_TEACHER_9);
+                }else if (beforePosition == LaoSchoolShared.POSITION_SCREEN_LIST_STUDENT_OF_CLASS_18) {
+                    //back to tab message
+                    _gotoPage(LaoSchoolShared.POSITION_SCREEN_LIST_STUDENT_OF_CLASS_18);
                 } else {
                     //back to tab attender
                     _gotoPage(LaoSchoolShared.POSITION_SCREEN_MORE_4);
@@ -799,6 +802,7 @@ public class HomeActivity extends AppCompatActivity implements
 
     @Override
     public void gotoDetailsStudent() {
+        beforePosition = LaoSchoolShared.POSITION_SCREEN_LIST_STUDENT_OF_CLASS_18;
         _gotoPage(LaoSchoolShared.POSITION_SCREEN_PROFILE_13);
     }
 }
