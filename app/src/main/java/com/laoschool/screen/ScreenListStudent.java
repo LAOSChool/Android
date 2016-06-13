@@ -25,6 +25,9 @@ import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -151,6 +154,7 @@ public class ScreenListStudent extends Fragment implements FragmentLifecycle, Se
     }
 
     private void fillData(List<User> result) {
+        Collections.sort(result);
         mAdapter = new ListStudentOfClassAdapter(listStudent, result);
         mListStudent.setAdapter(mAdapter);
         this.userList = result;
