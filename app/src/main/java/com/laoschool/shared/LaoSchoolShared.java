@@ -85,6 +85,7 @@ public class LaoSchoolShared {
     public static final int POSITION_SCREEN_ANNOUNCEMENT_DETAILS_15 = 15;
     public static final int POSITION_SCREEN_CREATE_ANNOUNCEMENT_16 = 16;
     public static final int POSITION_SCREEN_REQUEST_ATTENDANCE_17 = 17;
+    public static final int POSITION_SCREEN_LIST_STUDENT_OF_CLASS_18 = 18;
 
     public static final String ROLE_TEARCHER = "TEACHER";
     public static final String ROLE_STUDENT = "STUDENT";
@@ -395,11 +396,13 @@ public class LaoSchoolShared {
         String monthParse = inputFormatter1.format(cal.getTime());
         return monthParse;
     }
+
     public static String formatMonth(int month) {
         DateFormatSymbols dateFormatSymbols = new DateFormatSymbols(Locale.UK);
         String monthParse = dateFormatSymbols.getMonths()[month - 1];
         return monthParse;
     }
+
     public static String getMonthString(Long date) {
         DateFormat inputFormatter1 = new SimpleDateFormat("MMMM , yyyy", Locale.US);
         Calendar cal = Calendar.getInstance();
