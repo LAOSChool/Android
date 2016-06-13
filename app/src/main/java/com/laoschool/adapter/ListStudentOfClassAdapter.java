@@ -51,7 +51,7 @@ public class ListStudentOfClassAdapter extends RecyclerView.Adapter<ListStudentO
     public void onBindViewHolder(ViewHolder holder, int position) {
         View view = holder.view;
         try {
-            User user = userList.get(position);
+            final User user = userList.get(position);
             final String title = user.getFullname();
             if (holder.viewType == TYPE_TITLE) {
                 //Define and set data
@@ -75,7 +75,7 @@ public class ListStudentOfClassAdapter extends RecyclerView.Adapter<ListStudentO
                     @Override
                     public void onClick(View v) {
                         //Toast.makeText(context, title, Toast.LENGTH_SHORT).show();
-                        screenListStudent.iScreenListStudentOfClass.gotoDetailsStudent();
+                        screenListStudent.iScreenListStudentOfClass.gotoDetailsStudent(user);
 
                     }
                 });

@@ -32,7 +32,7 @@ public class ScreenListStudent extends Fragment implements FragmentLifecycle {
     RecyclerView mListStudent;
 
     public interface IScreenListStudentOfClass {
-        void gotoDetailsStudent();
+        void gotoDetailsStudent(User user);
     }
 
     public IScreenListStudentOfClass iScreenListStudentOfClass;

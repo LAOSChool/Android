@@ -67,6 +67,7 @@ public class HomeActivity extends AppCompatActivity implements
     private DataAccessInterface service;
     private Bundle savedInstanceState;
     private Context thiz;
+    public User selectedStudent;
 
 
     public enum DisplayButtonHome {
@@ -801,8 +802,9 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void gotoDetailsStudent() {
+    public void gotoDetailsStudent(User user) {
         beforePosition = LaoSchoolShared.POSITION_SCREEN_LIST_STUDENT_OF_CLASS_18;
+        selectedStudent=user;
         _gotoPage(LaoSchoolShared.POSITION_SCREEN_PROFILE_13);
     }
 }
