@@ -3,7 +3,6 @@ package com.laoschool.screen;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -245,6 +244,8 @@ public class HomeActivity extends AppCompatActivity implements
 
         fragments.add(ScreenRequestAttendance.instantiate(containerId, currentRole, this, screenAttended));
 
+        fragments.add(ScreenListStudent.instantiate(containerId, currentRole));
+
         this.mPagerAdapter = new LaoSchoolPagerAdapter(super.getSupportFragmentManager(), fragments);
         //set adapter and set handler page change
         this.mViewPager.setAdapter(this.mPagerAdapter);
@@ -439,6 +440,9 @@ public class HomeActivity extends AppCompatActivity implements
             case LaoSchoolShared.POSITION_SCREEN_REQUEST_ATTENDANCE_17:
                 _setTitleandShowButtonBack(R.string.action_request_attendance, null, DisplayButtonHome.show);
                 getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_36dp);
+                break;
+            case LaoSchoolShared.POSITION_SCREEN_LIST_STUDENT_OF_CLASS_18:
+                _setTitleandShowButtonBack(R.string.title_screen_list_student_of_class, null, DisplayButtonHome.show);
                 break;
             default:
                 _setTitleandShowButtonBack(R.string.title_screen_message, null, DisplayButtonHome.hide);
@@ -786,4 +790,9 @@ public class HomeActivity extends AppCompatActivity implements
         mTabHost.getTabWidget().setVisibility(View.VISIBLE);
     }
 
+
+    @Override
+    public void gotoListStudentformMore() {
+        _gotoPage(LaoSchoolShared.POSITION_SCREEN_LIST_STUDENT_OF_CLASS_18);
+    }
 }
