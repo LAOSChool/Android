@@ -70,11 +70,26 @@ public class ScreenListStudent extends Fragment implements FragmentLifecycle {
         mProgress = view.findViewById(R.id.mProgress);
         mNoData = view.findViewById(R.id.mNoData);
 
+
         if (getUserVisibleHint()) {
             int classId = LaoSchoolShared.myProfile.getEclass().getId();
             getStudentOfClass(classId);
         }
+        handlerErrorAndNodata();
+
         return view;
+    }
+
+    private void handlerErrorAndNodata() {
+        View.OnClickListener reloadDataClick = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int classId = LaoSchoolShared.myProfile.getEclass().getId();
+                getStudentOfClass(classId);
+            }
+        };
+        mError.findViewById(R.id.mReloadData).setOnClickListener(reloadDataClick);
+        mNoData.findViewById(R.id.mReloadData).setOnClickListener(reloadDataClick);
     }
 
     private void getStudentOfClass(int classId) {
@@ -139,7 +154,6 @@ public class ScreenListStudent extends Fragment implements FragmentLifecycle {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        //set display menu item
         inflater.inflate(R.menu.menu_screen_list_student_of_class, menu);
     }
 
