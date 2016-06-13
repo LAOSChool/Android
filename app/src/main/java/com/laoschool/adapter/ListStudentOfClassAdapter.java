@@ -16,9 +16,6 @@ import com.laoschool.entities.User;
 import com.laoschool.screen.ScreenListStudent;
 
 import java.util.List;
-
-import de.hdodenhof.circleimageview.CircleImageView;
-
 /**
  * Created by Hue on 6/13/2016.
  */
@@ -77,7 +74,8 @@ public class ListStudentOfClassAdapter extends RecyclerView.Adapter<ListStudentO
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(context, title, Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(context, title, Toast.LENGTH_SHORT).show();
+                        screenListStudent.iScreenListStudentOfClass.gotoDetailsStudent();
 
                     }
                 });
