@@ -521,7 +521,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         String termName = String.valueOf("Term " + LaoSchoolShared.myProfile.getEclass().getTerm());
         String year = String.valueOf(LaoSchoolShared.myProfile.getEclass().getYears());
 
-        txtClassAndTermName.setText(className + " - " + termName + "/" + year);
+        txtClassAndTermName.setText(className + " | " + termName + " / " + year);
         getFilterSubject();
 
 
