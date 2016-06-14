@@ -131,4 +131,7 @@
     <string name="address1">Address1</string>
     <string name="address2">Address2</string>
     <string name="parrent_name">Name</string>
+    <string name="avg_of_term1">Average of term 1 : </string>
+    <string name="avg_of_term2">Average of term 2 : </string>
+    <string name="avg_of_year">Average of year : </string>
 </resources>
