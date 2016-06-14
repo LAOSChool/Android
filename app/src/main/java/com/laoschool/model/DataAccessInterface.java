@@ -290,4 +290,6 @@ public interface DataAccessInterface {
 
     public void getExamType(int filter_class_id, AsyncCallback<List<ExamType>> callback);
 
+    public void getMyFinalResultsByClassId(int filter_class_id, AsyncCallback<FinalResult> callback);
+
 }
