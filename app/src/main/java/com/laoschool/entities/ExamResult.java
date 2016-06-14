@@ -10,7 +10,7 @@ import com.google.gson.JsonObject;
 /**
  * Created by Tran An on 11/03/2016.
  */
-public class ExamResult implements Parcelable {
+public class ExamResult implements Parcelable, Comparable<ExamResult> {
 //            "id": null,
 //            "school_id": 1,
 //            "class_id": 1,
@@ -428,5 +428,13 @@ public class ExamResult implements Parcelable {
         String jsonString = gson.toJson(jsonObject);
         Log.d("", "toCreateJson():" + jsonString);
         return jsonString;
+    }
+
+    @Override
+    public int compareTo(ExamResult examResult) {
+        int exam_id = ((ExamResult) examResult).getExam_id();
+
+        //ascending order
+        return this.exam_id - exam_id;
     }
 }
