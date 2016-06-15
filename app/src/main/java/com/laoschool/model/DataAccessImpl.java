@@ -1878,7 +1878,7 @@ public class DataAccessImpl implements DataAccessInterface {
     @Override
     public void getMySchoolYears(final AsyncCallback<List<SchoolYears>> callback) {
         // Request a string response from the provided URL.
-        String url = HOST + "/edu_profile/school_years?filter_user_id=" + LaoSchoolShared.myProfile.getId();
+        String url = HOST + "school_years/myprofile";
         JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
