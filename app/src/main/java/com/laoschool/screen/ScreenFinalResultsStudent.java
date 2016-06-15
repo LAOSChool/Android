@@ -1,15 +1,11 @@
 package com.laoschool.screen;
 
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,7 +24,7 @@ import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCal
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
-import com.laoschool.adapter.ExamResultsStudentSemesterAdapter;
+import com.laoschool.adapter.ExamResultsForStudentAdapter;
 import com.laoschool.adapter.FinalResultsAdapter;
 import com.laoschool.adapter.SessionAdapter;
 import com.laoschool.entities.ExamResult;
@@ -221,7 +217,7 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
     }
 
     private void _refeshData(List<ExamResult> result) {
-        recyclerView.swapAdapter(new ExamResultsStudentSemesterAdapter(this, hashDatafromSemestes(result)), true);
+        recyclerView.swapAdapter(new ExamResultsForStudentAdapter(this, hashDatafromSemestes(result)), true);
 
     }
 

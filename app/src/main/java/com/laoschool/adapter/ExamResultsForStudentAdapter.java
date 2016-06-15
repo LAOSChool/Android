@@ -3,7 +3,6 @@ package com.laoschool.adapter;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,8 +23,8 @@ import java.util.TreeMap;
 /**
  * Created by Hue on 3/11/2016.
  */
-public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private static final String TAG = ExamResultsStudentSemesterAdapter.class.getSimpleName();
+public class ExamResultsForStudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final String TAG = ExamResultsForStudentAdapter.class.getSimpleName();
     private Fragment screen;
     private Context context;
     private List<ExamResult> examResults;
@@ -37,7 +36,7 @@ public class ExamResultsStudentSemesterAdapter extends RecyclerView.Adapter<Recy
     private int TYPE_LINE = 2;
     Map<Integer, Map<Integer, ArrayList<ExamResult>>> listExamMap = new HashMap<>();
 
-    public ExamResultsStudentSemesterAdapter(Fragment screen, List<ExamResult> examResults) {
+    public ExamResultsForStudentAdapter(Fragment screen, List<ExamResult> examResults) {
         this.screen = screen;
         this.context = screen.getActivity();
         if (examResults != null) {

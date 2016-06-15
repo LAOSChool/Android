@@ -42,7 +42,7 @@ import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.adapter.ExamResultsByTermPagerAdapter;
 import com.laoschool.adapter.ExamResultsforClassbySubjectAdapter;
-import com.laoschool.adapter.ExamResultsStudentSemesterAdapter;
+import com.laoschool.adapter.ExamResultsForStudentAdapter;
 import com.laoschool.entities.ExamResult;
 import com.laoschool.entities.Master;
 import com.laoschool.model.AsyncCallback;
@@ -731,7 +731,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         ExamResultsByTermPager fragment;
         private Context context;
         private RecyclerView recyclerView;
-        private ExamResultsStudentSemesterAdapter studentSemesterAdapter;
+        private ExamResultsForStudentAdapter studentSemesterAdapter;
         private List<ExamResult> f_results;
         int semesterId;
 
@@ -775,7 +775,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
             recyclerView.setLayoutManager(linearLayoutManager);
 
-            studentSemesterAdapter = new ExamResultsStudentSemesterAdapter(fragment, f_results);
+            studentSemesterAdapter = new ExamResultsForStudentAdapter(fragment, f_results);
             recyclerView.setAdapter(studentSemesterAdapter);
 
             //handler Scroll list and swipe refersh
@@ -858,7 +858,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         }
 
         private void _refeshData(List<ExamResult> result) {
-            recyclerView.swapAdapter(new ExamResultsStudentSemesterAdapter(this, hashDatafromSemestes(result)), true);
+            recyclerView.swapAdapter(new ExamResultsForStudentAdapter(this, hashDatafromSemestes(result)), true);
 
         }
 
