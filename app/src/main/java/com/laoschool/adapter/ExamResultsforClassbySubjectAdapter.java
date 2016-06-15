@@ -87,7 +87,7 @@ public class ExamResultsforClassbySubjectAdapter extends RecyclerView.Adapter<Ex
                     GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false);
                     recyclerView.setLayoutManager(gridLayoutManager);
                     recyclerView.setAdapter(examAdpter);
-
+                    recyclerView.setNestedScrollingEnabled(false);
                     //fill data exam results
                     lbNickName.setText(examResult.getStd_nickname());
                     row_title.setText(userName);
