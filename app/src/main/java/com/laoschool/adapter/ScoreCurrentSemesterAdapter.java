@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.laoschool.R;
 import com.laoschool.entities.ExamResult;
@@ -18,16 +17,9 @@ import com.laoschool.screen.ScreenExamResults;
 import com.laoschool.screen.view.DialogInputExamResultsForStudent;
 import com.laoschool.shared.LaoSchoolShared;
 
-import java.text.DateFormat;
 import java.text.DateFormatSymbols;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Created by Hue on 6/1/2016.
@@ -43,10 +35,10 @@ public class ScoreCurrentSemesterAdapter extends RecyclerView.Adapter<ScoreCurre
 
     public ScoreCurrentSemesterAdapter(ScreenExamResults screenExamResults, int subjectId, Context context, ScreenExamResults.IScreenExamResults iScreenExamResults, List<ExamResult> scores) {
         this.activity = screenExamResults.getActivity();
-        this.screenExamResults=screenExamResults;
+        this.screenExamResults = screenExamResults;
         this.context = context;
         this.iScreenExamResults = iScreenExamResults;
-        this.subjectId=subjectId;
+        this.subjectId = subjectId;
 
 //        List<ExamResult> examResults = scores.get(LaoSchoolShared.myProfile.getEclass().getTerm());
 //        Map<Integer, ExamResult> examByMonthList = new HashMap<>();
@@ -65,7 +57,7 @@ public class ScoreCurrentSemesterAdapter extends RecyclerView.Adapter<ScoreCurre
 
     @Override
     public ScoreCurrentSemesterAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_score_by_month, parent, false); //Inflating the layout
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_score, parent, false); //Inflating the layout
         ScoreCurrentSemesterAdapterViewHolder scoreStudentSemesterAdapterViewHolder = new ScoreCurrentSemesterAdapterViewHolder(view, viewType);
         return scoreStudentSemesterAdapterViewHolder;
     }
@@ -83,19 +75,21 @@ public class ScoreCurrentSemesterAdapter extends RecyclerView.Adapter<ScoreCurre
         }
         String score = examResult.getSresult();
 
-        View mScoreOfMonth = view.findViewById(R.id.mScoreOfMonth);
         TextView lbScoreMonth = ((TextView) (view.findViewById(R.id.lbScoreMonth)));
         TextView lbScore = ((TextView) (view.findViewById(R.id.lbScore)));
 
         if (exam_type == 2) {
-            lbScoreMonth.setText("Final");
-            view.setBackgroundResource(R.drawable.border_row_score_by_month_final);
+            lbScoreMonth.setText(examResult.getExam_name());
+            view.setBackgroundResource(R.drawable.bg_score_final);
         } else if (exam_type == 3) {
-            lbScoreMonth.setText("AVG");
+            lbScoreMonth.setText(examResult.getExam_name());
+            view.setBackgroundResource(R.drawable.bg_score_avg_month);
         } else if (exam_type == 4) {
-            lbScoreMonth.setText("AVG");
-            view.setBackgroundResource(R.drawable.border_row_score_by_month_final);
-        } else lbScoreMonth.setText(monthStr);
+            lbScoreMonth.setText(examResult.getExam_name());
+            view.setBackgroundResource(R.drawable.bg_score_avg_term);
+        } else {
+            lbScoreMonth.setText(monthStr);
+        }
 
         if (score != null && !score.trim().isEmpty()) {
             lbScore.setText(score);
@@ -113,7 +107,7 @@ public class ScoreCurrentSemesterAdapter extends RecyclerView.Adapter<ScoreCurre
             @Override
             public boolean onLongClick(View view) {
                 if (examResult.getExam_type() <= 2) {
-                    DialogInputExamResultsForStudent dialogInputExamResultsForStudent = new DialogInputExamResultsForStudent(screenExamResults,subjectId,examResult);
+                    DialogInputExamResultsForStudent dialogInputExamResultsForStudent = new DialogInputExamResultsForStudent(screenExamResults, subjectId, examResult);
                     dialogInputExamResultsForStudent.show(activity.getFragmentManager(), DialogInputExamResultsForStudent.TAG);
 
                 } else {
