@@ -1,6 +1,9 @@
 package com.laoschool.entities;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.util.List;
 
 /**
  * Created by Hue on 6/15/2016.
@@ -88,6 +91,12 @@ public class SchoolYears {
     public static SchoolYears fromJson(String jsonString) {
         Gson gson = new Gson();
         SchoolYears schoolYears = gson.fromJson(jsonString, SchoolYears.class);
+        return schoolYears;
+    }
+
+    public static List<SchoolYears> fromArray(String jsonString) {
+        Gson gson = new Gson();
+        List<SchoolYears> schoolYears = gson.fromJson(jsonString, new TypeToken<List<SchoolYears>>(){}.getType());
         return schoolYears;
     }
 }
