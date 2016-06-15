@@ -3,6 +3,7 @@ package com.laoschool.screen;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
@@ -14,7 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -26,20 +27,22 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.adapter.FinalResultsPagerAdapter;
+import com.laoschool.adapter.SelectedSchoolYearsAdapter;
 import com.laoschool.entities.ExamResult;
 import com.laoschool.entities.FinalResult;
+import com.laoschool.entities.SchoolYears;
 import com.laoschool.model.AsyncCallback;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
 
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ScreenFinalResultsStudent extends Fragment implements FragmentLifecycle, SearchView.OnQueryTextListener {
+public class ScreenFinalResultsStudent extends Fragment implements FragmentLifecycle, SearchView.OnQueryTextListener, Spinner.OnItemSelectedListener {
 
 
     private static final String TAG = ScreenFinalResultsStudent.class.getSimpleName();
@@ -47,22 +50,26 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
     private String currentRole;
     private int containerId;
     private Spinner cbxTermScreenRecordStudent;
-    private RelativeLayout mListBox;
+    private RelativeLayout mFilterYear;
 
 
     private ProgressBar mProgress;
     private FrameLayout mError;
-    private FrameLayout mNoData;
+    private View mNoDataFinal;
 
     private LinearLayout mListData;
 
     private ScreenFinalResultsStudent fragment;
-    private FrameLayout mContainer;
+    private View mContainer;
     private ActionBar mActionBar;
-    private View mAvgTotalFinalResults;
     ViewPager mPagerFinalResults;
     PagerSlidingTabStrip mTab;
     private SearchView mSearch;
+    private List<SchoolYears> schoolYears;
+    private View mDataFinal;
+    private View mSucgetionSelectedYear;
+    private View mProgressLoadingFinal;
+    private View mDataTotalFinalResults;
 
     public ScreenFinalResultsStudent() {
         // Required empty public constructor
@@ -91,46 +98,27 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
         else {
             // Inflate the layout for this fragment
             final View view = inflater.inflate(R.layout.screen_final_results_student, container, false);
-            mContainer = (FrameLayout) view.findViewById(R.id.mContainer);
-            mAvgTotalFinalResults = view.findViewById(R.id.mContenDataFinalResults);
-            mListBox = (RelativeLayout) view.findViewById(R.id.mListBox);
-            mListData = (LinearLayout) view.findViewById(R.id.fragment_root);
+            mContainer = view.findViewById(R.id.mContainer);
+            mDataTotalFinalResults = view.findViewById(R.id.mDataTotalFinalResults);
+            mFilterYear = (RelativeLayout) view.findViewById(R.id.mListBox);
             mProgress = (ProgressBar) view.findViewById(R.id.mProgressFinalResults);
             mError = (FrameLayout) view.findViewById(R.id.mError);
-            mNoData = (FrameLayout) view.findViewById(R.id.mNoData);
+
+            ///
+            mDataFinal = view.findViewById(R.id.mDataFinal);
+            mNoDataFinal = view.findViewById(R.id.mNoDataFinal);
+            mSucgetionSelectedYear = view.findViewById(R.id.mSucgetionSelectedYear);
+            mProgressLoadingFinal = view.findViewById(R.id.mProgressLoadingFinal);
+
 
             mPagerFinalResults = (ViewPager) view.findViewById(R.id.mPagerFinalResults);
             mTab = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
 
             cbxTermScreenRecordStudent = (Spinner) view.findViewById(R.id.cbxTermScreenFinalResultsStudent);
             //fill data for cbx
-            fillDataForSpinerFilter(cbxTermScreenRecordStudent, Arrays.asList(getResources().getStringArray(R.array.termTest)));
-            getMyFinalResults();
+            getMySchoolYears();
             return view;
         }
-    }
-
-    private void getMyFinalResults() {
-        showProgressLoading(true);
-        int classId = LaoSchoolShared.myProfile.getEclass().getId();
-        LaoSchoolSingleton.getInstance().getDataAccessService().getMyFinalResultsByClassId(classId, new AsyncCallback<FinalResult>() {
-            @Override
-            public void onSuccess(FinalResult result) {
-                defineFinalResults(result);
-                showProgressLoading(false);
-            }
-
-            @Override
-            public void onFailure(String message) {
-                showError();
-            }
-
-            @Override
-            public void onAuthFail(String message) {
-                LaoSchoolShared.goBackToLoginPage(context);
-                showProgressLoading(false);
-            }
-        });
     }
 
     private void defineFinalResults(FinalResult result) {
@@ -163,8 +151,8 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
     }
 
     private void defineAvgFinalTotal(FinalResult result) {
-        ((TextView) mAvgTotalFinalResults.findViewById(R.id.lbClassNameAndLocation)).setText(result.getClassName() + " | " + result.getCls_location());
-        ((TextView) mAvgTotalFinalResults.findViewById(R.id.lbTeacherName)).setText(result.getTeacher_name());
+        ((TextView) mDataTotalFinalResults.findViewById(R.id.lbClassNameAndLocation)).setText(result.getClassName() + " | " + result.getCls_location());
+        ((TextView) mDataTotalFinalResults.findViewById(R.id.lbTeacherName)).setText(result.getTeacher_name());
         try {
             //caculater avg
             float avg1 = 0;
@@ -190,20 +178,52 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
             float avgTerm2 = avg2 / count;
             float total = (avgTerm1 + avgTerm2) / 2;
 
-            ((TextView) mAvgTotalFinalResults.findViewById(R.id.lbAvgTerm1)).setText(String.valueOf(avgTerm1));
-            ((TextView) mAvgTotalFinalResults.findViewById(R.id.lbAvgTerm2)).setText(String.valueOf(avgTerm2));
-            ((TextView) mAvgTotalFinalResults.findViewById(R.id.lbAvgofYear)).setText(String.valueOf(total));
+            ((TextView) mDataTotalFinalResults.findViewById(R.id.lbAvgTerm1)).setText(String.valueOf(avgTerm1));
+            ((TextView) mDataTotalFinalResults.findViewById(R.id.lbAvgTerm2)).setText(String.valueOf(avgTerm2));
+            ((TextView) mDataTotalFinalResults.findViewById(R.id.lbAvgofYear)).setText(String.valueOf(total));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void fillDataForSpinerFilter(Spinner cbx, List<String> classTest) {
-        ArrayAdapter<String> dataAdapterclassTest = new ArrayAdapter<String>(getActivity(), R.layout.row_year_final_results_selected, classTest);
-        // Drop down layout style - list view with radio button
-        dataAdapterclassTest.setDropDownViewResource(R.layout.row_year_final_results);
-        // attaching data adapter to spinner
-        cbx.setAdapter(dataAdapterclassTest);
+    private void getMySchoolYears() {
+        showProgressLoading(true);
+        LaoSchoolSingleton.getInstance().getDataAccessService().getMySchoolYears(new AsyncCallback<List<SchoolYears>>() {
+            @Override
+            public void onSuccess(List<SchoolYears> result) {
+                fillDataToSeletedYear(result);
+                showProgressLoading(false);
+
+            }
+
+            @Override
+            public void onFailure(String message) {
+                showError();
+            }
+
+            @Override
+            public void onAuthFail(String message) {
+                LaoSchoolShared.goBackToLoginPage(context);
+                showProgressLoading(false);
+            }
+        });
+    }
+
+    private void fillDataToSeletedYear(List<SchoolYears> result) {
+
+        SchoolYears schoolYears = new SchoolYears();
+        schoolYears.setId(-1);
+        schoolYears.setYears(context.getString(R.string.selected));
+
+        List<SchoolYears> schoolYearsList = new ArrayList<>();
+        schoolYearsList.add(schoolYears);
+        schoolYearsList.addAll(result);
+
+        SelectedSchoolYearsAdapter yearsAdapter = new SelectedSchoolYearsAdapter(context, schoolYearsList);
+        //yearsAdapter.setDropDownViewResource(R.layout.row_selected_school_year);
+        cbxTermScreenRecordStudent.setAdapter(yearsAdapter);
+        cbxTermScreenRecordStudent.setOnItemSelectedListener(this);
+        this.schoolYears = schoolYearsList;
     }
 
 
@@ -241,16 +261,13 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
         mError.setVisibility(View.VISIBLE);
         mProgress.setVisibility(View.GONE);
         mListData.setVisibility(View.GONE);
-        mNoData.setVisibility(View.GONE);
     }
 
     private void showNoData() {
-        mNoData.setVisibility(View.VISIBLE);
+        mNoDataFinal.setVisibility(View.VISIBLE);
         mError.setVisibility(View.GONE);
         mProgress.setVisibility(View.GONE);
-        mListData.setVisibility(View.GONE);
     }
-
 
     private void showProgressLoading(boolean b) {
         try {
@@ -262,7 +279,6 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
                 mListData.setVisibility(View.VISIBLE);
             }
             mError.setVisibility(View.GONE);
-            mNoData.setVisibility(View.GONE);
         } catch (Exception e) {
         }
     }
@@ -275,5 +291,83 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
     @Override
     public boolean onQueryTextChange(String newText) {
         return false;
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+        if (position > 0) {
+            int year = 0;
+            getMyFinalResultsByYear(year);
+        } else {
+            showSugesstionFinal();
+        }
+
+    }
+
+    private void getMyFinalResultsByYear(int year) {
+        showProgressLoadingFinal(true);
+        int classId = LaoSchoolShared.myProfile.getEclass().getId();
+        LaoSchoolSingleton.getInstance().getDataAccessService().getMyFinalResultsByClassId(classId, year, new AsyncCallback<FinalResult>() {
+            @Override
+            public void onSuccess(final FinalResult result) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        defineFinalResults(result);
+                        showProgressLoadingFinal(false);
+                    }
+                }, 500);
+            }
+
+            @Override
+            public void onFailure(String message) {
+                showErrorFinal();
+            }
+
+            @Override
+            public void onAuthFail(String message) {
+                LaoSchoolShared.goBackToLoginPage(context);
+                showProgressLoadingFinal(false);
+            }
+        });
+    }
+
+    private void showErrorFinal() {
+
+    }
+
+    private void showProgressLoadingFinal(boolean show) {
+        if (show) {
+            mSucgetionSelectedYear.setVisibility(View.GONE);
+            mDataFinal.setVisibility(View.GONE);
+            mNoDataFinal.setVisibility(View.GONE);
+            mProgressLoadingFinal.setVisibility(View.VISIBLE);
+        } else {
+            mDataFinal.setVisibility(View.VISIBLE);
+            mNoDataFinal.setVisibility(View.GONE);
+            mSucgetionSelectedYear.setVisibility(View.GONE);
+            mProgressLoadingFinal.setVisibility(View.GONE);
+        }
+    }
+
+    private void showSugesstionFinal() {
+        mSucgetionSelectedYear.setVisibility(View.VISIBLE);
+        mDataFinal.setVisibility(View.GONE);
+        mNoDataFinal.setVisibility(View.GONE);
+        mProgressLoadingFinal.setVisibility(View.GONE);
+
+    }
+
+    private void showNodataFinal() {
+        mDataFinal.setVisibility(View.GONE);
+        mNoDataFinal.setVisibility(View.VISIBLE);
+        mSucgetionSelectedYear.setVisibility(View.GONE);
+        mProgressLoadingFinal.setVisibility(View.GONE);
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
     }
 }
