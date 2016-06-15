@@ -15,6 +15,7 @@ import com.laoschool.entities.ExamResult;
 import com.laoschool.shared.LaoSchoolShared;
 
 import java.text.DateFormat;
+import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,18 +29,11 @@ import java.util.Map;
 public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStudentSemesterAdapter.ScoreStudentSemesterAdapterViewHolder> {
     private static final String TAG = ScoreStudentSemesterAdapter.class.getSimpleName();
     Context context;
-    Map<Integer, ArrayList<ExamResult>> scores;
-    List<Integer> months = new ArrayList<>();
+    List<ExamResult> scores;
 
-    public ScoreStudentSemesterAdapter(Context context, Map<Integer, ArrayList<ExamResult>> scores) {
+    public ScoreStudentSemesterAdapter(Context context, List<ExamResult> scores) {
         this.context = context;
         this.scores = scores;
-        for (Integer key : scores.keySet()) {
-            Log.d(TAG, " -month:" + key);
-            months.add(key);
-        }
-
-        Log.d(TAG, " -exam size:" + scores.size());
     }
 
 
@@ -51,80 +45,76 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
     }
 
     @Override
-    public void onBindViewHolder(ScoreStudentSemesterAdapterViewHolder holder, int position) {
+    public void onBindViewHolder(final ScoreStudentSemesterAdapterViewHolder holder, final int position) {
         View view = holder.view;
-        try {
-            int month = months.get(position);
-            String monthStr = _getMonthString(month);
-            List<ExamResult> scoreList = scores.get(month);
-            if (scoreList.size() > 0) {
-                final ExamResult examResult = scoreList.get(scoreList.size() - 1);
-                String score = examResult.getSresult();
-                ((TextView) (view.findViewById(R.id.lbScoreMonth))).setText(monthStr);
-                if (score != null) {
-                    if (!score.trim().isEmpty()) {
-                        ((TextView) (view.findViewById(R.id.lbScore))).setText(score);
-                        view.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                _showDetailsExamResults(examResult);
+        final ExamResult examResult = scores.get(position);
+        int exam_month = examResult.getExam_month();
+        int exam_type = examResult.getExam_type();
 
-                            }
-                        });
-                    } else {
-                        Log.e(TAG, "onBindViewHolder() - score is empty");
-                        view.setVisibility(View.GONE);
-                    }
-                } else {
-                    Log.e(TAG, "onBindViewHolder() - score is null");
-                }
-
-                if (monthStr.equals("Final")) {
-                    view.setBackgroundResource(R.drawable.border_row_score_by_month_final);
-                }
-            } else {
-                Log.e(TAG, "onBindViewHolder() - month:" + month + " list exam is empty");
-                view.setVisibility(View.GONE);
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "onBindViewHolder() - exception=" + e.getMessage());
+        String monthStr = "DEF";
+        if (exam_month > 0) {
+            monthStr = getMonthString(examResult.getExam_month());
         }
+        String score = examResult.getSresult();
+
+        TextView lbScoreMonth = ((TextView) (view.findViewById(R.id.lbScoreMonth)));
+        TextView lbScore = ((TextView) (view.findViewById(R.id.lbScore)));
+
+        if (exam_type == 2) {
+            lbScoreMonth.setText(examResult.getExam_name());
+            view.setBackgroundResource(R.drawable.bg_score_final);
+        } else if (exam_type == 3) {
+            lbScoreMonth.setText(examResult.getExam_name());
+            view.setBackgroundResource(R.drawable.bg_score_avg_month);
+        } else if (exam_type == 4) {
+            lbScoreMonth.setText(examResult.getExam_name());
+            view.setBackgroundResource(R.drawable.bg_score_avg_term);
+        } else {
+            lbScoreMonth.setText(monthStr);
+        }
+
+        if (score != null && !score.trim().isEmpty()) {
+            lbScore.setText(score);
+        } else {
+            lbScore.setText("");
+        }
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick " + position);
+                _showDetailsExamResults(examResult);
+            }
+        });
     }
 
     private void _showDetailsExamResults(ExamResult examResult) {
-        AlertDialog.Builder bDetails = new AlertDialog.Builder(context);
-        View examResultDetails = View.inflate(context, R.layout.view_exam_results_details, null);
-        ((TextView) examResultDetails.findViewById(R.id.lbExamSubject)).setText(String.valueOf(examResult.getSubjectName()));
-        if (examResult.getExam_type() == 2)
-            ((TextView) examResultDetails.findViewById(R.id.lbExamDate)).setText(examResult.getTermName());
-        else {
-            ((TextView) examResultDetails.findViewById(R.id.lbExamDate)).setText(String.valueOf(examResult.getExam_month() + "/" + examResult.getExam_year()));
+        try {
+            AlertDialog.Builder bDetails = new AlertDialog.Builder(context);
+            View examResultDetails = View.inflate(context, R.layout.view_exam_results_details, null);
+            ((TextView) examResultDetails.findViewById(R.id.lbExamSubject)).setText(String.valueOf(examResult.getSubjectName()));
+            ((TextView) examResultDetails.findViewById(R.id.lbExamDate)).setText(examResult.getExam_name());
+            String score = examResult.getSresult();
+            ((TextView) examResultDetails.findViewById(R.id.lbExamScore)).setText(String.valueOf(score));
+            ((TextView) examResultDetails.findViewById(R.id.lbExamTecherName)).setText(String.valueOf(examResult.getTeacherName()));
+            ((TextView) examResultDetails.findViewById(R.id.lbExamDateUpdateScore)).setText(" - " + LaoSchoolShared.formatDate(examResult.getExam_dt(), 2));
+            ((TextView) examResultDetails.findViewById(R.id.lbExamNotice)).setText(String.valueOf(examResult.getNotice()));
+            bDetails.setView(examResultDetails);
+            final Dialog dialog = bDetails.create();
+            (examResultDetails.findViewById(R.id.lbExamClose)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                }
+            });
+            dialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        String score = examResult.getSresult();
-        ((TextView) examResultDetails.findViewById(R.id.lbExamScore)).setText(String.valueOf(score));
-        ((TextView) examResultDetails.findViewById(R.id.lbExamTecherName)).setText(String.valueOf(examResult.getTeacherName()));
-        ((TextView) examResultDetails.findViewById(R.id.lbExamDateUpdateScore)).setText(" - " + LaoSchoolShared.formatDate(examResult.getExam_dt(), 2));
-        ((TextView) examResultDetails.findViewById(R.id.lbExamNotice)).setText(String.valueOf(examResult.getNotice()));
-        bDetails.setCustomTitle(examResultDetails);
-        final Dialog dialog = bDetails.create();
-        ((TextView) examResultDetails.findViewById(R.id.lbExamClose)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
-
     }
 
-    private String _getMonthString(int month) {
-        if (month == 100)
-            return "Final";
-        DateFormat inputFormatter1 = new SimpleDateFormat("MMM", Locale.US);
-        Calendar cal = Calendar.getInstance();
-        cal.set(2016, month - 1, 10);
-        String monthParse = inputFormatter1.format(cal.getTime());
-        Log.d(TAG, " _getMonthString() - monnt:" + month + ",month parse:" + monthParse);
+    private String getMonthString(int month) {
+        DateFormatSymbols dateFormatSymbols = new DateFormatSymbols(Locale.UK);
+        String monthParse = dateFormatSymbols.getShortMonths()[month - 1];
         return monthParse;
     }
 
