@@ -3,46 +3,52 @@ package com.laoschool.screen;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
+
+import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.ViewPager;
+import android.support.v7.widget.SearchView;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
-import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
-import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
-import com.github.ksoichiro.android.observablescrollview.ScrollState;
+import com.astuetz.PagerSlidingTabStrip;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
+
 import com.laoschool.adapter.ExamResultsForStudentAdapter;
-import com.laoschool.adapter.FinalResultsAdapter;
-import com.laoschool.adapter.SessionAdapter;
+
+import com.laoschool.adapter.FinalResultsPagerAdapter;
+import com.laoschool.adapter.SelectedSchoolYearsAdapter;
 import com.laoschool.entities.ExamResult;
 import com.laoschool.entities.FinalResult;
-import com.laoschool.entities.TimeTable;
+import com.laoschool.entities.SchoolYears;
 import com.laoschool.model.AsyncCallback;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ScreenFinalResultsStudent extends Fragment implements FragmentLifecycle {
+public class ScreenFinalResultsStudent extends Fragment implements FragmentLifecycle, SearchView.OnQueryTextListener, Spinner.OnItemSelectedListener {
 
 
     private static final String TAG = ScreenFinalResultsStudent.class.getSimpleName();
@@ -50,22 +56,26 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
     private String currentRole;
     private int containerId;
     private Spinner cbxTermScreenRecordStudent;
-    private ObservableRecyclerView recyclerView;
-    private RelativeLayout mListBox;
-    private LinearLayoutManager layoutManager;
-    private int firstVisibleInListview;
-    private android.support.v7.widget.Toolbar mToolbar;
+    private RelativeLayout mFilterYear;
+
 
     private ProgressBar mProgress;
     private FrameLayout mError;
-    private FrameLayout mNoData;
+    private View mNoDataFinal;
 
     private LinearLayout mListData;
 
     private ScreenFinalResultsStudent fragment;
-    private FrameLayout mContainer;
+    private View mContainer;
     private ActionBar mActionBar;
-    private View mContenDataFinalResults;
+    ViewPager mPagerFinalResults;
+    PagerSlidingTabStrip mTab;
+    private SearchView mSearch;
+    private List<SchoolYears> schoolYears;
+    private View mDataFinal;
+    private View mSucgetionSelectedYear;
+    private View mProgressLoadingFinal;
+    private View mDataTotalFinalResults;
 
     public ScreenFinalResultsStudent() {
         // Required empty public constructor
@@ -94,45 +104,102 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
         else {
             // Inflate the layout for this fragment
             final View view = inflater.inflate(R.layout.screen_final_results_student, container, false);
-            mContainer = (FrameLayout) view.findViewById(R.id.mContainer);
-            mContenDataFinalResults = view.findViewById(R.id.mContenDataFinalResults);
-            mListBox = (RelativeLayout) view.findViewById(R.id.mListBox);
-            mListData = (LinearLayout) view.findViewById(R.id.fragment_root);
+            mContainer = view.findViewById(R.id.mContainer);
+            mDataTotalFinalResults = view.findViewById(R.id.mDataTotalFinalResults);
+            mFilterYear = (RelativeLayout) view.findViewById(R.id.mListBox);
             mProgress = (ProgressBar) view.findViewById(R.id.mProgressFinalResults);
             mError = (FrameLayout) view.findViewById(R.id.mError);
-            mNoData = (FrameLayout) view.findViewById(R.id.mNoData);
+
+            ///
+            mDataFinal = view.findViewById(R.id.mDataFinal);
+            mNoDataFinal = view.findViewById(R.id.mNoDataFinal);
+            mSucgetionSelectedYear = view.findViewById(R.id.mSucgetionSelectedYear);
+            mProgressLoadingFinal = view.findViewById(R.id.mProgressLoadingFinal);
+
+
+            mPagerFinalResults = (ViewPager) view.findViewById(R.id.mPagerFinalResults);
+            mTab = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
 
             cbxTermScreenRecordStudent = (Spinner) view.findViewById(R.id.cbxTermScreenFinalResultsStudent);
-            recyclerView = (ObservableRecyclerView) view.findViewById(R.id.mRecyclerViewResultsDetailsScreenFinalResultsStudent);
-            recyclerView.setHasFixedSize(false);
-            recyclerView.setTouchInterceptionViewGroup((ViewGroup) view.findViewById(R.id.fragment_root));
-
-            //set LayoutManager to recyclerView
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
-
-            layoutManager = (LinearLayoutManager) recyclerView
-                    .getLayoutManager();
-            layoutManager.scrollToPositionWithOffset(0, 0);
-
-            firstVisibleInListview = layoutManager.findFirstVisibleItemPosition();
-
             //fill data for cbx
-            fillDataForSpinerFilter(cbxTermScreenRecordStudent, Arrays.asList(getResources().getStringArray(R.array.termTest)));
-
-            //getMyExamResult();
-            getMyFinalResults();
-            handlerScroll();
+            getMySchoolYears();
             return view;
         }
     }
 
-    private void getMyFinalResults() {
-        LaoSchoolSingleton.getInstance().getDataAccessService().getMyFinalResults(2015, new AsyncCallback<List<FinalResult>>() {
+    private void defineFinalResults(FinalResult result) {
+//        1  Normal
+//        2 Thi Hoc Ky
+//        3  Trung Binh 4 thang
+//        4  Trung Binh Hoc ky
+//        5 Trung Binh Ca Nam
+//        6 Thi Lai Ca Nam
+//        7 Thi Tot Nghiep Cap
+
+        defineAvgFinalTotal(result);
+
+        final FinalResultsPagerAdapter resultsPagerAdapter = new FinalResultsPagerAdapter(getFragmentManager(), result);
+        mPagerFinalResults.setAdapter(resultsPagerAdapter);
+
+        mTab.setViewPager(mPagerFinalResults);
+        mSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void onSuccess(List<FinalResult> result) {
-                Log.d(TAG, "getMyFinalResults().onSuccess() -size:" + result.size());
-                FinalResultsAdapter finalResultAdapter = new FinalResultsAdapter(context);
-                recyclerView.setAdapter(finalResultAdapter);
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                resultsPagerAdapter.getCurrentFragment().getExamResultsStudentSemesterAdapter().filter(newText);
+                return true;
+            }
+        });
+    }
+
+    private void defineAvgFinalTotal(FinalResult result) {
+        ((TextView) mDataTotalFinalResults.findViewById(R.id.lbClassNameAndLocation)).setText(result.getClassName() + " | " + result.getCls_location());
+        ((TextView) mDataTotalFinalResults.findViewById(R.id.lbTeacherName)).setText(result.getTeacher_name());
+        try {
+            //caculater avg
+            float avg1 = 0;
+            float avg2 = 0;
+            int count = 1;
+            for (ExamResult exam : result.getExam_results()) {
+                count++;
+                if (exam.getExam_type() == 5) {
+                    if (exam.getSresult() != null)
+                        if (!exam.getSresult().trim().isEmpty()) {
+                            float s_results = Float.parseFloat(exam.getSresult());
+                            if (exam.getTerm_id() == 1) {
+                                avg1 += s_results;
+                            }
+                            if (exam.getTerm_id() == 2) {
+                                avg2 += s_results;
+                            }
+                        }
+                }
+            }
+
+            float avgTerm1 = avg1 / count;
+            float avgTerm2 = avg2 / count;
+            float total = (avgTerm1 + avgTerm2) / 2;
+
+            ((TextView) mDataTotalFinalResults.findViewById(R.id.lbAvgTerm1)).setText(String.valueOf(avgTerm1));
+            ((TextView) mDataTotalFinalResults.findViewById(R.id.lbAvgTerm2)).setText(String.valueOf(avgTerm2));
+            ((TextView) mDataTotalFinalResults.findViewById(R.id.lbAvgofYear)).setText(String.valueOf(total));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getMySchoolYears() {
+        showProgressLoading(true);
+        LaoSchoolSingleton.getInstance().getDataAccessService().getMySchoolYears(new AsyncCallback<List<SchoolYears>>() {
+            @Override
+            public void onSuccess(List<SchoolYears> result) {
+                fillDataToSeletedYear(result);
+                showProgressLoading(false);
+
             }
 
             @Override
@@ -142,59 +209,38 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
 
             @Override
             public void onAuthFail(String message) {
-                LaoSchoolShared.goBackToLoginPage(getActivity());
+                LaoSchoolShared.goBackToLoginPage(context);
+                showProgressLoading(false);
             }
         });
     }
 
-    private void handlerScroll() {
-        recyclerView.setScrollViewCallbacks(new ObservableScrollViewCallbacks() {
-            @Override
-            public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
+    private void fillDataToSeletedYear(List<SchoolYears> result) {
 
-            }
+        SchoolYears schoolYears = new SchoolYears();
+        schoolYears.setId(-1);
+        schoolYears.setYears(context.getString(R.string.selected));
 
-            @Override
-            public void onDownMotionEvent() {
+        List<SchoolYears> schoolYearsList = new ArrayList<>();
+        schoolYearsList.add(schoolYears);
+        schoolYearsList.addAll(result);
 
-            }
-
-            @Override
-            public void onUpOrCancelMotionEvent(ScrollState scrollState) {
-
-                try {
-                    if (scrollState == ScrollState.UP) {
-                        if (mListBox.getVisibility() == View.VISIBLE) {
-                            mActionBar.hide();
-                            mListBox.setVisibility(View.GONE);
-                        }
-                    } else if (scrollState == ScrollState.DOWN) {
-                        if (mListBox.getVisibility() == View.GONE) {
-                            mActionBar.show();
-                            mListBox.setVisibility(View.VISIBLE);
-                        }
-                    }
-                } catch (Exception e) {
-                    Log.e(TAG, "handlerScroll().onUpOrCancelMotionEvent() -exception : " + e.getMessage());
-                }
-            }
-        });
-
-    }
-
-
-    private void fillDataForSpinerFilter(Spinner cbx, List<String> classTest) {
-        ArrayAdapter<String> dataAdapterclassTest = new ArrayAdapter<String>(getActivity(), R.layout.row_year_final_results_selected, classTest);
-        // Drop down layout style - list view with radio button
-        dataAdapterclassTest.setDropDownViewResource(R.layout.row_year_final_results);
-        // attaching data adapter to spinner
-        cbx.setAdapter(dataAdapterclassTest);
+        SelectedSchoolYearsAdapter yearsAdapter = new SelectedSchoolYearsAdapter(context, schoolYearsList);
+        //yearsAdapter.setDropDownViewResource(R.layout.row_selected_school_year);
+        cbxTermScreenRecordStudent.setAdapter(yearsAdapter);
+        cbxTermScreenRecordStudent.setOnItemSelectedListener(this);
+        this.schoolYears = schoolYearsList;
     }
 
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        inflater.inflate(R.menu.menu_screen_final_results, menu);
+        MenuItem item = menu.findItem(R.id.action_search);
+        mSearch = new SearchView(((HomeActivity) getActivity()).getSupportActionBar().getThemedContext());
+        MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+        MenuItemCompat.setActionView(item, mSearch);
     }
 
     @Override
@@ -216,117 +262,17 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
         return fragment;
     }
 
-    private void _refeshData(List<ExamResult> result) {
-        recyclerView.swapAdapter(new ExamResultsForStudentAdapter(this, hashDatafromSemestes(result)), true);
-
-    }
-
-    private ArrayList<ExamResult> hashDatafromSemestes(List<ExamResult> result) {
-        ArrayList<ExamResult> examResults = new ArrayList<>();
-        for (ExamResult examResult : result) {
-            if (examResult.getTerm_id() == 1) {
-                examResults.add(examResult);
-            }
-        }
-        return examResults;
-    }
-
-    private void getMyExamResult() {
-        showProgressLoading(true);
-//        int filter_class_id = LaoSchoolShared.myProfile.getEclass().getId();
-//        LaoSchoolSingleton.getInstance().getDataAccessService().getMyExamResults(filter_class_id, new AsyncCallback<List<ExamResult>>() {
-//            @Override
-//            public void onSuccess(List<ExamResult> result) {
-//                if (result.size() > 0) {
-//                    if (result != null) {
-//                        _refeshData(result);
-//                    } else {
-//                    }
-//                } else {
-//                }
-//                showProgressLoading(false);
-//            }
-//
-//            @Override
-//            public void onFailure(String message) {
-//                showProgressLoading(false);
-//            }
-//
-//            @Override
-//            public void onAuthFail(String message) {
-//                LaoSchoolShared.goBackToLoginPage(context);
-//            }
-//        });
-
-        int classId = LaoSchoolShared.myProfile.getEclass().getId();
-        LaoSchoolSingleton.getInstance().getDataAccessService().getTimeTables(classId, new AsyncCallback<List<TimeTable>>() {
-            @Override
-            public void onSuccess(List<TimeTable> result) {
-                if (result.size() > 0) {
-                    showProgressLoading(false);
-                    recyclerView.setAdapter(new SessionAdapter(context, 0, result));
-                } else {
-                    showNoData();
-                }
-            }
-
-            @Override
-            public void onFailure(String message) {
-                showError();
-            }
-
-            @Override
-            public void onAuthFail(String message) {
-                LaoSchoolShared.goBackToLoginPage(getActivity());
-            }
-        });
-
-    }
-
-    private void showToolbar() {
-        moveToolbar(0);
-    }
-
-    private void hideToolbar() {
-        moveToolbar(-mToolbar.getHeight());
-    }
-
-    private void moveToolbar(int toTranslationY) {
-
-    }
-
-
-    public int getScreenHeight() {
-        int screenHeight = context.getResources().getDisplayMetrics().heightPixels;
-        Log.d(TAG, "getScreenHeight() -height : " + screenHeight);
-        return screenHeight;
-    }
-
-    private boolean toolbarIsShown() {
-        // Toolbar is 0 in Y-axis, so we can say it's shown.
-        return true;
-    }
-
-    private boolean toolbarIsHidden() {
-        // Toolbar is outside of the screen and absolute Y matches the height of it.
-        // So we can say it's hidden.
-        return false;
-    }
-
     private void showError() {
         mError.setVisibility(View.VISIBLE);
         mProgress.setVisibility(View.GONE);
         mListData.setVisibility(View.GONE);
-        mNoData.setVisibility(View.GONE);
     }
 
     private void showNoData() {
-        mNoData.setVisibility(View.VISIBLE);
+        mNoDataFinal.setVisibility(View.VISIBLE);
         mError.setVisibility(View.GONE);
         mProgress.setVisibility(View.GONE);
-        mListData.setVisibility(View.GONE);
     }
-
 
     private void showProgressLoading(boolean b) {
         try {
@@ -338,8 +284,95 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
                 mListData.setVisibility(View.VISIBLE);
             }
             mError.setVisibility(View.GONE);
-            mNoData.setVisibility(View.GONE);
         } catch (Exception e) {
         }
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+        if (position > 0) {
+            int year = 0;
+            getMyFinalResultsByYear(year);
+        } else {
+            showSugesstionFinal();
+        }
+
+    }
+
+    private void getMyFinalResultsByYear(int year) {
+        showProgressLoadingFinal(true);
+        int classId = LaoSchoolShared.myProfile.getEclass().getId();
+        LaoSchoolSingleton.getInstance().getDataAccessService().getMyFinalResultsByClassId(classId, year, new AsyncCallback<FinalResult>() {
+            @Override
+            public void onSuccess(final FinalResult result) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        defineFinalResults(result);
+                        showProgressLoadingFinal(false);
+                    }
+                }, 500);
+            }
+
+            @Override
+            public void onFailure(String message) {
+                showErrorFinal();
+            }
+
+            @Override
+            public void onAuthFail(String message) {
+                LaoSchoolShared.goBackToLoginPage(context);
+                showProgressLoadingFinal(false);
+            }
+        });
+    }
+
+    private void showErrorFinal() {
+
+    }
+
+    private void showProgressLoadingFinal(boolean show) {
+        if (show) {
+            mSucgetionSelectedYear.setVisibility(View.GONE);
+            mDataFinal.setVisibility(View.GONE);
+            mNoDataFinal.setVisibility(View.GONE);
+            mProgressLoadingFinal.setVisibility(View.VISIBLE);
+        } else {
+            mDataFinal.setVisibility(View.VISIBLE);
+            mNoDataFinal.setVisibility(View.GONE);
+            mSucgetionSelectedYear.setVisibility(View.GONE);
+            mProgressLoadingFinal.setVisibility(View.GONE);
+        }
+    }
+
+    private void showSugesstionFinal() {
+        mSucgetionSelectedYear.setVisibility(View.VISIBLE);
+        mDataFinal.setVisibility(View.GONE);
+        mNoDataFinal.setVisibility(View.GONE);
+        mProgressLoadingFinal.setVisibility(View.GONE);
+
+    }
+
+    private void showNodataFinal() {
+        mDataFinal.setVisibility(View.GONE);
+        mNoDataFinal.setVisibility(View.VISIBLE);
+        mSucgetionSelectedYear.setVisibility(View.GONE);
+        mProgressLoadingFinal.setVisibility(View.GONE);
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
     }
 }

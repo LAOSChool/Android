@@ -37,6 +37,7 @@ import com.laoschool.entities.ListUser;
 import com.laoschool.entities.Master;
 import com.laoschool.entities.Message;
 import com.laoschool.entities.School;
+import com.laoschool.entities.SchoolYears;
 import com.laoschool.entities.TimeTable;
 import com.laoschool.entities.User;
 import com.laoschool.shared.LaoSchoolShared;
@@ -1808,6 +1809,103 @@ public class DataAccessImpl implements DataAccessInterface {
             public void onErrorResponse(VolleyError error) {
                 NetworkResponse networkResponse = error.networkResponse;
                 Log.e("Service", "getExamType() -error status code " + networkResponse.statusCode + ",message:" + error.toString());
+                if (networkResponse != null && networkResponse.statusCode == 409) {
+                    // HTTP Status Code: 409 Unauthorized Oo
+                    callback.onAuthFail(error.toString());
+                } else {
+                    callback.onFailure(error.toString());
+                }
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", getAuthKey());
+                return params;
+            }
+        };
+        mRequestQueue.add(jsonArrayRequest);
+    }
+
+
+    @Override
+    public void getMyFinalResultsByClassId(int filter_class_id, int filter_year_id, final AsyncCallback<FinalResult> callback) {
+        // Request a string response from the provided URL.
+        String url = HOST + "edu_profile/myprofile?filter_class_id=" + filter_class_id + "&filter_year_id=" + filter_year_id;
+        JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    if (response != null) {
+                        JSONObject listMaster = response.getJSONObject("messageObject");
+                        if (listMaster != null) {
+                            callback.onSuccess(FinalResult.fromJson(response));
+                        } else {
+                            callback.onSuccess(new FinalResult());
+                        }
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    callback.onSuccess(new FinalResult());
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                NetworkResponse networkResponse = error.networkResponse;
+                Log.e("Service", "getMyFinalResultsByClassId() -error status code " + networkResponse.statusCode + ",message:" + error.toString());
+                if (networkResponse != null && networkResponse.statusCode == 409) {
+                    // HTTP Status Code: 409 Unauthorized Oo
+                    callback.onAuthFail(error.toString());
+                } else {
+                    callback.onFailure(error.toString());
+                }
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", getAuthKey());
+                return params;
+            }
+        };
+        mRequestQueue.add(jsonArrayRequest);
+    }
+
+    @Override
+    public void getMySchoolYears(final AsyncCallback<List<SchoolYears>> callback) {
+        // Request a string response from the provided URL.
+        String url = HOST + "school_years/myprofile";
+        JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    if (response != null) {
+                        JSONArray listSchoolYears = response.getJSONArray("messageObject");
+                        List<SchoolYears> yearsList = new ArrayList<>();
+                        if (listSchoolYears != null) {
+                            if (listSchoolYears.length() > 0) {
+                                yearsList = SchoolYears.fromArray(listSchoolYears.toString());
+                            }
+                            callback.onSuccess(yearsList);
+                        } else {
+                            callback.onSuccess(yearsList);
+                        }
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    callback.onSuccess(new ArrayList<SchoolYears>());
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                NetworkResponse networkResponse = error.networkResponse;
+                Log.e("Service", "getMySchoolYears() -error status code " + networkResponse.statusCode + ",message:" + error.toString());
                 if (networkResponse != null && networkResponse.statusCode == 409) {
                     // HTTP Status Code: 409 Unauthorized Oo
                     callback.onAuthFail(error.toString());

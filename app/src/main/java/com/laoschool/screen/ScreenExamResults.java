@@ -112,7 +112,6 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     RelativeLayout mToolBox;
 
 
-    TextView txtClass;
     static ViewpagerDisableSwipeLeft mViewPageStudent;
     static PagerSlidingTabStrip tabsStrip;
     static LinearLayout mExamResultsStudent;
@@ -466,7 +465,6 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         headerInputExam = (RelativeLayout) view.findViewById(R.id.header_input_exam);
         headerInputExam.setVisibility(View.GONE);
 
-        txtClass = (TextView) view.findViewById(R.id.lbTotalTerm);
 
         //define toolbox
         mToolBox = (RelativeLayout) view.findViewById(R.id.mToolBox);
