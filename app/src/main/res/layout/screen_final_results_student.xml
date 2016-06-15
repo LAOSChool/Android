@@ -1,7 +1,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,38 +8,12 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/mContenDataFinalResults"
+        android:id="@+id/mContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:background="#ffffff"
         android:orientation="vertical"
         tools:context=".screen.ScreenFinalResultsStudent">
-
-
-        <RelativeLayout
-            android:id="@+id/mListBox"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:animateLayoutChanges="true"
-            android:background="@color/colorPrimary"
-            android:visibility="gone">
-
-            <Spinner
-                android:id="@+id/cbxTermScreenFinalResultsStudent"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="false"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="false"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:background="@android:color/transparent"
-                android:gravity="center_horizontal"
-                android:spinnerMode="dropdown"
-                android:layout_alignParentRight="false" />
-
-        </RelativeLayout>
 
 
         <!--<ScrollView-->
@@ -54,186 +27,325 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/mDataTotalFinalResults"
+            <RelativeLayout
+                android:id="@+id/mListBox"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/colorAttendanceHasReason"
+                android:layout_height="48dp"
+                android:animateLayoutChanges="true"
+                android:background="@color/colorAttendanceHasReason">
+
+                <ImageView
+                    android:id="@+id/imageView27"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="16dp"
+                    android:src="@drawable/ic_timer_black_24dp"
+                    android:tint="#fff" />
+
+                <Spinner
+                    android:id="@+id/cbxTermScreenFinalResultsStudent"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_alignParentLeft="false"
+                    android:layout_alignParentRight="false"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="false"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="72dp"
+                    android:layout_marginRight="16dp"
+                    android:background="@android:color/transparent"
+                    android:gravity="center_horizontal"
+                    android:spinnerMode="dropdown" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/mDataFinal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:paddingBottom="5dp"
-                android:paddingTop="8dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/imageView25"
-                        android:src="@drawable/ic_class_white_24dp"
-                        android:layout_centerVertical="true" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Class Name-Location"
-                        android:id="@+id/lbClassNameAndLocation"
-                        android:textColor="#fff"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="56dp"
-                        android:textStyle="bold" />
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/imageView26"
-                        android:src="@drawable/ic_account_box_black_24dp"
-                        android:tint="#fff"
-                        android:layout_centerVertical="true" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Teacher 1"
-                        android:id="@+id/lbTeacherName"
-                        android:textColor="#fff"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="56dp"
-                        android:textStyle="bold" />
-                </RelativeLayout>
+                android:background="@color/colorAttendanceHasReason">
 
                 <LinearLayout
-                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
+                    android:layout_height="6dp"
                     android:background="#fff"
-                    android:layout_marginLeft="56dp"></LinearLayout>
+                    android:orientation="horizontal"></LinearLayout>
 
                 <LinearLayout
-                    android:orientation="horizontal"
+                    android:id="@+id/mDataTotalFinalResults"
                     android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:layout_marginLeft="56dp">
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorAttendanceHasReason"
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="120dp"
-                        android:layout_height="wrap_content"
-                        android:text="@string/avg_of_term1"
-                        android:id="@+id/textView62"
-                        android:textColor="#fff"
-                        android:layout_gravity="center_vertical" />
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="New Text"
-                        android:id="@+id/lbAvgTerm1"
-                        android:textColor="#fff"
-                        android:textStyle="bold"
-                        android:textSize="18sp"
-                        android:layout_gravity="center_vertical" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/class_information"
+                            android:id="@+id/textView66"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginTop="8dp"
+                            android:textColor="#fff"
+                            android:textSize="14sp" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp">
+
+                        <ImageView
+                            android:id="@+id/imageView25"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="16dp"
+                            android:src="@drawable/ic_class_white_24dp" />
+
+                        <TextView
+                            android:id="@+id/lbClassNameAndLocation"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="72dp"
+                            android:text="Class Name-Location"
+                            android:textColor="#fff"
+                            android:textStyle="bold"
+                            android:textSize="16sp" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp">
+
+                        <ImageView
+                            android:id="@+id/imageView26"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="16dp"
+                            android:src="@drawable/ic_account_box_black_24dp"
+                            android:tint="#fff" />
+
+                        <TextView
+                            android:id="@+id/lbTeacherName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="72dp"
+                            android:text="Teacher 1"
+                            android:textColor="#fff"
+                            android:textStyle="bold"
+                            android:textSize="16sp" />
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:background="#fff"
+                        android:orientation="horizontal" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/exam_results_average"
+                            android:id="@+id/textView67"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginTop="8dp"
+                            android:textColor="#fff"
+                            android:textSize="14sp" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="16dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textView62"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:text="@string/avg_of_term1"
+                            android:textColor="#fff"
+                            android:layout_centerVertical="true" />
+
+                        <TextView
+                            android:id="@+id/lbAvgTerm1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:text="New Text"
+                            android:textColor="#fff"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="56dp" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="16dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textView63"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:text="@string/avg_of_term2"
+                            android:textColor="#fff"
+                            android:layout_centerVertical="true" />
+
+                        <TextView
+                            android:id="@+id/lbAvgTerm2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical|left"
+                            android:text="New Text"
+                            android:textColor="#fff"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="56dp" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="16dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textView64"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:text="@string/avg_of_year"
+                            android:textColor="#fff"
+                            android:layout_centerVertical="true" />
+
+                        <TextView
+                            android:id="@+id/lbAvgofYear"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:text="New Text"
+                            android:textColor="#fff"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:layout_marginLeft="56dp"
+                            android:layout_centerVertical="true" />
+                    </RelativeLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:background="#fff"
+                        android:orientation="horizontal" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:layout_marginLeft="56dp">
+                    android:layout_height="match_parent"
+                    android:background="#fff"
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="120dp"
+                    <RelativeLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/avg_of_term2"
-                        android:id="@+id/textView63"
-                        android:textColor="#fff"
-                        android:layout_gravity="center_vertical" />
+                        android:background="@color/colorAttendanceHasReason">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="New Text"
-                        android:id="@+id/lbAvgTerm2"
-                        android:textColor="#fff"
-                        android:layout_gravity="center_vertical|left"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/exam_results_details"
+                            android:id="@+id/textView68"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginTop="8dp"
+                            android:textColor="#fff"
+                            android:textSize="14sp" />
+                    </RelativeLayout>
 
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:layout_marginLeft="56dp">
-
-                    <TextView
-                        android:layout_width="120dp"
-                        android:layout_height="wrap_content"
-                        android:text="@string/avg_of_year"
-                        android:id="@+id/textView64"
+                    <com.astuetz.PagerSlidingTabStrip
+                        android:id="@+id/tabs"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="@color/colorAttendanceHasReason"
                         android:textColor="#fff"
-                        android:layout_gravity="center_vertical" />
+                        android:textSize="12sp"
+                        app:pstsDividerColor="@color/colorAttendanceHasReason"
+                        app:pstsIndicatorColor="#fff"
+                        app:pstsIndicatorHeight="3dp"
+                        app:pstsShouldExpand="true"
+                        app:pstsTabPaddingLeftRight="18dp"
+                        app:pstsTextAllCaps="false" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="New Text"
-                        android:id="@+id/lbAvgofYear"
-                        android:textColor="#fff"
-                        android:textStyle="bold"
-                        android:textSize="18sp"
-                        android:layout_gravity="center_vertical" />
+                    <android.support.v4.view.ViewPager
+                        android:id="@+id/mPagerFinalResults"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                    </android.support.v4.view.ViewPager>
                 </LinearLayout>
 
             </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/mSucgetionSelectedYear"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/textView65"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/msg_tab_to_selected_year"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="20sp" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/mNoDataFinal"
+                android:visibility="gone">
+                <include layout="@layout/view_no_data" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/mProgressLoadingFinal"
+                android:visibility="gone">
+
+                <ProgressBar
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/progressBar2"
+                    android:layout_gravity="center" />
+            </FrameLayout>
 
             <!--<LinearLayout-->
-                <!--android:orientation="vertical"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="1dp"-->
-                <!--android:background="#fff"></LinearLayout>-->
+            <!--android:orientation="vertical"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:background="#fff"></LinearLayout>-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
 
-                <com.astuetz.PagerSlidingTabStrip
-                    android:id="@+id/tabs"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:background="@color/colorAttendanceHasReason"
-                    android:textColor="#fff"
-                    android:textSize="12sp"
-                    app:pstsDividerColor="@color/colorAttendanceHasReason"
-                    app:pstsIndicatorColor="#fff"
-                    app:pstsIndicatorHeight="3dp"
-                    app:pstsShouldExpand="true"
-                    app:pstsTabPaddingLeftRight="18dp"
-                    app:pstsTextAllCaps="false" />
-
-                <android.support.v4.view.ViewPager
-                    android:id="@+id/mPagerFinalResults"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                </android.support.v4.view.ViewPager>
-            </LinearLayout>
-
-            <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
-                android:id="@+id/mRecyclerViewResultsDetailsScreenFinalResultsStudent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#eee"
-                android:scrollbars="none"
-                android:visibility="gone" />
         </LinearLayout>
 
 
@@ -253,14 +365,6 @@
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone" />
-
-    <include
-        android:id="@+id/mNoData"
-        layout="@layout/view_no_data"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:visibility="gone" />
 
