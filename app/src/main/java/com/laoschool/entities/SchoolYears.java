@@ -25,6 +25,11 @@ public class SchoolYears {
     int to_year;
     String notice;
 
+    public SchoolYears() {
+
+
+    }
+
     public SchoolYears(int id, int school_id, String years, int from_year, int to_year, String notice) {
         this.id = id;
         this.school_id = school_id;
@@ -33,6 +38,7 @@ public class SchoolYears {
         this.to_year = to_year;
         this.notice = notice;
     }
+
 
     public int getId() {
         return id;
@@ -96,7 +102,8 @@ public class SchoolYears {
 
     public static List<SchoolYears> fromArray(String jsonString) {
         Gson gson = new Gson();
-        List<SchoolYears> schoolYears = gson.fromJson(jsonString, new TypeToken<List<SchoolYears>>(){}.getType());
+        List<SchoolYears> schoolYears = gson.fromJson(jsonString, new TypeToken<List<SchoolYears>>() {
+        }.getType());
         return schoolYears;
     }
 }
