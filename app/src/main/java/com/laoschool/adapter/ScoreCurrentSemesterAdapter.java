@@ -99,13 +99,6 @@ public class ScoreCurrentSemesterAdapter extends RecyclerView.Adapter<ScoreCurre
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "onClick " + position);
-//                _showDetailsExamResults(examResult);
-            }
-        });
-        view.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
                 if (examResult.getExam_type() <= 2) {
                     DialogInputExamResultsForStudent dialogInputExamResultsForStudent = new DialogInputExamResultsForStudent(screenExamResults, subjectId, examResult);
                     dialogInputExamResultsForStudent.show(activity.getFragmentManager(), DialogInputExamResultsForStudent.TAG);
@@ -113,9 +106,21 @@ public class ScoreCurrentSemesterAdapter extends RecyclerView.Adapter<ScoreCurre
                 } else {
                     _showDetailsExamResults(examResult);
                 }
-                return false;
             }
         });
+//        view.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View view) {
+//                if (examResult.getExam_type() <= 2) {
+//                    DialogInputExamResultsForStudent dialogInputExamResultsForStudent = new DialogInputExamResultsForStudent(screenExamResults, subjectId, examResult);
+//                    dialogInputExamResultsForStudent.show(activity.getFragmentManager(), DialogInputExamResultsForStudent.TAG);
+//
+//                } else {
+//                    _showDetailsExamResults(examResult);
+//                }
+//                return false;
+//            }
+//        });
 
 
     }
