@@ -11,6 +11,7 @@ import com.laoschool.entities.FinalResult;
 import com.laoschool.entities.Master;
 import com.laoschool.entities.Message;
 import com.laoschool.entities.School;
+import com.laoschool.entities.SchoolYears;
 import com.laoschool.entities.TimeTable;
 import com.laoschool.entities.User;
 
@@ -291,5 +292,7 @@ public interface DataAccessInterface {
     public void getExamType(int filter_class_id, AsyncCallback<List<ExamType>> callback);
 
     public void getMyFinalResultsByClassId(int filter_class_id, AsyncCallback<FinalResult> callback);
+
+    public void getMySchoolYears(AsyncCallback<List<SchoolYears>> callback);
 
 }
