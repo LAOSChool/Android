@@ -35,7 +35,7 @@ public class DialogInputExamResultsForStudent extends DialogFragment {
 
     public DialogInputExamResultsForStudent(ScreenExamResults screenExamResults, int subjectId, ExamResult examResult) {
         this.examResult = examResult;
-        this.subjectId=subjectId;
+        this.subjectId = subjectId;
         this.screenExamResults = screenExamResults;
     }
 
@@ -96,6 +96,8 @@ public class DialogInputExamResultsForStudent extends DialogFragment {
                         examResult.setSresult(exam);
                         if (!notice.trim().toString().isEmpty()) {
                             examResult.setNotice(notice);
+                        } else {
+                            examResult.setNotice("");
                         }
                         examResult.setTeacher_id(LaoSchoolShared.myProfile.getId());
                         Log.d(TAG, "-submit examResult:" + examResult.toJson());
