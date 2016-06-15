@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.laoschool.R;
 import com.laoschool.adapter.ExamResultsStudentSemesterAdapter;
 import com.laoschool.adapter.FinalResultsAdapter;
@@ -27,9 +28,14 @@ public class FinalExamPager extends Fragment {
     private final int position;
     FinalResult finalResult;
     FinalResultsAdapter examResultsStudentSemesterAdapter;
+    ObservableRecyclerView mListExam;
 
     public FinalResultsAdapter getExamResultsStudentSemesterAdapter() {
         return examResultsStudentSemesterAdapter;
+    }
+
+    public ObservableRecyclerView getListExamView() {
+        return mListExam;
     }
 
     public FinalExamPager(int position, FinalResult finalResult) {
@@ -43,7 +49,7 @@ public class FinalExamPager extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.final_exam_pager, container, false);
-        RecyclerView mListExam = (RecyclerView) view.findViewById(R.id.mListExam);
+        mListExam = (ObservableRecyclerView) view.findViewById(R.id.mListExam);
         mListExam.setLayoutManager(new LinearLayoutManager(getActivity()));
         if (finalResult != null) {
             Log.d(TAG, "-size:" + finalResult.getExam_results().size());
