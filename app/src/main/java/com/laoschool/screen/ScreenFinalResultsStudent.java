@@ -13,6 +13,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -86,6 +87,7 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
     ScrollView mScroll;
     private Dialog dialogSelectedYear;
     private View mErrorFinal;
+    private int selectedYearId;
 
     public ScreenFinalResultsStudent() {
         // Required empty public constructor
@@ -171,6 +173,7 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
                 return true;
             }
         });
+
     }
 
     @Override
@@ -418,8 +421,22 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
             public void onClick(final DialogInterface dialogInterface, final int i) {
                 String yearName = yearsNames.get(i);
                 int yearId = result.get(i).getId();
+                selectedYearId = yearId;
                 lbSelectedSchoolYear.setText(yearName);
                 getMyFinalResultsByYear(yearId);
+                mErrorFinal.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.d(TAG, "yearId:" + selectedYearId);
+                        getMyFinalResultsByYear(selectedYearId);
+                    }
+                });
+                mNoDataFinal.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        getMyFinalResultsByYear(selectedYearId);
+                    }
+                });
 
             }
         });
