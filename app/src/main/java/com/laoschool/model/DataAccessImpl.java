@@ -1832,9 +1832,7 @@ public class DataAccessImpl implements DataAccessInterface {
     @Override
     public void getMyFinalResultsByYear(int filter_year_id, final AsyncCallback<FinalResult> callback) {
         // Request a string response from the provided URL.
-        String url = HOST + "edu_profiles/myprofile?filter_year_id =" + filter_year_id;
-        //+ filter_class_id;
-        //+ "&filter_year_id=" + filter_year_id;
+        String url = HOST + "edu_profiles/myprofile?filter_year_id=" + filter_year_id;
         JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -1844,13 +1842,15 @@ public class DataAccessImpl implements DataAccessInterface {
                         if (listMaster != null) {
                             callback.onSuccess(FinalResult.fromJson(response));
                         } else {
-                            callback.onSuccess(new FinalResult());
+                            callback.onSuccess(null);
                         }
 
+                    } else {
+                        callback.onSuccess(null);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    callback.onSuccess(new FinalResult());
+                    callback.onSuccess(null);
                 }
             }
         }, new Response.ErrorListener() {
