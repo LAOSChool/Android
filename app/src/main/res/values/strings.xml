@@ -139,4 +139,5 @@
     <string name="exam_results_average">Exam average</string>
     <string name="exam_results_details">Exam details</string>
     <string name="msg_no_year_selected">No year selected</string>
+    <string name="selected_year">Selected year</string>
 </resources>
