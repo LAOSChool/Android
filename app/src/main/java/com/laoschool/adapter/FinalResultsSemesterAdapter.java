@@ -57,16 +57,17 @@ public class FinalResultsSemesterAdapter extends RecyclerView.Adapter<FinalResul
         TextView lbScore = ((TextView) (view.findViewById(R.id.lbScore)));
 
         if (exam_type == 2) {
-            lbScoreMonth.setText("Final");
-            view.setBackgroundResource(R.drawable.border_row_score_by_month_final);
+            lbScoreMonth.setText(examResult.getExam_name());
+            view.setBackgroundResource(R.drawable.bg_score_final);
         } else if (exam_type == 3) {
             lbScoreMonth.setText(examResult.getExam_name());
+            view.setBackgroundResource(R.drawable.bg_score_avg_month);
         } else if (exam_type == 4) {
             lbScoreMonth.setText(examResult.getExam_name());
-            view.setBackgroundResource(R.drawable.border_row_score_by_month_avg_term);
+            view.setBackgroundResource(R.drawable.bg_score_avg_term);
         } else if (exam_type == 5) {
             lbScoreMonth.setText(examResult.getExam_name());
-            view.setBackgroundResource(R.drawable.border_row_score_by_month_final);
+            view.setBackgroundResource(R.drawable.bg_score_final);
         } else lbScoreMonth.setText(monthStr);
 
         if (score != null && !score.trim().isEmpty()) {
