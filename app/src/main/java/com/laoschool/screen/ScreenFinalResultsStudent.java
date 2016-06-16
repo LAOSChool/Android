@@ -344,6 +344,7 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
         mDataFinal.setVisibility(View.GONE);
         mSucgestionSelectedYear.setVisibility(View.GONE);
         mProgressLoadingFinal.setVisibility(View.GONE);
+        mScroll.setVisibility(View.GONE);
         mErrorFinal.setVisibility(View.VISIBLE);
     }
 
@@ -354,7 +355,9 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
             mDataFinal.setVisibility(View.GONE);
             mNoDataFinal.setVisibility(View.GONE);
             mErrorFinal.setVisibility(View.GONE);
+            mScroll.setVisibility(View.GONE);
         } else {
+            mScroll.setVisibility(View.VISIBLE);
             mDataFinal.setVisibility(View.VISIBLE);
             mSucgestionSelectedYear.setVisibility(View.GONE);
             mNoDataFinal.setVisibility(View.GONE);
@@ -369,6 +372,7 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
         mNoDataFinal.setVisibility(View.GONE);
         mProgressLoadingFinal.setVisibility(View.GONE);
         mErrorFinal.setVisibility(View.GONE);
+        mScroll.setVisibility(View.GONE);
 
     }
 
@@ -378,6 +382,7 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
         mSucgestionSelectedYear.setVisibility(View.GONE);
         mProgressLoadingFinal.setVisibility(View.GONE);
         mErrorFinal.setVisibility(View.GONE);
+        mScroll.setVisibility(View.GONE);
     }
 
 
