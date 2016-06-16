@@ -1830,9 +1830,11 @@ public class DataAccessImpl implements DataAccessInterface {
 
 
     @Override
-    public void getMyFinalResultsByClassId(int filter_class_id, int filter_year_id, final AsyncCallback<FinalResult> callback) {
+    public void getMyFinalResultsByYear(int filter_year_id, final AsyncCallback<FinalResult> callback) {
         // Request a string response from the provided URL.
-        String url = HOST + "edu_profile/myprofile?filter_class_id=" + filter_class_id + "&filter_year_id=" + filter_year_id;
+        String url = HOST + "edu_profiles/myprofile?filter_year_id =" + filter_year_id;
+        //+ filter_class_id;
+        //+ "&filter_year_id=" + filter_year_id;
         JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -1855,7 +1857,7 @@ public class DataAccessImpl implements DataAccessInterface {
             @Override
             public void onErrorResponse(VolleyError error) {
                 NetworkResponse networkResponse = error.networkResponse;
-                Log.e("Service", "getMyFinalResultsByClassId() -error status code " + networkResponse.statusCode + ",message:" + error.toString());
+                Log.e("Service", "getMyFinalResultsByYear() -error status code " + networkResponse.statusCode + ",message:" + error.toString());
                 if (networkResponse != null && networkResponse.statusCode == 409) {
                     // HTTP Status Code: 409 Unauthorized Oo
                     callback.onAuthFail(error.toString());
