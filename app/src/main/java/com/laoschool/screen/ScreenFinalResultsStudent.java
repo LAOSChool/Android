@@ -143,6 +143,13 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
 
             //Fill data
             getMySchoolYears();
+
+            mError.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    getMySchoolYears();
+                }
+            });
             return view;
         }
     }
@@ -228,8 +235,12 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
         LaoSchoolSingleton.getInstance().getDataAccessService().getMySchoolYears(new AsyncCallback<List<SchoolYears>>() {
             @Override
             public void onSuccess(List<SchoolYears> result) {
-                fillDataToSeletedYear(result);
-                showProgressLoading(false);
+                if (result.size() > 0) {
+                    fillDataToSeletedYear(result);
+                    showProgressLoading(false);
+                } else {
+                    showError();
+                }
 
             }
 
