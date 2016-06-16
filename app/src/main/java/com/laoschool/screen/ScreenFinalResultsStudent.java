@@ -1,17 +1,12 @@
 package com.laoschool.screen;
 
-
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-
 import android.support.v7.app.ActionBar;
-
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.SearchView;
-
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,6 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -30,7 +26,6 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 
-import com.laoschool.adapter.ExamResultsForStudentAdapter;
 
 import com.laoschool.adapter.FinalResultsPagerAdapter;
 import com.laoschool.adapter.SelectedSchoolYearsAdapter;
@@ -40,10 +35,13 @@ import com.laoschool.entities.SchoolYears;
 import com.laoschool.model.AsyncCallback;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
+import com.laoschool.view.ScrollableViewPager;
 
 
 import java.util.ArrayList;
 import java.util.List;
+
+import it.carlom.stikkyheader.core.StikkyHeaderBuilder;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -68,7 +66,8 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
     private ScreenFinalResultsStudent fragment;
     private View mContainer;
     private ActionBar mActionBar;
-    ViewPager mPagerFinalResults;
+    ScrollableViewPager mPagerFinalResults;
+    ScrollView scroll;
     PagerSlidingTabStrip mTab;
     private SearchView mSearch;
     private List<SchoolYears> schoolYears;
@@ -76,6 +75,8 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
     private View mSucgetionSelectedYear;
     private View mProgressLoadingFinal;
     private View mDataTotalFinalResults;
+    private View mFinalPager;
+    ScrollView mScroll;
 
     public ScreenFinalResultsStudent() {
         // Required empty public constructor
@@ -109,15 +110,16 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
             mFilterYear = (RelativeLayout) view.findViewById(R.id.mListBox);
             mProgress = (ProgressBar) view.findViewById(R.id.mProgressFinalResults);
             mError = (FrameLayout) view.findViewById(R.id.mError);
-
+            scroll = (ScrollView) view.findViewById(R.id.scroll);
             ///
+            mFinalPager = view.findViewById(R.id.mPagerFinalResults);
             mDataFinal = view.findViewById(R.id.mDataFinal);
             mNoDataFinal = view.findViewById(R.id.mNoDataFinal);
             mSucgetionSelectedYear = view.findViewById(R.id.mSucgetionSelectedYear);
             mProgressLoadingFinal = view.findViewById(R.id.mProgressLoadingFinal);
 
-
-            mPagerFinalResults = (ViewPager) view.findViewById(R.id.mPagerFinalResults);
+            mScroll = (ScrollView) view.findViewById(R.id.mScroll);
+            mPagerFinalResults = (ScrollableViewPager) view.findViewById(R.id.mPagerFinalResults);
             mTab = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
 
             cbxTermScreenRecordStudent = (Spinner) view.findViewById(R.id.cbxTermScreenFinalResultsStudent);
@@ -140,7 +142,6 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
 
         final FinalResultsPagerAdapter resultsPagerAdapter = new FinalResultsPagerAdapter(getFragmentManager(), result);
         mPagerFinalResults.setAdapter(resultsPagerAdapter);
-
         mTab.setViewPager(mPagerFinalResults);
         mSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -154,6 +155,17 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
                 return true;
             }
         });
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        StikkyHeaderBuilder.stickTo(mScroll)
+                .setHeader(R.id.header, (FrameLayout) getView())
+                .minHeightHeader(85)
+                .build();
+
     }
 
     private void defineAvgFinalTotal(FinalResult result) {
@@ -345,9 +357,11 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
         if (show) {
             mSucgetionSelectedYear.setVisibility(View.GONE);
             mDataFinal.setVisibility(View.GONE);
+            mFinalPager.setVisibility(View.GONE);
             mNoDataFinal.setVisibility(View.GONE);
             mProgressLoadingFinal.setVisibility(View.VISIBLE);
         } else {
+            mFinalPager.setVisibility(View.VISIBLE);
             mDataFinal.setVisibility(View.VISIBLE);
             mNoDataFinal.setVisibility(View.GONE);
             mSucgetionSelectedYear.setVisibility(View.GONE);
@@ -357,14 +371,15 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
 
     private void showSugesstionFinal() {
         mSucgetionSelectedYear.setVisibility(View.VISIBLE);
-        mDataFinal.setVisibility(View.GONE);
+        mFinalPager.setVisibility(View.GONE);
         mNoDataFinal.setVisibility(View.GONE);
         mProgressLoadingFinal.setVisibility(View.GONE);
+        mDataFinal.setVisibility(View.GONE);
 
     }
 
     private void showNodataFinal() {
-        mDataFinal.setVisibility(View.GONE);
+        mFinalPager.setVisibility(View.GONE);
         mNoDataFinal.setVisibility(View.VISIBLE);
         mSucgetionSelectedYear.setVisibility(View.GONE);
         mProgressLoadingFinal.setVisibility(View.GONE);
