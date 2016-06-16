@@ -10,17 +10,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -38,10 +34,8 @@ import com.laoschool.R;
 
 
 import com.laoschool.adapter.FinalResultsPagerAdapter;
-import com.laoschool.adapter.SelectedSchoolYearsAdapter;
 import com.laoschool.entities.ExamResult;
 import com.laoschool.entities.FinalResult;
-import com.laoschool.entities.Master;
 import com.laoschool.entities.SchoolYears;
 import com.laoschool.model.AsyncCallback;
 import com.laoschool.shared.LaoSchoolShared;
@@ -79,7 +73,6 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
     private ActionBar mActionBar;
     ScrollableViewPager mPagerFinalResults;
     PagerSlidingTabStrip mTab;
-    private SearchView mSearch;
     private List<SchoolYears> schoolYears;
     private View mDataFinal;
     private View mSucgestionSelectedYear;
@@ -168,19 +161,6 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
         final FinalResultsPagerAdapter resultsPagerAdapter = new FinalResultsPagerAdapter(getFragmentManager(), result);
         mPagerFinalResults.setAdapter(resultsPagerAdapter);
         mTab.setViewPager(mPagerFinalResults);
-        mSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                resultsPagerAdapter.getCurrentFragment().getExamResultsStudentSemesterAdapter().filter(newText);
-                return true;
-            }
-        });
-
     }
 
     @Override
@@ -287,17 +267,6 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
                 mFilterYear.performClick();
             }
         });
-    }
-
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.clear();
-        inflater.inflate(R.menu.menu_screen_final_results, menu);
-        MenuItem item = menu.findItem(R.id.action_search);
-        mSearch = new SearchView(((HomeActivity) getActivity()).getSupportActionBar().getThemedContext());
-        MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
-        MenuItemCompat.setActionView(item, mSearch);
     }
 
     @Override
