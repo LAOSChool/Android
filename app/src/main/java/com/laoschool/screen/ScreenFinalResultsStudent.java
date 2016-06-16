@@ -85,6 +85,7 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
     private View mProgressLoadingFinal;
     ScrollView mScroll;
     private Dialog dialogSelectedYear;
+    private View mErrorFinal;
 
     public ScreenFinalResultsStudent() {
         // Required empty public constructor
@@ -132,6 +133,7 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
             mNoDataFinal = view.findViewById(R.id.mNoDataFinal);
             mSucgestionSelectedYear = view.findViewById(R.id.mSucgetionSelectedYear);
             mProgressLoadingFinal = view.findViewById(R.id.mProgressLoadingFinal);
+            mErrorFinal = view.findViewById(R.id.mErrorFinal);
 
             //Pager
             mPagerFinalResults = (ScrollableViewPager) view.findViewById(R.id.mPagerFinalResults);
@@ -325,15 +327,18 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
 
     private void getMyFinalResultsByYear(int year) {
         showProgressLoadingFinal(true);
-        int classId = LaoSchoolShared.myProfile.getEclass().getId();
-        LaoSchoolSingleton.getInstance().getDataAccessService().getMyFinalResultsByClassId(classId, year, new AsyncCallback<FinalResult>() {
+        LaoSchoolSingleton.getInstance().getDataAccessService().getMyFinalResultsByYear(year, new AsyncCallback<FinalResult>() {
             @Override
             public void onSuccess(final FinalResult result) {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        defineFinalResults(result);
-                        showProgressLoadingFinal(false);
+                        if (result != null) {
+                            defineFinalResults(result);
+                            showProgressLoadingFinal(false);
+                        } else {
+                            showNodataFinal();
+                        }
                     }
                 }, 500);
             }
@@ -352,7 +357,11 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
     }
 
     private void showErrorFinal() {
-
+        mNoDataFinal.setVisibility(View.GONE);
+        mDataFinal.setVisibility(View.GONE);
+        mSucgestionSelectedYear.setVisibility(View.GONE);
+        mProgressLoadingFinal.setVisibility(View.GONE);
+        mErrorFinal.setVisibility(View.VISIBLE);
     }
 
     private void showProgressLoadingFinal(boolean show) {
@@ -361,11 +370,13 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
             mSucgestionSelectedYear.setVisibility(View.GONE);
             mDataFinal.setVisibility(View.GONE);
             mNoDataFinal.setVisibility(View.GONE);
+            mErrorFinal.setVisibility(View.GONE);
         } else {
             mDataFinal.setVisibility(View.VISIBLE);
             mSucgestionSelectedYear.setVisibility(View.GONE);
             mNoDataFinal.setVisibility(View.GONE);
             mProgressLoadingFinal.setVisibility(View.GONE);
+            mErrorFinal.setVisibility(View.GONE);
         }
     }
 
@@ -374,14 +385,16 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
         mDataFinal.setVisibility(View.GONE);
         mNoDataFinal.setVisibility(View.GONE);
         mProgressLoadingFinal.setVisibility(View.GONE);
+        mErrorFinal.setVisibility(View.GONE);
 
     }
 
     private void showNodataFinal() {
         mNoDataFinal.setVisibility(View.VISIBLE);
+        mDataFinal.setVisibility(View.GONE);
         mSucgestionSelectedYear.setVisibility(View.GONE);
         mProgressLoadingFinal.setVisibility(View.GONE);
-
+        mErrorFinal.setVisibility(View.GONE);
     }
 
 
