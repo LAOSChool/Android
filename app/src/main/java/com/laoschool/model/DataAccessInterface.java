@@ -291,7 +291,7 @@ public interface DataAccessInterface {
 
     public void getExamType(int filter_class_id, AsyncCallback<List<ExamType>> callback);
 
-    public void getMyFinalResultsByClassId(int filter_class_id,int filter_year_id, AsyncCallback<FinalResult> callback);
+    public void getMyFinalResultsByYear(int filter_year_id, AsyncCallback<FinalResult> callback);
 
     public void getMySchoolYears(AsyncCallback<List<SchoolYears>> callback);
 
