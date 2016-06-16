@@ -5,7 +5,9 @@
     tools:context="com.laoschool.screen.pager.FinalExamPager">
 
     <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
+        android:id="@+id/mListExam"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/mListExam"/>
+        android:nestedScrollingEnabled="false"
+        android:scrollbars="none" />
 </FrameLayout>
