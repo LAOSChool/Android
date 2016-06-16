@@ -49,11 +49,18 @@ public class FinalExamPager extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.final_exam_pager, container, false);
         mListExam = (ObservableRecyclerView) view.findViewById(R.id.mListExam);
-        mListExam.setLayoutManager(new LinearLayoutManager(getActivity()));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity()) {
+            @Override
+            public boolean canScrollVertically() {
+                return true;
+            }
+        };
+        mListExam.setLayoutManager(linearLayoutManager);
         if (finalResult != null) {
             Log.d(TAG, "-size:" + finalResult.getExam_results().size());
             examResultsStudentSemesterAdapter = new FinalResultsAdapter(this, finalResult.getExam_results());
             mListExam.setAdapter(examResultsStudentSemesterAdapter);
+            mListExam.setNestedScrollingEnabled(false);
         } else {
             Log.d(TAG, "Null");
         }
