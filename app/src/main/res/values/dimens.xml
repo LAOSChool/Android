@@ -10,5 +10,7 @@
 
     <dimen name="magrin_left_bottom_score">5dp</dimen>
     <dimen name="width_height_score_box">30dp</dimen>
+    <dimen name="max_height_header">197dp</dimen>
+    <dimen name="min_header_final">40dp</dimen>
 
 </resources>
