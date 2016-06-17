@@ -32,12 +32,12 @@ public class FinalResultsPagerAdapter extends FragmentPagerAdapter {
         this.finalResult = result;
 
 //        1  Normal
-//        2 Thi Hoc Ky
+//        2  Thi Hoc Ky
 //        3  Trung Binh 4 thang
 //        4  Trung Binh Hoc ky
-//        5 Trung Binh Ca Nam
-//        6 Thi Lai Ca Nam
-//        7 Thi Tot Nghiep Cap
+//        5  Trung Binh Ca Nam
+//        6  Thi Lai Ca Nam
+//        7  Thi Tot Nghiep Cap
         for (ExamResult examResult : result.getExam_results()) {
             if (examResult.getExam_type() < 4) {
                 if (examResult.getTerm_id() == 1) {
@@ -68,15 +68,15 @@ public class FinalResultsPagerAdapter extends FragmentPagerAdapter {
         finalResult.setTeacher_name(this.finalResult.getTeacher_name());
         if (position == 0) {
             finalResult.setExam_results(resultsforTotal);
-            return new FinalExamPager(0, finalResult);
+            return FinalExamPager.create(0, finalResult);
         } else if (position == 1) {
             finalResult.setExam_results(resultsforTerm1);
-            return new FinalExamPager(1, finalResult);
+            return FinalExamPager.create(1, finalResult);
         } else if (position == 2) {
             finalResult.setExam_results(resultsforTerm2);
-            return new FinalExamPager(2, finalResult);
+            return FinalExamPager.create(2, finalResult);
         } else if (position == 3) {
-            return new FinalExamPager(3, null);
+            return FinalExamPager.create(3, finalResult);
         } else return null;
     }
 
@@ -91,6 +91,7 @@ public class FinalResultsPagerAdapter extends FragmentPagerAdapter {
     public FinalExamPager getCurrentFragment() {
         return mCurrentFragment;
     }
+
     @Override
     public void setPrimaryItem(ViewGroup container, int position, Object object) {
         if (getCurrentFragment() != object) {
