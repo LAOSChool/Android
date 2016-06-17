@@ -19,7 +19,7 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:id="@+id/mNoData">
+            android:layout_height="match_parent" android:id="@+id/mNoData">
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="wrap_content"
@@ -33,7 +33,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/msg_no_data"
                     android:id="@+id/textView18"
-                    android:textSize="30sp"
+                    android:textSize="18sp"
                     android:textColor="@color/colorAccent" />
 
                 <LinearLayout
