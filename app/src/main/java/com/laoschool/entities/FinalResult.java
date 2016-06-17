@@ -1,5 +1,8 @@
 package com.laoschool.entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -12,7 +15,7 @@ import java.util.List;
 /**
  * Created by Tran An on 11/03/2016.
  */
-public class FinalResult {
+public class FinalResult implements Parcelable {
 
     //    "id": 4,
 //            "school_id": 1,
@@ -379,4 +382,82 @@ public class FinalResult {
         finalResult.setExam_results(examResults);
         return finalResult;
     }
+
+    protected FinalResult(Parcel in) {
+        id = in.readInt();
+        school_id = in.readInt();
+        school_name = in.readString();
+        cls_id = in.readInt();
+        cls_name = in.readString();
+        cls_level = in.readInt();
+        cls_location = in.readString();
+        teacher_id = in.readInt();
+        teacher_name = in.readString();
+        student_id = in.readInt();
+        student_name = in.readString();
+        school_year_id = in.readInt();
+        school_years = in.readString();
+        day_absents = in.readInt();
+        passed = in.readInt();
+        start_dt = in.readString();
+        eval_dt = in.readString();
+        closed_dt = in.readString();
+        closed = in.readInt();
+        notice = in.readString();
+        if (in.readByte() == 0x01) {
+            exam_results = new ArrayList<ExamResult>();
+            in.readList(exam_results, ExamResult.class.getClassLoader());
+        } else {
+            exam_results = null;
+        }
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeInt(school_id);
+        dest.writeString(school_name);
+        dest.writeInt(cls_id);
+        dest.writeString(cls_name);
+        dest.writeInt(cls_level);
+        dest.writeString(cls_location);
+        dest.writeInt(teacher_id);
+        dest.writeString(teacher_name);
+        dest.writeInt(student_id);
+        dest.writeString(student_name);
+        dest.writeInt(school_year_id);
+        dest.writeString(school_years);
+        dest.writeInt(day_absents);
+        dest.writeInt(passed);
+        dest.writeString(start_dt);
+        dest.writeString(eval_dt);
+        dest.writeString(closed_dt);
+        dest.writeInt(closed);
+        dest.writeString(notice);
+        if (exam_results == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(exam_results);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<FinalResult> CREATOR = new Parcelable.Creator<FinalResult>() {
+        @Override
+        public FinalResult createFromParcel(Parcel in) {
+            return new FinalResult(in);
+        }
+
+        @Override
+        public FinalResult[] newArray(int size) {
+            return new FinalResult[size];
+        }
+    };
 }
