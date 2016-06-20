@@ -2,7 +2,7 @@ package com.laoschool.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.ViewGroup;
 
 import com.laoschool.entities.ExamResult;
@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created by Hue on 6/13/2016.
  */
-public class FinalResultsPagerAdapter extends FragmentPagerAdapter {
+public class FinalResultsPagerAdapter extends FragmentStatePagerAdapter {
     public static final String TAG = FinalResultsPagerAdapter.class.getSimpleName();
     private List<String> finaExamlTitle = Arrays.asList("Total", "Term 1", "Term 2", "Reviews");
     FinalResult finalResult;
@@ -38,12 +38,12 @@ public class FinalResultsPagerAdapter extends FragmentPagerAdapter {
 //        5  Trung Binh Ca Nam
 //        6  Thi Lai Ca Nam
 //        7  Thi Tot Nghiep Cap
-        for (ExamResult examResult : result.getExam_results()) {
+        List<ExamResult> resultList = result.getExam_results();
+        for (ExamResult examResult : resultList) {
             if (examResult.getExam_type() < 4) {
                 if (examResult.getTerm_id() == 1) {
                     resultsforTerm1.add(examResult);
-                }
-                if (examResult.getTerm_id() == 2) {
+                } else if (examResult.getTerm_id() == 2) {
                     resultsforTerm2.add(examResult);
                 }
             } else {
@@ -54,7 +54,7 @@ public class FinalResultsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 4;
+        return 3;
     }
 
     @Override
@@ -66,6 +66,7 @@ public class FinalResultsPagerAdapter extends FragmentPagerAdapter {
         finalResult.setClass_location(this.finalResult.getCls_location());
         finalResult.setClass_name(this.finalResult.getClassName());
         finalResult.setTeacher_name(this.finalResult.getTeacher_name());
+        finalResult.setPassed(this.finalResult.getPassed());
         if (position == 0) {
             finalResult.setExam_results(resultsforTotal);
             return FinalExamPager.create(0, finalResult);
@@ -75,8 +76,6 @@ public class FinalResultsPagerAdapter extends FragmentPagerAdapter {
         } else if (position == 2) {
             finalResult.setExam_results(resultsforTerm2);
             return FinalExamPager.create(2, finalResult);
-        } else if (position == 3) {
-            return FinalExamPager.create(3, finalResult);
         } else return null;
     }
 
@@ -86,16 +85,16 @@ public class FinalResultsPagerAdapter extends FragmentPagerAdapter {
         return finaExamlTitle.get(position);
     }
 
-    private FinalExamPager mCurrentFragment;
+    private Fragment mCurrentFragment;
 
-    public FinalExamPager getCurrentFragment() {
+    public Fragment getCurrentFragment() {
         return mCurrentFragment;
     }
 
     @Override
     public void setPrimaryItem(ViewGroup container, int position, Object object) {
         if (getCurrentFragment() != object) {
-            mCurrentFragment = ((FinalExamPager) object);
+            mCurrentFragment = ((Fragment) object);
         }
         super.setPrimaryItem(container, position, object);
     }
