@@ -141,4 +141,7 @@
     <string name="msg_no_year_selected">No year selected</string>
     <string name="selected_year">Selected year</string>
     <string name="final_passed">Passed</string>
+    <string name="final_morality">Morality:</string>
+    <string name="final_absents">Absents:</string>
+    <string name="final_teacher_comment">Teacher comment:</string>
 </resources>
