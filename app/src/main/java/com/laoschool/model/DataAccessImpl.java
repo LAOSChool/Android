@@ -1856,13 +1856,18 @@ public class DataAccessImpl implements DataAccessInterface {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                NetworkResponse networkResponse = error.networkResponse;
-                Log.e("Service", "getMyFinalResultsByYear() -error status code " + networkResponse.statusCode + ",message:" + error.toString());
-                if (networkResponse != null && networkResponse.statusCode == 409) {
-                    // HTTP Status Code: 409 Unauthorized Oo
-                    callback.onAuthFail(error.toString());
-                } else {
-                    callback.onFailure(error.toString());
+                try {
+                    NetworkResponse networkResponse = error.networkResponse;
+                    Log.e("Service", "getMyFinalResultsByYear() -error status code " + networkResponse.statusCode + ",message:" + error.toString());
+                    if (networkResponse != null && networkResponse.statusCode == 409) {
+                        // HTTP Status Code: 409 Unauthorized Oo
+                        callback.onAuthFail(error.toString());
+                    } else {
+                        callback.onFailure(error.toString());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailure(e.toString());
                 }
             }
         }) {
