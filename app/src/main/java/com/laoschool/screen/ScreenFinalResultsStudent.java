@@ -17,6 +17,8 @@ import android.view.LayoutInflater;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -45,8 +47,6 @@ import com.laoschool.view.ScrollableViewPager;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import it.carlom.stikkyheader.core.StikkyHeaderBuilder;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -81,6 +81,11 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
     private Dialog dialogSelectedYear;
     private View mErrorFinal;
     private int selectedYearId;
+    private View mExamResults;
+    private View mComment;
+    private View btnShowComment;
+
+    private Animation animShow, animHide;
 
     public ScreenFinalResultsStudent() {
         // Required empty public constructor
@@ -98,6 +103,7 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
         fragment = this;
         HomeActivity activity = (HomeActivity) getActivity();
         mActionBar = activity.getSupportActionBar();
+        initAnimation();
     }
 
     @Override
@@ -122,13 +128,17 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
             mScroll = (ScrollView) view.findViewById(R.id.mScroll);
 
             //Header infor final results
+            mExamResults = view.findViewById(R.id.mExamResults);
+            mComment = view.findViewById(R.id.mComment);
             mDataFinal = view.findViewById(R.id.mDataFinal);
+            btnShowComment = view.findViewById(R.id.btnShowComment);
 
             //no data ,sucgetion,loading final
             mNoDataFinal = view.findViewById(R.id.mNoDataFinal);
             mSucgestionSelectedYear = view.findViewById(R.id.mSucgetionSelectedYear);
             mProgressLoadingFinal = view.findViewById(R.id.mProgressLoadingFinal);
             mErrorFinal = view.findViewById(R.id.mErrorFinal);
+
 
             //Pager
             mPagerFinalResults = (ScrollableViewPager) view.findViewById(R.id.mPagerFinalResults);
@@ -161,17 +171,32 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
         final FinalResultsPagerAdapter resultsPagerAdapter = new FinalResultsPagerAdapter(getFragmentManager(), result);
         mPagerFinalResults.setAdapter(resultsPagerAdapter);
         mTab.setViewPager(mPagerFinalResults);
+        mComment.setVisibility(View.VISIBLE);
+        btnShowComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mExamResults.getVisibility() == View.VISIBLE) {
+                    // mComment.setVisibility(View.VISIBLE);
+                    mExamResults.startAnimation(animHide);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mExamResults.setVisibility(View.GONE);
+                        }
+                    }, 300);
+
+                } else if (mExamResults.getVisibility() == View.GONE) {
+                    mExamResults.setVisibility(View.VISIBLE);
+                    mExamResults.startAnimation(animShow);
+                    //mComment.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        StikkyHeaderBuilder.stickTo(mScroll)
-                .setHeader(R.id.header, (FrameLayout) getView())
-                .minHeightHeader(85)
-                .build();
-
     }
 
     private void defineAvgFinalTotal(FinalResult result) {
@@ -345,6 +370,8 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
         mSucgestionSelectedYear.setVisibility(View.GONE);
         mProgressLoadingFinal.setVisibility(View.GONE);
         mScroll.setVisibility(View.GONE);
+        mExamResults.setVisibility(View.GONE);
+        mComment.setVisibility(View.GONE);
         mErrorFinal.setVisibility(View.VISIBLE);
     }
 
@@ -356,6 +383,8 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
             mNoDataFinal.setVisibility(View.GONE);
             mErrorFinal.setVisibility(View.GONE);
             mScroll.setVisibility(View.GONE);
+            mExamResults.setVisibility(View.GONE);
+            mComment.setVisibility(View.GONE);
         } else {
             mScroll.setVisibility(View.VISIBLE);
             mDataFinal.setVisibility(View.VISIBLE);
@@ -363,6 +392,8 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
             mNoDataFinal.setVisibility(View.GONE);
             mProgressLoadingFinal.setVisibility(View.GONE);
             mErrorFinal.setVisibility(View.GONE);
+            mExamResults.setVisibility(View.VISIBLE);
+            mComment.setVisibility(View.VISIBLE);
         }
     }
 
@@ -373,6 +404,8 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
         mProgressLoadingFinal.setVisibility(View.GONE);
         mErrorFinal.setVisibility(View.GONE);
         mScroll.setVisibility(View.GONE);
+        mExamResults.setVisibility(View.GONE);
+        mComment.setVisibility(View.GONE);
 
     }
 
@@ -383,6 +416,8 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
         mProgressLoadingFinal.setVisibility(View.GONE);
         mErrorFinal.setVisibility(View.GONE);
         mScroll.setVisibility(View.GONE);
+        mExamResults.setVisibility(View.GONE);
+        mComment.setVisibility(View.GONE);
     }
 
 
@@ -433,5 +468,10 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
             }
         });
         return dialog;
+    }
+
+    private void initAnimation() {
+        animShow = AnimationUtils.loadAnimation(context, R.anim.view_show);
+        animHide = AnimationUtils.loadAnimation(context, R.anim.view_hide);
     }
 }
