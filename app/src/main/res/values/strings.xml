@@ -144,4 +144,6 @@
     <string name="final_morality">Morality:</string>
     <string name="final_absents">Absents:</string>
     <string name="final_teacher_comment">Teacher comment:</string>
+    <string name="msg_no_selected_subject">No subject selected</string>
+    <string name="touch_here_to_select">Touch here to select</string>
 </resources>
