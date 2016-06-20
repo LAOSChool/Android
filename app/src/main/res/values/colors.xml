@@ -55,4 +55,10 @@
     <color name="colorSenderRead">#000</color>
     <color name="colorTitleRead">#000</color>
 
+    <color name="colorScoreNormal">#9E9E9E</color>
+    <color name="colorScoreAvg4Month">#00A261</color>
+    <color name="colorScoreTest">#FF9800</color>
+    <color name="colorScoreAvgTerm">#D32F2F</color>
+    <color name="colorScoreAvgYear">#B71C1C</color>
+
 </resources>

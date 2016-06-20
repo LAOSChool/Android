@@ -71,7 +71,7 @@ public class ScoreStudentSemesterAdapter extends RecyclerView.Adapter<ScoreStude
             view.setBackgroundResource(R.drawable.bg_score_avg_term);
         } else if (exam_type == 5) {
             lbScoreMonth.setText(examResult.getExam_name());
-            view.setBackgroundResource(R.drawable.bg_score_avg_term);
+            view.setBackgroundResource(R.drawable.bg_score_avg_year);
         } else {
             lbScoreMonth.setText(monthStr);
         }
