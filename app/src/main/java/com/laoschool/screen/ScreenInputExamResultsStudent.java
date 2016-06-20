@@ -91,6 +91,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
             Log.d(TAG, "-Container Id:" + containerId);
         }
         progressDialog = new ProgressDialog(context);
+        progressDialog.setCancelable(false);
 
 
     }
