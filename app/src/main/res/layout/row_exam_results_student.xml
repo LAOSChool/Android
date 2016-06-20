@@ -98,7 +98,6 @@
             android:layout_height="110dp"
             android:layout_alignParentRight="true"
             android:layout_toEndOf="@+id/relativeLayout2"
-            android:background="@color/color_bg_un_read"
             android:orientation="vertical"
             android:layout_centerVertical="true"
             android:paddingTop="8dp"
