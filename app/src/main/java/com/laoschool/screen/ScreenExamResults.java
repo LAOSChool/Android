@@ -85,7 +85,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     private RelativeLayout headerInputExam;
     private TextView lbInputDate;
     public List<Master> listSubject;
-    public int selectedSubjectId;
+    public int selectedSubjectId = -1;
     Map<Integer, String> mapSubject;
 
 
@@ -176,6 +176,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
                 inflater.inflate(R.menu.menu_exam_results_teacher, menu);
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
@@ -191,18 +192,18 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     @Override
     public void onResumeFragment() {
         Log.d(TAG, "onResumeFragment()/getUserVisibleHint()=" + getUserVisibleHint() + ",alreadyExecuted=" + alreadyExecuted);
-        if (!alreadyExecuted && getUserVisibleHint()) {
-            if (currentRole == null) {
-                Log.d(TAG, "onResumeFragment() - current role null");
-                currentRole = LaoSchoolShared.ROLE_STUDENT;
-            }
-            if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
-                fillDataForTeacher();
-            } else {
-                _definePageSemesterStudent();
-            }
-
-        }
+//        if (!alreadyExecuted && getUserVisibleHint()) {
+//            if (currentRole == null) {
+//                Log.d(TAG, "onResumeFragment() - current role null");
+//                currentRole = LaoSchoolShared.ROLE_STUDENT;
+//            }
+//            if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
+//                //  fillDataForTeacher();
+//            } else {
+//                _definePageSemesterStudent();
+//            }
+//
+//        }
         reloadDatAfterInputSucessfuly();
     }
 
@@ -550,6 +551,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
             @Override
             public void onFailure(String message) {
                 Log.e(ExamResultsByTermPagerAdapter.TAG, "getFilterSubject().onFailure() -message:" + message);
+                showError();
             }
 
             @Override
@@ -558,6 +560,27 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
                 LaoSchoolShared.goBackToLoginPage(context);
             }
 
+        });
+
+        mError.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (selectedSubjectId > -1) {
+                    getExamResultsbySubject(true, selectedSubjectId);
+                } else {
+                    getFilterSubject();
+                }
+            }
+        });
+        mNoData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (selectedSubjectId > -1) {
+                    getExamResultsbySubject(true, selectedSubjectId);
+                } else {
+                    getFilterSubject();
+                }
+            }
         });
 
     }
@@ -707,7 +730,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         return groupStudentMap;
     }
 
-    private void _fillDataForListResultFilter(int subjectId, RecyclerView recyclerView, Map<Integer, List<ExamResult>> result) {
+    private void _fillDataForListResultFilter(final int subjectId, RecyclerView recyclerView, Map<Integer, List<ExamResult>> result) {
         ExamResultsforClassbySubjectAdapter resultsforClassbySubjectAdapter = new ExamResultsforClassbySubjectAdapter(this, subjectId, result);
         recyclerView.setAdapter(resultsforClassbySubjectAdapter);
         //hide loading
