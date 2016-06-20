@@ -45,11 +45,11 @@ public class FinalResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.context = screen.getActivity();
         if (examResults != null) {
             this.examResults = examResults;
-
             for (ExamResult examResult : examResults) {
                 int subjectId = examResult.getSubject_id();
                 String subjectName = examResult.getSubjectName();
-                List<ExamResult> temp = null;
+                List<ExamResult> temp = new ArrayList<>();
+                temp.add(examResult);
                 if (hashExam.containsKey(subjectId)) {
                     temp = hashExam.get(subjectId);
                     temp.add(examResult);
@@ -65,12 +65,9 @@ public class FinalResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             for (Integer subId : mapSubject.keySet()) {
                 origin_subjectIds.add(subId);
                 origin_subjectNames.add(mapSubject.get(subId));
-                subjectIds.add(subId);
-                subjectNames.add(mapSubject.get(subId));
             }
             subjectIds.addAll(origin_subjectIds);
             subjectNames.addAll(origin_subjectNames);
-
         } else {
             this.examResults = new ArrayList<>();
         }
