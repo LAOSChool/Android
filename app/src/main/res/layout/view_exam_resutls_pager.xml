@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.astuetz.PagerSlidingTabStrip
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/colorAttendanceHasReason"
+        android:textColor="#fff"
+        android:textSize="12sp"
+        android:visibility="visible"
+        app:pstsDividerColor="@color/colorAttendanceHasReason"
+        app:pstsIndicatorColor="#fff"
+        app:pstsIndicatorHeight="3dp"
+        app:pstsShouldExpand="true"
+        app:pstsTabPaddingLeftRight="18dp"
+        app:pstsTextAllCaps="false" />
+    <com.laoschool.view.ScrollableViewPager
+        android:id="@+id/mPagerFinalResults"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>
