@@ -72,20 +72,12 @@ public class FinalExamPager extends Fragment {
         mListExam = (ObservableRecyclerView) view.findViewById(R.id.mListExam);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         mListExam.setLayoutManager(linearLayoutManager);
-
-
-        return view;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
         if (finalResult != null) {
             List<ExamResult> results = finalResult.getExam_results();
             if (results != null) {
                 if (finalResult.getExam_results().size() > 0) {
                     Log.d(TAG, "-size:" + finalResult.getExam_results().size());
-                    examResultsStudentSemesterAdapter = new FinalResultsAdapter(this, finalResult.getExam_results());
+                    examResultsStudentSemesterAdapter = new FinalResultsAdapter(this, results);
                     mListExam.setAdapter(examResultsStudentSemesterAdapter);
                     mListExam.setNestedScrollingEnabled(false);
                     mNoData.setVisibility(View.GONE);
@@ -100,7 +92,15 @@ public class FinalExamPager extends Fragment {
             showNodata();
             Log.d(TAG, "No data");
         }
+
+        return view;
     }
+//
+//    @Override
+//    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+//        super.onActivityCreated(savedInstanceState);
+//
+//    }
 
     private void showNodata() {
         mNoData.setVisibility(View.VISIBLE);
