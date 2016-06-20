@@ -1,7 +1,13 @@
 package com.laoschool.entities;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -57,6 +63,22 @@ public class ListUser {
     public static ListUser fromJson(String jsonString) {
         Gson gson = new Gson();
         ListUser user = gson.fromJson(jsonString, ListUser.class);
+        List<User> userList = new ArrayList<>();
+        try {
+
+            JSONObject object = new JSONObject(jsonString);
+            JSONArray jsonArray = object.getJSONArray("list");
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonUser = jsonArray.optJSONObject(i);
+                User userPares = User.fromJson(jsonUser.toString());
+                userList.add(userPares);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if (userList.size() > 0) {
+            user.setList(userList);
+        }
         return user;
 
     }

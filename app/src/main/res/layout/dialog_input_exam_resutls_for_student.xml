@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_gravity="center_horizontal"
+        android:background="#00A261">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/imgIcon"
+            android:layout_alignStart="@+id/imgIcon"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="56dp"
+            android:layout_toLeftOf="@+id/imgCloseDialog"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txbTitleDialog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/imgCloseDialog"
+                android:layout_toRightOf="@+id/imgClass"
+                android:layout_toStartOf="@+id/imgCloseDialog"
+                android:gravity="center_vertical"
+                android:text="Class Name"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#ffffff"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/lbNickName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Text"
+                android:textColor="#fff" />
+        </LinearLayout>
+
+        <com.android.volley.toolbox.NetworkImageView
+            android:id="@+id/imgIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp" />
+
+        <ImageView
+            android:id="@+id/imgCloseDialog"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:src="@drawable/ic_close_white_36dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/textView13"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:src="@drawable/ic_library_books_black_24dp"
+            android:text="@string/subject_exam" />
+
+        <TextView
+            android:id="@+id/lbSubjectOfExam"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="56dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="16dp"
+            android:text="New Text"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imageView21"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:src="@drawable/ic_schedule_black_24dp" />
+
+        <TextView
+            android:id="@+id/lbMonthOfExam"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="56dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="16dp"
+            android:text="New Text"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/txtScoreOfExam"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/bg_input_exam_results"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:inputType="numberDecimal"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="72dp" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+
+            android:text="@string/score_exam" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp">
+
+        <EditText
+            android:id="@+id/txtNoticeOfExam"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginRight="16dp"
+            android:focusable="true"
+            android:background="@drawable/bg_notice_exam_results"
+            android:focusableInTouchMode="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="72dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp" />
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:text="@string/notice_exam" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp">
+
+        <TextView
+            android:id="@+id/btnSubmitInputExamResults"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="16dp"
+            android:gravity="center"
+            android:text="@string/action_submit"
+            android:textAllCaps="true"
+            android:textColor="#00A261" />
+
+        <TextView
+            android:id="@+id/btnCancelSubmitInputExamResults"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignTop="@+id/btnSubmitInputExamResults"
+            android:layout_marginRight="8dp"
+            android:layout_toLeftOf="@+id/btnSubmitInputExamResults"
+            android:layout_toStartOf="@+id/btnSubmitInputExamResults"
+            android:gravity="center"
+            android:text="@string/action_cancel"
+            android:textAllCaps="true" />
+    </RelativeLayout>
+
+</LinearLayout>

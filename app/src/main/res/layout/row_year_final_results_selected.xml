@@ -2,7 +2,7 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/colorLaosRed"
+    android:background="@color/colorAttendanceHasReason"
     android:drawableRight="@drawable/ic_keyboard_arrow_down_white_24dp"
     android:gravity="fill_vertical"
     android:text="Sample Text"

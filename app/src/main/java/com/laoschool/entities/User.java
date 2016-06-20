@@ -10,12 +10,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
  * Created by Tran An on 11/03/2016.
  */
-public class User {
+public class User implements Comparable<User>{
 
     static final String Entity_Name = "user";
     public static final String USER_ROLE_STUDENT = "STUDENT";
@@ -263,5 +264,18 @@ public class User {
 //    public boolean equals(Object other) {
 //        return (other != null && other instanceof User && ((User) other).id == id);
 //    }
+
+    public int compareTo(User user) {
+
+        int userId = ((User) user).getId();
+
+        //ascending order
+        return this.id - userId;
+
+        //descending order
+        //return userId - this.quantity;
+
+    }
+
 
 }

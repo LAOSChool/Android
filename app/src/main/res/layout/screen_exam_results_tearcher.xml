@@ -1,243 +1,226 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.laoschool.screen.ScreenExamResults">
+    android:animateLayoutChanges="true"
+    android:orientation="vertical">
 
-    <!-- TODO: Update blank fragment layout -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/title_screen_exam_results" />
-
-        <Button
-            android:id="@+id/btnGotoMarkScore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="goto Mark Score" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/mContainer"
+    <FrameLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_weight="1"
+        tools:context="com.laoschool.screen.ScreenExamResults">
 
         <LinearLayout
-            android:id="@+id/mFilter"
+            android:id="@+id/mContainer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|top"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/mFitlerTerm"
+                android:id="@+id/mFilter"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:animateLayoutChanges="true"
-                android:background="#ffffff"
+                android:layout_gravity="center_horizontal|top"
                 android:orientation="vertical">
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:paddingRight="16dp"
-                    android:visibility="gone">
-
-                    <TextView
-                        android:id="@+id/textView12"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginStart="16dp"
-                        android:text="Term:"
-                        android:textColor="@color/textColorSubHeader" />
-
-                    <Spinner
-                        android:id="@+id/cbxTerm"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="72dp"
-                        android:dropDownSelector="@drawable/ic_keyboard_arrow_down_black_24dp"
-                        android:spinnerMode="dialog" />
-
-                </RelativeLayout>
-
-
                 <LinearLayout
+                    android:id="@+id/mFitlerTerm"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginLeft="72dp"
-                    android:background="#ebebeb"
-                    android:orientation="vertical"
-                    android:visibility="gone" />
+                    android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true"
+                    android:background="#ffffff"
+                    android:orientation="vertical">
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp">
 
-                    <TextView
-                        android:id="@+id/textView3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true"
-                        android:text="Class:"
-                        android:textColor="@color/textColorSubHeader" />
-
-                    <Spinner
-                        android:id="@+id/cbxClass"
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginLeft="56dp"
-                        android:layout_marginStart="56dp"
-                        android:spinnerMode="dialog" />
-                </RelativeLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginLeft="72dp"
-                    android:background="#ebebeb"
-                    android:orientation="vertical" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp">
-
-                    <TextView
-                        android:id="@+id/textView4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true"
-                        android:text="Subject:"
-                        android:textColor="@color/textColorSubHeader" />
-
-                    <Spinner
-                        android:id="@+id/cbxSubject"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginLeft="56dp"
-                        android:layout_marginStart="56dp"
-                        android:dropDownVerticalOffset="35dp"
-                        android:spinnerMode="dropdown" />
-                </RelativeLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#ebebeb"
-                    android:orientation="vertical"></LinearLayout>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:orientation="vertical"
-                    android:paddingBottom="8dp"
-                    android:paddingRight="16dp"
-                    android:paddingTop="4dp"
-                    android:visibility="gone">
-
-                    <Button
-                        android:id="@+id/btnFilterSubmit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_centerHorizontal="true"
-                        android:layout_gravity="center_horizontal"
-                        android:background="@drawable/bg_button_show_list_filter_exam_results"
+                        android:layout_height="40dp"
+                        android:background="#00A261"
                         android:paddingLeft="16dp"
-                        android:paddingRight="16dp"
-                        android:text="Show list"
-                        android:textColor="#ffffff" />
+                        android:paddingRight="16dp">
 
-                </RelativeLayout>
+                        <ImageView
+                            android:id="@+id/textView3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/ic_class_white_24dp"
+                            android:textColor="@color/textColorSubHeader" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#ebebeb"
-                    android:orientation="vertical"></LinearLayout>
+                        <Spinner
+                            android:id="@+id/cbxClass"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginLeft="56dp"
+                            android:layout_marginStart="56dp"
+                            android:spinnerMode="dialog"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/txtClassAndTermName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="56dp"
+                            android:text="New Text"
+                            android:textColor="#fff"
+                            android:textStyle="bold"
+                            android:textSize="18sp" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/mSelectedSubject"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="#00A261"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp">
+
+                        <ImageView
+                            android:id="@+id/textView4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/ic_library_books_black_24dp"
+                            android:textColor="@color/textColorSubHeader"
+                            android:tint="@android:color/white" />
+
+                        <Spinner
+                            android:id="@+id/cbxSubject"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginLeft="56dp"
+                            android:layout_marginStart="56dp"
+                            android:dropDownVerticalOffset="35dp"
+                            android:spinnerMode="dropdown"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/lbSubjectSeleted"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="56dp"
+                            android:text="New Text"
+                            android:textColor="#fff"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="center_vertical|right"
+                            android:layout_marginLeft="16dp"
+                            android:src="@drawable/ic_keyboard_arrow_down_white_24dp" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/mData"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#ebebeb"
-                android:orientation="vertical" />
+                android:layout_height="wrap_content"
+                android:background="@color/color_bg_un_read"
+                android:orientation="vertical">
+
+                <include
+                    layout="@layout/view_information_filter_exam_results"
+                    android:visibility="gone" />
+
+                <include
+                    layout="@layout/view_toolbox_exam_results"
+                    android:visibility="gone" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#00A261"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <android.support.v7.widget.SearchView
+
+                        android:id="@+id/mSearchExamResults"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_search_student_exam"
+                        android:iconifiedByDefault="false"
+                        android:visibility="gone"
+                        app:iconifiedByDefault="false" />
+
+                </LinearLayout>
+
+                <include
+                    android:id="@+id/header_input_exam"
+                    layout="@layout/view_header_input_exam_results" />
+
+                <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
+                    android:id="@+id/mListExamResults"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#fff"
+                    android:scrollbars="none" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/mData"
+        <include
+            android:id="@+id/mError"
+            layout="@layout/view_server_error"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/color_bg_un_read"
-            android:orientation="vertical"
-            >
-            <include layout="@layout/view_information_filter_exam_results" android:visibility="gone"/>
-            <include layout="@layout/view_toolbox_exam_results" />
+            android:layout_gravity="center"
+            android:visibility="gone" />
 
-            <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
-                android:id="@+id/mRecylerViewExamResults"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/color_bg_un_read"
-                android:scrollbars="none" />
+        <ProgressBar
+            android:id="@+id/mProgress"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
 
-        </LinearLayout>
-    </LinearLayout>
+        <include
+            android:id="@+id/mNoData"
+            layout="@layout/view_no_data"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+
+    </FrameLayout>
 
     <include
-        android:id="@+id/mError"
-        layout="@layout/view_server_error"
+        layout="@layout/view_button_submit_cancel_input_exam_results"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:visibility="gone" />
-
-    <ProgressBar
-        android:id="@+id/mProgress"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone" />
-
-    <include
-        android:id="@+id/mNoData"
-        layout="@layout/view_no_data"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:visibility="gone" />
-</FrameLayout>
+        android:layout_centerInParent="true"
+        android:layout_gravity="center_horizontal|bottom" />
+</LinearLayout>

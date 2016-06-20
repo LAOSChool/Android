@@ -37,6 +37,7 @@ import java.io.ByteArrayOutputStream;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.text.DateFormat;
+import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -84,6 +85,7 @@ public class LaoSchoolShared {
     public static final int POSITION_SCREEN_ANNOUNCEMENT_DETAILS_15 = 15;
     public static final int POSITION_SCREEN_CREATE_ANNOUNCEMENT_16 = 16;
     public static final int POSITION_SCREEN_REQUEST_ATTENDANCE_17 = 17;
+    public static final int POSITION_SCREEN_LIST_STUDENT_OF_CLASS_18 = 18;
 
     public static final String ROLE_TEARCHER = "TEACHER";
     public static final String ROLE_STUDENT = "STUDENT";
@@ -177,10 +179,13 @@ public class LaoSchoolShared {
     }
 
     public static void hideSoftKeyboard(Activity activity) {
-        InputMethodManager inputMethodManager = (InputMethodManager) activity
-                .getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus()
-                .getWindowToken(), 0);
+        try {
+            InputMethodManager inputMethodManager = (InputMethodManager) activity
+                    .getSystemService(Activity.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus()
+                    .getWindowToken(), 0);
+        } catch (Exception e) {
+        }
     }
 
     public static String encrypt(String plainText, RSAPublicKey publicKey)
@@ -392,11 +397,25 @@ public class LaoSchoolShared {
         return monthParse;
     }
 
+    public static String formatMonth(int month) {
+        DateFormatSymbols dateFormatSymbols = new DateFormatSymbols(Locale.UK);
+        String monthParse = dateFormatSymbols.getMonths()[month - 1];
+        return monthParse;
+    }
+
+    public static String getMonthString(Long date) {
+        DateFormat inputFormatter1 = new SimpleDateFormat("MMMM , yyyy", Locale.US);
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(date);
+        String monthParse = inputFormatter1.format(cal.getTime());
+        return monthParse;
+    }
+
     public static Long getLongDate(Integer exam_month, int exam_year) {
         Calendar cal = Calendar.getInstance();
         cal.set(exam_year, exam_month, 0, 0, 0, 0);
         long longDate = cal.getTime().getTime();
-        Log.d(TAG, "getLongDate() -exam_month:" + exam_month + ",exam_year:" + exam_year + ",date:" + longDate);
+        //Log.d(TAG, "getLongDate() -exam_month:" + exam_month + ",exam_year:" + exam_year + ",date:" + longDate);
         return longDate / 1000;
     }
 

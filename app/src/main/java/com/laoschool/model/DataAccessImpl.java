@@ -27,6 +27,7 @@ import com.laoschool.entities.Attendance;
 import com.laoschool.entities.AttendanceRollup;
 import com.laoschool.entities.Class;
 import com.laoschool.entities.ExamResult;
+import com.laoschool.entities.ExamType;
 import com.laoschool.entities.FinalResult;
 import com.laoschool.entities.Image;
 import com.laoschool.entities.ListAttendance;
@@ -36,6 +37,7 @@ import com.laoschool.entities.ListUser;
 import com.laoschool.entities.Master;
 import com.laoschool.entities.Message;
 import com.laoschool.entities.School;
+import com.laoschool.entities.SchoolYears;
 import com.laoschool.entities.TimeTable;
 import com.laoschool.entities.User;
 import com.laoschool.shared.LaoSchoolShared;
@@ -316,16 +318,15 @@ public class DataAccessImpl implements DataAccessInterface {
 
     private String _makeUrlgetUsers(int filter_class_id, String filter_user_role, String filter_sts, int filter_from_id) {
         StringBuilder stringBuilder = new StringBuilder();
-        if(filter_class_id > -1) {
+        if (filter_class_id > -1) {
             stringBuilder.append("?filter_class_id=" + filter_class_id);
-            if(filter_user_role.equals(User.USER_ROLE_STUDENT) || filter_user_role.equals(User.USER_ROLE_TEACHER))
+            if (filter_user_role.equals(User.USER_ROLE_STUDENT) || filter_user_role.equals(User.USER_ROLE_TEACHER))
                 stringBuilder.append("&filter_user_role=" + filter_user_role);
-            if(filter_from_id > -1)
+            if (filter_from_id > -1)
                 stringBuilder.append("&filter_from_id=" + filter_from_id);
 
             return stringBuilder.toString();
-        }
-        else
+        } else
             return "";
 
 
@@ -614,7 +615,7 @@ public class DataAccessImpl implements DataAccessInterface {
 
     @Override
     public void rollupAttendance(int filter_class_id, String filter_date, final AsyncCallback<AttendanceRollup> callback) {
-        if(filter_class_id >= 0 && !filter_date.isEmpty()) {
+        if (filter_class_id >= 0 && !filter_date.isEmpty()) {
             // Request a string response from the provided URL.
             String url = HOST + "attendances/rollup?filter_class_id=" + filter_class_id + "&filter_date=" + filter_date;
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url.trim(),
@@ -661,7 +662,7 @@ public class DataAccessImpl implements DataAccessInterface {
             Log.d("Service/rollupAtten()", "filter_class_id or filter_date is empty.");
         }
     }
-    
+
     public void getExamResults(int filter_class_id, int filter_user_id, int filter_subject_id, final AsyncCallback<List<ExamResult>> callback) {
         String url = HOST + "exam_results";
         StringBuilder stringBuilder = new StringBuilder();
@@ -694,11 +695,16 @@ public class DataAccessImpl implements DataAccessInterface {
                         Log.d("S/getExamResults()", response);
                         try {
                             JSONObject mainObject = new JSONObject(response);
-                            int total_count = mainObject.getInt("total_count");
-                            if (total_count > 0) {
-                                ListExamResults examResults = ListExamResults.fromJson(response);
-                                callback.onSuccess(examResults.getList());
+                            JSONArray jsonArray = mainObject.getJSONArray("list");
+                            if (jsonArray != null) {
+                                List<ExamResult> resultExams = new ArrayList<>();
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject objectExam = jsonArray.getJSONObject(i);
+                                    resultExams.add(ExamResult.fromJson(objectExam.toString()));
+                                }
+                                callback.onSuccess(resultExams);
                             } else {
+
                                 callback.onSuccess(new ArrayList<ExamResult>());
                             }
                         } catch (JSONException e) {
@@ -744,11 +750,14 @@ public class DataAccessImpl implements DataAccessInterface {
                     public void onResponse(String response) {
                         try {
                             JSONObject mainObject = new JSONObject(response);
-                            int total_count = mainObject.getInt("total_count");
-                            Log.d("Service", TAG + ".getMyExamResults() onResponse() -total_count:" + total_count);
-                            if (total_count > 0) {
-                                ListExamResults examResults = ListExamResults.fromJson(response);
-                                callback.onSuccess(examResults.getList());
+                            JSONArray jsonArray = mainObject.getJSONArray("messageObject");
+                            if (jsonArray != null) {
+                                List<ExamResult> resultExams = new ArrayList<>();
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject objectExam = jsonArray.getJSONObject(i);
+                                    resultExams.add(ExamResult.fromJson(objectExam.toString()));
+                                }
+                                callback.onSuccess(resultExams);
                             } else {
                                 callback.onSuccess(new ArrayList<ExamResult>());
                             }
@@ -1064,13 +1073,34 @@ public class DataAccessImpl implements DataAccessInterface {
         jsonObject.addProperty("content", message.getContent());
         jsonObject.addProperty("from_usr_id", message.getFrom_usr_id());
         jsonObject.addProperty("to_usr_id", message.getTo_usr_id());
-        if(!message.getCc_list().isEmpty())
+        if (!message.getCc_list().isEmpty())
             jsonObject.addProperty("cc_list", message.getCc_list());
         Gson gson = new Gson();
         String jsonString = gson.toJson(jsonObject);
         Log.d("", "makeMessagetoJson():" + jsonString);
         return jsonString;
     }
+
+
+//    private String makeExamResultsJson(ExamResult examResult) {
+//
+//        JsonObject jsonObject = new JsonObject();
+//        jsonObject.addProperty("school_id", examResult.getSchool_id());
+//        jsonObject.addProperty("class_id", examResult.getClass_id());
+//        jsonObject.addProperty("sresult", examResult.getSresult());
+//
+//        jsonObject.addProperty("student_id", examResult.getStudent_id());
+//        jsonObject.addProperty("subject_id", examResult.getSubject_id());
+//
+//        jsonObject.addProperty("exam_id", examResult.getExam_id());
+//        jsonObject.addProperty("teacher_id", examResult.getTeacher_id());
+//        jsonObject.addProperty("term_id", examResult.getTerm_id());
+//
+//        Gson gson = new Gson();
+//        String jsonString = gson.toJson(jsonObject);
+//        Log.d(TAG, "makeExamResultsJson():" + jsonString);
+//        return jsonString;
+//    }
 
     @Override
     public void updateMessage(Message message, final AsyncCallback<Message> callback) {
@@ -1583,8 +1613,7 @@ public class DataAccessImpl implements DataAccessInterface {
     public void inputExamResults(final ExamResult examResult, final AsyncCallback<ExamResult> callback) {
         // Request a string response from the provided URL.
         String url = HOST + "exam_results/input";
-        final String httpPostBody = "";
-
+        Log.d(TAG, "inputExamResults() -json input:" + examResult.toCreateJson());
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -1597,12 +1626,11 @@ public class DataAccessImpl implements DataAccessInterface {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         NetworkResponse networkResponse = error.networkResponse;
+                        Log.e("Service", "inputExamResults().onErrorResponse() -error status code " + networkResponse.statusCode + ", message:" + error.toString());
                         if (networkResponse != null && networkResponse.statusCode == 409) {
                             // HTTP Status Code: 409 Unauthorized Oo
-                            Log.e("Service", "inputExamResults().onErrorResponse() -error status code " + networkResponse.statusCode);
                             callback.onAuthFail(error.toString());
                         } else {
-                            Log.e("Service", "inputExamResults().onErrorResponse() error:" + error.toString());
                             callback.onFailure(error.toString());
                         }
                     }
@@ -1619,10 +1647,288 @@ public class DataAccessImpl implements DataAccessInterface {
 
             @Override
             public byte[] getBody() throws AuthFailureError {
-                return examResult.toJson().getBytes();
+                if (examResult.getId() > 0) {
+                    return examResult.toJson().getBytes();
+                } else {
+                    return examResult.toCreateJson().getBytes();
+                }
             }
         };
 
         mRequestQueue.add(stringRequest);
+    }
+
+
+    @Override
+    public void getListSubjectbyClassId(int classId, final AsyncCallback<List<Master>> callback) {
+        String url = HOST + "timetables/subjects?filter_class_id=" + classId;
+        JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    if (response != null) {
+                        List<Master> masters = new ArrayList<>();
+                        JSONArray listMaster = response.getJSONArray("messageObject");
+                        for (int i = 0; i < listMaster.length(); i++) {
+                            JSONObject objMaster = listMaster.getJSONObject(i);
+                            masters.add(Master.fromJson(objMaster.toString()));
+                        }
+                        callback.onSuccess(masters);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                NetworkResponse networkResponse = error.networkResponse;
+                if (networkResponse != null && networkResponse.statusCode == 409) {
+                    // HTTP Status Code: 409 Unauthorized Oo
+                    Log.e("Service", "getMasterTablebyName() -error status code " + networkResponse.statusCode);
+                    callback.onAuthFail(error.toString());
+                } else {
+                    Log.e("Service", "getMasterTablebyName() " + error.toString());
+                    callback.onFailure(error.toString());
+                }
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", getAuthKey());
+                return params;
+            }
+        };
+        mRequestQueue.add(jsonArrayRequest);
+    }
+
+    @Override
+    public void getExamResultsforMark(int filter_class_id, int filter_user_id, int filter_subject_id, final AsyncCallback<List<ExamResult>> callback) {
+        String url = HOST + "exam_results/marks";
+        StringBuilder stringBuilder = new StringBuilder();
+        int check = 0;
+        if (filter_class_id > -1) {
+            stringBuilder.append("?filter_class_id=" + filter_class_id);
+            check = 1;
+        }
+        if (filter_user_id > -1) {
+            if (check == 0) {
+                stringBuilder.append("?filter_user_id=" + filter_user_id);
+            } else if (check == 1) {
+                stringBuilder.append("&filter_user_id=" + filter_user_id);
+                check = 1;
+            }
+        }
+        if (filter_subject_id > -1) {
+            if (check == 0) {
+                stringBuilder.append("?filter_subject_id=" + filter_subject_id);
+            } else if (check == 1) {
+                stringBuilder.append("&filter_subject_id=" + filter_subject_id);
+            }
+        }
+        url += stringBuilder.toString();
+        Log.d("S", "getExamResultsforMark()" + "-url:" + url);
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url.trim(),
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("S", "getExamResultsforMark() " + response);
+                        try {
+                            JSONObject mainObject = new JSONObject(response);
+                            JSONArray jsonArray = mainObject.getJSONArray("messageObject");
+                            if (jsonArray != null) {
+                                List<ExamResult> resultExams = new ArrayList<>();
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject objectExam = jsonArray.getJSONObject(i);
+                                    resultExams.add(ExamResult.fromJson(objectExam.toString()));
+                                }
+                                callback.onSuccess(resultExams);
+                            } else {
+                                callback.onSuccess(new ArrayList<ExamResult>());
+                            }
+                        } catch (JSONException e) {
+                            callback.onSuccess(new ArrayList<ExamResult>());
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && networkResponse.statusCode == 409) {
+                            // HTTP Status Code: 409 Unauthorized Oo
+                            Log.e("S", "getExamResultsforMark() " + " error status code " + networkResponse.statusCode);
+                            callback.onAuthFail(error.toString());
+                        } else {
+                            Log.e("S", "getExamResultsforMark() " + error.toString());
+                            callback.onFailure(error.toString());
+                        }
+                    }
+                }
+
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", getAuthKey());
+                return params;
+            }
+        };
+        mRequestQueue.add(stringRequest);
+    }
+
+    @Override
+    public void getExamType(int filter_class_id, final AsyncCallback<List<ExamType>> callback) {
+        String url = HOST + "classes/exams?filter_class_id=" + filter_class_id;
+        JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    if (response != null) {
+                        List<ExamType> masters = new ArrayList<>();
+                        JSONArray listMaster = response.getJSONArray("messageObject");
+                        if (listMaster != null) {
+                            for (int i = 0; i < listMaster.length(); i++) {
+                                JSONObject objMaster = listMaster.getJSONObject(i);
+                                masters.add(ExamType.fromJson(objMaster.toString()));
+                            }
+                        }
+                        callback.onSuccess(masters);
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                NetworkResponse networkResponse = error.networkResponse;
+                Log.e("Service", "getExamType() -error status code " + networkResponse.statusCode + ",message:" + error.toString());
+                if (networkResponse != null && networkResponse.statusCode == 409) {
+                    // HTTP Status Code: 409 Unauthorized Oo
+                    callback.onAuthFail(error.toString());
+                } else {
+                    callback.onFailure(error.toString());
+                }
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", getAuthKey());
+                return params;
+            }
+        };
+        mRequestQueue.add(jsonArrayRequest);
+    }
+
+
+    @Override
+    public void getMyFinalResultsByYear(int filter_year_id, final AsyncCallback<FinalResult> callback) {
+        // Request a string response from the provided URL.
+        String url = HOST + "edu_profiles/myprofile?filter_year_id=" + filter_year_id;
+        JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    if (response != null) {
+                        JSONObject listMaster = response.getJSONObject("messageObject");
+                        if (listMaster != null) {
+                            callback.onSuccess(FinalResult.fromJson(response));
+                        } else {
+                            callback.onSuccess(null);
+                        }
+
+                    } else {
+                        callback.onSuccess(null);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    callback.onSuccess(null);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                try {
+                    NetworkResponse networkResponse = error.networkResponse;
+                    Log.e("Service", "getMyFinalResultsByYear() -error status code " + networkResponse.statusCode + ",message:" + error.toString());
+                    if (networkResponse != null && networkResponse.statusCode == 409) {
+                        // HTTP Status Code: 409 Unauthorized Oo
+                        callback.onAuthFail(error.toString());
+                    } else {
+                        callback.onFailure(error.toString());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailure(e.toString());
+                }
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", getAuthKey());
+                return params;
+            }
+        };
+        mRequestQueue.add(jsonArrayRequest);
+    }
+
+    @Override
+    public void getMySchoolYears(final AsyncCallback<List<SchoolYears>> callback) {
+        // Request a string response from the provided URL.
+        String url = HOST + "school_years/myprofile";
+        JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    if (response != null) {
+                        JSONArray listSchoolYears = response.getJSONArray("messageObject");
+                        List<SchoolYears> yearsList = new ArrayList<>();
+                        if (listSchoolYears != null) {
+                            if (listSchoolYears.length() > 0) {
+                                yearsList = SchoolYears.fromArray(listSchoolYears.toString());
+                            }
+                            callback.onSuccess(yearsList);
+                        } else {
+                            callback.onSuccess(yearsList);
+                        }
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    callback.onSuccess(new ArrayList<SchoolYears>());
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                NetworkResponse networkResponse = error.networkResponse;
+                Log.e("Service", "getMySchoolYears() -error status code " + networkResponse.statusCode + ",message:" + error.toString());
+                if (networkResponse != null && networkResponse.statusCode == 409) {
+                    // HTTP Status Code: 409 Unauthorized Oo
+                    callback.onAuthFail(error.toString());
+                } else {
+                    callback.onFailure(error.toString());
+                }
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", getAuthKey());
+                return params;
+            }
+        };
+        mRequestQueue.add(jsonArrayRequest);
     }
 }
