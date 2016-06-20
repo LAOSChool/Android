@@ -71,22 +71,15 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     private static boolean alreadyExecuted = false;
     private static LinearLayout mContainer;
     private LinearLayout mFilter;
-    private LinearLayout mData;
     private ActionBar mActionBar;
-    private RelativeLayout mDataInfomation;
-    private RelativeLayout btnSelectedDateInput;
     private ImageView btnShowSearch;
-    private View mActionSubmitCancel;
-    private TextView btnCancelInputExamResult;
-    private TextView btnSubmitInputExamResult;
     private TextView lbSubjectSeleted;
     private View mSelectedSubject;
     private TextView txtClassAndTermName;
-    private RelativeLayout headerInputExam;
-    private TextView lbInputDate;
     public List<Master> listSubject;
     public int selectedSubjectId = -1;
     Map<Integer, String> mapSubject;
+    private View mSugesstionSelectedSubject;
 
 
     public ScreenExamResults() {
@@ -109,7 +102,6 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     HomeActivity activity;
 
     LinearLayout mFilterTerm;
-    RelativeLayout mToolBox;
 
 
     static ViewpagerDisableSwipeLeft mViewPageStudent;
@@ -452,52 +444,16 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         //difine container
         mContainer = (LinearLayout) view.findViewById(R.id.mContainer);
         mFilter = (LinearLayout) view.findViewById(R.id.mFilter);
-        mData = (LinearLayout) view.findViewById(R.id.mData);
         mFilterTerm = (LinearLayout) view.findViewById(R.id.mFitlerTerm);
-        mDataInfomation = (RelativeLayout) view.findViewById(R.id.mDataInfomation);
-        mDataInfomation.setVisibility(View.GONE);
         lbSubjectSeleted = (TextView) view.findViewById(R.id.lbSubjectSeleted);
         mSelectedSubject = view.findViewById(R.id.mSelectedSubject);
         //difine progee,erorr,nodata
         mProgress = (ProgressBar) view.findViewById(R.id.mProgress);
         mError = (FrameLayout) view.findViewById(R.id.mError);
         mNoData = (FrameLayout) view.findViewById(R.id.mNoData);
+
         txtClassAndTermName = (TextView) view.findViewById(R.id.txtClassAndTermName);
-        headerInputExam = (RelativeLayout) view.findViewById(R.id.header_input_exam);
-        headerInputExam.setVisibility(View.GONE);
-
-
-        //define toolbox
-        mToolBox = (RelativeLayout) view.findViewById(R.id.mToolBox);
-        btnShowSearch = (ImageView) view.findViewById(R.id.btnShowSearch);
-        SearchView searchStudent = (SearchView) view.findViewById(R.id.mSearchExamResults);
-        btnSelectedDateInput = (RelativeLayout) view.findViewById(R.id.btnMarkScoreAll);
-        mActionSubmitCancel = view.findViewById(R.id.mActionSubmitCancel);
-        mActionSubmitCancel.setVisibility(View.GONE);
-        btnCancelInputExamResult = (TextView) view.findViewById(R.id.btnCancelInputExamResult);
-        btnSubmitInputExamResult = (TextView) view.findViewById(R.id.btnSubmitInputExamResult);
-        lbInputDate = (TextView) mToolBox.findViewById(R.id.lbInputDate);
-
-        searchStudent.setQueryHint(getString(R.string.hint_search_exam_resutls));
-        searchStudent.setOnSearchClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                hideFilterShowData();
-            }
-        });
-        searchStudent.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                hideFilterShowData();
-            }
-        });
-
-        //set search plate color..
-        ViewGroup search_plate = (ViewGroup) searchStudent.findViewById(R.id.search_plate);
-        if (search_plate != null) {
-            search_plate.setBackgroundColor(Color.parseColor("#ffffff"));
-        }
-
+        mSugesstionSelectedSubject = view.findViewById(R.id.mSugesstionSelectedSubject);
         mResultListStudentBySuject = (ObservableRecyclerView) view.findViewById(R.id.mListExamResults);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 1);
         mResultListStudentBySuject.setLayoutManager(gridLayoutManager);
@@ -537,14 +493,16 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
             public void onSuccess(List<Master> result) {
                 listSubject = result;
                 Log.d(TAG, "getFilterSubject().onSuccess() -results size:" + result.size());
-                int subjectId = result.get(0).getId();
-                selectedSubjectId = subjectId;
-                String subjectName = result.get(0).getSval();
-                getExamResultsbySubject(false, subjectId);
-                lbSubjectSeleted.setText(subjectName);
-                fillInformationClass(subjectName);
+//                int subjectId = result.get(0).getId();
+//                selectedSubjectId = subjectId;
+//                String subjectName = result.get(0).getSval();
+//                getExamResultsbySubject(false, subjectId);
+//                lbSubjectSeleted.setText(subjectName);
+//                fillInformationClass(subjectName);
                 handlerSelectedSubject(result);
                 alreadyExecuted = true;
+                showProgressLoading(false);
+
             }
 
 
@@ -602,6 +560,12 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
                 dialogSelectdSubject.show();
             }
         });
+        mSugesstionSelectedSubject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogSelectdSubject.show();
+            }
+        });
 
     }
 
@@ -625,11 +589,12 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         builder.setAdapter(subjectListAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(final DialogInterface dialogInterface, final int i) {
+                mSugesstionSelectedSubject.setVisibility(View.GONE);
+                mResultListStudentBySuject.setVisibility(View.VISIBLE);
                 String subjectName = subjectNames.get(i);
                 int subjectId = result.get(i).getId();
                 selectedSubjectId = subjectId;
                 lbSubjectSeleted.setText(subjectName);
-                fillInformationClass(subjectName);
                 getExamResultsbySubject(true, subjectId);
             }
         });
@@ -641,17 +606,6 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
             }
         });
         return dialog;
-    }
-
-    private void fillInformationClass(String subjectName) {
-        ((TextView) mDataInfomation.findViewById(R.id.lbClassName)).setText(LaoSchoolShared.myProfile.getEclass().getTitle() + " - Term:" + LaoSchoolShared.myProfile.getEclass().getTerm());
-        ((TextView) mDataInfomation.findViewById(R.id.lbSubject)).setText("Subject:" + subjectName);
-        mDataInfomation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showFilterExamResults();
-            }
-        });
     }
 
 
@@ -731,6 +685,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     }
 
     private void _fillDataForListResultFilter(final int subjectId, RecyclerView recyclerView, Map<Integer, List<ExamResult>> result) {
+
         ExamResultsforClassbySubjectAdapter resultsforClassbySubjectAdapter = new ExamResultsforClassbySubjectAdapter(this, subjectId, result);
         recyclerView.setAdapter(resultsforClassbySubjectAdapter);
         //hide loading
