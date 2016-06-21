@@ -1,22 +1,24 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <FrameLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/examresuts_appbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        tools:context="com.laoschool.screen.ScreenExamResults">
+        android:layout_height="80dp"
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <LinearLayout
-            android:id="@+id/mContainer"
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:orientation="vertical">
+            android:fitsSystemWindows="true"
+            app:expandedTitleMarginEnd="64dp"
+            app:expandedTitleMarginStart="48dp"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <LinearLayout
                 android:id="@+id/mFilter"
@@ -61,8 +63,8 @@
                             android:layout_marginLeft="56dp"
                             android:text="New Text"
                             android:textColor="#fff"
-                            android:textStyle="bold"
-                            android:textSize="18sp" />
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -110,78 +112,111 @@
                 </LinearLayout>
 
             </LinearLayout>
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+    <FrameLayout
+        android:id="@+id/mSugesstionSelectedSubject"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/mSugesstionSelectedSubject">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical">
 
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center">
+            <ImageView
+                android:id="@+id/imageView32"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_library_books_black_24dp"
+                android:tint="@color/colorPriorityHigh" />
 
-                    <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:id="@+id/imageView32"
-                        android:src="@drawable/ic_library_books_black_24dp"
-                        android:layout_gravity="center"
-                        android:tint="@color/colorPriorityHigh" />
+            <TextView
+                android:id="@+id/textView69"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/msg_no_selected_subject"
+                android:textSize="20sp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/msg_no_selected_subject"
-                        android:id="@+id/textView69"
-                        android:layout_gravity="center"
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/touch_here_to_select"
-                        android:id="@+id/textView70"
-                        android:layout_gravity="center" />
-                </LinearLayout>
-
-            </FrameLayout>
-
-            <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
-                android:id="@+id/mListExamResults"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#fff"
-                android:scrollbars="none"
-                android:visibility="gone" />
-
+            <TextView
+                android:id="@+id/textView70"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/touch_here_to_select" />
         </LinearLayout>
 
-        <include
-            android:id="@+id/mError"
-            layout="@layout/view_server_error"
+    </FrameLayout>
+
+    <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
+        android:id="@+id/mListExamResults"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#fff"
+        android:scrollbars="none"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    <!--</LinearLayout>-->
+    <!--</com.laoschool.view.MyNestedScrollView>-->
+
+
+    <FrameLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:visibility="gone"
+        tools:context="com.laoschool.screen.ScreenExamResults">
+
+        <LinearLayout
+            android:id="@+id/mContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:visibility="gone" />
+            android:orientation="vertical">
+
+        </LinearLayout>
+    </FrameLayout>
+
+    <include
+        android:id="@+id/mError"
+        layout="@layout/view_server_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+    <FrameLayout
+        android:id="@+id/mProgress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_divider">
 
         <ProgressBar
-            android:id="@+id/mProgress"
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:visibility="gone" />
-
-        <include
-            android:id="@+id/mNoData"
-            layout="@layout/view_no_data"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:visibility="gone" />
-
-
+            android:visibility="visible" />
     </FrameLayout>
-</LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/mGotoInputExam"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:src="@drawable/ic_input_white_24dp"
+        android:visibility="gone"
+        app:backgroundTint="@color/colorPrimary" />
+
+    <include
+        android:id="@+id/mNoData"
+        layout="@layout/view_no_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+</android.support.design.widget.CoordinatorLayout>
