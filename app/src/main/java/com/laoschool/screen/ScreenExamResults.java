@@ -9,8 +9,12 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -32,8 +36,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -60,8 +62,9 @@ import java.util.TreeMap;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ScreenExamResults extends Fragment implements FragmentLifecycle {
-    public static final String TAG = "ScreenExamResults";
+public class ScreenExamResults extends Fragment
+        implements FragmentLifecycle {
+    public static final String TAG = ScreenExamResults.class.getSimpleName();
     private static FragmentManager fr;
     private ScreenExamResults screenExamResults;
     private int containerId;
@@ -80,6 +83,14 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     public int selectedSubjectId = -1;
     Map<Integer, String> mapSubject;
     private View mSugesstionSelectedSubject;
+    private View mGotoInputExam;
+    private MenuItem itemSearch;
+    private SearchView mSearch;
+    private ExamResultsforClassbySubjectAdapter resultsforClassbySubjectAdapter;
+    private SearchView mSearchExamResults;
+    private AppBarLayout appFilterBar;
+    private CollapsingToolbarLayout collapsing;
+    private CoordinatorLayout.Behavior<AppBarLayout> behavior;
 
 
     public ScreenExamResults() {
@@ -107,7 +118,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     static ViewpagerDisableSwipeLeft mViewPageStudent;
     static PagerSlidingTabStrip tabsStrip;
     static LinearLayout mExamResultsStudent;
-    static ProgressBar mProgress;
+    static View mProgress;
     static FrameLayout mError;
     static FrameLayout mNoData;
     private ObservableRecyclerView mResultListStudentBySuject;
@@ -153,19 +164,60 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.action_input_exam_results:
-                iScreenExamResults.gotoScreenInputExamResults();
-                //showInputExamResultsMode(selectedMonth, longDateInputExamResult);
-                return true;
+//            case R.id.action_input_exam_results:
+//                iScreenExamResults.gotoScreenInputExamResults();
+//                //showInputExamResultsMode(selectedMonth, longDateInputExamResult);
+//                return true;
+
+            case R.id.search:
+                onSearchClick();
+
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void onSearchClick() {
+        if (selectedSubjectId == -1) {
+            if (dialogSelectdSubject != null) {
+                dialogSelectdSubject.show();
+            } else {
+                Log.d(TAG, "dialog null");
+            }
+        }
+        setExpandedFilterBar(false, true);
+
+        activity.hideBottomBar();
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         try {
             if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
+                menu.clear();
                 inflater.inflate(R.menu.menu_exam_results_teacher, menu);
+                MenuItem item = menu.findItem(R.id.search);
+                mSearchExamResults = new SearchView(((HomeActivity) getActivity()).getSupportActionBar().getThemedContext());
+                MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+                MenuItemCompat.setActionView(item, mSearchExamResults);
+
+                MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
+                    @Override
+                    public boolean onMenuItemActionCollapse(MenuItem item) {
+                        // Do something when collapsed
+                        Log.d(TAG, "onMenuItemActionCollapse");
+                        activity.showBottomBar();
+                        mGotoInputExam.setVisibility(View.VISIBLE);
+                        return true;  // Return true to collapse action view
+                    }
+
+                    @Override
+                    public boolean onMenuItemActionExpand(MenuItem item) {
+                        // Do something when expanded
+                        Log.d(TAG, "onMenuItemActionExpand");
+                        mGotoInputExam.setVisibility(View.GONE);
+                        return true;  // Return true to expand action view
+                    }
+                });
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -241,9 +293,10 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
 
     private View _defineScreenExamResultsDetailForStudent(LayoutInflater inflater, ViewGroup container) {
         View view = inflater.inflate(R.layout.screen_exam_results_student, container, false);
+        CoordinatorLayout coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinatorLayout);
 
         mExamResultsStudent = (LinearLayout) view.findViewById(R.id.mExamResultsStudent);
-        mProgress = (ProgressBar) view.findViewById(R.id.mProgressExamResultsStudent);
+        mProgress = view.findViewById(R.id.mProgressExamResultsStudent);
         mError = (FrameLayout) view.findViewById(R.id.mError);
         mNoData = (FrameLayout) view.findViewById(R.id.mNoData);
 
@@ -442,15 +495,18 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     private View _defineScreenExamResultsTeacher(LayoutInflater inflater, ViewGroup container) {
         View view = inflater.inflate(R.layout.screen_exam_results_tearcher, container, false);
         //difine container
+        appFilterBar = (AppBarLayout) view.findViewById(R.id.examresuts_appbar);
         mContainer = (LinearLayout) view.findViewById(R.id.mContainer);
         mFilter = (LinearLayout) view.findViewById(R.id.mFilter);
         mFilterTerm = (LinearLayout) view.findViewById(R.id.mFitlerTerm);
         lbSubjectSeleted = (TextView) view.findViewById(R.id.lbSubjectSeleted);
         mSelectedSubject = view.findViewById(R.id.mSelectedSubject);
         //difine progee,erorr,nodata
-        mProgress = (ProgressBar) view.findViewById(R.id.mProgress);
+        mProgress = view.findViewById(R.id.mProgress);
         mError = (FrameLayout) view.findViewById(R.id.mError);
         mNoData = (FrameLayout) view.findViewById(R.id.mNoData);
+
+        mGotoInputExam = view.findViewById(R.id.mGotoInputExam);
 
         txtClassAndTermName = (TextView) view.findViewById(R.id.txtClassAndTermName);
         mSugesstionSelectedSubject = view.findViewById(R.id.mSugesstionSelectedSubject);
@@ -471,6 +527,10 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         return view;
     }
 
+    private void setExpandedFilterBar(boolean expanded, boolean animate) {
+        appFilterBar.setExpanded(expanded, animate);
+    }
+
     private void fillDataForTeacher() {
         String className = LaoSchoolShared.myProfile.getEclass().getTitle();
         String termName = String.valueOf("Term " + LaoSchoolShared.myProfile.getEclass().getTerm());
@@ -478,8 +538,6 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
 
         txtClassAndTermName.setText(className + " | " + termName + " / " + year);
         getFilterSubject();
-
-
     }
 
 
@@ -502,6 +560,15 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
                 handlerSelectedSubject(result);
                 alreadyExecuted = true;
                 showProgressLoading(false);
+                mGotoInputExam.setVisibility(View.VISIBLE);
+                mGotoInputExam.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (iScreenExamResults != null) {
+                            iScreenExamResults.gotoScreenInputExamResults();
+                        }
+                    }
+                });
 
             }
 
@@ -583,7 +650,6 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
 
 
         builder.setCustomTitle(header);
-        selectedSubjectId = result.get(0).getId();
         final ListAdapter subjectListAdapter = new ArrayAdapter<String>(context, R.layout.row_selected_subject, subjectNames);
 
         builder.setAdapter(subjectListAdapter, new DialogInterface.OnClickListener() {
@@ -686,10 +752,26 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
 
     private void _fillDataForListResultFilter(final int subjectId, RecyclerView recyclerView, Map<Integer, List<ExamResult>> result) {
 
-        ExamResultsforClassbySubjectAdapter resultsforClassbySubjectAdapter = new ExamResultsforClassbySubjectAdapter(this, subjectId, result);
+        resultsforClassbySubjectAdapter = new ExamResultsforClassbySubjectAdapter(this, subjectId, result);
         recyclerView.setAdapter(resultsforClassbySubjectAdapter);
         //hide loading
         showProgressLoading(false);
+
+        mSearchExamResults.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                Log.d(TAG, "query:" + query);
+                resultsforClassbySubjectAdapter.filter(query);
+                return true;
+            }
+        });
+
+
     }
 
     @Override
