@@ -2,15 +2,12 @@ package com.laoschool.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
@@ -18,12 +15,11 @@ import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.entities.ExamResult;
 import com.laoschool.screen.ScreenExamResults;
-import com.laoschool.screen.view.DialogInputExamResultsForStudent;
-import com.laoschool.shared.LaoSchoolShared;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -35,11 +31,17 @@ public class ExamResultsforClassbySubjectAdapter extends RecyclerView.Adapter<Ex
     private Context context;
     private ScreenExamResults.IScreenExamResults iScreenExamResults;
     private List<Integer> studentIds = new ArrayList<>();
+    private List<Integer> origin_StudentIds = new ArrayList<>();
+
+    private List<String> studentNames = new ArrayList<>();
+    private List<String> origin_StudentNames = new ArrayList<>();
+
     private List<List<ExamResult>> listExam = new ArrayList<>();
     private Map<Integer, List<ExamResult>> groupExamByStudent;
     private static final int TYPE_SEARCH = 0;
     private int TYPE_EXAM = 1;
     private int subjectId;
+    private Map<Integer, String> mapStudents = new HashMap<>();
 
     public ExamResultsforClassbySubjectAdapter(ScreenExamResults screenExamResults, int subjectId, Map<Integer, List<ExamResult>> groupExamByStudent) {
         this.screenExamResults = screenExamResults;
@@ -48,9 +50,14 @@ public class ExamResultsforClassbySubjectAdapter extends RecyclerView.Adapter<Ex
         this.groupExamByStudent = groupExamByStudent;
         this.subjectId = subjectId;
         for (Integer studentId : groupExamByStudent.keySet()) {
-            studentIds.add(studentId);
+            String studentName = groupExamByStudent.get(studentId).get(0).getStudent_name();
+            origin_StudentIds.add(studentId);
+            origin_StudentNames.add(studentName);
+            mapStudents.put(studentId, studentName);
             listExam.add(groupExamByStudent.get(studentId));
         }
+        studentIds.addAll(origin_StudentIds);
+        studentNames.addAll(origin_StudentNames);
     }
 
     @Override
@@ -131,19 +138,15 @@ public class ExamResultsforClassbySubjectAdapter extends RecyclerView.Adapter<Ex
 
     @Override
     public int getItemCount() {
-        if (studentIds.size() > 0)
-            return studentIds.size();
-        else {
-            return 0;
-        }
+        return studentIds.size();
     }
 
     @Override
     public int getItemViewType(int position) {
-        int studentId = studentIds.get(position);
-        if (studentId == 0) {
-            return TYPE_SEARCH;
-        } else
+//        int studentId = studentIds.get(position);
+//        if (studentId == 0) {
+//            return TYPE_SEARCH;
+//        } else
             return TYPE_EXAM;
     }
 
@@ -157,4 +160,26 @@ public class ExamResultsforClassbySubjectAdapter extends RecyclerView.Adapter<Ex
             this.viewType = viewType;
         }
     }
+
+
+    public void filter(String charText) {
+
+        charText = charText.toLowerCase(Locale.getDefault());
+        studentIds.clear();
+        studentNames.clear();
+        if (charText.length() == 0) {
+            studentIds.addAll(origin_StudentIds);
+            studentNames.addAll(origin_StudentNames);
+        } else {
+            for (int studentId : origin_StudentIds) {
+                String studentName = mapStudents.get(studentId);
+                if (charText.length() != 0 && studentName.toLowerCase(Locale.getDefault()).contains(charText)) {
+                    studentIds.add(studentId);
+                    studentNames.add(studentName);
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
+
 }
