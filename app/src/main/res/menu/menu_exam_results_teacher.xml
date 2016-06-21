@@ -5,5 +5,11 @@
         android:id="@+id/action_input_exam_results"
         android:icon="@drawable/ic_input_white_24dp"
         android:title="@string/action_input_exam_results"
-        app:showAsAction="always" ></item>
+        android:visible="false"
+        app:showAsAction="never"></item>
+    <item
+        android:id="@+id/search"
+        android:icon="@drawable/ic_search_white_24dp"
+        android:title="@string/action_search"
+        app:showAsAction="collapseActionView|ifRoom" />
 </menu>
