@@ -1,13 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="48dp"
-    android:orientation="vertical">
+    android:layout_height="45dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:background="@color/colorDefault">
 
-    <SearchView
-        android:id="@+id/mSearchExamResults"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:imeOptions="actionSearch"
-        android:queryHint="Search" />
-</LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:background="@drawable/bg_search_box"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView31"
+            android:src="@drawable/ic_search_black_24dp"
+            android:layout_gravity="center_vertical"
+            android:layout_centerVertical="true"
+            android:tint="#000"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="2dp" />
+
+        <android.support.v7.widget.SearchView
+            android:id="@+id/mSearchStudent"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            app:iconifiedByDefault="false"
+            app:queryBackground="@android:color/transparent"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="13dp"
+            android:background="@android:color/transparent"
+            />
+    </LinearLayout>
+</RelativeLayout>
