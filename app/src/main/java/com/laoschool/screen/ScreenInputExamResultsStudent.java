@@ -9,21 +9,26 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.text.InputType;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -36,17 +41,15 @@ import com.laoschool.adapter.InputExamResultsAdapter;
 import com.laoschool.entities.ExamResult;
 import com.laoschool.entities.ExamType;
 import com.laoschool.entities.Master;
+import com.laoschool.listener.AppBarStateChangeListener;
+import com.laoschool.listener.RecyclerViewTouchListener;
 import com.laoschool.model.AsyncCallback;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
 
-import java.text.DateFormatSymbols;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -60,10 +63,11 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
     private TextView lbTermName;
     private TextView lbClassName;
     private View mSelectedSubject;
-    private View mToolBox;
+    private View mSelectedInputExamType;
     private TextView lbInputDate;
     private TextView lbSubjectSeleted;
     private RecyclerView listExamByStudent;
+    private View mContainer;
 
     private ProgressDialog progressDialog;
     private Dialog dialogSelectedSubject;
@@ -75,11 +79,18 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
     public int selectedSubjectId;
     private int selectedExamTypeId = -1;
     public boolean onchange = false;
-    private SearchView mSearchCardBox;
+
     private List<ExamType> examType = new ArrayList<>();
     private List<ExamResult> examListBySubjectId = new ArrayList<>();
 
     AppBarLayout input_exam_appbar;
+    private EditText txtSearch;
+    private AppBarStateChangeListener.State appBarState = AppBarStateChangeListener.State.EXPANDED;
+    private View mSearchBox;
+    private View mSugesstionSelectedSubject;
+    private View mInput;
+    private View viewMain;
+
 
     interface IScreenInputExamResults {
         void cancelInputExamResults();
@@ -109,7 +120,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.screen_input_exam_results_student, container, false);
+        viewMain = inflater.inflate(R.layout.screen_input_exam_results_student, container, false);
         HomeActivity activity = (HomeActivity) getActivity();
         activity.hideBottomBar();
 
@@ -120,41 +131,57 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         String termName = String.valueOf("Term " + LaoSchoolShared.myProfile.getEclass().getTerm());
         String year = String.valueOf(LaoSchoolShared.myProfile.getEclass().getYears());
 
-        input_exam_appbar = (AppBarLayout) view.findViewById(R.id.input_exam_appbar);
+        mContainer = viewMain.findViewById(R.id.coordinatorLayout);
 
+        input_exam_appbar = (AppBarLayout) viewMain.findViewById(R.id.input_exam_appbar);
+        onAppBarExpanded();
         lbTermName.setText(termName + " / " + year);
         lbClassName.setText(className);
         activity.getSupportActionBar().setCustomView(customActionBar);
 
 
-        mSelectedSubject = view.findViewById(R.id.mSelectedSubject);
+        mSelectedSubject = viewMain.findViewById(R.id.mSelectedSubject);
         lbSubjectSeleted = (TextView) mSelectedSubject.findViewById(R.id.lbSubjectSeleted);
 
+        //
+        mSugesstionSelectedSubject = viewMain.findViewById(R.id.mSugesstionSelectedSubject);
+        mInput = viewMain.findViewById(R.id.mInput);
         //define toolbox
-        mToolBox = view.findViewById(R.id.mToolBox);
-        lbInputDate = (TextView) mToolBox.findViewById(R.id.lbInputDate);
+        mSelectedInputExamType = viewMain.findViewById(R.id.mToolBox);
+        lbInputDate = (TextView) mSelectedInputExamType.findViewById(R.id.lbInputDate);
 
-        listExamByStudent = (RecyclerView) view.findViewById(R.id.listExamByStudent);
+        listExamByStudent = (RecyclerView) viewMain.findViewById(R.id.listExamByStudent);
         listExamByStudent.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context) {
+            @Override
+            public boolean canScrollVertically() {
+                return true;
+            }
+        };
 
-        listExamByStudent.setLayoutManager(new LinearLayoutManager(context));
-        mSearchCardBox = (SearchView) view.findViewById(R.id.mSearchStudent);
-        buildSearchStudent();
-        return view;
+        listExamByStudent.setLayoutManager(linearLayoutManager);
+
+        mSearchBox = viewMain.findViewById(R.id.mSearchBox);
+        mSearchBox.setVisibility(View.GONE);
+        txtSearch = (EditText) viewMain.findViewById(R.id.txtSearch);
+        onOnFocusChangeBoxSearch();
+        txtSearch.setEnabled(false);
+        txtSearch.clearFocus();
+
+        return viewMain;
     }
 
-    private void buildSearchStudent() {
-        mSearchCardBox.setQueryHint(getString(R.string.hint_search_exam_resutls));
-        SearchView.SearchAutoComplete autoCompleteTextView = (SearchView.SearchAutoComplete) mSearchCardBox.findViewById(R.id.search_src_text);
-        autoCompleteTextView.setBackgroundColor(Color.TRANSPARENT);
-        autoCompleteTextView.setTextSize(14);
-        autoCompleteTextView.clearFocus();
-        ImageView magImage = (ImageView) mSearchCardBox.findViewById(R.id.search_mag_icon);
-        if (magImage != null) {
-            magImage.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
-            magImage.setVisibility(View.GONE);
-        }
+    private void onAppBarExpanded() {
+        input_exam_appbar.addOnOffsetChangedListener(new AppBarStateChangeListener() {
+            @Override
+            public void onStateChanged(AppBarLayout appBarLayout, State state) {
+                Log.d(TAG, "STATE:" + state.name());
+                appBarState = state;
+            }
+        });
     }
+
+
 
 
     @Override
@@ -178,6 +205,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         selectedSubjectId = -1;
         selectedExamTypeId = -1;
         input_exam_appbar.setExpanded(true, false);
+        examListBySubjectId.clear();
     }
 
     @Override
@@ -215,13 +243,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
                 }
                 if (exam_months.size() > 0) {
                     dialogSelectedInputTypeDate = makeDialogSelectdInputExamType(exam_months, integers);
-                    mToolBox.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            clearFocus();
-                            dialogSelectedInputTypeDate.show();
-                        }
-                    });
+                    onSelectedInputExamType();
                 }
             }
 
@@ -237,6 +259,26 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         });
     }
 
+    private void onSelectedInputExamType() {
+        mSelectedInputExamType.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getView().requestFocus();
+                dialogSelectedInputTypeDate.show();
+            }
+        });
+    }
+
+    private void onSelectedSubject() {
+        mSelectedSubject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getView().requestFocus();
+                dialogSelectedSubject.show();
+            }
+        });
+    }
+
     private void fillDataSubject(List<Master> listSubject, int selectedSubjectId) {
         final List<String> subjectNames = new ArrayList<>();
         Map<Integer, String> subs = new HashMap<>();
@@ -245,13 +287,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
             subs.put(master.getId(), master.getSval());
         }
         dialogSelectedSubject = makeDialogSelectdSubject(listSubject, subjectNames);
-        mSelectedSubject.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                clearFocus();
-                dialogSelectedSubject.show();
-            }
-        });
+        onSelectedSubject();
     }
 
 
@@ -280,6 +316,8 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
                 lbSubjectSeleted.setTextColor(Color.WHITE);
                 getExamResultsbySubjectId(true, subjectId);
                 selectedSubjectId = subjectId;
+                mSugesstionSelectedSubject.setVisibility(View.GONE);
+                mInput.setVisibility(View.VISIBLE);
             }
         });
         final AlertDialog dialog = builder.create();
@@ -500,10 +538,11 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         if (exam_months.size() > 0) {
             //
             dialogSelectedInputTypeDate = makeDialogSelectdInputExamType(examResults, exam_months, integers);
-            mToolBox.setOnClickListener(new View.OnClickListener() {
+            mSelectedInputExamType.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    clearFocus();
+                    //clearFocus();
+                    view.requestFocus();
                     dialogSelectedInputTypeDate.show();
                 }
             });
@@ -515,6 +554,9 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         if (view != null) {
             view.clearFocus();
         }
+//        mSearchCardBox.clearFocus();
+//        txtSearch.clearFocus();
+//        mContainer.requestFocus();
         LaoSchoolShared.hideSoftKeyboard(getActivity());
     }
 
@@ -576,7 +618,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
                 Log.d(TAG, "-selected " + position + " exam type Id:" + selectedExamTypeId);
                 lbInputDate.setText(selected);
                 lbInputDate.setTextColor(Color.WHITE);
-                if (examListBySubjectId != null) {
+                if (examListBySubjectId.size() > 0) {
                     fillDataExamStudent(groupExamResultbyStudentId(examListBySubjectId, selectedExamTypeId), selectedExamTypeId);
                 }
 
@@ -596,12 +638,79 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
     private void fillDataExamStudent(Map<Integer, ExamResult> groupStudentMap, int selectedExamTypeId) {
         resultsforClassbySubjectAdapter = new InputExamResultsAdapter(context, groupStudentMap, selectedExamTypeId);
         listExamByStudent.setAdapter(resultsforClassbySubjectAdapter);
+        onTextChangeTextBoxSearch();
+        mSearchBox.setVisibility(View.VISIBLE);
+        txtSearch.setEnabled(true);
+        listExamByStudent.addOnItemTouchListener(new RecyclerViewTouchListener(context, listExamByStudent, new RecyclerViewTouchListener.ClickListener() {
+            @Override
+            public void onCLick(View view, int position) {
+                //clearFocus();
+                txtSearch.setFocusableInTouchMode(false);
+                txtSearch.setFocusable(false);
+                txtSearch.setFocusableInTouchMode(true);
+                txtSearch.setFocusable(true);
+
+                view.setFocusableInTouchMode(false);
+                view.setFocusable(false);
+                view.setFocusableInTouchMode(true);
+                view.setFocusable(true);
+                view.clearFocus();
+            }
+        }));
+        listExamByStudent.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean focus) {
+                Log.d(TAG, " listExamByStudent.setOnFocusChange:" + focus);
+            }
+        });
     }
 
-    private String getMonthString(int month) {
-        DateFormatSymbols dateFormatSymbols = new DateFormatSymbols(Locale.UK);
-        String monthParse = dateFormatSymbols.getMonths()[month - 1];
-        return monthParse;
+    private void onTextChangeTextBoxSearch() {
+        txtSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (appBarState == AppBarStateChangeListener.State.EXPANDED) {
+                    setExpandedAppBar(true, true);
+                }
+                resultsforClassbySubjectAdapter.filter(charSequence.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+    }
+
+    private void onOnFocusChangeBoxSearch() {
+        txtSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                Log.d(TAG, "onFocusChange:" + hasFocus);
+                if (hasFocus) {
+                    if (appBarState == AppBarStateChangeListener.State.EXPANDED || appBarState == AppBarStateChangeListener.State.IDLE) {
+                        setExpandedAppBar(false, true);
+                    }
+//                    else {
+//                        setExpandedAppBar(true, true);
+//                    }
+                } else {
+                    //txtSearch.clearFocus();
+                }
+
+
+            }
+        });
+
+    }
+
+    private void setExpandedAppBar(boolean show, boolean show_animation) {
+        input_exam_appbar.setExpanded(show, show_animation);
     }
 
     private Map<Integer, ExamResult> groupExamResultbyStudentId(List<ExamResult> result, int selectedExamTypeId) {
@@ -630,4 +739,8 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         iScreenInputExamResults = (IScreenInputExamResults) context;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
 }
