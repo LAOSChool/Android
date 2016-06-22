@@ -90,6 +90,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
     private View mSugesstionSelectedSubject;
     private View mInput;
     private View viewMain;
+    private View mSugesstionSelectedExamType;
 
 
     interface IScreenInputExamResults {
@@ -145,6 +146,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
 
         //
         mSugesstionSelectedSubject = viewMain.findViewById(R.id.mSugesstionSelectedSubject);
+        mSugesstionSelectedExamType = viewMain.findViewById(R.id.mSugesstionSelectedExamType);
         mInput = viewMain.findViewById(R.id.mInput);
         //define toolbox
         mSelectedInputExamType = viewMain.findViewById(R.id.mToolBox);
@@ -529,11 +531,19 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
     }
 
     private void showSugesstionSelectedExamType() {
-
+        mSugesstionSelectedExamType.setVisibility(View.VISIBLE);
+        onSuggesstionSelectedExamTypeClick();
     }
 
-    private void showSugesstionSelectedSubject() {
-
+    private void onSuggesstionSelectedExamTypeClick() {
+        mSugesstionSelectedExamType.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (dialogSelectedInputTypeDate != null) {
+                    dialogSelectedInputTypeDate.show();
+                }
+            }
+        });
     }
 
     private void fillDataDateInputExamResults(List<ExamResult> examResults, List<ExamType> examTypes) {
@@ -652,6 +662,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         onTextChangeTextBoxSearch();
         mSearchBox.setVisibility(View.VISIBLE);
         txtSearch.setEnabled(true);
+        mSugesstionSelectedExamType.setVisibility(View.GONE);
         listExamByStudent.addOnItemTouchListener(new RecyclerViewTouchListener(context, listExamByStudent, new RecyclerViewTouchListener.ClickListener() {
             @Override
             public void onCLick(View view, int position) {
