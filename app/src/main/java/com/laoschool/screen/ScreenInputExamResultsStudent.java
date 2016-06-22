@@ -9,10 +9,13 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -69,8 +73,13 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
 
     InputExamResultsAdapter resultsforClassbySubjectAdapter;
     public int selectedSubjectId;
-    private int selectedExamTypeId;
+    private int selectedExamTypeId = -1;
     public boolean onchange = false;
+    private SearchView mSearchCardBox;
+    private List<ExamType> examType = new ArrayList<>();
+    private List<ExamResult> examListBySubjectId = new ArrayList<>();
+
+    AppBarLayout input_exam_appbar;
 
     interface IScreenInputExamResults {
         void cancelInputExamResults();
@@ -111,6 +120,8 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         String termName = String.valueOf("Term " + LaoSchoolShared.myProfile.getEclass().getTerm());
         String year = String.valueOf(LaoSchoolShared.myProfile.getEclass().getYears());
 
+        input_exam_appbar = (AppBarLayout) view.findViewById(R.id.input_exam_appbar);
+
         lbTermName.setText(termName + " / " + year);
         lbClassName.setText(className);
         activity.getSupportActionBar().setCustomView(customActionBar);
@@ -127,8 +138,22 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         listExamByStudent.setHasFixedSize(true);
 
         listExamByStudent.setLayoutManager(new LinearLayoutManager(context));
-
+        mSearchCardBox = (SearchView) view.findViewById(R.id.mSearchStudent);
+        buildSearchStudent();
         return view;
+    }
+
+    private void buildSearchStudent() {
+        mSearchCardBox.setQueryHint(getString(R.string.hint_search_exam_resutls));
+        SearchView.SearchAutoComplete autoCompleteTextView = (SearchView.SearchAutoComplete) mSearchCardBox.findViewById(R.id.search_src_text);
+        autoCompleteTextView.setBackgroundColor(Color.TRANSPARENT);
+        autoCompleteTextView.setTextSize(14);
+        autoCompleteTextView.clearFocus();
+        ImageView magImage = (ImageView) mSearchCardBox.findViewById(R.id.search_mag_icon);
+        if (magImage != null) {
+            magImage.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
+            magImage.setVisibility(View.GONE);
+        }
     }
 
 
@@ -150,12 +175,16 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
 
     @Override
     public void onPauseFragment() {
+        selectedSubjectId = -1;
+        selectedExamTypeId = -1;
+        input_exam_appbar.setExpanded(true, false);
     }
 
     @Override
     public void onResumeFragment() {
         try {
             onchange = false;
+            input_exam_appbar.setExpanded(true, true);
             String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_EXAM_RESULTS_2);
             ScreenExamResults screenExamResults = (ScreenExamResults) getFragmentManager().findFragmentByTag(tag);
 
@@ -163,31 +192,47 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
             if (subjectList != null) {
                 fillDataSubject(screenExamResults.listSubject, screenExamResults.selectedSubjectId);
             }
+            getExamType();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void getExamType(final List<ExamResult> examResults) {
+    private void getExamType() {
         int classId = LaoSchoolShared.myProfile.getEclass().getId();
         LaoSchoolSingleton.getInstance().getDataAccessService().getExamType(classId, new AsyncCallback<List<ExamType>>() {
             @Override
             public void onSuccess(List<ExamType> result) {
-                fillDataDateInputExamResults(examResults, result);
-                if (progressDialog != null)
-                    progressDialog.dismiss();
+                examType.addAll(result);
+                exam_months = new ArrayList<>();
+                List<Integer> integers = new ArrayList<>();
+                for (ExamType examType : result) {
+                    if (examType.getEx_type() <= 2) {
+                        exam_months.add(examType.getEx_name());
+                        Log.d(TAG, "exam_type:" + examType.toString());
+                        integers.add(examType.getId());
+                    }
+                }
+                if (exam_months.size() > 0) {
+                    dialogSelectedInputTypeDate = makeDialogSelectdInputExamType(exam_months, integers);
+                    mToolBox.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            clearFocus();
+                            dialogSelectedInputTypeDate.show();
+                        }
+                    });
+                }
             }
 
             @Override
             public void onFailure(String message) {
-                if (progressDialog != null)
-                    progressDialog.dismiss();
+
             }
 
             @Override
             public void onAuthFail(String message) {
-                if (progressDialog != null)
-                    progressDialog.dismiss();
+
             }
         });
     }
@@ -199,11 +244,6 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
             subjectNames.add(master.getSval());
             subs.put(master.getId(), master.getSval());
         }
-        //First load
-        this.selectedSubjectId = selectedSubjectId;
-        lbSubjectSeleted.setText(subs.get(selectedSubjectId));
-        getExamResultsbySubjectId(true, selectedSubjectId);
-
         dialogSelectedSubject = makeDialogSelectdSubject(listSubject, subjectNames);
         mSelectedSubject.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -237,6 +277,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
                 String subjectName = subjectNames.get(i);
                 int subjectId = result.get(i).getId();
                 lbSubjectSeleted.setText(subjectName);
+                lbSubjectSeleted.setTextColor(Color.WHITE);
                 getExamResultsbySubjectId(true, subjectId);
                 selectedSubjectId = subjectId;
             }
@@ -407,9 +448,14 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
             @Override
             public void onSuccess(List<ExamResult> result) {
                 if (result != null) {
-                    //Group data
-                    getExamType(result);
-
+                    examListBySubjectId.addAll(result);
+                    if (selectedExamTypeId > 0) {
+                        fillDataExamStudent(groupExamResultbyStudentId(examListBySubjectId, selectedExamTypeId), selectedExamTypeId);
+                    } else {
+                        showSugesstionSelectedExamType();
+                    }
+                    if (progressDialog != null || progressDialog.isShowing())
+                        progressDialog.dismiss();
                 } else {
                     Log.d(TAG, "getExamResultsbySubject().onSuccess() message:NUll");
                 }
@@ -433,6 +479,14 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         });
     }
 
+    private void showSugesstionSelectedExamType() {
+
+    }
+
+    private void showSugesstionSelectedSubject() {
+
+    }
+
     private void fillDataDateInputExamResults(List<ExamResult> examResults, List<ExamType> examTypes) {
         exam_months = new ArrayList<>();
         List<Integer> integers = new ArrayList<>();
@@ -444,10 +498,6 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
             }
         }
         if (exam_months.size() > 0) {
-            //first
-            lbInputDate.setText(exam_months.get(0));
-            selectedExamTypeId = examTypes.get(0).getId();
-            fillDataExamStudent(groupExamResultbyStudentId(examResults, selectedExamTypeId), selectedExamTypeId);
             //
             dialogSelectedInputTypeDate = makeDialogSelectdInputExamType(examResults, exam_months, integers);
             mToolBox.setOnClickListener(new View.OnClickListener() {
@@ -487,7 +537,48 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
                 selectedExamTypeId = examTypeIds.get(position);
                 Log.d(TAG, "-selected " + position + " exam type Id:" + selectedExamTypeId);
                 lbInputDate.setText(selected);
-                fillDataExamStudent(groupExamResultbyStudentId(examResults, selectedExamTypeId), selectedExamTypeId);
+                lbInputDate.setTextColor(Color.WHITE);
+                if (examResults != null) {
+                    fillDataExamStudent(groupExamResultbyStudentId(examResults, selectedExamTypeId), selectedExamTypeId);
+                }
+
+
+            }
+        });
+        final AlertDialog dialog = builder.create();
+        (header.findViewById(R.id.imgCloseDialog)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        return dialog;
+    }
+
+
+    private Dialog makeDialogSelectdInputExamType(final List<String> exam_months, final List<Integer> examTypeIds) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        // builder.setTitle(R.string.title_selected_type_input_exam_results);
+        View header = View.inflate(context, R.layout.custom_hearder_dialog, null);
+        ImageView imgIcon = ((ImageView) header.findViewById(R.id.imgIcon));
+        imgIcon.setImageDrawable(LaoSchoolShared.getDraweble(context, R.drawable.ic_input_white_24dp));
+
+        ((TextView) header.findViewById(R.id.txbTitleDialog)).setText("Seleted date");
+
+        builder.setCustomTitle(header);
+        final ListAdapter subjectListAdapter = new ArrayAdapter<String>(context, R.layout.row_selected_subject, exam_months);
+
+        builder.setAdapter(subjectListAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(final DialogInterface dialogInterface, final int position) {
+                String selected = exam_months.get(position);
+                selectedExamTypeId = examTypeIds.get(position);
+                Log.d(TAG, "-selected " + position + " exam type Id:" + selectedExamTypeId);
+                lbInputDate.setText(selected);
+                lbInputDate.setTextColor(Color.WHITE);
+                if (examListBySubjectId != null) {
+                    fillDataExamStudent(groupExamResultbyStudentId(examListBySubjectId, selectedExamTypeId), selectedExamTypeId);
+                }
 
 
             }
@@ -505,17 +596,6 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
     private void fillDataExamStudent(Map<Integer, ExamResult> groupStudentMap, int selectedExamTypeId) {
         resultsforClassbySubjectAdapter = new InputExamResultsAdapter(context, groupStudentMap, selectedExamTypeId);
         listExamByStudent.setAdapter(resultsforClassbySubjectAdapter);
-    }
-
-    private Map<Long, String> groupMonth(List<ExamResult> result) {
-        Map<Long, String> groupMonth = new HashMap<Long, String>();
-        for (ExamResult examResult : result) {
-            if (examResult.getExam_type() <= 2) {
-                int exam_month = examResult.getExam_month();
-                groupMonth.put(Long.valueOf(exam_month), getMonthString(exam_month));
-            }
-        }
-        return groupMonth;
     }
 
     private String getMonthString(int month) {
