@@ -148,6 +148,45 @@
         </LinearLayout>
 
     </FrameLayout>
+    <FrameLayout
+        android:id="@+id/mSugesstionSelectedExamType"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:paddingBottom="100dp">
+
+            <ImageView
+                android:id="@+id/imageView33"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_input_white_24dp"
+                android:tint="@color/colorPriorityHigh" />
+
+            <TextView
+                android:id="@+id/textView76"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/msg_no_select_exam_type"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/textView71"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/touch_here_to_select" />
+        </LinearLayout>
+
+    </FrameLayout>
     <!--<android.support.v4.widget.NestedScrollView-->
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="match_parent"-->
