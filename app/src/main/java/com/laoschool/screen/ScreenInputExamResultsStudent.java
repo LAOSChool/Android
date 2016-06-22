@@ -182,8 +182,6 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
     }
 
 
-
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_screen_input_exam_results_student, menu);
@@ -221,9 +219,22 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
                 fillDataSubject(screenExamResults.listSubject, screenExamResults.selectedSubjectId);
             }
             getExamType();
+
+            onSuggesstionSelectedSubjectCLick();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void onSuggesstionSelectedSubjectCLick() {
+        mSugesstionSelectedSubject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (dialogSelectedSubject != null) {
+                    dialogSelectedSubject.show();
+                }
+            }
+        });
     }
 
     private void getExamType() {
