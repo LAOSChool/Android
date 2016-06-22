@@ -25,8 +25,10 @@ import com.laoschool.entities.ExamResult;
 import com.laoschool.shared.LaoSchoolShared;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -49,6 +51,12 @@ public class InputExamResultsAdapter extends RecyclerView.Adapter<InputExamResul
     private Map<Integer, ExamResult> mapExam = new HashMap<>();
     private int exam_date_input;
     List<Long> exam_dates;
+    private List<Integer> origin_StudentIds = new ArrayList<>();
+
+    private List<String> studentNames = new ArrayList<>();
+    private List<String> origin_StudentNames = new ArrayList<>();
+
+    private Map<Integer, String> mapStudents = new HashMap<>();
 
     public InputExamResultsAdapter(Context context, Map<Integer, ExamResult> groupExamByStudent, int selectedDateInputExamResult) {
         this.context = context;
@@ -56,9 +64,16 @@ public class InputExamResultsAdapter extends RecyclerView.Adapter<InputExamResul
         this.groupExamByStudent = sortgroupExamByStudent;
         this.exam_date_input = selectedDateInputExamResult;
         for (Integer studentId : sortgroupExamByStudent.keySet()) {
-            studentIds.add(studentId);
+            String studentName = sortgroupExamByStudent.get(studentId).getStudent_name();
+            origin_StudentIds.add(studentId);
+            origin_StudentNames.add(studentName);
             mapInputExam.put(studentId, 0f);
+            mapStudents.put(studentId, studentName);
         }
+
+        studentIds.addAll(origin_StudentIds);
+        studentNames.addAll(origin_StudentNames);
+
         Log.d(TAG, "size:" + studentIds.size());
     }
 
@@ -271,6 +286,26 @@ public class InputExamResultsAdapter extends RecyclerView.Adapter<InputExamResul
 
         Map<Long, ArrayList<ExamResult>> examsTree = new TreeMap<>(examByMonthList);
         return examsTree;
+    }
+
+
+    public void filter(String charText) {
+        charText = charText.toLowerCase(Locale.getDefault());
+        studentIds.clear();
+        studentNames.clear();
+        if (charText.length() == 0) {
+            studentIds.addAll(origin_StudentIds);
+            studentNames.addAll(origin_StudentNames);
+        } else {
+            for (int studentId : origin_StudentIds) {
+                String studentName = mapStudents.get(studentId);
+                if (charText.length() != 0 && studentName.toLowerCase(Locale.getDefault()).contains(charText)) {
+                    studentIds.add(studentId);
+                    studentNames.add(studentName);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 
 
