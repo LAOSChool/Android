@@ -22,6 +22,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -32,6 +34,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -47,6 +50,7 @@ import com.laoschool.adapter.ExamResultsforClassbySubjectAdapter;
 import com.laoschool.adapter.ExamResultsForStudentAdapter;
 import com.laoschool.entities.ExamResult;
 import com.laoschool.entities.Master;
+import com.laoschool.listener.AppBarStateChangeListener;
 import com.laoschool.model.AsyncCallback;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
@@ -91,6 +95,10 @@ public class ScreenExamResults extends Fragment
     private CollapsingToolbarLayout collapsing;
     private CoordinatorLayout.Behavior<AppBarLayout> behavior;
     private View mListExam;
+    private View mSearchBox;
+    private EditText txtSearch;
+
+    private AppBarStateChangeListener.State appBarState = AppBarStateChangeListener.State.EXPANDED;
 
 
     public ScreenExamResults() {
@@ -503,6 +511,14 @@ public class ScreenExamResults extends Fragment
         mError = (FrameLayout) view.findViewById(R.id.mError);
         mNoData = (FrameLayout) view.findViewById(R.id.mNoData);
 
+        //define seach box
+        mSearchBox = view.findViewById(R.id.mSearchBox);
+        txtSearch = (EditText) view.findViewById(R.id.txtSearch);
+
+        //clear focus search
+        txtSearch.clearFocus();
+
+
         txtClassAndTermName = (TextView) view.findViewById(R.id.txtClassAndTermName);
         mSugesstionSelectedSubject = view.findViewById(R.id.mSugesstionSelectedSubject);
         mListExam = view.findViewById(R.id.mListExam);
@@ -510,6 +526,11 @@ public class ScreenExamResults extends Fragment
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 1);
         mResultListStudentBySuject.setLayoutManager(gridLayoutManager);
 
+
+        //handler app bar
+        onAppBarExpanded();
+        //focus and collapse appbar
+        onOnFocusChangeBoxSearch();
         if (!alreadyExecuted && getUserVisibleHint()) {
             if (currentRole == null) {
                 Log.d(TAG, "onResumeFragment() - current role null");
@@ -521,6 +542,32 @@ public class ScreenExamResults extends Fragment
 
         }
         return view;
+    }
+
+    private void onAppBarExpanded() {
+        appFilterBar.addOnOffsetChangedListener(new AppBarStateChangeListener() {
+            @Override
+            public void onStateChanged(AppBarLayout appBarLayout, State state) {
+                appBarState = state;
+            }
+        });
+    }
+
+    private void onOnFocusChangeBoxSearch() {
+        txtSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                Log.d(TAG, "onFocusChange:" + hasFocus);
+                if (hasFocus) {
+                    if (appBarState == AppBarStateChangeListener.State.EXPANDED || appBarState == AppBarStateChangeListener.State.IDLE) {
+                        setExpandedAppBar(false, true);
+                    }
+                }
+
+
+            }
+        });
+
     }
 
     private void setExpandedFilterBar(boolean expanded, boolean animate) {
@@ -759,7 +806,34 @@ public class ScreenExamResults extends Fragment
             }
         });
 
+        onTextChangeTextBoxSearch();
 
+    }
+
+    private void onTextChangeTextBoxSearch() {
+        txtSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (appBarState == AppBarStateChangeListener.State.EXPANDED) {
+                    setExpandedAppBar(true, true);
+                }
+                resultsforClassbySubjectAdapter.filter(charSequence.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+    }
+
+    private void setExpandedAppBar(boolean show, boolean show_animation) {
+        appFilterBar.setExpanded(show, show_animation);
     }
 
     @Override
