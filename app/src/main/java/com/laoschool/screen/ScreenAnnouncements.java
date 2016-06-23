@@ -300,7 +300,7 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     }
 
     private View _defineTeacherView(LayoutInflater inflater, ViewGroup container) {
-        View view = inflater.inflate(R.layout.screen_announcements_teacher, container, false);
+        View view = inflater.inflate(R.layout.screen_announcements, container, false);
         mAnnouncement = (LinearLayout) view.findViewById(R.id.mAnnouncement);
 
         //error,nodata progress view
