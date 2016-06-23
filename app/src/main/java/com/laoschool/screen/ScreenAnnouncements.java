@@ -70,6 +70,9 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
 
     private static LinearLayout mAnnouncement;
     private static ProgressBar mProgressBar;
+    private static View mError;
+    private static View mNoData;
+
 
     public Message getNotification() {
         return notification;
@@ -142,9 +145,22 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
                 }
                 _handlerPageChange();
                 alreadyExecuted = true;
+
             }
         }, LaoSchoolShared.LOADING_TIME);
+        onErrorNodata();
+    }
 
+    private void onErrorNodata() {
+        View.OnClickListener reloadDataClick = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                _showProgressLoading(true);
+                getDataFormServer();
+            }
+        };
+        mNoData.setOnClickListener(reloadDataClick);
+        mError.setOnClickListener(reloadDataClick);
     }
 
     public static void getDataFormServer() {
@@ -152,18 +168,25 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
             @Override
             public void onSuccess(final List<Message> result) {
                 try {
-                    for (Message message : result) {
-                        accessNotification.addOrUpdateNotification(message);
+                    if (result != null) {
+                        for (Message message : result) {
+                            accessNotification.addOrUpdateNotification(message);
+                        }
+                        getDataFormLocal(-1);
+                    } else {
+                        showNodata();
                     }
-                    getDataFormLocal(-1);
                 } catch (Exception e) {
                     Log.e(TAG, "getDataFormServer()/getNotification() Exception=" + e.getMessage());
+                    showError();
+
                 }
             }
 
             @Override
             public void onFailure(String message) {
                 Log.e(TAG, "getDataFormServer()/getNotification() onFailure=" + message);
+                showError();
             }
 
             @Override
@@ -173,14 +196,31 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
         });
     }
 
+    private static void showNodata() {
+        mNoData.setVisibility(View.VISIBLE);
+        mError.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
+        mAnnouncement.setVisibility(View.GONE);
+    }
+
+    private static void showError() {
+        mError.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.GONE);
+        mAnnouncement.setVisibility(View.GONE);
+        mNoData.setVisibility(View.GONE);
+
+    }
+
     private static void _showProgressLoading(boolean b) {
         if (b) {
             mProgressBar.setVisibility(View.VISIBLE);
             mAnnouncement.setVisibility(View.GONE);
         } else {
-            mProgressBar.setVisibility(View.GONE);
             mAnnouncement.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.GONE);
         }
+        mError.setVisibility(View.GONE);
+        mNoData.setVisibility(View.GONE);
     }
 
 
@@ -189,18 +229,24 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
             @Override
             public void onSuccess(final List<Message> result) {
                 try {
-                    for (Message message : result) {
-                        accessNotification.addOrUpdateNotification(message);
+                    if (result != null) {
+                        for (Message message : result) {
+                            accessNotification.addOrUpdateNotification(message);
+                        }
+                        getDataFormLocal(position);
+                    } else {
+                        showNodata();
                     }
-                    getDataFormLocal(position);
                 } catch (Exception e) {
                     Log.e(TAG, "getDataFormServer()/getNotification(" + form_id + ") Exception=" + e.getMessage());
+                    showError();
                 }
             }
 
             @Override
             public void onFailure(String message) {
                 Log.e(TAG, "getDataFormServer()/getNotification(" + form_id + ") onFailure=" + message);
+                showError();
             }
 
             @Override
@@ -256,7 +302,12 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     private View _defineTeacherView(LayoutInflater inflater, ViewGroup container) {
         View view = inflater.inflate(R.layout.screen_announcements_teacher, container, false);
         mAnnouncement = (LinearLayout) view.findViewById(R.id.mAnnouncement);
+
+        //error,nodata progress view
+        mError = view.findViewById(R.id.mError);
+        mNoData = view.findViewById(R.id.mNoData);
         mProgressBar = (ProgressBar) view.findViewById(R.id.mProgress);
+
         // Bind the tabs to the ViewPager
         tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
         viewPage = (ViewpagerDisableSwipeLeft) view.findViewById(R.id.notificationViewPage);
@@ -612,12 +663,5 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         Log.d(TAG, "setUserVisibleHint() -isVisibleToUser:" + isVisibleToUser);
-        try {
-            if (!alreadyExecuted && isVisibleToUser) {
-                _defineData();
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "setUserVisibleHint() -exception:" + e.getMessage());
-        }
     }
 }
