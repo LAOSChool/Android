@@ -65,6 +65,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
     View mBacgroundSearch;
     private SearchView mSearchMessage;
     private MenuItem itemSearch;
+    private View mExspanSearch;
 
     public Message getMessage() {
         return message;
@@ -130,7 +131,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         pager = (ViewpagerDisableSwipeLeft) view.findViewById(R.id.messageViewPage);
         tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
         pager.setAllowedSwipeDirection(HomeActivity.SwipeDirection.none);
-
+        mExspanSearch = view.findViewById(R.id.mExspanSearch);
         mBacgroundSearch = view.findViewById(R.id.mBacgroundSearch);
 
         mSearchMessageList = (RecyclerView) view.findViewById(R.id.mSearchMessageList);
@@ -138,7 +139,19 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         mSearchMessageList.setVisibility(View.GONE);
         if (!alreadyExecuted && getUserVisibleHint())
             _defineData();
+
+        onExspanSearch();
         return view;
+    }
+
+    private void onExspanSearch() {
+        mExspanSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MenuItemCompat.expandActionView(itemSearch);
+                itemSearch.setVisible(true);
+            }
+        });
     }
 
     private void _defineData() {
@@ -327,6 +340,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
 //
             inflater.inflate(R.menu.menu_screen_message, menu);
             itemSearch = menu.findItem(R.id.search);
+            itemSearch.setVisible(false);
             mSearchMessage = (SearchView) menu.findItem(R.id.search).getActionView();
             MenuItemCompat.setOnActionExpandListener(itemSearch, new MenuItemCompat.OnActionExpandListener() {
                 @Override
@@ -335,6 +349,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
                     mSearchMessageList.setVisibility(View.VISIBLE);
                     tabs.setVisibility(View.GONE);
                     mMessages.setVisibility(View.GONE);
+                    mExspanSearch.setVisibility(View.GONE);
 
                     ((HomeActivity) getActivity()).hideBottomBar();
                     expandSearchMessages();
@@ -345,10 +360,11 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
                 public boolean onMenuItemActionCollapse(MenuItem item) {
                     mMessages.setVisibility(View.VISIBLE);
                     tabs.setVisibility(View.VISIBLE);
+                    mExspanSearch.setVisibility(View.VISIBLE);
                     mSearchMessageList.setVisibility(View.GONE);
                     mBacgroundSearch.setVisibility(View.GONE);
-
                     ((HomeActivity) getActivity()).showBottomBar();
+                    itemSearch.setVisible(false);
 
                     clearListSearch();
                     return true;
