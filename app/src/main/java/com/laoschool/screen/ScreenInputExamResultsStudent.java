@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
@@ -27,6 +28,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -91,6 +94,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
     private View mInput;
     private View viewMain;
     private View mSugesstionSelectedExamType;
+    private LinearLayoutManager layoutManager;
 
 
     interface IScreenInputExamResults {
@@ -123,23 +127,15 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         // Inflate the layout for this fragment
         viewMain = inflater.inflate(R.layout.screen_input_exam_results_student, container, false);
         HomeActivity activity = (HomeActivity) getActivity();
-        activity.hideBottomBar();
 
-        View customActionBar = View.inflate(context, R.layout.view_custom_action_bar_input_exam_results, null);
-        lbTermName = (TextView) customActionBar.findViewById(R.id.lbClassAndTermName);
-        lbClassName = (TextView) customActionBar.findViewById(R.id.lbClassName);
-        String className = LaoSchoolShared.myProfile.getEclass().getTitle();
-        String termName = String.valueOf("Term " + LaoSchoolShared.myProfile.getEclass().getTerm());
-        String year = String.valueOf(LaoSchoolShared.myProfile.getEclass().getYears());
+        activity.hideBottomBar();//hide bottom bar
+
+        activity.getSupportActionBar().setTitle(R.string.title_screen_input_exam_resuls);
 
         mContainer = viewMain.findViewById(R.id.coordinatorLayout);
 
         input_exam_appbar = (AppBarLayout) viewMain.findViewById(R.id.input_exam_appbar);
         onAppBarExpanded();
-        lbTermName.setText(termName + " / " + year);
-        lbClassName.setText(className);
-        activity.getSupportActionBar().setCustomView(customActionBar);
-
 
         mSelectedSubject = viewMain.findViewById(R.id.mSelectedSubject);
         lbSubjectSeleted = (TextView) mSelectedSubject.findViewById(R.id.lbSubjectSeleted);
@@ -153,15 +149,16 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         lbInputDate = (TextView) mSelectedInputExamType.findViewById(R.id.lbInputDate);
 
         listExamByStudent = (RecyclerView) viewMain.findViewById(R.id.listExamByStudent);
-        listExamByStudent.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context) {
+
+        layoutManager = new LinearLayoutManager(context) {
             @Override
             public boolean canScrollVertically() {
                 return true;
             }
         };
-
-        listExamByStudent.setLayoutManager(linearLayoutManager);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        //linearLayoutManager.setStackFromEnd(true);
+        listExamByStudent.setLayoutManager(layoutManager);
 
         mSearchBox = viewMain.findViewById(R.id.mSearchBox);
         mSearchBox.setVisibility(View.GONE);
@@ -169,6 +166,15 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         onOnFocusChangeBoxSearch();
         txtSearch.setEnabled(false);
         txtSearch.clearFocus();
+
+
+        //
+        String className = LaoSchoolShared.myProfile.getEclass().getTitle();
+        String termName = String.valueOf("Term " + LaoSchoolShared.myProfile.getEclass().getTerm());
+        String year = String.valueOf(LaoSchoolShared.myProfile.getEclass().getYears());
+
+        TextView txtClassAndTermName = (TextView) viewMain.findViewById(R.id.txtClassAndTermName);
+        txtClassAndTermName.setText(className + " | " + year + "   " + termName);
 
         return viewMain;
     }
@@ -657,34 +663,12 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
     }
 
     private void fillDataExamStudent(Map<Integer, ExamResult> groupStudentMap, int selectedExamTypeId) {
-        resultsforClassbySubjectAdapter = new InputExamResultsAdapter(context, groupStudentMap, selectedExamTypeId);
+        resultsforClassbySubjectAdapter = new InputExamResultsAdapter(getActivity(), context, groupStudentMap, selectedExamTypeId);
         listExamByStudent.setAdapter(resultsforClassbySubjectAdapter);
         onTextChangeTextBoxSearch();
         mSearchBox.setVisibility(View.VISIBLE);
         txtSearch.setEnabled(true);
         mSugesstionSelectedExamType.setVisibility(View.GONE);
-        listExamByStudent.addOnItemTouchListener(new RecyclerViewTouchListener(context, listExamByStudent, new RecyclerViewTouchListener.ClickListener() {
-            @Override
-            public void onCLick(View view, int position) {
-                //clearFocus();
-                txtSearch.setFocusableInTouchMode(false);
-                txtSearch.setFocusable(false);
-                txtSearch.setFocusableInTouchMode(true);
-                txtSearch.setFocusable(true);
-
-                view.setFocusableInTouchMode(false);
-                view.setFocusable(false);
-                view.setFocusableInTouchMode(true);
-                view.setFocusable(true);
-                view.clearFocus();
-            }
-        }));
-        listExamByStudent.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean focus) {
-                Log.d(TAG, " listExamByStudent.setOnFocusChange:" + focus);
-            }
-        });
     }
 
     private void onTextChangeTextBoxSearch() {
