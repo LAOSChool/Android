@@ -352,6 +352,8 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
                     mExspanSearch.setVisibility(View.GONE);
 
                     ((HomeActivity) getActivity()).hideBottomBar();
+                    ((HomeActivity) getActivity()).displaySearch();
+
                     expandSearchMessages();
                     return true;
                 }
@@ -365,7 +367,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
                     mBacgroundSearch.setVisibility(View.GONE);
                     ((HomeActivity) getActivity()).showBottomBar();
                     itemSearch.setVisible(false);
-
+                    ((HomeActivity) getActivity()).cancelSearch();
                     clearListSearch();
                     return true;
                 }
