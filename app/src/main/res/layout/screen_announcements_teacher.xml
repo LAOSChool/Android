@@ -8,12 +8,13 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/mAnnouncement"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context="com.laoschool.screen.ScreenMessage"
         android:layout_gravity="center"
-        android:id="@+id/mAnnouncement">
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:context="com.laoschool.screen.ScreenMessage">
 
         <!-- TODO: Update blank fragment layout -->
         <com.astuetz.PagerSlidingTabStrip
@@ -37,10 +38,26 @@
     </LinearLayout>
 
     <ProgressBar
-        style="?android:attr/progressBarStyleLarge"
+        android:id="@+id/mProgress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/mProgress"
-        android:layout_gravity="center"
-        android:visibility="gone" />
+        android:layout_gravity="center" />
+
+    <LinearLayout
+        android:id="@+id/mError"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <include layout="@layout/view_server_error" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mNoData"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+        <include layout="@layout/view_no_data" />
+    </LinearLayout>
+
 </FrameLayout>
