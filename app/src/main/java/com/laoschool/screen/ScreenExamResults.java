@@ -241,18 +241,16 @@ public class ScreenExamResults extends Fragment
     @Override
     public void onResumeFragment() {
         Log.d(TAG, "onResumeFragment()/getUserVisibleHint()=" + getUserVisibleHint() + ",alreadyExecuted=" + alreadyExecuted);
-//        if (!alreadyExecuted && getUserVisibleHint()) {
-//            if (currentRole == null) {
-//                Log.d(TAG, "onResumeFragment() - current role null");
-//                currentRole = LaoSchoolShared.ROLE_STUDENT;
-//            }
-//            if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
-//                //  fillDataForTeacher();
-//            } else {
-//                _definePageSemesterStudent();
-//            }
-//
-//        }
+        if (!alreadyExecuted && getUserVisibleHint()) {
+            if (currentRole == null) {
+                Log.d(TAG, "onResumeFragment() - current role null");
+                currentRole = LaoSchoolShared.ROLE_STUDENT;
+            }
+            if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
+                fillDataForTeacher();
+            } else _definePageSemesterStudent();
+
+        }
         reloadDatAfterInputSucessfuly();
     }
 
@@ -531,16 +529,6 @@ public class ScreenExamResults extends Fragment
         onAppBarExpanded();
         //focus and collapse appbar
         onOnFocusChangeBoxSearch();
-        if (!alreadyExecuted && getUserVisibleHint()) {
-            if (currentRole == null) {
-                Log.d(TAG, "onResumeFragment() - current role null");
-                currentRole = LaoSchoolShared.ROLE_STUDENT;
-            }
-            if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
-                fillDataForTeacher();
-            }
-
-        }
         return view;
     }
 
