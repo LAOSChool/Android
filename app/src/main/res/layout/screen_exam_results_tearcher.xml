@@ -7,7 +7,7 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/examresuts_appbar"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="81dp"
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
@@ -63,9 +63,14 @@
                             android:layout_marginLeft="56dp"
                             android:text="New Text"
                             android:textColor="#fff"
-                            android:textSize="18sp"
                             android:textStyle="bold" />
                     </RelativeLayout>
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#fff"></LinearLayout>
 
                     <RelativeLayout
                         android:id="@+id/mSelectedSubject"
@@ -95,7 +100,6 @@
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="56dp"
                             android:text="@string/selected_subject"
-                            android:textColor="#fff"
                             android:textStyle="bold" />
 
                         <ImageView
@@ -108,12 +112,32 @@
                             android:src="@drawable/ic_keyboard_arrow_down_white_24dp" />
 
                     </RelativeLayout>
-
                 </LinearLayout>
 
             </LinearLayout>
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:id="@+id/mListExam">
+
+        <include
+            android:id="@+id/mSearchBox"
+            layout="@layout/view_search" />
+
+        <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
+            android:id="@+id/mListExamResults"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#fff"
+            android:scrollbars="none"
+            android:visibility="gone" />
+    </LinearLayout>
     <FrameLayout
         android:id="@+id/mSugesstionSelectedSubject"
         android:layout_width="match_parent"
@@ -151,14 +175,8 @@
 
     </FrameLayout>
 
-    <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
-        android:id="@+id/mListExamResults"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#fff"
-        android:scrollbars="none"
-        android:visibility="gone"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+
     <!--</LinearLayout>-->
     <!--</com.laoschool.view.MyNestedScrollView>-->
 
@@ -202,15 +220,6 @@
             android:layout_gravity="center"
             android:visibility="visible" />
     </FrameLayout>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/mGotoInputExam"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right|bottom"
-        android:src="@drawable/ic_input_white_24dp"
-        android:visibility="gone"
-        app:backgroundTint="@color/colorPrimary" />
 
     <include
         android:id="@+id/mNoData"
