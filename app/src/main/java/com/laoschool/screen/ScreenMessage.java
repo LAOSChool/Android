@@ -1,17 +1,16 @@
 package com.laoschool.screen;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,6 +23,7 @@ import android.widget.ProgressBar;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.laoschool.R;
+import com.laoschool.adapter.ListMessageAdapter;
 import com.laoschool.screen.pager.MessagesPager;
 import com.laoschool.adapter.MessagesPagerAdapter;
 import com.laoschool.entities.Message;
@@ -61,6 +61,10 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
     private static ProgressBar mProgress;
     private boolean alreadyExecuted = false;
     private String currentRole;
+    private RecyclerView mSearchMessageList;
+    View mBacgroundSearch;
+    private SearchView mSearchMessage;
+    private MenuItem itemSearch;
 
     public Message getMessage() {
         return message;
@@ -126,6 +130,12 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         pager = (ViewpagerDisableSwipeLeft) view.findViewById(R.id.messageViewPage);
         tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
         pager.setAllowedSwipeDirection(HomeActivity.SwipeDirection.none);
+
+        mBacgroundSearch = view.findViewById(R.id.mBacgroundSearch);
+
+        mSearchMessageList = (RecyclerView) view.findViewById(R.id.mSearchMessageList);
+        mSearchMessageList.setLayoutManager(new LinearLayoutManager(context));
+        mSearchMessageList.setVisibility(View.GONE);
         if (!alreadyExecuted && getUserVisibleHint())
             _defineData();
         return view;
@@ -314,8 +324,104 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         if (currentRole != null) {
+//
             inflater.inflate(R.menu.menu_screen_message, menu);
+            itemSearch = menu.findItem(R.id.search);
+            mSearchMessage = (SearchView) menu.findItem(R.id.search).getActionView();
+            MenuItemCompat.setOnActionExpandListener(itemSearch, new MenuItemCompat.OnActionExpandListener() {
+                @Override
+                public boolean onMenuItemActionExpand(MenuItem item) {
+                    mBacgroundSearch.setVisibility(View.VISIBLE);
+                    mSearchMessageList.setVisibility(View.VISIBLE);
+                    tabs.setVisibility(View.GONE);
+                    mMessages.setVisibility(View.GONE);
+
+                    ((HomeActivity) getActivity()).hideBottomBar();
+                    expandSearchMessages();
+                    return true;
+                }
+
+                @Override
+                public boolean onMenuItemActionCollapse(MenuItem item) {
+                    mMessages.setVisibility(View.VISIBLE);
+                    tabs.setVisibility(View.VISIBLE);
+                    mSearchMessageList.setVisibility(View.GONE);
+                    mBacgroundSearch.setVisibility(View.GONE);
+
+                    ((HomeActivity) getActivity()).showBottomBar();
+
+                    clearListSearch();
+                    return true;
+                }
+            });
         }
+    }
+
+    private void expandSearchMessages() {
+        final int currentPositon = pager.getCurrentItem();
+        Log.d(TAG, "expandSearchMessages() -position:" + currentPositon);
+        final int userId = LaoSchoolShared.myProfile.getId();
+        try {
+            final List<Message> messageList = messagesPagerAdapter.getFragment(pager.getCurrentItem()).getMessages();
+            ListMessageAdapter listMessageAdapter = new ListMessageAdapter(mSearchMessageList, thiz, messageList, pager.getCurrentItem());
+            mSearchMessageList.setAdapter(listMessageAdapter);
+            mSearchMessage.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String query) {
+                    if (!query.trim().isEmpty()) {
+                        mBacgroundSearch.setVisibility(View.GONE);
+
+                        mSearchMessageList.setEnabled(true);
+                        messageList.clear();
+                        if (currentPositon == 0) {
+                            //search in box
+                            messageList.addAll(DataAccessMessage.searchMessageInbox(userId, 1, query));
+                        } else if (currentPositon == 1) {
+                            //search in box un read
+                            messageList.addAll(DataAccessMessage.searchMessageInbox(userId, 0, query));
+                        } else if (currentPositon == 2) {
+                            //search send box
+                            messageList.addAll(DataAccessMessage.searchMessageSend(userId, query));
+                        }
+                        ListMessageAdapter listMessageAdapter = new ListMessageAdapter(mSearchMessageList, thiz, messageList, pager.getCurrentItem());
+                        mSearchMessageList.setAdapter(listMessageAdapter);
+                    }
+                    return true;
+                }
+            });
+            mBacgroundSearch.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    MenuItemCompat.collapseActionView(itemSearch);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void clearListSearch() {
+        mSearchMessageList.setAdapter(new RecyclerView.Adapter() {
+            @Override
+            public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                return null;
+            }
+
+            @Override
+            public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+
+            }
+
+            @Override
+            public int getItemCount() {
+                return 0;
+            }
+        });
     }
 
     @Override
