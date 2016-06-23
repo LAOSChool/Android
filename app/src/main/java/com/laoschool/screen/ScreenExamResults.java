@@ -83,7 +83,6 @@ public class ScreenExamResults extends Fragment
     public int selectedSubjectId = -1;
     Map<Integer, String> mapSubject;
     private View mSugesstionSelectedSubject;
-    private View mGotoInputExam;
     private MenuItem itemSearch;
     private SearchView mSearch;
     private ExamResultsforClassbySubjectAdapter resultsforClassbySubjectAdapter;
@@ -91,6 +90,7 @@ public class ScreenExamResults extends Fragment
     private AppBarLayout appFilterBar;
     private CollapsingToolbarLayout collapsing;
     private CoordinatorLayout.Behavior<AppBarLayout> behavior;
+    private View mListExam;
 
 
     public ScreenExamResults() {
@@ -164,10 +164,9 @@ public class ScreenExamResults extends Fragment
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-//            case R.id.action_input_exam_results:
-//                iScreenExamResults.gotoScreenInputExamResults();
-//                //showInputExamResultsMode(selectedMonth, longDateInputExamResult);
-//                return true;
+            case R.id.action_input_exam_results:
+                iScreenExamResults.gotoScreenInputExamResults();
+                return true;
 
             case R.id.search:
                 onSearchClick();
@@ -206,7 +205,6 @@ public class ScreenExamResults extends Fragment
                         // Do something when collapsed
                         Log.d(TAG, "onMenuItemActionCollapse");
                         activity.showBottomBar();
-                        mGotoInputExam.setVisibility(View.VISIBLE);
                         return true;  // Return true to collapse action view
                     }
 
@@ -214,7 +212,6 @@ public class ScreenExamResults extends Fragment
                     public boolean onMenuItemActionExpand(MenuItem item) {
                         // Do something when expanded
                         Log.d(TAG, "onMenuItemActionExpand");
-                        mGotoInputExam.setVisibility(View.GONE);
                         return true;  // Return true to expand action view
                     }
                 });
@@ -506,10 +503,9 @@ public class ScreenExamResults extends Fragment
         mError = (FrameLayout) view.findViewById(R.id.mError);
         mNoData = (FrameLayout) view.findViewById(R.id.mNoData);
 
-        mGotoInputExam = view.findViewById(R.id.mGotoInputExam);
-
         txtClassAndTermName = (TextView) view.findViewById(R.id.txtClassAndTermName);
         mSugesstionSelectedSubject = view.findViewById(R.id.mSugesstionSelectedSubject);
+        mListExam = view.findViewById(R.id.mListExam);
         mResultListStudentBySuject = (ObservableRecyclerView) view.findViewById(R.id.mListExamResults);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 1);
         mResultListStudentBySuject.setLayoutManager(gridLayoutManager);
@@ -560,16 +556,6 @@ public class ScreenExamResults extends Fragment
                 handlerSelectedSubject(result);
                 alreadyExecuted = true;
                 showProgressLoading(false);
-                mGotoInputExam.setVisibility(View.VISIBLE);
-                mGotoInputExam.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (iScreenExamResults != null) {
-                            iScreenExamResults.gotoScreenInputExamResults();
-                        }
-                    }
-                });
-
             }
 
 
@@ -657,10 +643,12 @@ public class ScreenExamResults extends Fragment
             public void onClick(final DialogInterface dialogInterface, final int i) {
                 mSugesstionSelectedSubject.setVisibility(View.GONE);
                 mResultListStudentBySuject.setVisibility(View.VISIBLE);
+                mListExam.setVisibility(View.VISIBLE);
                 String subjectName = subjectNames.get(i);
                 int subjectId = result.get(i).getId();
                 selectedSubjectId = subjectId;
                 lbSubjectSeleted.setText(subjectName);
+                lbSubjectSeleted.setTextColor(Color.WHITE);
                 getExamResultsbySubject(true, subjectId);
             }
         });
