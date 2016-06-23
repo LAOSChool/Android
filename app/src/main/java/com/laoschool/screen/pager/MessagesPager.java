@@ -43,6 +43,10 @@ public class MessagesPager extends Fragment {
     public MessagesPager() {
     }
 
+    public List<Message> getMessages() {
+        return messages;
+    }
+
     public MessagesPager(ScreenMessage screenMessage, int position, List<Message> messages) {
         this.screenMessage = screenMessage;
         this.position = position;
