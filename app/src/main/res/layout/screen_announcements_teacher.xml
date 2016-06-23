@@ -29,6 +29,15 @@
             app:pstsShouldExpand="true"
             app:pstsTextAllCaps="false" />
 
+        <LinearLayout
+            android:id="@+id/mExspanSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <include layout="@layout/view_seach_button" />
+
+        </LinearLayout>
+
         <com.laoschool.view.ViewpagerDisableSwipeLeft
             android:id="@+id/notificationViewPage"
             android:layout_width="wrap_content"
@@ -57,6 +66,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone">
+
         <include layout="@layout/view_no_data" />
     </LinearLayout>
 
