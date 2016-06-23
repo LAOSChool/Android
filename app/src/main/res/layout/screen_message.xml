@@ -27,6 +27,15 @@
             app:pstsShouldExpand="true"
             app:pstsTextAllCaps="false" />
 
+        <LinearLayout
+            android:id="@+id/mExspanSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <include layout="@layout/view_seach_button" />
+
+        </LinearLayout>
+
         <com.laoschool.view.ViewpagerDisableSwipeLeft
             android:id="@+id/messageViewPage"
             android:layout_width="wrap_content"
@@ -50,10 +59,10 @@
         android:visibility="gone" />
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:id="@+id/mBacgroundSearch"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#99000000"
-        android:id="@+id/mBacgroundSearch"
+        android:orientation="horizontal"
         android:visibility="gone"></LinearLayout>
 </FrameLayout>
