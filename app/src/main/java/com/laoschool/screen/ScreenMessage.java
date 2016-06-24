@@ -43,7 +43,7 @@ import java.util.List;
  */
 public class ScreenMessage extends Fragment implements FragmentLifecycle {
 
-    private static final String TAG = "ScreenMessage";
+    private static final String TAG = ScreenMessage.class.getSimpleName();
     private static Context context;
     private int containerId;
     private static DataAccessInterface service;
@@ -67,6 +67,8 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
     private MenuItem itemSearch;
     private View mExspanSearch;
 
+    private boolean onSearch = false;
+
     public Message getMessage() {
         return message;
     }
@@ -82,8 +84,18 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
 
     @Override
     public void onResumeFragment() {
-        Log.d(TAG, "onResumeFragment");
         _showProgessLoading(false);
+        Log.d(TAG, "onResumeFragment() -onSearch:" + onSearch);
+        if (onSearch) {
+            if (itemSearch != null) {
+                MenuItemCompat.collapseActionView(itemSearch);
+                //itemSearch.setVisible(true);
+            } else {
+                Log.d(TAG, "onResumeFragment() -item Search null");
+            }
+        } else {
+
+        }
     }
 
     public void setRefeshListMessage(boolean refeshListMessage) {
@@ -342,37 +354,42 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
             itemSearch = menu.findItem(R.id.search);
             itemSearch.setVisible(false);
             mSearchMessage = (SearchView) menu.findItem(R.id.search).getActionView();
-            MenuItemCompat.setOnActionExpandListener(itemSearch, new MenuItemCompat.OnActionExpandListener() {
-                @Override
-                public boolean onMenuItemActionExpand(MenuItem item) {
-                    mBacgroundSearch.setVisibility(View.VISIBLE);
-                    mSearchMessageList.setVisibility(View.VISIBLE);
-                    tabs.setVisibility(View.GONE);
-                    mMessages.setVisibility(View.GONE);
-                    mExspanSearch.setVisibility(View.GONE);
-
-                    ((HomeActivity) getActivity()).hideBottomBar();
-                    ((HomeActivity) getActivity()).displaySearch();
-
-                    expandSearchMessages();
-                    return true;
-                }
-
-                @Override
-                public boolean onMenuItemActionCollapse(MenuItem item) {
-                    mMessages.setVisibility(View.VISIBLE);
-                    tabs.setVisibility(View.VISIBLE);
-                    mExspanSearch.setVisibility(View.VISIBLE);
-                    mSearchMessageList.setVisibility(View.GONE);
-                    mBacgroundSearch.setVisibility(View.GONE);
-                    ((HomeActivity) getActivity()).showBottomBar();
-                    itemSearch.setVisible(false);
-                    ((HomeActivity) getActivity()).cancelSearch();
-                    clearListSearch();
-                    return true;
-                }
-            });
+            onExpanCollapseSearch();
         }
+    }
+
+    private void onExpanCollapseSearch() {
+        MenuItemCompat.setOnActionExpandListener(itemSearch, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                itemSearch.setVisible(true);
+                mBacgroundSearch.setVisibility(View.VISIBLE);
+                mSearchMessageList.setVisibility(View.VISIBLE);
+                tabs.setVisibility(View.GONE);
+                mMessages.setVisibility(View.GONE);
+                mExspanSearch.setVisibility(View.GONE);
+
+                ((HomeActivity) getActivity()).hideBottomBar();
+                ((HomeActivity) getActivity()).displaySearch();
+
+                expandSearchMessages();
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                mMessages.setVisibility(View.VISIBLE);
+                tabs.setVisibility(View.VISIBLE);
+                mExspanSearch.setVisibility(View.VISIBLE);
+                mSearchMessageList.setVisibility(View.GONE);
+                mBacgroundSearch.setVisibility(View.GONE);
+                ((HomeActivity) getActivity()).showBottomBar();
+                itemSearch.setVisible(false);
+                ((HomeActivity) getActivity()).cancelSearch();
+                clearListSearch();
+                return true;
+            }
+        });
     }
 
     private void expandSearchMessages() {
@@ -392,6 +409,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
                 @Override
                 public boolean onQueryTextChange(String query) {
                     if (!query.trim().isEmpty()) {
+                        onSearch = true;
                         mBacgroundSearch.setVisibility(View.GONE);
 
                         mSearchMessageList.setEnabled(true);
