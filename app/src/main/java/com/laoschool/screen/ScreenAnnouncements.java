@@ -8,10 +8,12 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -72,6 +74,11 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     private static ProgressBar mProgressBar;
     private static View mError;
     private static View mNoData;
+    private View mExpanSearch;
+    private MenuItem itemSearch;
+    private View mBacgroundSearch;
+    private RecyclerView mSearchResults;
+    private SearchView mSearch;
 
 
     public Message getNotification() {
@@ -311,10 +318,42 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
         // Bind the tabs to the ViewPager
         tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
         viewPage = (ViewpagerDisableSwipeLeft) view.findViewById(R.id.notificationViewPage);
-        viewPage.setAllowedSwipeDirection(HomeActivity.SwipeDirection.none);
+        viewPage.setAllowedSwipeDirection(HomeActivity.SwipeDirection.all);
+
+        //init seach
+        mExpanSearch = view.findViewById(R.id.mExpanSearch);
+        mBacgroundSearch = view.findViewById(R.id.mBacgroundSearch);
+        mSearchResults = (RecyclerView) view.findViewById(R.id.mSearchResults);
+        mSearchResults.setLayoutManager(new LinearLayoutManager(context));
+
+        //
+        onExpanSearch();
+        onCollapseSearch();
 
         return view;
     }
+
+    private void onCollapseSearch() {
+        mBacgroundSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (MenuItemCompat.isActionViewExpanded(itemSearch)) {
+                    MenuItemCompat.collapseActionView(itemSearch);
+                }
+            }
+        });
+    }
+
+    private void onExpanSearch() {
+        mExpanSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MenuItemCompat.expandActionView(itemSearch);
+                itemSearch.setVisible(true);
+            }
+        });
+    }
+
 
     private void _handlerPageChange() {
         ViewPager.OnPageChangeListener onPageNotificationChangeListener = new ViewPager.OnPageChangeListener() {
@@ -339,79 +378,89 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
         viewPage.addOnPageChangeListener(onPageNotificationChangeListener);
     }
 
-    private View _defineStudentView(View view) {
-        mRecylerViewNotificationStudent = (RecyclerView) view.findViewById(R.id.mRecylerViewNotificationStudent);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
-        mRecylerViewNotificationStudent.setLayoutManager(linearLayoutManager);
-        final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
-        //
-        int count = accessNotification.getNotificationCount();
-        Log.d(TAG, "notification count in local:" + count);
-        if (count > 0) {
-            getNotificationFormClientForStudent();
-        } else {
-            getNotificationFormServerForStudent();
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (currentRole != null) {
+            inflater.inflate(R.menu.menu_screen_announcement, menu);
+            MenuItem itemCreateAnnocement = menu.findItem(R.id.action_create_announcement);
+            itemSearch = menu.findItem(R.id.search);
+            itemSearch.setVisible(false);
+            mSearch = (SearchView) itemSearch.getActionView();
+            if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER))
+                itemCreateAnnocement.setVisible(true);
+            else itemCreateAnnocement.setVisible(false);
+
+            onExpandCollapseSearch();
+
         }
 
 
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+    }
+
+    private void onExpandCollapseSearch() {
+        MenuItemCompat.setOnActionExpandListener(itemSearch, new MenuItemCompat.OnActionExpandListener() {
             @Override
-            public void onRefresh() {
-                getNotificationFormServerForStudent();
-                // Refresh items
-                mSwipeRefreshLayout.setRefreshing(false);
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                itemSearch.setVisible(true);
+                viewPage.setVisibility(View.VISIBLE);
+                mBacgroundSearch.setVisibility(View.VISIBLE);
+
+                mExpanSearch.setVisibility(View.GONE);
+                tabs.setVisibility(View.GONE);
+
+                ((HomeActivity) getActivity()).displaySearch();
+                ((HomeActivity) getActivity()).hideBottomBar();
+
+                expanSearch();
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                mAnnouncement.setVisibility(View.VISIBLE);
+                tabs.setVisibility(View.VISIBLE);
+                viewPage.setVisibility(View.VISIBLE);
+                mExpanSearch.setVisibility(View.VISIBLE);
+                itemSearch.setVisible(false);
+                mBacgroundSearch.setVisibility(View.GONE);
+                mSearchResults.setVisibility(View.GONE);
+
+                ((HomeActivity) getActivity()).cancelSearch();
+                ((HomeActivity) getActivity()).showBottomBar();
+                return true;
             }
         });
-
-
-        return view;
     }
 
-    private void getNotificationFormClientForStudent() {
-        List<Message> messages = accessNotification.getListNotificationForUser(Message.MessageColumns.COLUMN_NAME_TO_USER_NAME, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
-        _setListNotificationForStudent(messages);
+    private void expanSearch() {
+        final int currentPosition = viewPage.getCurrentItem();
+        notificationPagerAdapter.getFragment(currentPosition);
+        int isRead = 0;
+        if (currentPosition == 0) {
+            isRead = 1;
+        }
 
-    }
-
-    private void getNotificationFormServerForStudent() {
-        service.getNotification(new AsyncCallback<List<Message>>() {
+        //search
+        final int finalIsRead = isRead;
+        mSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void onSuccess(List<Message> result) {
-                try {
-                    for (Message message : result) {
-                        accessNotification.addOrUpdateNotification(message);
-                    }
-                    List<Message> messages = accessNotification.getListNotificationForUser(Message.MessageColumns.COLUMN_NAME_TO_USER_NAME, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
-                    _setListNotificationForStudent(messages);
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
 
-                } catch (Exception e) {
-                    e.printStackTrace();
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (!newText.trim().isEmpty()) {
+                    mAnnouncement.setVisibility(View.GONE);
+                    mBacgroundSearch.setVisibility(View.GONE);
+                    mSearchResults.setVisibility(View.VISIBLE);
+                    List<Message> notificationList = DataAccessNotification.searchNotificationInbox(LaoSchoolShared.myProfile.getId(), finalIsRead, newText);
+                    ListNotificationAdapter listNotiAdapter = new ListNotificationAdapter(thiz, mSearchResults, currentPosition, notificationList);
+                    mSearchResults.setAdapter(listNotiAdapter);
                 }
-            }
-
-            @Override
-            public void onFailure(String message) {
-
-            }
-
-            @Override
-            public void onAuthFail(String message) {
-                LaoSchoolShared.goBackToLoginPage(context);
+                return true;
             }
         });
-    }
-
-    private void _setListNotificationForStudent(List<Message> messages) {
-        final ListNotificationAdapter listMessageAdapter = new ListNotificationAdapter(this, mRecylerViewNotificationStudent, 0, messages);
-        mRecylerViewNotificationStudent.setAdapter(listMessageAdapter);
-    }
-
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (currentRole != null)
-            if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER))
-                inflater.inflate(R.menu.menu_screen_announcement, menu);
 
     }
 
