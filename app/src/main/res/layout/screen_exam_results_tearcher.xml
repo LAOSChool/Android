@@ -67,10 +67,10 @@
                     </RelativeLayout>
 
                     <LinearLayout
-                        android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="#fff"></LinearLayout>
+                        android:background="#fff"
+                        android:orientation="vertical"></LinearLayout>
 
                     <RelativeLayout
                         android:id="@+id/mSelectedSubject"
@@ -117,18 +117,23 @@
             </LinearLayout>
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
+
     <LinearLayout
+        android:id="@+id/mListExam"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:orientation="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:id="@+id/mListExam">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <include
+        <LinearLayout
             android:id="@+id/mSearchBox"
-            layout="@layout/view_search" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <include layout="@layout/view_seach_button" />
+        </LinearLayout>
 
         <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
             android:id="@+id/mListExamResults"
@@ -138,6 +143,7 @@
             android:scrollbars="none"
             android:visibility="gone" />
     </LinearLayout>
+
     <FrameLayout
         android:id="@+id/mSugesstionSelectedSubject"
         android:layout_width="match_parent"
@@ -174,7 +180,6 @@
         </LinearLayout>
 
     </FrameLayout>
-
 
 
     <!--</LinearLayout>-->
