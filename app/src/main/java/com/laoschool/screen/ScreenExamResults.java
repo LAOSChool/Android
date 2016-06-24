@@ -95,8 +95,8 @@ public class ScreenExamResults extends Fragment
     private CollapsingToolbarLayout collapsing;
     private CoordinatorLayout.Behavior<AppBarLayout> behavior;
     private View mListExam;
-    private View mSearchBox;
-    private EditText txtSearch;
+    private View mExpanSearch;
+    //   private EditText txtSearch;
 
     private AppBarStateChangeListener.State appBarState = AppBarStateChangeListener.State.EXPANDED;
 
@@ -201,33 +201,64 @@ public class ScreenExamResults extends Fragment
         try {
             if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
                 menu.clear();
-                inflater.inflate(R.menu.menu_exam_results_teacher, menu);
-                MenuItem item = menu.findItem(R.id.search);
-                mSearchExamResults = new SearchView(((HomeActivity) getActivity()).getSupportActionBar().getThemedContext());
-                MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
-                MenuItemCompat.setActionView(item, mSearchExamResults);
-
-                MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
-                    @Override
-                    public boolean onMenuItemActionCollapse(MenuItem item) {
-                        // Do something when collapsed
-                        Log.d(TAG, "onMenuItemActionCollapse");
-                        activity.showBottomBar();
-                        return true;  // Return true to collapse action view
-                    }
-
-                    @Override
-                    public boolean onMenuItemActionExpand(MenuItem item) {
-                        // Do something when expanded
-                        Log.d(TAG, "onMenuItemActionExpand");
-                        return true;  // Return true to expand action view
-                    }
-                });
+                inflater.inflate(R.menu.menu_screen_exam_results_teacher, menu);
+                itemSearch = menu.findItem(R.id.search);
+                mSearchExamResults = (SearchView) itemSearch.getActionView();
+                onExpanCollapseSearch();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
+
+    private void onExpanCollapseSearch() {
+        MenuItemCompat.setOnActionExpandListener(itemSearch, new MenuItemCompat.OnActionExpandListener() {
+
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                // Do something when expanded
+                itemSearch.setVisible(true);
+                setExpandedAppBar(false, true);
+                mExpanSearch.setVisibility(View.GONE);
+
+                ((HomeActivity) getActivity()).displaySearch();
+                ((HomeActivity) getActivity()).hideBottomBar();
+
+                expanSearch();
+                return true;  // Return true to expand action view
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                // Do something when collapsed
+                itemSearch.setVisible(false);
+                setExpandedAppBar(true, true);
+                mExpanSearch.setVisibility(View.VISIBLE);
+
+                ((HomeActivity) getActivity()).cancelSearch();
+                ((HomeActivity) getActivity()).showBottomBar();
+                return true;  // Return true to collapse action view
+            }
+
+
+        });
+    }
+
+    private void expanSearch() {
+        mSearchExamResults.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                Log.d(TAG, "query:" + query);
+                resultsforClassbySubjectAdapter.filter(query);
+                return true;
+            }
+        });
     }
 
     @Override
@@ -510,11 +541,11 @@ public class ScreenExamResults extends Fragment
         mNoData = (FrameLayout) view.findViewById(R.id.mNoData);
 
         //define seach box
-        mSearchBox = view.findViewById(R.id.mSearchBox);
-        txtSearch = (EditText) view.findViewById(R.id.txtSearch);
+        mExpanSearch = view.findViewById(R.id.mSearchBox);
+//        txtSearch = (EditText) view.findViewById(R.id.txtSearch);
 
         //clear focus search
-        txtSearch.clearFocus();
+        // txtSearch.clearFocus();
 
 
         txtClassAndTermName = (TextView) view.findViewById(R.id.txtClassAndTermName);
@@ -529,7 +560,19 @@ public class ScreenExamResults extends Fragment
         onAppBarExpanded();
         //focus and collapse appbar
         onOnFocusChangeBoxSearch();
+
+        onExpanSearch();
         return view;
+    }
+
+    private void onExpanSearch() {
+        mExpanSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MenuItemCompat.expandActionView(itemSearch);
+                itemSearch.setVisible(true);
+            }
+        });
     }
 
     private void onAppBarExpanded() {
@@ -542,19 +585,19 @@ public class ScreenExamResults extends Fragment
     }
 
     private void onOnFocusChangeBoxSearch() {
-        txtSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                Log.d(TAG, "onFocusChange:" + hasFocus);
-                if (hasFocus) {
-                    if (appBarState == AppBarStateChangeListener.State.EXPANDED || appBarState == AppBarStateChangeListener.State.IDLE) {
-                        setExpandedAppBar(false, true);
-                    }
-                }
-
-
-            }
-        });
+//        txtSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View view, boolean hasFocus) {
+//                Log.d(TAG, "onFocusChange:" + hasFocus);
+//                if (hasFocus) {
+//                    if (appBarState == AppBarStateChangeListener.State.EXPANDED || appBarState == AppBarStateChangeListener.State.IDLE) {
+//                        setExpandedAppBar(false, true);
+//                    }
+//                }
+//
+//
+//            }
+//        });
 
     }
 
@@ -799,25 +842,25 @@ public class ScreenExamResults extends Fragment
     }
 
     private void onTextChangeTextBoxSearch() {
-        txtSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (appBarState == AppBarStateChangeListener.State.EXPANDED) {
-                    setExpandedAppBar(true, true);
-                }
-                resultsforClassbySubjectAdapter.filter(charSequence.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
+//        txtSearch.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//                if (appBarState == AppBarStateChangeListener.State.EXPANDED) {
+//                    setExpandedAppBar(true, true);
+//                }
+//                resultsforClassbySubjectAdapter.filter(charSequence.toString());
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//
+//            }
+//        });
     }
 
     private void setExpandedAppBar(boolean show, boolean show_animation) {
