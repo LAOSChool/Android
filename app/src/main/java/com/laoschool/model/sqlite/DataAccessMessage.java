@@ -291,6 +291,7 @@ public class DataAccessMessage {
             String like_query = "Select * from messages WHERE "
                     + Message.MessageColumns.COLUMN_NAME_TO_USR_ID + " = " + toUserId +
                     ((isRead == 0) ? " AND " + Message.MessageColumns.COLUMN_NAME_IS_READ + " = " + isRead : "") +
+                    " AND " + Message.MessageColumns.COLUMN_NAME_TYPE + " = " + 0 +
                     " AND " + "messages.content LIKE '%" + query + "%'";
             Log.d(TAG, "searchMessageInbox() -query:" + like_query);
             SQLiteDatabase db = databaseHandler.getReadableDatabase();
@@ -316,6 +317,7 @@ public class DataAccessMessage {
         List<Message> messages = new ArrayList<>();
         try {
             String like_query = "Select * from messages WHERE " + Message.MessageColumns.COLUMN_NAME_FROM_USR_ID + " = " + formUserId +
+                    " AND " + Message.MessageColumns.COLUMN_NAME_TYPE + " = " + 0 +
                     " AND messages.content LIKE '%" + query + "%'";
             Log.d(TAG, "searchMessageSend() -query:" + like_query);
             SQLiteDatabase db = databaseHandler.getReadableDatabase();
