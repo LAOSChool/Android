@@ -13,8 +13,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:orientation="vertical"
-        android:visibility="gone"
-        tools:context="com.laoschool.screen.ScreenMessage">
+        tools:context="com.laoschool.screen.ScreenMessage"
+        android:visibility="gone">
 
         <!-- TODO: Update blank fragment layout -->
         <com.astuetz.PagerSlidingTabStrip
@@ -69,5 +69,19 @@
 
         <include layout="@layout/view_no_data" />
     </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/mSearchResults"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/mBacgroundSearch"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#99000000"
+        android:orientation="horizontal"
+        android:visibility="gone"></LinearLayout>
 
 </FrameLayout>
