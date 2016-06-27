@@ -64,5 +64,7 @@
     <color name="colorPrimaryDarkSearch">#9E9E9E</color>
     <color name="colorBackgroundFilter">#00A261</color>
 
+    <color name="colorTextUnSelected">#BDBDBD</color>
+
 
 </resources>
