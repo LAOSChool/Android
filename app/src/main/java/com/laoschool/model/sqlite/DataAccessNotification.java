@@ -206,6 +206,7 @@ public class DataAccessNotification {
                 if (cursor.getCount() > 0)
                     do {
                         Message message = LaoSchoolShared.parseMessageFormSql(cursor);
+                        message.setNotifyImages(DataAccessImage.getListImageFormNotificationId(message.getTask_id()));
                         messages.add(message);
                     } while (cursor.moveToNext());
             }
