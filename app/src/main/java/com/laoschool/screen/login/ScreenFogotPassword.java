@@ -69,6 +69,19 @@ public class ScreenFogotPassword extends Fragment {
         final EditText txbPhoneNumber = (EditText) view.findViewById(R.id.txbPhoneNumber);
         final ScrollView scrollView = (ScrollView) view.findViewById(R.id.scrollView);
         final LinearLayout textbBox = (LinearLayout) view.findViewById(R.id.textBox);
+        TextView txvTitle = (TextView) view.findViewById(R.id.txvTitle);
+        TextView txvText1 = (TextView) view.findViewById(R.id.txvText1);
+        TextView txvText2 = (TextView) view.findViewById(R.id.txvText2);
+        TextView txvUsername = (TextView) view.findViewById(R.id.txvUsername);
+        TextView txvPhone = (TextView) view.findViewById(R.id.txvPhone);
+
+        txvTitle.setText(R.string.SCForgotPass_Title);
+        txvText1.setText(R.string.SCForgotPass_Text1);
+        txvText2.setText(R.string.SCForgotPass_Text2);
+        txvUsername.setText(R.string.SCCommon_UserName);
+        txvPhone.setText(R.string.SCForgotPass_PhoneNumber);
+        btnSubmit.setText(R.string.SCCommon_Submit);
+
         txbPhoneNumber.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_CLASS_PHONE);
         this.scrollView = scrollView;
 

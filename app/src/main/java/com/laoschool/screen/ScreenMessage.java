@@ -242,9 +242,9 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         List<Message> messagesFormUser = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
         // Bind the tabs to the ViewPager
         if (inita)
-            messagesPagerAdapter = new MessagesPagerAdapter(fr, thiz, messagesForUserInbox, messagesToUserUnread, messagesFormUser);
+            messagesPagerAdapter = new MessagesPagerAdapter(context, fr, thiz, messagesForUserInbox, messagesToUserUnread, messagesFormUser);
         else {
-            messagesPagerAdapter = new MessagesPagerAdapter(fr, thiz, new ArrayList<Message>(), new ArrayList<Message>(), new ArrayList<Message>());
+            messagesPagerAdapter = new MessagesPagerAdapter(context, fr, thiz, new ArrayList<Message>(), new ArrayList<Message>(), new ArrayList<Message>());
         }
         pager.setAdapter(messagesPagerAdapter);
         tabs.setViewPager(pager);

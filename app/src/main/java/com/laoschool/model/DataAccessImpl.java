@@ -550,6 +550,72 @@ public class DataAccessImpl implements DataAccessInterface {
     }
 
     @Override
+    public void createAttendance(Attendance attendance, final AsyncCallback<Attendance> callback) {
+        final String httpPostBody = attendance.toJson();
+        // Request a string response from the provided URL.
+        String url = HOST + "attendances/create";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url.trim(),
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("Service/creAttendance()", response);
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String attendanceJson = jsonObject.getString("messageObject");
+                            Attendance attendance1 = Attendance.fromJson(attendanceJson);
+                            callback.onSuccess(attendance1);
+                        } catch (JSONException e) {
+                            Log.i("Service/creAttendance()", "Unable to parse attendance object");
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && networkResponse.statusCode == 409) {
+                            // HTTP Status Code: 409 Unauthorized Oo
+                            Log.e("Service/creAttendance()", "error status code " + networkResponse.statusCode);
+                            callback.onAuthFail(error.toString());
+                        } else if (networkResponse != null) {
+                            try {
+                                String responseBody = new String(error.networkResponse.data, "utf-8");
+                                JSONObject jsonObject = new JSONObject(responseBody);
+                                String developerMessage = jsonObject.getString("developerMessage");
+                                callback.onFailure(developerMessage);
+                            } catch (JSONException e) {
+                                callback.onFailure("Server error statusCode = 500 but can not read response body");
+                            } catch (UnsupportedEncodingException e) {
+                                callback.onFailure("Server error statusCode = 500 but can not read response body");
+                            }
+                            Log.e("Service/creAttendance()", new String(error.networkResponse.data));
+                        } else {
+                            Log.e("Service/creAttendance()", error.toString());
+                            callback.onFailure(error.toString());
+                        }
+                    }
+                }
+
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", getAuthKey());
+                params.put("Content-Type", "application/json");
+                return params;
+            }
+
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                return httpPostBody.getBytes();
+            }
+        };
+
+        mRequestQueue.add(stringRequest);
+    }
+
+    @Override
     public void requestAttendance(Attendance attendance, String fromDt, String toDt, final AsyncCallback<String> callback) {
         final String httpPostBody = attendance.toJson();
         // Request a string response from the provided URL.
@@ -581,6 +647,7 @@ public class DataAccessImpl implements DataAccessInterface {
                             } catch (UnsupportedEncodingException e) {
                                 callback.onFailure("Server error statusCode = 500 but can not read response body");
                             }
+                            Log.e("Service/reqAttendance()", new String(error.networkResponse.data));
                         } else {
                             Log.e("Service/reqAttendance()", error.toString());
                             callback.onFailure(error.toString());
@@ -661,7 +728,54 @@ public class DataAccessImpl implements DataAccessInterface {
             Log.d("Service/rollupAtten()", "filter_class_id or filter_date is empty.");
         }
     }
-    
+
+    @Override
+    public void deleteAttendance(final int attendanceId, final AsyncCallback<String> callback) {
+        // Request a string response from the provided URL.
+        String url = HOST + "attendances/delete/" + attendanceId;
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url.trim(),
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("Service/deleteAtten()", response);
+                        callback.onSuccess(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && networkResponse.statusCode == 409) {
+                            // HTTP Status Code: 409 Unauthorized Oo
+                            Log.e("Service/deleteAtten()", "error status code " + networkResponse.statusCode);
+                            callback.onAuthFail(error.toString());
+                        } else if(networkResponse != null) {
+                            Log.e("Service/deleteAtten()", new String(networkResponse.data));
+                        } else {
+                            Log.e("Service/deleteAtten()", error.toString());
+                            callback.onFailure(error.toString());
+                        }
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", getAuthKey());
+                return params;
+            }
+//            @Override
+//            protected Map<String, String> getParams() throws AuthFailureError {
+//                Map<String, String> params = new HashMap<String, String>();
+//                params.put("attendance_id", String.valueOf(attendanceId));
+//                return params;
+//            };
+        };
+
+        mRequestQueue.add(stringRequest);
+    }
+
     public void getExamResults(int filter_class_id, int filter_user_id, int filter_subject_id, final AsyncCallback<List<ExamResult>> callback) {
         String url = HOST + "exam_results";
         StringBuilder stringBuilder = new StringBuilder();
@@ -1064,7 +1178,7 @@ public class DataAccessImpl implements DataAccessInterface {
         jsonObject.addProperty("content", message.getContent());
         jsonObject.addProperty("from_usr_id", message.getFrom_usr_id());
         jsonObject.addProperty("to_usr_id", message.getTo_usr_id());
-        if(!message.getCc_list().isEmpty())
+        if(message.getCc_list() != null && !message.getCc_list().isEmpty())
             jsonObject.addProperty("cc_list", message.getCc_list());
         Gson gson = new Gson();
         String jsonString = gson.toJson(jsonObject);

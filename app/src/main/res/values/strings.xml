@@ -1,33 +1,80 @@
 <resources>
-    <string name="app_name">LAOSchool</string>
+    <!--Common screen-->
+    <string name="SCCommon_Help">Help</string>
+    <string name="SCCommon_UserName">Username</string>
+    <string name="SCCommon_Password">Password</string>
+    <string name="SCCommon_Submit">Submit</string>
+    <string name="SCCommon_Language">Language</string>
+    <string name="SCCommon_Home">Home</string>
+    <string name="SCCommon_Message">Message</string>
+    <string name="SCCommon_Announcements">Announcements</string>
+    <string name="SCCommon_ExamResults">Exam results</string>
+    <string name="SCCommon_Attendance">Attendance</string>
+    <string name="SCCommon_More">More</string>
+    <string name="SCCommon_SchoolInfomation">School information</string>
+    <string name="SCCommon_FinalResults">Final results</string>
+    <string name="SCCommon_TimeTable">Time Table</string>
+    <string name="SCCommon_ListTeacher">List teacher</string>
+    <string name="SCCommon_ChangePassword">Change Password</string>
+    <string name="SCCommon_Logout">Logout</string>
+    <string name="SCCommon_Inbox">Inbox</string>
+    <string name="SCCommon_Unread">Unread</string>
+    <string name="SCCommon_Send">Send</string>
+    <string name="SCCommon_Search">Search</string>
+    <string name="SCCommon_Class">Class</string>
+    <string name="SCCommon_Done">Done</string>
+    <string name="SCCommon_Cancel">Cancel</string>
+    <string name="SCCommon_Yes">Yes</string>
+    <string name="SCCommon_No">No</string>
+
+    <!--Login screen-->
+    <string name="SCLogin_AppName">LAOSchool</string>
+    <string name="SCLogin_Login">SIGN IN</string>
+    <string name="SCLogin_ForgotPass">Forgotten password?</string>
+
+    <!--ForgotPass screen-->
+    <string name="SCForgotPass_Title">Forgotten password?</string>
+    <string name="SCForgotPass_Text1">Please enter your username and the phone number that is being registered for this account.</string>
+    <string name="SCForgotPass_Text2">(If you do not remember your username and the phone number, please contact with school\'s admin.)</string>
+    <string name="SCForgotPass_PhoneNumber">Phone number</string>
+
+    <!--CreateMessage screen-->
+    <string name="SCCreateMessage_CreateMessage">Create Message</string>
+    <string name="SCCreateMessage_To">To</string>
+    <string name="SCCreateMessage_SMS">SMS</string>
+    <string name="SCCreateMessage_Important">Important</string>
+    <string name="SCCreateMessage_Content">Content</string>
+    <string name="SCCreateMessage_Subject">Subject</string>
+
+    <!--Attendance screen-->
+    <string name="SCAttendance_Subjects">Subjects</string>
+    <string name="SCAttendance_ChoseSubjects">Chose Subject</string>
+    <string name="SCAttendance_ListStudents">List students</string>
+    <string name="SCAttendance_Absent">Absent</string>
+    <string name="SCAttendance_Fulldays">Full days</string>
+    <string name="SCAttendance_Sessions">Sessions</string>
+    <string name="SCAttendance_Excused">Excused</string>
+    <string name="SCAttendance_NoExcused">No Excused</string>
+    <string name="SCAttendance_NoReason">No Reason</string>
+    <string name="SCAttendance_AbsentCreate">Your Absent</string>
+    <string name="SCAttendance_AbsentReason">Reason for absent</string>
+
     <!--title screen-->
-    <string name="title_activity_home">Home</string>
-    <string name="title_screen_message">Message</string>
-    <string name="title_screen_attended">Attendance</string>
-    <string name="action_request_attendance">Your Absent</string>
-    <string name="title_screen_exam_results">Exam results</string>
-    <string name="title_screen_schedule">Time Table</string>
-    <string name="title_screen_more">More</string>
     <string name="title_activity_screen_login">Lao school</string>
     <string name="action_create_message">Create</string>
-    <string name="title_screen_final_results_student">Final results</string>
     <string name="title_screen_profile">Profile</string>
-    <string name="title_screen_school_information">School information</string>
-    <string name="title_screen_create_message">Create Message</string>
+
     <string name="action_cancel">Cancel</string>
     <string name="action_send_message">Send</string>
     <string name="title_screen_select_list_student">Select list student</string>
     <string name="title_screen_mark_score_student">Mark Score</string>
-    <string name="title_screen_setting">Change Password</string>
-    <string name="title_screen_list_teacher">List teacher</string>
 
-    <string name="title_screen_announcements">Announcements</string>
     <string name="hello_blank_fragment">Hello</string>
     <string name="tite_screen_login_help">Login help</string>
     <string name="title_screen_forgot_pasword">Forgot password</string>
     <string name="title_screen_announcement_details"></string>
     <string name="title_screen_message_details"></string>
-    <string name="action_log_out">Logout</string>
+
     <string name="row_line" translatable="false">line</string>
     <string name="setting_change_language">Change language</string>
     <string name="row_sub_header">sub header</string>
@@ -56,31 +103,35 @@
 
 
     <string-array name="more_teacher">
-        <item>@string/row_sub_header</item>
-        <item>@string/title_screen_school_information</item>
+       <!-- <item>@string/row_sub_header</item>-->
+        <item>@string/SCCommon_SchoolInfomation</item>
         <item>@string/row_line</item>
-        <item>@string/title_screen_schedule</item>
+        <item>@string/SCCommon_TimeTable</item>
         <item>@string/row_line</item>
-        <item>@string/title_screen_list_teacher</item>
+        <item>@string/SCCommon_ListTeacher</item>
         <item>@string/row_line</item>
-        <item>@string/title_screen_setting</item>
+        <item>@string/SCCommon_ChangePassword</item>
         <item>@string/row_line</item>
-        <item>@string/action_log_out</item>
+        <item>@string/SCCommon_Language</item>
+        <item>@string/row_line</item>
+        <item>@string/SCCommon_Logout</item>
         <item>@string/row_line</item>
     </string-array>
 
     <string-array name="more_student">
-        <item>@string/title_screen_school_information</item>
+        <item>@string/SCCommon_SchoolInfomation</item>
         <item>@string/row_line</item>
-        <item>@string/title_screen_final_results_student</item>
+        <item>@string/SCCommon_FinalResults</item>
         <item>@string/row_line</item>
-        <item>@string/title_screen_schedule</item>
+        <item>@string/SCCommon_TimeTable</item>
         <item>@string/row_line</item>
-        <item>@string/title_screen_list_teacher</item>
+        <item>@string/SCCommon_ListTeacher</item>
         <item>@string/row_line</item>
-        <item>@string/title_screen_setting</item>
+        <item>@string/SCCommon_ChangePassword</item>
         <item>@string/row_line</item>
-        <item>@string/action_log_out</item>
+        <item>@string/SCCommon_Language</item>
+        <item>@string/row_line</item>
+        <item>@string/SCCommon_Logout</item>
         <item>@string/row_line</item>
     </string-array>
 

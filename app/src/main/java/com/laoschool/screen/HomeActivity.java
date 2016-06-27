@@ -1,5 +1,6 @@
 package com.laoschool.screen;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -37,13 +38,10 @@ import com.laoschool.model.sqlite.DataAccessImage;
 import com.laoschool.model.sqlite.DataAccessMessage;
 import com.laoschool.screen.ScreenCreateAnnouncement.IScreenCreateAnnouncement;
 import com.laoschool.screen.login.ScreenLogin;
+import com.laoschool.screen.view.Languages;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
 import com.laoschool.view.ViewpagerDisableSwipeLeft;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
 
 public class HomeActivity extends AppCompatActivity implements
         TabHost.OnTabChangeListener, ViewPager.OnPageChangeListener, ScreenMessage.IScreenMessage,
@@ -256,7 +254,7 @@ public class HomeActivity extends AppCompatActivity implements
 
         mViewPager.setAllowedSwipeDirection(SwipeDirection.none);
 
-        getSupportActionBar().setTitle(R.string.title_screen_message);
+        getSupportActionBar().setTitle(R.string.SCCommon_Message);
     }
 
     /**
@@ -274,62 +272,62 @@ public class HomeActivity extends AppCompatActivity implements
 
 
         //AddTab message
-        TabHost.TabSpec tabSpecMessage = this.mTabHost.newTabSpec(getString(R.string.title_screen_message));
-        View tabIncatorMessage = LaoSchoolShared.createTabIndicator(getLayoutInflater(), mTabHost, R.string.title_screen_message, R.drawable.ic_message_black_24dp);
+        TabHost.TabSpec tabSpecMessage = this.mTabHost.newTabSpec(getString(R.string.SCCommon_Message));
+        View tabIncatorMessage = LaoSchoolShared.createTabIndicator(getLayoutInflater(), mTabHost, R.string.SCCommon_Message, R.drawable.ic_message_black_24dp);
         ((TextView) (tabIncatorMessage.findViewById(R.id.tab_indicator_title))).setTextColor(getResources().getColor(R.color.color_text_tab_selected));
         ((ImageView) (tabIncatorMessage.findViewById(R.id.tab_indicator_icon))).setColorFilter(getResources().getColor(R.color.color_icon_tab_selected));
 
         tabIncatorMessage.setLayoutParams(new LinearLayout.LayoutParams(widthTabIndicator, ViewGroup.LayoutParams.WRAP_CONTENT));
         tabSpecMessage.setIndicator(tabIncatorMessage);
-        HomeActivity.AddTab(this, this.mTabHost, tabSpecMessage, (tabInfo = new TabInfo(getString(R.string.title_screen_message), ScreenMessage.class, args)));
+        HomeActivity.AddTab(this, this.mTabHost, tabSpecMessage, (tabInfo = new TabInfo(getString(R.string.SCCommon_Message), ScreenMessage.class, args)));
         this.mapTabInfo.put(tabInfo.tag, tabInfo);
 
         //Add tab announcemen
-        TabHost.TabSpec tabSpecAnnouncemen = this.mTabHost.newTabSpec(getString(R.string.title_screen_announcements));
-        View tabIncatorAnnouncemen = LaoSchoolShared.createTabIndicator(getLayoutInflater(), mTabHost, R.string.title_screen_announcements, R.drawable.ic_announcement_black_24dp);
+        TabHost.TabSpec tabSpecAnnouncemen = this.mTabHost.newTabSpec(getString(R.string.SCCommon_Announcements));
+        View tabIncatorAnnouncemen = LaoSchoolShared.createTabIndicator(getLayoutInflater(), mTabHost, R.string.SCCommon_Announcements, R.drawable.ic_announcement_black_24dp);
         ((TextView) (tabIncatorAnnouncemen.findViewById(R.id.tab_indicator_title))).setTextColor(getResources().getColor(R.color.color_text_tab_unselected));
         ((ImageView) (tabIncatorAnnouncemen.findViewById(R.id.tab_indicator_icon))).setColorFilter(getResources().getColor(R.color.color_icon_tab_unselected));
 
         tabIncatorAnnouncemen.setLayoutParams(new LinearLayout.LayoutParams(widthTabIndicator, ViewGroup.LayoutParams.WRAP_CONTENT));
         tabSpecAnnouncemen.setIndicator(tabIncatorAnnouncemen);
-        HomeActivity.AddTab(this, this.mTabHost, tabSpecAnnouncemen, (tabInfo = new TabInfo(getString(R.string.title_screen_announcements), ScreenAnnouncements.class, args)));
+        HomeActivity.AddTab(this, this.mTabHost, tabSpecAnnouncemen, (tabInfo = new TabInfo(getString(R.string.SCCommon_Announcements), ScreenAnnouncements.class, args)));
         this.mapTabInfo.put(tabInfo.tag, tabInfo);
 
 
         //Add tab mark score
-        TabHost.TabSpec tabSpecSchedule = this.mTabHost.newTabSpec(getString(R.string.title_screen_exam_results));
+        TabHost.TabSpec tabSpecSchedule = this.mTabHost.newTabSpec(getString(R.string.SCCommon_ExamResults));
 
-        View tabIncatorSchedule = LaoSchoolShared.createTabIndicator(getLayoutInflater(), mTabHost, R.string.title_screen_exam_results, R.drawable.ic_date_range_black_24dp);
+        View tabIncatorSchedule = LaoSchoolShared.createTabIndicator(getLayoutInflater(), mTabHost, R.string.SCCommon_ExamResults, R.drawable.ic_date_range_black_24dp);
         ((TextView) (tabIncatorSchedule.findViewById(R.id.tab_indicator_title))).setTextColor(getResources().getColor(R.color.color_text_tab_unselected));
         ((ImageView) (tabIncatorSchedule.findViewById(R.id.tab_indicator_icon))).setColorFilter(getResources().getColor(R.color.color_icon_tab_unselected));
 
         tabIncatorSchedule.setLayoutParams(new LinearLayout.LayoutParams(widthTabIndicator, ViewGroup.LayoutParams.WRAP_CONTENT));
         tabSpecSchedule.setIndicator(tabIncatorSchedule);
-        HomeActivity.AddTab(this, this.mTabHost, tabSpecSchedule, (tabInfo = new TabInfo(getString(R.string.title_screen_exam_results), ScreenExamResults.class, args)));
+        HomeActivity.AddTab(this, this.mTabHost, tabSpecSchedule, (tabInfo = new TabInfo(getString(R.string.SCCommon_ExamResults), ScreenExamResults.class, args)));
         this.mapTabInfo.put(tabInfo.tag, tabInfo);
 
 
         //add tab attended
-        TabHost.TabSpec tabSpecAttended = this.mTabHost.newTabSpec(getString(R.string.title_screen_attended));
-        View tabIncatorAttended = LaoSchoolShared.createTabIndicator(getLayoutInflater(), mTabHost, R.string.title_screen_attended, R.drawable.ic_event_available_black_24dp);
+        TabHost.TabSpec tabSpecAttended = this.mTabHost.newTabSpec(getString(R.string.SCCommon_Attendance));
+        View tabIncatorAttended = LaoSchoolShared.createTabIndicator(getLayoutInflater(), mTabHost, R.string.SCCommon_Attendance, R.drawable.ic_event_available_black_24dp);
         ((TextView) (tabIncatorAttended.findViewById(R.id.tab_indicator_title))).setTextColor(getResources().getColor(R.color.color_text_tab_unselected));
         ((ImageView) (tabIncatorAttended.findViewById(R.id.tab_indicator_icon))).setColorFilter(getResources().getColor(R.color.color_icon_tab_unselected));
 
         tabIncatorAttended.setLayoutParams(new LinearLayout.LayoutParams(widthTabIndicator, ViewGroup.LayoutParams.WRAP_CONTENT));
         tabSpecAttended.setIndicator(tabIncatorAttended);
-        HomeActivity.AddTab(this, this.mTabHost, tabSpecAttended, (tabInfo = new TabInfo(getString(R.string.title_screen_attended), ScreenAttended.class, args)));
+        HomeActivity.AddTab(this, this.mTabHost, tabSpecAttended, (tabInfo = new TabInfo(getString(R.string.SCCommon_Attendance), ScreenAttended.class, args)));
         this.mapTabInfo.put(tabInfo.tag, tabInfo);
 
 
         //Add tab more
-        TabHost.TabSpec tabSpecMore = this.mTabHost.newTabSpec(getString(R.string.title_screen_more));
-        View tabIncatorMore = LaoSchoolShared.createTabIndicator(getLayoutInflater(), mTabHost, R.string.title_screen_more, R.drawable.ic_more_horiz_black_24dp);
+        TabHost.TabSpec tabSpecMore = this.mTabHost.newTabSpec(getString(R.string.SCCommon_More));
+        View tabIncatorMore = LaoSchoolShared.createTabIndicator(getLayoutInflater(), mTabHost, R.string.SCCommon_More, R.drawable.ic_more_horiz_black_24dp);
         ((TextView) (tabIncatorMore.findViewById(R.id.tab_indicator_title))).setTextColor(getResources().getColor(R.color.color_text_tab_unselected));
         ((ImageView) (tabIncatorMore.findViewById(R.id.tab_indicator_icon))).setColorFilter(getResources().getColor(R.color.color_icon_tab_unselected));
 
         tabIncatorMore.setLayoutParams(new LinearLayout.LayoutParams(widthTabIndicator, ViewGroup.LayoutParams.WRAP_CONTENT));
         tabSpecMore.setIndicator(tabIncatorMore);
-        HomeActivity.AddTab(this, this.mTabHost, tabSpecMore, (tabInfo = new TabInfo(getString(R.string.title_screen_more), ScreenMore.class, args)));
+        HomeActivity.AddTab(this, this.mTabHost, tabSpecMore, (tabInfo = new TabInfo(getString(R.string.SCCommon_More), ScreenMore.class, args)));
         this.mapTabInfo.put(tabInfo.tag, tabInfo);
 
         //Handler on Tab change
@@ -381,35 +379,35 @@ public class HomeActivity extends AppCompatActivity implements
         //Log.d(TAG, "Current Page:" + pos);
         switch (pos) {
             case LaoSchoolShared.POSITION_SCREEN_MESSAGE_0:
-                _setTitleandShowButtonBack(R.string.title_screen_message, null, DisplayButtonHome.hide);
+                _setTitleandShowButtonBack(R.string.SCCommon_Message, null, DisplayButtonHome.hide);
                 break;
             case LaoSchoolShared.POSITION_SCREEN_ANNOUNCEMENTS_1:
-                _setTitleandShowButtonBack(R.string.title_screen_announcements, null, DisplayButtonHome.hide);
+                _setTitleandShowButtonBack(R.string.SCCommon_Announcements, null, DisplayButtonHome.hide);
                 break;
             case LaoSchoolShared.POSITION_SCREEN_EXAM_RESULTS_2:
-                _setTitleandShowButtonBack(R.string.title_screen_exam_results, null, DisplayButtonHome.hide);
+                _setTitleandShowButtonBack(R.string.SCCommon_ExamResults, null, DisplayButtonHome.hide);
                 break;
             case LaoSchoolShared.POSITION_SCREEN_ATTENDED_3:
-                _setTitleandShowButtonBack(R.string.title_screen_attended, null, DisplayButtonHome.hide);
+                _setTitleandShowButtonBack(R.string.SCCommon_Attendance, null, DisplayButtonHome.hide);
                 break;
             case LaoSchoolShared.POSITION_SCREEN_MORE_4:
-                _setTitleandShowButtonBack(R.string.title_screen_more, null, DisplayButtonHome.hide);
+                _setTitleandShowButtonBack(R.string.SCCommon_More, null, DisplayButtonHome.hide);
                 break;
             case LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5:
-                _setTitleandShowButtonBack(R.string.title_screen_create_message, null, DisplayButtonHome.show);
+                _setTitleandShowButtonBack(R.string.SCCreateMessage_CreateMessage, null, DisplayButtonHome.show);
                 getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_36dp);
                 break;
             case LaoSchoolShared.POSITION_SCREEN_SCHEDULE_6:
-                _setTitleandShowButtonBack(R.string.title_screen_schedule, null, DisplayButtonHome.show);
+                _setTitleandShowButtonBack(R.string.SCCommon_TimeTable, null, DisplayButtonHome.show);
                 break;
             case LaoSchoolShared.POSITION_SCREEN_SCHOOL_RECORD_YEAR_7:
-                _setTitleandShowButtonBack(R.string.title_screen_final_results_student, null, DisplayButtonHome.show);
+                _setTitleandShowButtonBack(R.string.SCCommon_FinalResults, null, DisplayButtonHome.show);
                 break;
             case LaoSchoolShared.POSITION_SCREEN_SCHOOL_INFORMATION_8:
-                _setTitleandShowButtonBack(R.string.title_screen_school_information, null, DisplayButtonHome.show);
+                _setTitleandShowButtonBack(R.string.SCCommon_SchoolInfomation, null, DisplayButtonHome.show);
                 break;
             case LaoSchoolShared.POSITION_SCREEN_LIST_TEACHER_9:
-                _setTitleandShowButtonBack(R.string.title_screen_list_teacher, null, DisplayButtonHome.show);
+                _setTitleandShowButtonBack(R.string.SCCommon_ListTeacher, null, DisplayButtonHome.show);
                 break;
             case LaoSchoolShared.POSITION_SCREEN_LIST_STUDENT_10:
                 _setTitleandShowButtonBack(R.string.title_screen_select_list_student, null, DisplayButtonHome.show);
@@ -418,7 +416,7 @@ public class HomeActivity extends AppCompatActivity implements
                 _setTitleandShowButtonBack(R.string.title_screen_mark_score_student, null, DisplayButtonHome.hide);
                 break;
             case LaoSchoolShared.POSITION_SCREEN_SETTING_12:
-                _setTitleandShowButtonBack(R.string.title_screen_setting, null, DisplayButtonHome.show);
+                _setTitleandShowButtonBack(R.string.SCCommon_ChangePassword, null, DisplayButtonHome.show);
                 break;
             case LaoSchoolShared.POSITION_SCREEN_PROFILE_13:
                 _setTitleandShowButtonBack(R.string.title_screen_profile, null, DisplayButtonHome.show);
@@ -434,11 +432,11 @@ public class HomeActivity extends AppCompatActivity implements
                 getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_36dp);
                 break;
             case LaoSchoolShared.POSITION_SCREEN_REQUEST_ATTENDANCE_17:
-                _setTitleandShowButtonBack(R.string.action_request_attendance, null, DisplayButtonHome.show);
+                _setTitleandShowButtonBack(R.string.SCAttendance_AbsentCreate, null, DisplayButtonHome.show);
                 getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_36dp);
                 break;
             default:
-                _setTitleandShowButtonBack(R.string.title_screen_message, null, DisplayButtonHome.hide);
+                _setTitleandShowButtonBack(R.string.SCCommon_Message, null, DisplayButtonHome.hide);
         }
     }
 
@@ -568,7 +566,6 @@ public class HomeActivity extends AppCompatActivity implements
         }
         //Hide key board
         LaoSchoolShared.hideSoftKeyboard(this);
-
     }
 
     @Override
@@ -606,6 +603,9 @@ public class HomeActivity extends AppCompatActivity implements
     public void gotoScreenCreateMessage() {
         beforePosition = LaoSchoolShared.POSITION_SCREEN_MESSAGE_0;
         _gotoPage(LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
+        String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
+        ScreenCreateMessage screenCreateMessage = (ScreenCreateMessage) getSupportFragmentManager().findFragmentByTag(tag);
+        screenCreateMessage.presetData(null, null, "");
     }
 
     @Override
@@ -664,11 +664,19 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void gotoCreateMessageFormScreenAttended() {
+    public void gotoCreateAttendanceFormScreenAttendance() {
         beforePosition = LaoSchoolShared.POSITION_SCREEN_ATTENDED_3;
         _gotoPage(LaoSchoolShared.POSITION_SCREEN_REQUEST_ATTENDANCE_17);
     }
 
+    @Override
+    public void goToCreateMessagefromScreenAttendance(List<User> students, List<User> selectedStudents, String defaultText) {
+        beforePosition = LaoSchoolShared.POSITION_SCREEN_ATTENDED_3;
+        _gotoPage(LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
+        String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
+        ScreenCreateMessage screenCreateMessage = (ScreenCreateMessage) getSupportFragmentManager().findFragmentByTag(tag);
+        screenCreateMessage.presetData(students, selectedStudents, defaultText);
+    }
 
     @Override
     public void gotoListTearcherformMore() {
@@ -765,6 +773,20 @@ public class HomeActivity extends AppCompatActivity implements
     @Override
     public void gotoScheduleformMore() {
         _gotoPage(LaoSchoolShared.POSITION_SCREEN_SCHEDULE_6);
+    }
+
+    @Override
+    public void gotoChangeLanguage() {
+        AlertDialog dialog = new AlertDialog.Builder(HomeActivity.this).create();
+        dialog.setView(new Languages(getApplicationContext(), new Languages.LanguagesListener() {
+            @Override
+            public void onChangeLanguage() {
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
+            }
+        }).getView());
+        dialog.show();
     }
 
     @Override

@@ -62,6 +62,8 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
         void gotoSchoolRecordbyYearformMore();
 
         void gotoScheduleformMore();
+
+        void gotoChangeLanguage();
     }
 
     public IScreenMore iScreenMore;
@@ -181,7 +183,7 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
             LinearLayout mDetaislUser = (LinearLayout) view.findViewById(R.id.mDetaislUser);
             TextView txtUserName = (TextView) view.findViewById(R.id.txtUserNameScreenMoreTeacher);
             TextView txtSchoolName = (TextView) view.findViewById(R.id.txtSchoolNameScreenMoreTeacher);
-            TextView txtContactPhone = (TextView) view.findViewById(R.id.txtContactPhoneScreenMoreTeacher);
+            TextView txtClassName = (TextView) view.findViewById(R.id.txtContactPhoneScreenMoreTeacher);
             RecyclerView mRecylerViewFunctionMore = (RecyclerView) view.findViewById(R.id.mRecylerViewFunctionMore);
 
             Typeface roboto = Typeface.createFromAsset(context.getAssets(),
@@ -196,6 +198,10 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
                     iScreenMore.gotoDetailsUser();
                 }
             });
+
+            txtUserName.setText(LaoSchoolShared.myProfile.getFullname());
+            txtSchoolName.setText(LaoSchoolShared.myProfile.getSchoolName());
+            txtClassName.setText("Class " + LaoSchoolShared.myProfile.getEclass().getTitle());
 
             //init adapte
             final List<String> more_teacher = Arrays.asList(getResources().getStringArray(R.array.more_teacher));

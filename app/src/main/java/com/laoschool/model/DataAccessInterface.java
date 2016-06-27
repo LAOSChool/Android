@@ -103,6 +103,13 @@ public interface DataAccessInterface {
     public void getAttendanceById(int attendance_id, AsyncCallback<Attendance> callback);
 
     /**
+     * Create a new Attendance.
+     * @param attendance
+     * @param callback
+     */
+    public void createAttendance(Attendance attendance, AsyncCallback<Attendance> callback);
+
+    /**
      * @param attendance
      * @param callback   return status code
      */
@@ -123,6 +130,13 @@ public interface DataAccessInterface {
      * @param callback return AttendanceRollup mixed data,
      */
     public void rollupAttendance(int filter_class_id, String filter_date, AsyncCallback<AttendanceRollup> callback);
+
+    /**
+     * Delete an existing Attendance.
+     * @param attendanceId
+     * @param callback
+     */
+    public void deleteAttendance(int attendanceId, AsyncCallback<String> callback);
 
     //----- ExamResult -----//
 

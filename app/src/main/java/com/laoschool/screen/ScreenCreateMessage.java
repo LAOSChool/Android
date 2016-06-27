@@ -1,7 +1,6 @@
 package com.laoschool.screen;
 
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -10,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -78,7 +76,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
     @Override
     public void onPauseFragment() {
         try {
-            Log.d(getString(R.string.title_screen_create_message), "onPauseFragment()");
+            Log.d(getString(R.string.SCCreateMessage_CreateMessage), "onPauseFragment()");
             //Toast.makeText(getActivity(), "onPauseFragment():" + getString(R.string.title_screen_create_message), Toast.LENGTH_SHORT).show();
             _resetForm();
         } catch (Exception e) {
@@ -89,13 +87,33 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
     public void onResumeFragment() {
         if (testMessage != null) {
             if (!testMessage.equals("back")) {
-                Log.d(getString(R.string.title_screen_create_message), "onPauseFragment()");
+                Log.d(getString(R.string.SCCreateMessage_CreateMessage), "onPauseFragment()");
                 Toast.makeText(getActivity(), "message:" + testMessage, Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    public void presetData(List<User> students, List<User> selectedStudents, String defaultText) {
         if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
-            if(listStudents.isEmpty())
-                getListStudents();
+            if (students != null) {
+                listStudents.clear();
+                this.selectedStudents.clear();
+                listStudents.addAll(students);
+                this.selectedStudents.addAll(selectedStudents);
+                cbSendSms.setChecked(true);
+                String sendTo = "";
+                for (User student : selectedStudents) {
+                    sendTo = sendTo + student.getFullname() + ", ";
+                }
+                if (selectedStudents.size() == listStudents.size())
+                    txtMessageTo.setText(context.getString(R.string.SCCommon_Class) + " " + LaoSchoolShared.selectedClass.getTitle());
+                else
+                    txtMessageTo.setText("All students attendant");
+                txtMessageContent.setText(defaultText);
+            } else {
+                if (listStudents.isEmpty())
+                    getListStudents();
+            }
         }
     }
 
@@ -148,7 +166,6 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                 return _defineCreateMessageStudent(inflater, container);
             }
         }
-
     }
 
     private View _defineCreateMessageTeacher(LayoutInflater inflater, ViewGroup container) {
@@ -162,9 +179,17 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
         RelativeLayout btnStudentPicker = (RelativeLayout) view.findViewById(R.id.btnStudentPicker);
         RelativeLayout btnSmsCheck = (RelativeLayout) view.findViewById(R.id.btnSmsCheck);
         RelativeLayout btnImportantCheck = (RelativeLayout) view.findViewById(R.id.btnImportantCheck);
+        TextView txvTo = (TextView) view.findViewById(R.id.txvTo);
+        TextView txvSMS = (TextView) view.findViewById(R.id.txvSMS);
+        TextView txvImportant = (TextView) view.findViewById(R.id.txvImportant);
+
+        txvTo.setText(R.string.SCCreateMessage_To);
+        txvSMS.setText(R.string.SCCreateMessage_SMS);
+        txvImportant.setText(R.string.SCCreateMessage_Important);
+        txtMessageContent.setHint(R.string.SCCreateMessage_Content);
 
         LaoSchoolShared.selectedClass = LaoSchoolShared.myProfile.getEclass();
-        txtMessageTo.setText("Class "+ LaoSchoolShared.selectedClass.getTitle());
+        txtMessageTo.setText(context.getString(R.string.SCCommon_Class) + " " + LaoSchoolShared.selectedClass.getTitle());
 
         btnStudentPicker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,7 +208,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                                 sendTo = sendTo + student.getFullname() + ", ";
                             }
                             if (selectedStudents.size() == listStudents.size())
-                                txtMessageTo.setText("Class " + LaoSchoolShared.selectedClass.getTitle());
+                                txtMessageTo.setText(context.getString(R.string.SCCommon_Class) + " " + LaoSchoolShared.selectedClass.getTitle());
                             else
                                 txtMessageTo.setText(sendTo);
                         }
@@ -265,6 +290,13 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
         txtMessageContentStudent = (EditText) view.findViewById(R.id.txtMessageContentStudent);
         txtMessageTo = (TextView) view.findViewById(R.id.txtConversionMessageTo);
         cbSendSmsStudent = (CheckBox) view.findViewById(R.id.cbSendSmsStudent);
+        TextView txvTo = (TextView) view.findViewById(R.id.txvTo);
+        TextView txvSMS = (TextView) view.findViewById(R.id.txvSMS);
+
+        txvTo.setText(R.string.SCCreateMessage_To);
+        txvSMS.setText(R.string.SCCreateMessage_SMS);
+        txtMessageContentStudent.setHint(R.string.SCCreateMessage_Content);
+
         try {
             txtMessageTo.setText(LaoSchoolShared.myProfile.getEclass().getHeadTeacherName());
         } catch (Exception e) {
@@ -310,10 +342,10 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
         if (getArguments() != null) {
             containerId = getArguments().getInt(LaoSchoolShared.CONTAINER_ID);
             currentRole = getArguments().getString(LaoSchoolShared.CURRENT_ROLE);
-            Log.d(getString(R.string.title_screen_create_message), "-Container Id:" + containerId);
+            Log.d(getString(R.string.SCCreateMessage_CreateMessage), "-Container Id:" + containerId);
         }
         if (testMessage != null) {
-            Log.d(getString(R.string.title_screen_create_message), "-Message:" + testMessage);
+            Log.d(getString(R.string.SCCreateMessage_CreateMessage), "-Message:" + testMessage);
         } else {
         }
     }
@@ -520,7 +552,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
             txtMessageContent.getText().clear();
             selectedStudents.clear();
             selectedStudents.addAll(listStudents);
-            txtMessageTo.setText("Class "+ LaoSchoolShared.selectedClass.getTitle());
+            txtMessageTo.setText(context.getString(R.string.SCCommon_Class) + " " + LaoSchoolShared.selectedClass.getTitle());
             tableStudents.reset();
         } else {
             txtMessageTitleStudent.getText().clear();

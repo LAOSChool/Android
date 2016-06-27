@@ -93,7 +93,7 @@ public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecy
         if (getArguments() != null) {
             containerId = getArguments().getInt(LaoSchoolShared.CONTAINER_ID);
             currentRole = getArguments().getString(LaoSchoolShared.CURRENT_ROLE);
-            Log.d(getString(R.string.title_screen_attended), "-Container Id:" + containerId);
+            Log.d(getString(R.string.SCCommon_Attendance), "-Container Id:" + containerId);
         }
         this.context = getActivity();
         this.service = DataAccessImpl.getInstance(context);
@@ -111,6 +111,11 @@ public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecy
             txtTitle = (EditText) view.findViewById(R.id.txtNotificationTitleTeacher);
             txtContent = (EditText) view.findViewById(R.id.txtNotificationContentTeacher);
             imgPrioty = (ImageView) view.findViewById(R.id.imgPrioty);
+            TextView txvTo = (TextView) view.findViewById(R.id.txvTo);
+
+            txvTo.setText(R.string.SCCreateMessage_To);
+            txtTitle.setHint(R.string.SCCreateMessage_Subject);
+            txtContent.setHint(R.string.SCCreateMessage_Content);
 
             imgPrioty.setColorFilter(getResources().getColor(R.color.colorDefault));
             imgPrioty.setTag(R.color.colorDefault);

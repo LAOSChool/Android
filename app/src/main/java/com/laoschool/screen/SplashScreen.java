@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -13,6 +14,7 @@ import com.laoschool.R;
 import com.laoschool.entities.User;
 import com.laoschool.model.AsyncCallback;
 import com.laoschool.screen.login.ScreenLogin;
+import com.laoschool.screen.view.Languages;
 import com.laoschool.shared.LaoSchoolShared;
 
 import org.bouncycastle.jce.X509Principal;
@@ -35,16 +37,31 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class SplashScreen extends Activity {
 
-    private static final long SPLASH_TIME_OUT = 3000;
+    private static final long SPLASH_TIME_OUT = 1000;
     public final String TAG = "SplashScreen";
     SplashScreen thiz;
+
+    void setLanguage() {
+        SharedPreferences prefs = getSharedPreferences(
+                LaoSchoolShared.SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
+        String language = prefs.getString(Languages.PREFERENCES_NAME, null);
+        if(language != null && language.equals(Languages.LANGUAGE_LAOS)) {
+            Locale locale = new Locale("lo");
+            Locale.setDefault(locale);
+            Configuration config = new Configuration();
+            config.locale = locale;
+            getApplicationContext().getResources().updateConfiguration(config, null);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setLanguage();
         setContentView(R.layout.splash_screen);
         thiz = this;
         new Handler().postDelayed(new Runnable() {
@@ -65,7 +82,8 @@ public class SplashScreen extends Activity {
         super.onPause();
         finish();
     }
-    //    private void unLockCredentialStorage() {
+
+//    private void unLockCredentialStorage() {
 //        try {
 //            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
 //                startActivity(new Intent("android.credentials.UNLOCK"));

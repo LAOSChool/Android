@@ -1,10 +1,12 @@
 package com.laoschool.adapter;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.view.ViewGroup;
 
+import com.laoschool.R;
 import com.laoschool.entities.Message;
 import com.laoschool.screen.ScreenMessage;
 import com.laoschool.screen.pager.MessagesPager;
@@ -27,9 +29,9 @@ public class MessagesPagerAdapter extends FragmentPagerAdapter {
     private List<Message> messagesToUserUnread;
     private List<Message> messagesFormUser;
     private ScreenMessage screenMessage;
+    private Context context;
 
-
-    public MessagesPagerAdapter(FragmentManager fr, ScreenMessage screenMessage, List<Message> messagesForUserInbox, List<Message> messagesToUserUnread, List<Message> messagesFormUser) {
+    public MessagesPagerAdapter(Context context, FragmentManager fr, ScreenMessage screenMessage, List<Message> messagesForUserInbox, List<Message> messagesToUserUnread, List<Message> messagesFormUser) {
         super(fr);
         mFragmentManager = fr;
         mFragmentTags = new HashMap<Integer, String>();
@@ -37,16 +39,17 @@ public class MessagesPagerAdapter extends FragmentPagerAdapter {
         this.messagesForUserInbox = messagesForUserInbox;
         this.messagesToUserUnread = messagesToUserUnread;
         this.messagesFormUser = messagesFormUser;
+        this.context = context;
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
         if (position == 0)
-            return "Inbox";
+            return (context.getString(R.string.SCCommon_Inbox));
         else if (position == 1)
-            return "Unread";
+            return (context.getString(R.string.SCCommon_Unread));
         else if (position == 2)
-            return "Send";
+            return (context.getString(R.string.SCCommon_Send));
         else
             return null;
     }

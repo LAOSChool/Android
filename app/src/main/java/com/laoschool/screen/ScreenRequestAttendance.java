@@ -64,6 +64,7 @@ public class ScreenRequestAttendance extends Fragment implements FragmentLifecyc
         SimpleDateFormat sdf = new SimpleDateFormat("dd - MM - yyyy");
         final String currentDateandTime = sdf.format(new Date());
         txvAttDt.setText(currentDateandTime, TextView.BufferType.EDITABLE);
+        txbReason.setHint(R.string.SCAttendance_AbsentReason);
         fromDate = currentDateandTime;
 
         txbDatePicker.setOnClickListener(new View.OnClickListener() {

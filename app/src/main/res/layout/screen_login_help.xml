@@ -26,7 +26,8 @@
             android:layout_toEndOf="@+id/btnBack"
             android:textColor="@color/background_home_screen_tab"
             android:textStyle="bold"
-            android:layout_marginTop="15dp" />
+            android:layout_marginTop="15dp"
+            android:id="@+id/txvTitle" />
    </RelativeLayout>
 
 </FrameLayout>

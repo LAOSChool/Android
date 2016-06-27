@@ -70,11 +70,16 @@ public class TableStudents extends View {
         TextView txbClassName = (TextView) v.findViewById(R.id.txbClassName);
         LinearLayout btnDone = (LinearLayout) v.findViewById(R.id.btnDone);
         LinearLayout btnCancel = (LinearLayout) v.findViewById(R.id.btnCancel);
+        TextView txvDone = (TextView) v.findViewById(R.id.txvDone);
+        TextView txvCacncel = (TextView) v.findViewById(R.id.txvCancel);
 
         int color = Color.parseColor("#ffffff");
         imgClass.setColorFilter(color);
         tableStudentView.setHasFixedSize(true);
-        txbClassName.setText("Class "+ LaoSchoolShared.selectedClass.getTitle());
+        txbClassName.setText(context.getString(R.string.SCCommon_Class) + " " + LaoSchoolShared.selectedClass.getTitle());
+        edtSearch.setHint(R.string.SCCommon_Search);
+        txvDone.setText(R.string.SCCommon_Done);
+        txvCacncel.setText(R.string.SCCommon_Cancel);
 
         // use a linear layout manager
         final LinearLayoutManager mLayoutManager = new LinearLayoutManager(context);

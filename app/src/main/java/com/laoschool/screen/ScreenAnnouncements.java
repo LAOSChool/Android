@@ -425,9 +425,9 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
         @Override
         public CharSequence getPageTitle(int position) {
             if (position == 0)
-                return "Inbox";
+                return context.getString(R.string.SCCommon_Inbox);
             else
-                return "Unread";
+                return context.getString(R.string.SCCommon_Unread);
 
         }
 

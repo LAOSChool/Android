@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.daimajia.swipe.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="50dp">
+    android:layout_width="match_parent" android:layout_height="50dp"
+    android:id="@+id/swipeLayout">
     <!-- Bottom View Start-->
     <LinearLayout
         android:background="#eeeeee"
         android:id="@+id/bottom_wrapper"
-        android:layout_width="211dp"
+        android:layout_width="71dp"
         android:weightSum="1"
         android:layout_height="match_parent"
         android:orientation="horizontal">
@@ -22,7 +23,8 @@
         <RelativeLayout
             android:layout_width="70dp"
             android:layout_height="match_parent"
-            android:background="@color/colorAttendanceHasReason">
+            android:background="@color/colorAttendanceHasReason"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -39,7 +41,8 @@
         <RelativeLayout
             android:layout_width="70dp"
             android:layout_height="match_parent"
-            android:background="@color/colorStar">
+            android:background="@color/colorStar"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -55,17 +58,26 @@
         <RelativeLayout
             android:layout_width="70dp"
             android:layout_height="match_parent"
-            android:background="@color/colorAttendanceNoReason">
+            android:background="@color/cardview_shadow_start_color"
+            android:id="@+id/btnAbsent">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="KP"
+                android:text="Absent"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
                 android:textColor="#ffffff"
-                android:textSize="14dp" />
+                android:textSize="14dp"
+                android:id="@+id/txvAbsent"/>
+
+            <View android:layout_width="match_parent"
+                android:background="@color/text_title_tab_indicator"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
         </RelativeLayout>
 
     </LinearLayout>
@@ -73,9 +85,10 @@
 
     <!-- Surface View Start -->
     <RelativeLayout
-        android:background="@color/color_bg_un_read"
+        android:background="@color/color_bg_read"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/attendance_row">
         <!--What you want to show in SurfaceView-->
         <ImageView
             android:layout_width="wrap_content"
@@ -85,7 +98,16 @@
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_marginLeft="15dp" />
+            android:layout_marginLeft="15dp"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBar"
+            android:layout_marginTop="0dp"
+            android:visibility="visible"
+            android:layout_marginLeft="10dp"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -94,8 +116,8 @@
             android:text="Student Name"
             android:id="@+id/txtStudentName"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/imgStudent"
-            android:layout_toEndOf="@+id/imgStudent"
+            android:layout_toRightOf="@+id/progressBar"
+            android:layout_toEndOf="@+id/progressBar"
             android:layout_marginLeft="10dp"
             android:textSize="14dp" />
 
@@ -107,7 +129,8 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/icDH"
             android:layout_toStartOf="@+id/icDH"
-            android:layout_marginRight="10dp"></LinearLayout>
+            android:layout_marginRight="10dp"
+            android:visibility="gone"></LinearLayout>
 
         <ImageView
             android:layout_width="wrap_content"
@@ -120,7 +143,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginRight="15dp"
             android:src="@drawable/ic_done_black_18dp"
-            android:visibility="invisible" />
+            android:visibility="gone" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -133,7 +156,7 @@
             android:layout_toStartOf="@+id/icKP"
             android:layout_marginRight="25dp"
             android:src="@drawable/ic_done_black_18dp"
-            android:visibility="invisible" />
+            android:visibility="gone" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -146,7 +169,7 @@
             android:layout_toStartOf="@+id/icCP"
             android:layout_marginRight="25dp"
             android:src="@drawable/ic_done_black_18dp"
-            android:visibility="invisible" />
+            android:visibility="gone" />
 
         <LinearLayout
             android:orientation="horizontal"
@@ -157,7 +180,8 @@
             android:layout_toLeftOf="@+id/icKP"
             android:layout_toStartOf="@+id/icKP"
             android:layout_marginRight="10dp"
-            android:id="@+id/linearLayout6" />
+            android:id="@+id/linearLayout6"
+            android:visibility="gone" />
 
         <LinearLayout
             android:orientation="horizontal"
@@ -167,7 +191,8 @@
             android:layout_toLeftOf="@+id/icCP"
             android:layout_toStartOf="@+id/icCP"
             android:layout_alignTop="@+id/linearLayout6"
-            android:layout_marginRight="10dp" />
+            android:layout_marginRight="10dp"
+            android:visibility="gone" />
 
         <View android:layout_width="match_parent"
             android:background="@color/text_title_tab_indicator"

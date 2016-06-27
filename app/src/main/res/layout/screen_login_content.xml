@@ -38,7 +38,7 @@
             android:textColor="@color/background_home_screen_tab"
             android:textSize="30dp"
             android:textStyle="bold"
-            android:paddingBottom="100dp"/>
+            android:paddingBottom="90dp"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -119,7 +119,7 @@
 
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="35dp"
             android:text="Sign In"
             android:id="@+id/btnLogin"
             android:layout_gravity="center"
@@ -128,17 +128,32 @@
             android:layout_marginTop="30dp"
             android:textColor="@color/background_home_screen_tab"
             android:background="@drawable/button_login_shape"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="30dp"
             android:textSize="12dp"
             android:textStyle="bold"/>
 
     </LinearLayout>
 
-    <RelativeLayout
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="90dp"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="40dp">
+        android:layout_marginBottom="40dp"
+        android:padding="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Change language"
+            android:id="@+id/btnChangeLanguage"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/background_home_screen_tab"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:textSize="16dp"
+            android:layout_marginBottom="15dp"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -151,6 +166,6 @@
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
             android:textSize="15dp" />
-    </RelativeLayout>
+    </LinearLayout>
 
 </FrameLayout>

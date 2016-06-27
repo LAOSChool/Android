@@ -4,6 +4,6 @@
 
     <item
         android:id="@+id/one"
-        android:title="To"/>
+        android:title="@string/SCCreateMessage_To"/>
 
 </menu>

@@ -24,7 +24,7 @@
                 android:id="@+id/btnStudentPicker">
 
                 <TextView
-                    android:id="@+id/textView25"
+                    android:id="@+id/txvTo"
                     android:layout_width="65dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
@@ -37,8 +37,8 @@
                     android:textColor="@android:color/black"
                     android:text="Class 1A1"
                     android:layout_alignParentTop="true"
-                    android:layout_toRightOf="@+id/textView25"
-                    android:layout_toEndOf="@+id/textView25"
+                    android:layout_toRightOf="@+id/txvTo"
+                    android:layout_toEndOf="@+id/txvTo"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="50dp"
                     android:scrollHorizontally="true"
@@ -108,7 +108,7 @@
                 android:id="@+id/btnSmsCheck">
 
                 <TextView
-                    android:id="@+id/textView24"
+                    android:id="@+id/txvSMS"
                     android:layout_width="65dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
@@ -122,8 +122,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:layout_alignParentTop="true"
-                    android:layout_toRightOf="@+id/textView24"
-                    android:layout_toEndOf="@+id/textView24" />
+                    android:layout_toRightOf="@+id/txvSMS"
+                    android:layout_toEndOf="@+id/txvSMS" />
             </RelativeLayout>
 
             <LinearLayout
@@ -149,15 +149,15 @@
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:text="Important"
-                    android:id="@+id/textView34" />
+                    android:id="@+id/txvImportant" />
 
                 <CheckBox
                     android:id="@+id/cbImportant"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
-                    android:layout_toRightOf="@+id/textView34"
-                    android:layout_toEndOf="@+id/textView34"
+                    android:layout_toRightOf="@+id/txvImportant"
+                    android:layout_toEndOf="@+id/txvImportant"
                     android:layout_marginLeft="15dp"
                     android:layout_marginStart="15dp" />
             </RelativeLayout>

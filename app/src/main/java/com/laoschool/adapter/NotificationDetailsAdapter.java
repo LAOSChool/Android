@@ -234,7 +234,7 @@ public class NotificationDetailsAdapter extends RecyclerView.Adapter<Notificatio
     private void _saveImagebyBitmap(Image image, Bitmap result) {
         try {
             String file_path = Environment.getExternalStorageDirectory().getAbsolutePath() +
-                    "/" + context.getString(R.string.app_name);
+                    "/" + context.getString(R.string.SCLogin_AppName);
             File dir = new File(file_path);
             if (!dir.exists())
                 dir.mkdirs();

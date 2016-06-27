@@ -124,7 +124,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Done"
-                android:id="@+id/textView39"
+                android:id="@+id/txvDone"
                 android:textSize="14dp"
                 android:textColor="@color/colorAttendanceHasReason"/>
         </LinearLayout>
@@ -149,7 +149,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Cancel"
-                android:id="@+id/textView40"
+                android:id="@+id/txvCancel"
                 android:textSize="14dp"
                 android:textColor="#4e4e4e"/>
         </LinearLayout>

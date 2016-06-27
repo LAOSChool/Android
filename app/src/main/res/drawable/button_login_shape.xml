@@ -23,7 +23,7 @@
         android:height="20dp"
         />
     <stroke
-        android:width="3dp"
+        android:width="0dp"
         android:color="@color/colorLaosRed"
         />
 </shape>

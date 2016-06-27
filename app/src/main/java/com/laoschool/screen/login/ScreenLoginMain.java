@@ -1,10 +1,12 @@
 package com.laoschool.screen.login;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.Gravity;
@@ -26,6 +28,7 @@ import com.laoschool.model.AsyncCallback;
 import com.laoschool.model.DataAccessImpl;
 import com.laoschool.model.DataAccessInterface;
 import com.laoschool.screen.HomeActivity;
+import com.laoschool.screen.view.Languages;
 import com.laoschool.shared.LaoSchoolShared;
 
 /**
@@ -57,7 +60,7 @@ public class ScreenLoginMain extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.screen_login_conten, container, false);
+        View view = inflater.inflate(R.layout.screen_login_content, container, false);
         LaoSchoolShared.myProfile = null;
 
         final FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.container);
@@ -67,8 +70,20 @@ public class ScreenLoginMain extends Fragment {
         final EditText txbPassword = (EditText) view.findViewById(R.id.txbPassword);
         final Button buttonLogin = (Button) view.findViewById(R.id.btnLogin);
         final ImageButton btnQuestion = (ImageButton) view.findViewById(R.id.btnQuestion);
+        final TextView btnChangeLanguage = (TextView) view.findViewById(R.id.btnChangeLanguage);
         final TextView btnFogetPass = (TextView) view.findViewById(R.id.btnFogetPass);
 //      final ImageView imgForgotPass = (ImageView) view.findViewById(R.id.imgForgotPass);
+
+        //Set text view
+        logo.setText(R.string.SCLogin_AppName);
+        txbUserName.setHint(R.string.SCCommon_UserName);
+        txbPassword.setHint(R.string.SCCommon_Password);
+        buttonLogin.setText(R.string.SCLogin_Login);
+        btnChangeLanguage.setText(R.string.SCCommon_Language);
+        btnFogetPass.setText(R.string.SCLogin_ForgotPass);
+
+        btnChangeLanguage.setPaintFlags(btnChangeLanguage.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
+        btnFogetPass.setPaintFlags(btnFogetPass.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
 
         int color = Color.parseColor("#ffffff"); //The color u want
         btnQuestion.setColorFilter(color);
@@ -115,6 +130,22 @@ public class ScreenLoginMain extends Fragment {
             }
         });
 
+        btnChangeLanguage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog dialog = new AlertDialog.Builder(thiz.getContext()).create();
+                dialog.setView(new Languages(thiz.getContext(), new Languages.LanguagesListener() {
+                    @Override
+                    public void onChangeLanguage() {
+                        Intent intent = thiz.getActivity().getIntent();
+                        thiz.getActivity().finish();
+                        startActivity(intent);
+                    }
+                }).getView());
+                dialog.show();
+            }
+        });
+
         btnFogetPass.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 goToForgetPassScreen();
@@ -145,12 +176,14 @@ public class ScreenLoginMain extends Fragment {
                     layoutContent.setGravity(Gravity.START);
                     layoutContent.setPadding(0, 30, 0, 0);
                     logo.setPadding(0, 0, 0, 0);
-                    btnFogetPass.setVisibility(View.INVISIBLE);
+                    btnChangeLanguage.setVisibility(View.GONE);
+                    btnFogetPass.setVisibility(View.GONE);
                     return;
                 } else if (bottom > oldBottom && (bottom - oldBottom) > 400) {
                     layoutContent.setGravity(Gravity.CENTER);
                     layoutContent.setPadding(0, 0, 0, 90);
-                    logo.setPadding(0, 0, 0, 100);
+                    logo.setPadding(0, 0, 0, 90);
+                    btnChangeLanguage.setVisibility(View.VISIBLE);
                     btnFogetPass.setVisibility(View.VISIBLE);
                     return;
                 }

@@ -73,19 +73,21 @@ public class ListAttendancesAdapter extends RecyclerView.Adapter<ListAttendances
 
         int color = Color.parseColor("#808080"); //The color u want
         btnDropDown.setColorFilter(context.getResources().getColor(R.color.colorIconOnFragment));
+        txvAbsent.setText(context.getString(R.string.SCAttendance_Absent));
+        txvExcused.setText(context.getString(R.string.SCAttendance_Excused));
 
         final ScreenAttended.GroupAttendance groupAttendance = mDataset.get(position);
 
         txbAttDt.setText(groupAttendance.getAtt_dt());
         if(groupAttendance.getAttendances().size() == 1) {
             btnDropDown.setImageResource(R.drawable.ic_info_black_24dp);
-            txbAbsent.setText("Full days");
+            txbAbsent.setText(context.getString(R.string.SCAttendance_Fulldays));
             if(groupAttendance.getAttendances().get(0).getExcused() == 1) {
-                txbExcused.setText("Yes");
+                txbExcused.setText(context.getString(R.string.SCCommon_Yes));
                 txbExcused.setTextColor(context.getResources().getColor(R.color.colorAttendanceHasReason));
             }
             else {
-                txbExcused.setText("No");
+                txbExcused.setText(context.getString(R.string.SCCommon_No));
                 txbExcused.setTextColor(context.getResources().getColor(R.color.colorAttendanceNoReason));
             }
             txbAbsent.setTextSize(12);
@@ -122,7 +124,7 @@ public class ListAttendancesAdapter extends RecyclerView.Adapter<ListAttendances
                     reason.setTextColor(context.getResources().getColor(R.color.colorAttendanceHasReason));
                 }
                 else {
-                    reason.setText("No reason");
+                    reason.setText(context.getString(R.string.SCAttendance_NoReason));
                     reason.setTextColor(context.getResources().getColor(R.color.colorAttendanceNoReason));
                 }
 

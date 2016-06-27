@@ -13,19 +13,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/mDetaislUser"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="0dp"
         android:background="#ffffff">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Infomation"
-            android:id="@+id/textView11"
+            android:text="User Profile"
+            android:id="@+id/textView17"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="8dp"
-            android:textColor="@color/textColorSubHeader"
-            android:textSize="@dimen/sub_header_font_size" />
+            android:textColor="#2962FF"
+            android:textSize="@dimen/sub_header_font_size"
+            android:visibility="visible"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -54,16 +55,16 @@
                 android:layout_marginLeft="56dp"
                 android:layout_marginStart="56dp"
                 android:text="Aphrodite"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:textColor="@color/color_text" />
 
         </RelativeLayout>
 
-        <include
+        <!--<include
             android:layout_width="match_parent"
             android:layout_height="1dp"
             layout="@layout/row_line"
-            android:layout_marginLeft="72dp" />
+            android:layout_marginLeft="72dp" />-->
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -92,15 +93,15 @@
                 android:layout_marginLeft="56dp"
                 android:layout_marginStart="56dp"
                 android:text="Phung xa"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:textColor="@color/color_text" />
         </RelativeLayout>
 
-        <include
+        <!--<include
             layout="@layout/row_line"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginLeft="72dp" />
+            android:layout_marginLeft="72dp" />-->
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -108,7 +109,8 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:paddingTop="8dp"
-            android:background="#ffffff">
+            android:background="#ffffff"
+            android:layout_marginBottom="5dp">
 
             <ImageView
                 android:id="@+id/imageView9"
@@ -117,7 +119,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/ic_phone_black_24dp" />
+                android:src="@drawable/ic_book_black_24dp" />
 
             <TextView
                 android:id="@+id/txtContactPhoneScreenMoreTeacher"
@@ -128,8 +130,8 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="56dp"
                 android:layout_marginStart="56dp"
-                android:text="3298397328"
-                android:textSize="16sp"
+                android:text="Class Name"
+                android:textSize="15sp"
                 android:textColor="@color/color_text" />
         </RelativeLayout>
     </LinearLayout>
@@ -139,7 +141,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="10dp"
-        android:background="#ffffff" />
+        android:background="@color/fragmentBackground" />
 
 
 </LinearLayout>

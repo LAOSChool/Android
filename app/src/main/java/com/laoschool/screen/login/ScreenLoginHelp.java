@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.laoschool.R;
 
@@ -35,6 +36,9 @@ public class ScreenLoginHelp extends Fragment {
 
         RelativeLayout header = (RelativeLayout) view.findViewById(R.id.header);
         ImageButton btnBack = (ImageButton) view.findViewById(R.id.btnBack);
+        TextView txvTitle = (TextView) view.findViewById(R.id.txvTitle);
+
+        txvTitle.setText(R.string.SCCommon_Help);
 
         int color = Color.parseColor("#ffffff");
         btnBack.setColorFilter(color);

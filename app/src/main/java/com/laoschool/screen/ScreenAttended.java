@@ -4,6 +4,7 @@ package com.laoschool.screen;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -11,13 +12,17 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -37,6 +42,7 @@ import com.laoschool.model.DataAccessImpl;
 import com.laoschool.model.DataAccessInterface;
 import com.laoschool.screen.view.AttendanceStart;
 import com.laoschool.screen.view.TableSubject;
+import com.laoschool.screen.widgets.MyEditText;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
 
@@ -82,6 +88,7 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
 
     RecyclerView tableStudentView;
     ListAttendanceTableAdapter mAdapterTeacherAttendance;
+    TextView txtAttendanceDate;
     LinearLayout formHeader;
     RelativeLayout btnScrolldown;
 
@@ -117,7 +124,8 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
     }
 
     public interface IScreenAttended {
-        void gotoCreateMessageFormScreenAttended();
+        void gotoCreateAttendanceFormScreenAttendance();
+        void goToCreateMessagefromScreenAttendance(List<User> students, List<User> selectedStudents, String defaultText);
     }
 
     private IScreenAttended iScreenAttended;
@@ -174,8 +182,11 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
             public void onSuccess(AttendanceRollup result) {
                 ringProgressDialog.dismiss();
                 attendanceRollup = result;
-                mAdapterTeacherAttendance = new ListAttendanceTableAdapter(result.getStudents(), thiz.getContext());
-                tableStudentView.setAdapter(mAdapterTeacherAttendance);
+                if(mAdapterTeacherAttendance == null) {
+                    mAdapterTeacherAttendance = new ListAttendanceTableAdapter(result.getStudents(), null, null, thiz.getContext(), txtAttendanceDate.getText().toString());
+                    tableStudentView.setAdapter(mAdapterTeacherAttendance);
+                } else
+                    mAdapterTeacherAttendance.swap(result.getStudents(), null, null, txtAttendanceDate.getText().toString());
             }
 
             @Override
@@ -233,10 +244,10 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
             }
         }
 
-        txbTotalFullday.setText("Full days (" + totalFullday + ")");
+        txbTotalFullday.setText(thiz.getContext().getString(R.string.SCAttendance_Fulldays)+ " (" + totalFullday + ")");
         txbTotalExcused1.setText(totalExcused1 + "");
         txbTotalNoExcused1.setText(totalNoExcused1 + "");
-        txbTotalSession.setText("Sessions (" + totalSession + ")");
+        txbTotalSession.setText(thiz.getContext().getString(R.string.SCAttendance_Sessions)+ " (" + totalSession + ")");
         txbTotalExcused2.setText(totalExcused2 + "");
         txbTotalNoExcused2.setText(totalNoExcused2 + "");
 
@@ -340,7 +351,7 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
     private View _defineScreenTeacher(LayoutInflater inflater, ViewGroup container) {
         View view = inflater.inflate(R.layout.screen_attendance_teacher, container, false);
 
-        final TextView txtAttendanceDate = (TextView) view.findViewById(R.id.txtAttendanceDate);
+        txtAttendanceDate = (TextView) view.findViewById(R.id.txtAttendanceDate);
         final TextView txtClassName = (TextView) view.findViewById(R.id.txtClassName);
         final TextView txtSession = (TextView) view.findViewById(R.id.txtSession);
         ImageView imgClass = (ImageView) view.findViewById(R.id.imgClass);
@@ -356,6 +367,7 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
         final TextView txtClassN = (TextView) view.findViewById(R.id.txtClassN);
         final TextView txtSubjectN = (TextView) view.findViewById(R.id.txtSubjectN);
         final RelativeLayout btnStartAttendance = (RelativeLayout) view.findViewById(R.id.btnStartAttendance);
+        final MyEditText edtSearch = (MyEditText) view.findViewById(R.id.edtSearch);
 
 //        imgClass.setColorFilter(getResources().getColor(R.color.colorIconOnFragment));
 //        imgAttDt.setColorFilter(getResources().getColor(R.color.colorIconOnFragment));
@@ -366,7 +378,7 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
         SimpleDateFormat sdf = new SimpleDateFormat("dd - MM - yyyy");
         final String currentDateandTime = sdf.format(new Date());
         txtAttendanceDate.setText(currentDateandTime);
-        txtClassName.setText("Class "+ LaoSchoolShared.selectedClass.getTitle());
+        txtClassName.setText(thiz.getContext().getString(R.string.SCCommon_Class)+ " "+ LaoSchoolShared.selectedClass.getTitle());
 
         // use a linear layout manager
         final LinearLayoutManager mLayoutManager = new LinearLayoutManager(thiz.getContext());
@@ -399,6 +411,7 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                             if(!formatDate.equals(txtAttendanceDate.getText().toString())) {
                                 txtAttendanceDate.setText(formatDate);
                                 txtSession.setText("Chose Subject");
+                                edtSearch.getText().clear();
                                 getAttendanceRollup(LaoSchoolShared.selectedClass.getId(), sendDate);
                             }
                         }
@@ -415,16 +428,19 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
             @Override
             public void onClick(View view) {
                 final AlertDialog dialog = new AlertDialog.Builder(thiz.getContext()).create();
-                TableSubject tableSubject = new TableSubject(thiz.getContext(), new TableSubject.TableSubjectListener() {
+                final TableSubject tableSubject = new TableSubject(thiz.getContext(), new TableSubject.TableSubjectListener() {
                     @Override
                     public void onSelectSubject(TimeTable timeTable) {
                         selectedTimetable = timeTable;
                         txtSession.setText("Tiet "+ (attendanceRollup.getTimetables().indexOf(timeTable)+1)+ " - "+ timeTable.getSubject_Name());
-                        formHeader.setVisibility(View.GONE);
-                        btnScrolldown.setVisibility(View.VISIBLE);
+//                        formHeader.setVisibility(View.GONE);
+//                        btnScrolldown.setVisibility(View.VISIBLE);
                         txtClassN.setText(txtClassName.getText());
                         txtSubjectN.setText("Mon "+ timeTable.getSubject_Name());
                         dialog.dismiss();
+                        mAdapterTeacherAttendance.swap(attendanceRollup.getStudents(), attendanceRollup.getAttendances(), timeTable, txtAttendanceDate.getText().toString());
+                        tableStudentView.smoothScrollToPosition(0);
+                        edtSearch.getText().clear();
                     }
                 });
                 dialog.setView(tableSubject.getView());
@@ -463,7 +479,7 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                         }
                         else {
                             btnStartAttendance.setVisibility(View.GONE);
-                            mAdapterTeacherAttendance.swap();
+//                            mAdapterTeacherAttendance.swap();
 
                             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -477,6 +493,63 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                 dialog.setView(attendanceStart.getView(txtClassName.getText()+ " - Tiet "+ selectedTimetable.getSubject_Name()));
                 attendanceStart.setStudent(attendanceRollup.getStudents().get(0));
                 dialog.show();
+            }
+        });
+
+        edtSearch.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                final int DRAWABLE_LEFT = 0;
+                final int DRAWABLE_TOP = 1;
+                final int DRAWABLE_RIGHT = 2;
+                final int DRAWABLE_BOTTOM = 3;
+
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+                    if((event.getRawX() + 10) >= (edtSearch.getRight() - edtSearch.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                        edtSearch.getText().clear();
+                        formHeader.setVisibility(View.VISIBLE);
+                        formHeader.requestFocus();
+                        InputMethodManager imm = (InputMethodManager) thiz.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                        return true;
+                    } else {
+                        formHeader.setVisibility(View.GONE);
+                    }
+                }
+
+                return false;
+            }
+        });
+
+        edtSearch.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                 /*This method is called to notify you that, within s, the count characters beginning at start are about to be replaced by new text with length after. It is an error to attempt to make changes to s from this callback.*/
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                 Log.i("edtSearch", "key press!");
+                if(!edtSearch.getText().toString().isEmpty())
+                    edtSearch.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_close_black_24dp, 0);
+                else
+                    edtSearch.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_search_black_24dp, 0);
+
+                List<User> findUsers = new ArrayList<User>();
+                for(User student: attendanceRollup.getStudents()) {
+                    if(student.getFullname().toLowerCase().contains(edtSearch.getText().toString()))
+                        findUsers.add(student);
+                }
+                mAdapterTeacherAttendance.swap(findUsers, attendanceRollup.getAttendances(), selectedTimetable, txtAttendanceDate.getText().toString());
+            }
+        });
+
+        edtSearch.setListener(new MyEditText.MyEditTextListener() {
+            @Override
+            public void onHideKeyboard() {
+                formHeader.setVisibility(View.VISIBLE);
+                formHeader.requestFocus();
             }
         });
 
@@ -497,6 +570,13 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
         txbTotalExcused2 = (TextView) view.findViewById(R.id.txbTotalExcused2);
         txbTotalNoExcused2 = (TextView) view.findViewById(R.id.txbTotalNoExcused2);
         attendancesRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.attendancesRefreshLayout);
+        TextView txvExcused = (TextView) view.findViewById(R.id.txvExcused);
+        TextView txvNoExcused = (TextView) view.findViewById(R.id.txvNoExcused);
+
+        txbTotalFullday.setText(R.string.SCAttendance_Fulldays);
+        txbTotalSession.setText(R.string.SCAttendance_Sessions);
+        txvExcused.setText(R.string.SCAttendance_Excused);
+        txvNoExcused.setText(R.string.SCAttendance_NoExcused);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -540,7 +620,7 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
         if (getArguments() != null) {
             containerId = getArguments().getInt(LaoSchoolShared.CONTAINER_ID);
             currentRole = getArguments().getString(LaoSchoolShared.CURRENT_ROLE);
-            Log.d(getString(R.string.title_screen_attended), "-Container Id:" + containerId);
+            Log.d(getString(R.string.SCCommon_Attendance), "-Container Id:" + containerId);
         }
 
 //        getAttendances();
@@ -548,7 +628,7 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if(currentRole.equals(LaoSchoolShared.ROLE_STUDENT))
+//        if(currentRole.equals(LaoSchoolShared.ROLE_STUDENT))
             inflater.inflate(R.menu.menu_screen_attendance, menu);
     }
 
@@ -557,7 +637,31 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
         int id = item.getItemId();
         switch (id) {
             case R.id.action_request_attendance:
-                iScreenAttended.gotoCreateMessageFormScreenAttended();
+                if(currentRole.equals(LaoSchoolShared.ROLE_STUDENT))
+                    iScreenAttended.gotoCreateAttendanceFormScreenAttendance();
+                else {
+                    if(selectedTimetable != null) {
+                        if(attendanceRollup != null) {
+                            List<User> selectedStudents = new ArrayList<>();
+                            selectedStudents.addAll(attendanceRollup.getStudents());
+                            for (User student : attendanceRollup.getStudents()) {
+                                for (Attendance attendance : attendanceRollup.getAttendances())
+                                    if (attendance.getStudent_id() == student.getId() &&
+                                            (attendance.getSession_id() == null || attendance.getSession_id().equals(String.valueOf(selectedTimetable.getSession_id())))) {
+                                        selectedStudents.remove(student);
+                                        break;
+                                    }
+                            }
+                            String defaultText = "* Ngay " + txtAttendanceDate.getText().toString() + " * " + "\r\n \r\n" +
+                                    "Mon " + selectedTimetable.getSubject_Name() + ", \r\n \r\n" +
+                                    "Nha truong thong bao hoc sinh da di hoc dung gio.";
+                            iScreenAttended.goToCreateMessagefromScreenAttendance(attendanceRollup.getStudents(), selectedStudents, defaultText);
+                        } else
+                            Toast.makeText(thiz.getContext(), "Fail to get data", Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                        Toast.makeText(thiz.getContext(), "Chose a subject first", Toast.LENGTH_SHORT).show();
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
