@@ -79,6 +79,7 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     private View mBacgroundSearch;
     private RecyclerView mSearchResults;
     private SearchView mSearch;
+    private boolean onSearch = false;
 
 
     public Message getNotification() {
@@ -451,6 +452,7 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
             @Override
             public boolean onQueryTextChange(String newText) {
                 if (!newText.trim().isEmpty()) {
+                    onSearch = true;
                     mAnnouncement.setVisibility(View.GONE);
                     mBacgroundSearch.setVisibility(View.GONE);
                     mSearchResults.setVisibility(View.VISIBLE);
@@ -497,6 +499,9 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
         Log.d(TAG, "onResumeFragment()/getUserVisibleHint():" + getUserVisibleHint());
         if (!alreadyExecuted && getUserVisibleHint()) {
             _defineData();
+        }
+        if (onSearch) {
+            MenuItemCompat.collapseActionView(itemSearch);
         }
     }
 
