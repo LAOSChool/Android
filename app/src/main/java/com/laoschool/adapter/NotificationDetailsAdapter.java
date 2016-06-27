@@ -42,6 +42,7 @@ import java.util.List;
  */
 public class NotificationDetailsAdapter extends RecyclerView.Adapter<NotificationDetailsAdapter.ListImageNotificationAdapterViewHolder> {
 
+    private static final String TAG = NotificationDetailsAdapter.class.getSimpleName();
     private final Activity activity;
     private Context context;
     private List<Object> objectses;
@@ -63,7 +64,10 @@ public class NotificationDetailsAdapter extends RecyclerView.Adapter<Notificatio
         this.context = activity;
         this.objectses = new ArrayList<>();
         objectses.add(message);
-        objectses.addAll(message.getNotifyImages());
+        if (message.getNotifyImages() != null)
+            objectses.addAll(message.getNotifyImages());
+        else Log.d(TAG, "image of notification null");
+
         imageLoader = LaoSchoolSingleton.getInstance().getImageLoader();
     }
 
