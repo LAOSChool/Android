@@ -120,7 +120,6 @@ public class ScreenExamResults extends Fragment
     public IScreenExamResults iScreenExamResults;
     HomeActivity activity;
 
-    LinearLayout mFilterTerm;
 
 
     static ViewpagerDisableSwipeLeft mViewPageStudent;
@@ -532,7 +531,6 @@ public class ScreenExamResults extends Fragment
         appFilterBar = (AppBarLayout) view.findViewById(R.id.examresuts_appbar);
         mContainer = (LinearLayout) view.findViewById(R.id.mContainer);
         mFilter = (LinearLayout) view.findViewById(R.id.mFilter);
-        mFilterTerm = (LinearLayout) view.findViewById(R.id.mFitlerTerm);
         lbSubjectSeleted = (TextView) view.findViewById(R.id.lbSubjectSeleted);
         mSelectedSubject = view.findViewById(R.id.mSelectedSubject);
         //difine progee,erorr,nodata
