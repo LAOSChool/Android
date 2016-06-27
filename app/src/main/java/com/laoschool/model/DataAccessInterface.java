@@ -6,10 +6,12 @@ import com.laoschool.entities.Attendance;
 import com.laoschool.entities.AttendanceRollup;
 import com.laoschool.entities.Class;
 import com.laoschool.entities.ExamResult;
+import com.laoschool.entities.ExamType;
 import com.laoschool.entities.FinalResult;
 import com.laoschool.entities.Master;
 import com.laoschool.entities.Message;
 import com.laoschool.entities.School;
+import com.laoschool.entities.SchoolYears;
 import com.laoschool.entities.TimeTable;
 import com.laoschool.entities.User;
 
@@ -124,10 +126,9 @@ public interface DataAccessInterface {
     public void updateAttendance(Attendance attendance, AsyncCallback<Attendance> callback);
 
     /**
-     *
      * @param filter_class_id (require)
-     * @param filter_date (require)
-     * @param callback return AttendanceRollup mixed data,
+     * @param filter_date     (require)
+     * @param callback        return AttendanceRollup mixed data,
      */
     public void rollupAttendance(int filter_class_id, String filter_date, AsyncCallback<AttendanceRollup> callback);
 
@@ -297,5 +298,15 @@ public interface DataAccessInterface {
     public void getMasterTablebyName(String tableName, AsyncCallback<List<Master>> callback);
 
     public void inputExamResults(ExamResult examResult, AsyncCallback<ExamResult> callback);
+
+    public void getListSubjectbyClassId(int classId, AsyncCallback<List<Master>> callback);
+
+    public void getExamResultsforMark(int filter_class_id, int filter_user_id, int filter_subject_id, AsyncCallback<List<ExamResult>> callback);
+
+    public void getExamType(int filter_class_id, AsyncCallback<List<ExamType>> callback);
+
+    public void getMyFinalResultsByYear(int filter_year_id, AsyncCallback<FinalResult> callback);
+
+    public void getMySchoolYears(AsyncCallback<List<SchoolYears>> callback);
 
 }

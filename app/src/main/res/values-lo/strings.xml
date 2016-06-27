@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--Login screen-->
-    <string name="SCLogin_AppName">ໂຮງຮຽນລາວ</string>
+    <string name="SCCommon_AppName">ໂຮງຮຽນລາວ</string>
     <string name="SCCommon_UserName">ຊື່ຜູ້ໃຊ້</string>
     <string name="SCCommon_Password">ລະຫັດຜ່ານ</string>
     <string name="SCLogin_Login">ເຂົ້າ​ສູ່​ລະ​ບົບ</string>

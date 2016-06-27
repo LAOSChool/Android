@@ -71,6 +71,8 @@ public class RecyclerViewScreenMoreAdapter extends RecyclerView.Adapter<Recycler
                         row_icon.setImageDrawable(LaoSchoolShared.getDraweble(context, R.drawable.ic_account_balance_black_24dp));
                     }
                 } else if (title.equals(context.getString(R.string.SCCommon_ListTeacher))) {
+
+                } else if (title.equals(context.getString(R.string.title_screen_list_student_of_class))) {
                     if (row_icon != null) {
                         row_icon.setImageDrawable(LaoSchoolShared.getDraweble(context, R.drawable.ic_people_black_24dp));
                     }
@@ -122,6 +124,8 @@ public class RecyclerViewScreenMoreAdapter extends RecyclerView.Adapter<Recycler
                             iScreenMore.gotoExamResultsformMore();
                         }else if (title.equals(context.getString(R.string.SCCommon_TimeTable))) {
                             iScreenMore.gotoScheduleformMore();
+                        }if (title.equals(context.getString(R.string.title_screen_list_student_of_class))) {
+                            iScreenMore.gotoListStudentformMore();
                         }
                     }
                 });

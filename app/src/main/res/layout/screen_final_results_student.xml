@@ -1,172 +1,58 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/mContenDataFinalResults"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:background="#ffffff"
         android:orientation="vertical"
-        tools:context=".screen.ScreenFinalResultsStudent">
-
+        android:id="@+id/mContainer">
 
         <RelativeLayout
             android:id="@+id/mListBox"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:background="@color/colorPrimary"
-            android:animateLayoutChanges="true">
+            android:animateLayoutChanges="true"
+            android:background="@color/colorAttendanceHasReason">
 
-            <Spinner
-                android:id="@+id/cbxTermScreenFinalResultsStudent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
+            <ImageView
+                android:id="@+id/imageView27"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:background="@android:color/transparent"
-                android:gravity="center_horizontal"
-                android:spinnerMode="dropdown" />
+                android:src="@drawable/ic_timer_black_24dp"
+                android:tint="#fff" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/selected_year"
+                android:id="@+id/lbSelectedSchoolYear"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="72dp"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="#fff"
+                android:layout_toLeftOf="@+id/imageView30"
+                android:layout_toStartOf="@+id/imageView30" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView30"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_keyboard_arrow_down_white_24dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp" />
 
         </RelativeLayout>
 
+       <include layout="@layout/view_conten_final_results"/>
 
-        <!--<ScrollView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:id="@+id/mScrollFinalResults">-->
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/fragment_root"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:id="@+id/mDataTotalFinalResults"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#00A261"
-                android:orientation="vertical"
-                android:paddingBottom="5dp"
-                android:paddingTop="8dp">
-
-                <TextView
-                    android:id="@+id/textView11"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="8dp"
-                    android:text="Infomation"
-                    android:textColor="@color/textColorSubHeader"
-                    android:textSize="@dimen/sub_header_font_size"
-                    android:visibility="gone" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp">
-
-                    <ImageView
-                        android:id="@+id/imageView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="16dp"
-                        android:src="@drawable/ic_class_white_24dp"
-                        android:tint="#fff" />
-
-                    <TextView
-                        android:id="@+id/lbClassName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="56dp"
-                        android:text="Class name"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textColor="#fff"
-                        android:textSize="16sp" />
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp">
-
-                    <ImageView
-                        android:id="@+id/imageView2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="16dp"
-                        android:src="@drawable/ic_account_box_black_24dp"
-                        android:tint="#fff"
-                        android:visibility="gone" />
-
-                    <TextView
-                        android:id="@+id/lbAvgTerm"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="16dp"
-                        android:text="Term1: 8.8 - Term2:9.0"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textColor="#fff"
-                        android:textSize="14sp" />
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp">
-
-                    <ImageView
-                        android:id="@+id/imageView7"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="16dp"
-                        android:src="@drawable/ic_timer_black_24dp"
-                        android:tint="#fff"
-                        android:visibility="gone" />
-
-                    <TextView
-                        android:id="@+id/lbTotalTerm"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="16dp"
-                        android:text="Total:10"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textColor="#fff"
-                        android:textSize="14sp" />
-                </RelativeLayout>
-            </LinearLayout>
-
-            <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
-                android:id="@+id/mRecyclerViewResultsDetailsScreenFinalResultsStudent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#eee"
-                android:scrollbars="none" />
-        </LinearLayout>
-
-
-        <!--</ScrollView>-->
     </LinearLayout>
 
     <include
@@ -182,14 +68,6 @@
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone" />
-
-    <include
-        android:id="@+id/mNoData"
-        layout="@layout/view_no_data"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:visibility="gone" />
 

@@ -8,10 +8,12 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -70,6 +72,15 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
 
     private static LinearLayout mAnnouncement;
     private static ProgressBar mProgressBar;
+    private static View mError;
+    private static View mNoData;
+    private View mExpanSearch;
+    private MenuItem itemSearch;
+    private View mBacgroundSearch;
+    private RecyclerView mSearchResults;
+    private SearchView mSearch;
+    private boolean onSearch = false;
+
 
     public Message getNotification() {
         return notification;
@@ -142,9 +153,22 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
                 }
                 _handlerPageChange();
                 alreadyExecuted = true;
+
             }
         }, LaoSchoolShared.LOADING_TIME);
+        onErrorNodata();
+    }
 
+    private void onErrorNodata() {
+        View.OnClickListener reloadDataClick = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                _showProgressLoading(true);
+                getDataFormServer();
+            }
+        };
+        mNoData.setOnClickListener(reloadDataClick);
+        mError.setOnClickListener(reloadDataClick);
     }
 
     public static void getDataFormServer() {
@@ -152,18 +176,25 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
             @Override
             public void onSuccess(final List<Message> result) {
                 try {
-                    for (Message message : result) {
-                        accessNotification.addOrUpdateNotification(message);
+                    if (result != null) {
+                        for (Message message : result) {
+                            accessNotification.addOrUpdateNotification(message);
+                        }
+                        getDataFormLocal(-1);
+                    } else {
+                        showNodata();
                     }
-                    getDataFormLocal(-1);
                 } catch (Exception e) {
                     Log.e(TAG, "getDataFormServer()/getNotification() Exception=" + e.getMessage());
+                    showError();
+
                 }
             }
 
             @Override
             public void onFailure(String message) {
                 Log.e(TAG, "getDataFormServer()/getNotification() onFailure=" + message);
+                showError();
             }
 
             @Override
@@ -173,14 +204,31 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
         });
     }
 
+    private static void showNodata() {
+        mNoData.setVisibility(View.VISIBLE);
+        mError.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
+        mAnnouncement.setVisibility(View.GONE);
+    }
+
+    private static void showError() {
+        mError.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.GONE);
+        mAnnouncement.setVisibility(View.GONE);
+        mNoData.setVisibility(View.GONE);
+
+    }
+
     private static void _showProgressLoading(boolean b) {
         if (b) {
             mProgressBar.setVisibility(View.VISIBLE);
             mAnnouncement.setVisibility(View.GONE);
         } else {
-            mProgressBar.setVisibility(View.GONE);
             mAnnouncement.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.GONE);
         }
+        mError.setVisibility(View.GONE);
+        mNoData.setVisibility(View.GONE);
     }
 
 
@@ -189,18 +237,24 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
             @Override
             public void onSuccess(final List<Message> result) {
                 try {
-                    for (Message message : result) {
-                        accessNotification.addOrUpdateNotification(message);
+                    if (result != null) {
+                        for (Message message : result) {
+                            accessNotification.addOrUpdateNotification(message);
+                        }
+                        getDataFormLocal(position);
+                    } else {
+                        showNodata();
                     }
-                    getDataFormLocal(position);
                 } catch (Exception e) {
                     Log.e(TAG, "getDataFormServer()/getNotification(" + form_id + ") Exception=" + e.getMessage());
+                    showError();
                 }
             }
 
             @Override
             public void onFailure(String message) {
                 Log.e(TAG, "getDataFormServer()/getNotification(" + form_id + ") onFailure=" + message);
+                showError();
             }
 
             @Override
@@ -254,16 +308,53 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     }
 
     private View _defineTeacherView(LayoutInflater inflater, ViewGroup container) {
-        View view = inflater.inflate(R.layout.screen_announcements_teacher, container, false);
+        View view = inflater.inflate(R.layout.screen_announcements, container, false);
         mAnnouncement = (LinearLayout) view.findViewById(R.id.mAnnouncement);
+
+        //error,nodata progress view
+        mError = view.findViewById(R.id.mError);
+        mNoData = view.findViewById(R.id.mNoData);
         mProgressBar = (ProgressBar) view.findViewById(R.id.mProgress);
+
         // Bind the tabs to the ViewPager
         tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
         viewPage = (ViewpagerDisableSwipeLeft) view.findViewById(R.id.notificationViewPage);
-        viewPage.setAllowedSwipeDirection(HomeActivity.SwipeDirection.none);
+        viewPage.setAllowedSwipeDirection(HomeActivity.SwipeDirection.all);
+
+        //init seach
+        mExpanSearch = view.findViewById(R.id.mExpanSearch);
+        mBacgroundSearch = view.findViewById(R.id.mBacgroundSearch);
+        mSearchResults = (RecyclerView) view.findViewById(R.id.mSearchResults);
+        mSearchResults.setLayoutManager(new LinearLayoutManager(context));
+
+        //
+        onExpanSearch();
+        onCollapseSearch();
 
         return view;
     }
+
+    private void onCollapseSearch() {
+        mBacgroundSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (MenuItemCompat.isActionViewExpanded(itemSearch)) {
+                    MenuItemCompat.collapseActionView(itemSearch);
+                }
+            }
+        });
+    }
+
+    private void onExpanSearch() {
+        mExpanSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MenuItemCompat.expandActionView(itemSearch);
+                itemSearch.setVisible(true);
+            }
+        });
+    }
+
 
     private void _handlerPageChange() {
         ViewPager.OnPageChangeListener onPageNotificationChangeListener = new ViewPager.OnPageChangeListener() {
@@ -288,79 +379,90 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
         viewPage.addOnPageChangeListener(onPageNotificationChangeListener);
     }
 
-    private View _defineStudentView(View view) {
-        mRecylerViewNotificationStudent = (RecyclerView) view.findViewById(R.id.mRecylerViewNotificationStudent);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
-        mRecylerViewNotificationStudent.setLayoutManager(linearLayoutManager);
-        final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
-        //
-        int count = accessNotification.getNotificationCount();
-        Log.d(TAG, "notification count in local:" + count);
-        if (count > 0) {
-            getNotificationFormClientForStudent();
-        } else {
-            getNotificationFormServerForStudent();
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (currentRole != null) {
+            inflater.inflate(R.menu.menu_screen_announcement, menu);
+            MenuItem itemCreateAnnocement = menu.findItem(R.id.action_create_announcement);
+            itemSearch = menu.findItem(R.id.search);
+            itemSearch.setVisible(false);
+            mSearch = (SearchView) itemSearch.getActionView();
+            if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER))
+                itemCreateAnnocement.setVisible(true);
+            else itemCreateAnnocement.setVisible(false);
+
+            onExpandCollapseSearch();
+
         }
 
 
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+    }
+
+    private void onExpandCollapseSearch() {
+        MenuItemCompat.setOnActionExpandListener(itemSearch, new MenuItemCompat.OnActionExpandListener() {
             @Override
-            public void onRefresh() {
-                getNotificationFormServerForStudent();
-                // Refresh items
-                mSwipeRefreshLayout.setRefreshing(false);
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                itemSearch.setVisible(true);
+                viewPage.setVisibility(View.VISIBLE);
+                mBacgroundSearch.setVisibility(View.VISIBLE);
+
+                mExpanSearch.setVisibility(View.GONE);
+                tabs.setVisibility(View.GONE);
+
+                ((HomeActivity) getActivity()).displaySearch();
+                ((HomeActivity) getActivity()).hideBottomBar();
+
+                expanSearch();
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                mAnnouncement.setVisibility(View.VISIBLE);
+                tabs.setVisibility(View.VISIBLE);
+                viewPage.setVisibility(View.VISIBLE);
+                mExpanSearch.setVisibility(View.VISIBLE);
+                itemSearch.setVisible(false);
+                mBacgroundSearch.setVisibility(View.GONE);
+                mSearchResults.setVisibility(View.GONE);
+
+                ((HomeActivity) getActivity()).cancelSearch();
+                ((HomeActivity) getActivity()).showBottomBar();
+                return true;
             }
         });
-
-
-        return view;
     }
 
-    private void getNotificationFormClientForStudent() {
-        List<Message> messages = accessNotification.getListNotificationForUser(Message.MessageColumns.COLUMN_NAME_TO_USER_NAME, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
-        _setListNotificationForStudent(messages);
+    private void expanSearch() {
+        final int currentPosition = viewPage.getCurrentItem();
+        notificationPagerAdapter.getFragment(currentPosition);
+        int isRead = 0;
+        if (currentPosition == 0) {
+            isRead = 1;
+        }
 
-    }
-
-    private void getNotificationFormServerForStudent() {
-        service.getNotification(new AsyncCallback<List<Message>>() {
+        //search
+        final int finalIsRead = isRead;
+        mSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void onSuccess(List<Message> result) {
-                try {
-                    for (Message message : result) {
-                        accessNotification.addOrUpdateNotification(message);
-                    }
-                    List<Message> messages = accessNotification.getListNotificationForUser(Message.MessageColumns.COLUMN_NAME_TO_USER_NAME, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
-                    _setListNotificationForStudent(messages);
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
 
-                } catch (Exception e) {
-                    e.printStackTrace();
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (!newText.trim().isEmpty()) {
+                    onSearch = true;
+                    mAnnouncement.setVisibility(View.GONE);
+                    mBacgroundSearch.setVisibility(View.GONE);
+                    mSearchResults.setVisibility(View.VISIBLE);
+                    List<Message> notificationList = DataAccessNotification.searchNotificationInbox(LaoSchoolShared.myProfile.getId(), finalIsRead, newText);
+                    ListNotificationAdapter listNotiAdapter = new ListNotificationAdapter(thiz, mSearchResults, currentPosition, notificationList);
+                    mSearchResults.setAdapter(listNotiAdapter);
                 }
-            }
-
-            @Override
-            public void onFailure(String message) {
-
-            }
-
-            @Override
-            public void onAuthFail(String message) {
-                LaoSchoolShared.goBackToLoginPage(context);
+                return true;
             }
         });
-    }
-
-    private void _setListNotificationForStudent(List<Message> messages) {
-        final ListNotificationAdapter listMessageAdapter = new ListNotificationAdapter(this, mRecylerViewNotificationStudent, 0, messages);
-        mRecylerViewNotificationStudent.setAdapter(listMessageAdapter);
-    }
-
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (currentRole != null)
-            if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER))
-                inflater.inflate(R.menu.menu_screen_announcement, menu);
 
     }
 
@@ -397,6 +499,9 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
         Log.d(TAG, "onResumeFragment()/getUserVisibleHint():" + getUserVisibleHint());
         if (!alreadyExecuted && getUserVisibleHint()) {
             _defineData();
+        }
+        if (onSearch) {
+            MenuItemCompat.collapseActionView(itemSearch);
         }
     }
 
@@ -612,12 +717,5 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         Log.d(TAG, "setUserVisibleHint() -isVisibleToUser:" + isVisibleToUser);
-        try {
-            if (!alreadyExecuted && isVisibleToUser) {
-                _defineData();
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "setUserVisibleHint() -exception:" + e.getMessage());
-        }
     }
 }

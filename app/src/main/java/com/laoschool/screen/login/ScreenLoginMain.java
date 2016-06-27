@@ -75,7 +75,7 @@ public class ScreenLoginMain extends Fragment {
 //      final ImageView imgForgotPass = (ImageView) view.findViewById(R.id.imgForgotPass);
 
         //Set text view
-        logo.setText(R.string.SCLogin_AppName);
+        logo.setText(R.string.SCCommon_AppName);
         txbUserName.setHint(R.string.SCCommon_UserName);
         txbPassword.setHint(R.string.SCCommon_Password);
         buttonLogin.setText(R.string.SCLogin_Login);

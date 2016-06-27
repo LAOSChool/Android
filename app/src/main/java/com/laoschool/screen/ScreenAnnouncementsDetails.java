@@ -88,7 +88,7 @@ public class ScreenAnnouncementsDetails extends Fragment implements FragmentLife
                 //set Title Notification
                 ((HomeActivity) getActivity()).getSupportActionBar().setTitle(notification.getTitle());
 
-                Log.d(TAG, "Size image:" + notification.getNotifyImages().size());
+                //Log.d(TAG, "Size image:" + notification.getNotifyImages().size());
                 NotificationDetailsAdapter notificationDetailsAdapter = new NotificationDetailsAdapter(getActivity(), notification);
                 mReclerViewListImageNotification.setAdapter(notificationDetailsAdapter);
             }

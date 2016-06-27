@@ -10,12 +10,12 @@
         android:allowBackup="true"
         android:supportsRtl="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/SCLogin_AppName"
+        android:label="@string/SCCommon_AppName"
         android:theme="@style/AppTheme">
         <activity
             android:name=".screen.SplashScreen"
             android:screenOrientation="portrait"
-            android:label="@string/SCLogin_AppName"
+            android:label="@string/SCCommon_AppName"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,7 +24,7 @@
         </activity>
         <activity
             android:name=".screen.HomeActivity"
-            android:label="@string/SCLogin_AppName"
+            android:label="@string/SCCommon_AppName"
             android:theme="@style/HomeScreen"
             android:windowSoftInputMode="adjustResize" />
         <activity
