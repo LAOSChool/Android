@@ -1,5 +1,6 @@
 package com.laoschool.adapter;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,9 +9,11 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -25,8 +28,10 @@ import com.laoschool.entities.ExamResult;
 import com.laoschool.shared.LaoSchoolShared;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -35,6 +40,7 @@ import java.util.TreeMap;
  */
 public class InputExamResultsAdapter extends RecyclerView.Adapter<InputExamResultsAdapter.ViewHolder> {
     private static final String TAG = InputExamResultsAdapter.class.getSimpleName();
+    private final Activity activity;
     private int TYPE_DIPSLAY = 0;
     public static final int DISPLAY_LIST_0 = 0;
     public static final int DISPLAY_EIDIT_1 = 1;
@@ -49,16 +55,30 @@ public class InputExamResultsAdapter extends RecyclerView.Adapter<InputExamResul
     private Map<Integer, ExamResult> mapExam = new HashMap<>();
     private int exam_date_input;
     List<Long> exam_dates;
+    private List<Integer> origin_StudentIds = new ArrayList<>();
 
-    public InputExamResultsAdapter(Context context, Map<Integer, ExamResult> groupExamByStudent, int selectedDateInputExamResult) {
+    private List<String> studentNames = new ArrayList<>();
+    private List<String> origin_StudentNames = new ArrayList<>();
+
+    private Map<Integer, String> mapStudents = new HashMap<>();
+
+    public InputExamResultsAdapter(Activity activity, Context context, Map<Integer, ExamResult> groupExamByStudent, int selectedDateInputExamResult) {
         this.context = context;
+        this.activity = activity;
         Map<Integer, ExamResult> sortgroupExamByStudent = new TreeMap<>(groupExamByStudent);
         this.groupExamByStudent = sortgroupExamByStudent;
         this.exam_date_input = selectedDateInputExamResult;
         for (Integer studentId : sortgroupExamByStudent.keySet()) {
-            studentIds.add(studentId);
+            String studentName = sortgroupExamByStudent.get(studentId).getStudent_name();
+            origin_StudentIds.add(studentId);
+            origin_StudentNames.add(studentName);
             mapInputExam.put(studentId, 0f);
+            mapStudents.put(studentId, studentName);
         }
+
+        studentIds.addAll(origin_StudentIds);
+        studentNames.addAll(origin_StudentNames);
+
         Log.d(TAG, "size:" + studentIds.size());
     }
 
@@ -79,6 +99,11 @@ public class InputExamResultsAdapter extends RecyclerView.Adapter<InputExamResul
             //fill data exam results
             holder.row_title.setText(userName);
             holder.txtInputExamResults.setText(examResults.getSresult());
+            if (position == (studentIds.size() - 1)) {
+                holder.txtInputExamResults.setImeOptions(EditorInfo.IME_ACTION_DONE);
+            } else {
+                holder.txtInputExamResults.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+            }
             holder.lbNickName.setText(examResults.getStd_nickname());
             //final ExamResult[] finalExamResult = {ExamResult.copyValue(examResults)};
 
@@ -119,6 +144,30 @@ public class InputExamResultsAdapter extends RecyclerView.Adapter<InputExamResul
                             Log.d(TAG, "-exam results null");
                         }
                     }
+                }
+            });
+            holder.txtInputExamResults.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean hasfocus) {
+                    if (!hasfocus) {
+                        Log.d(TAG, "-focus change:" + hasfocus);
+                        if (!holder.txtInputExamResults.getText().toString().trim().isEmpty()) {
+                            holder.txtInputExamResults.setText(holder.txtInputExamResults.getText());
+                            LaoSchoolShared.hideSoftKeyboard(activity);
+                        }
+                    }
+                }
+            });
+
+            holder.txtInputExamResults.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                    boolean handled = false;
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        holder.txtInputExamResults.clearFocus();
+                        LaoSchoolShared.hideSoftKeyboard(activity);
+                    }
+                    return handled;
                 }
             });
 
@@ -271,6 +320,26 @@ public class InputExamResultsAdapter extends RecyclerView.Adapter<InputExamResul
 
         Map<Long, ArrayList<ExamResult>> examsTree = new TreeMap<>(examByMonthList);
         return examsTree;
+    }
+
+
+    public void filter(String charText) {
+        charText = charText.toLowerCase(Locale.getDefault());
+        studentIds.clear();
+        studentNames.clear();
+        if (charText.length() == 0) {
+            studentIds.addAll(origin_StudentIds);
+            studentNames.addAll(origin_StudentNames);
+        } else {
+            for (int studentId : origin_StudentIds) {
+                String studentName = mapStudents.get(studentId);
+                if (charText.length() != 0 && studentName.toLowerCase(Locale.getDefault()).contains(charText)) {
+                    studentIds.add(studentId);
+                    studentNames.add(studentName);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 
 

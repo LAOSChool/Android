@@ -25,17 +25,16 @@
             android:src="@drawable/ic_search_black_24dp"
             android:tint="#000" />
 
-        <EditText
-            android:id="@+id/txtSearch"
+        <TextView
+            android:id="@+id/lbSearch"
             android:layout_width="match_parent"
             android:layout_height="35dp"
             android:layout_marginLeft="30dp"
             android:background="@android:color/transparent"
-            android:hint="@string/hint_search_exam_resutls"
-            android:imeOptions="actionSearch"
-            android:inputType="text"
-            android:textSize="14sp">
+            android:hint="Search"
+            android:textSize="14sp"
+            android:gravity="center_vertical">
             <requestFocus />
-        </EditText>
+        </TextView>
     </LinearLayout>
 </RelativeLayout>

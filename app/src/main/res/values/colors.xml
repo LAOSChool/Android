@@ -60,5 +60,8 @@
     <color name="colorScoreTest">#FF9800</color>
     <color name="colorScoreAvgTerm">#D32F2F</color>
     <color name="colorScoreAvgYear">#B71C1C</color>
+    <color name="colorPrimarySearch">#BDBDBD</color>
+    <color name="colorPrimaryDarkSearch">#9E9E9E</color>
+
 
 </resources>

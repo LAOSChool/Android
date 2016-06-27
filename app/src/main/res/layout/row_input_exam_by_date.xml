@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="56dp"
+    android:layout_height="45dp"
     android:background="#fff"
-    android:orientation="vertical"
-    android:paddingBottom="4dp"
-    android:paddingTop="4dp"
-   >
+    android:orientation="vertical">
 
     <com.android.volley.toolbox.NetworkImageView
         android:id="@+id/row_icon"
@@ -19,13 +16,13 @@
         android:src="@drawable/ic_account_circle_black_36dp" />
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="72dp"
         android:layout_toLeftOf="@+id/txtInputExamResults"
-        android:layout_toStartOf="@+id/txtInputExamResults">
+        android:layout_toStartOf="@+id/txtInputExamResults"
+        android:orientation="vertical">
 
 
         <TextView
@@ -41,16 +38,16 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/lbNickName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/lbNickName"
             android:textSize="12sp" />
     </LinearLayout>
 
     <EditText
         android:id="@+id/txtInputExamResults"
         android:layout_width="70dp"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="false"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
@@ -61,20 +58,21 @@
         android:background="@drawable/bg_input_exam_results"
         android:gravity="center"
         android:inputType="numberDecimal"
-        android:textColor="@color/colorAccent"
+        android:textColor="@android:color/holo_red_light"
         android:textSize="25dp" />
 
     <ImageView
+        android:id="@+id/btnAddNoticeExamResutls"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/action_add_notice_exam_results"
-        android:id="@+id/btnAddNoticeExamResutls"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
+        android:src="@drawable/ic_message_black_24dp"
 
-        android:src="@drawable/ic_message_black_24dp" />
+        android:text="@string/action_add_notice_exam_results"
+        android:tint="#BDBDBD" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -82,7 +80,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:background="#000"
+        android:background="#BDBDBD"
         android:orientation="horizontal"></LinearLayout>
 
 

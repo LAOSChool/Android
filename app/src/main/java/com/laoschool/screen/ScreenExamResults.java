@@ -9,8 +9,12 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -18,6 +22,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,12 +34,11 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -45,6 +50,7 @@ import com.laoschool.adapter.ExamResultsforClassbySubjectAdapter;
 import com.laoschool.adapter.ExamResultsForStudentAdapter;
 import com.laoschool.entities.ExamResult;
 import com.laoschool.entities.Master;
+import com.laoschool.listener.AppBarStateChangeListener;
 import com.laoschool.model.AsyncCallback;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
@@ -60,8 +66,9 @@ import java.util.TreeMap;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ScreenExamResults extends Fragment implements FragmentLifecycle {
-    public static final String TAG = "ScreenExamResults";
+public class ScreenExamResults extends Fragment
+        implements FragmentLifecycle {
+    public static final String TAG = ScreenExamResults.class.getSimpleName();
     private static FragmentManager fr;
     private ScreenExamResults screenExamResults;
     private int containerId;
@@ -71,22 +78,27 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     private static boolean alreadyExecuted = false;
     private static LinearLayout mContainer;
     private LinearLayout mFilter;
-    private LinearLayout mData;
     private ActionBar mActionBar;
-    private RelativeLayout mDataInfomation;
-    private RelativeLayout btnSelectedDateInput;
     private ImageView btnShowSearch;
-    private View mActionSubmitCancel;
-    private TextView btnCancelInputExamResult;
-    private TextView btnSubmitInputExamResult;
     private TextView lbSubjectSeleted;
     private View mSelectedSubject;
     private TextView txtClassAndTermName;
-    private RelativeLayout headerInputExam;
-    private TextView lbInputDate;
     public List<Master> listSubject;
-    public int selectedSubjectId;
+    public int selectedSubjectId = -1;
     Map<Integer, String> mapSubject;
+    private View mSugesstionSelectedSubject;
+    private MenuItem itemSearch;
+    private SearchView mSearch;
+    private ExamResultsforClassbySubjectAdapter resultsforClassbySubjectAdapter;
+    private SearchView mSearchExamResults;
+    private AppBarLayout appFilterBar;
+    private CollapsingToolbarLayout collapsing;
+    private CoordinatorLayout.Behavior<AppBarLayout> behavior;
+    private View mListExam;
+    private View mExpanSearch;
+    //   private EditText txtSearch;
+
+    private AppBarStateChangeListener.State appBarState = AppBarStateChangeListener.State.EXPANDED;
 
 
     public ScreenExamResults() {
@@ -109,13 +121,12 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     HomeActivity activity;
 
     LinearLayout mFilterTerm;
-    RelativeLayout mToolBox;
 
 
     static ViewpagerDisableSwipeLeft mViewPageStudent;
     static PagerSlidingTabStrip tabsStrip;
     static LinearLayout mExamResultsStudent;
-    static ProgressBar mProgress;
+    static View mProgress;
     static FrameLayout mError;
     static FrameLayout mNoData;
     private ObservableRecyclerView mResultListStudentBySuject;
@@ -163,21 +174,91 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         switch (id) {
             case R.id.action_input_exam_results:
                 iScreenExamResults.gotoScreenInputExamResults();
-                //showInputExamResultsMode(selectedMonth, longDateInputExamResult);
                 return true;
+
+            case R.id.search:
+                onSearchClick();
+
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void onSearchClick() {
+        if (selectedSubjectId == -1) {
+            if (dialogSelectdSubject != null) {
+                dialogSelectdSubject.show();
+            } else {
+                Log.d(TAG, "dialog null");
+            }
+        }
+        setExpandedFilterBar(false, true);
+
+        activity.hideBottomBar();
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         try {
             if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
-                inflater.inflate(R.menu.menu_exam_results_teacher, menu);
+                menu.clear();
+                inflater.inflate(R.menu.menu_screen_exam_results_teacher, menu);
+                itemSearch = menu.findItem(R.id.search);
+                mSearchExamResults = (SearchView) itemSearch.getActionView();
+                onExpanCollapseSearch();
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
+    }
+
+    private void onExpanCollapseSearch() {
+        MenuItemCompat.setOnActionExpandListener(itemSearch, new MenuItemCompat.OnActionExpandListener() {
+
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                // Do something when expanded
+                itemSearch.setVisible(true);
+                setExpandedAppBar(false, true);
+                mExpanSearch.setVisibility(View.GONE);
+
+                ((HomeActivity) getActivity()).displaySearch();
+                ((HomeActivity) getActivity()).hideBottomBar();
+
+                expanSearch();
+                return true;  // Return true to expand action view
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                // Do something when collapsed
+                itemSearch.setVisible(false);
+                setExpandedAppBar(true, true);
+                mExpanSearch.setVisibility(View.VISIBLE);
+
+                ((HomeActivity) getActivity()).cancelSearch();
+                ((HomeActivity) getActivity()).showBottomBar();
+                return true;  // Return true to collapse action view
+            }
+
+
+        });
+    }
+
+    private void expanSearch() {
+        mSearchExamResults.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                Log.d(TAG, "query:" + query);
+                resultsforClassbySubjectAdapter.filter(query);
+                return true;
+            }
+        });
     }
 
     @Override
@@ -198,9 +279,7 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
             }
             if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
                 fillDataForTeacher();
-            } else {
-                _definePageSemesterStudent();
-            }
+            } else _definePageSemesterStudent();
 
         }
         reloadDatAfterInputSucessfuly();
@@ -248,9 +327,10 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
 
     private View _defineScreenExamResultsDetailForStudent(LayoutInflater inflater, ViewGroup container) {
         View view = inflater.inflate(R.layout.screen_exam_results_student, container, false);
+        CoordinatorLayout coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinatorLayout);
 
         mExamResultsStudent = (LinearLayout) view.findViewById(R.id.mExamResultsStudent);
-        mProgress = (ProgressBar) view.findViewById(R.id.mProgressExamResultsStudent);
+        mProgress = view.findViewById(R.id.mProgressExamResultsStudent);
         mError = (FrameLayout) view.findViewById(R.id.mError);
         mNoData = (FrameLayout) view.findViewById(R.id.mNoData);
 
@@ -449,69 +529,80 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
     private View _defineScreenExamResultsTeacher(LayoutInflater inflater, ViewGroup container) {
         View view = inflater.inflate(R.layout.screen_exam_results_tearcher, container, false);
         //difine container
+        appFilterBar = (AppBarLayout) view.findViewById(R.id.examresuts_appbar);
         mContainer = (LinearLayout) view.findViewById(R.id.mContainer);
         mFilter = (LinearLayout) view.findViewById(R.id.mFilter);
-        mData = (LinearLayout) view.findViewById(R.id.mData);
         mFilterTerm = (LinearLayout) view.findViewById(R.id.mFitlerTerm);
-        mDataInfomation = (RelativeLayout) view.findViewById(R.id.mDataInfomation);
-        mDataInfomation.setVisibility(View.GONE);
         lbSubjectSeleted = (TextView) view.findViewById(R.id.lbSubjectSeleted);
         mSelectedSubject = view.findViewById(R.id.mSelectedSubject);
         //difine progee,erorr,nodata
-        mProgress = (ProgressBar) view.findViewById(R.id.mProgress);
+        mProgress = view.findViewById(R.id.mProgress);
         mError = (FrameLayout) view.findViewById(R.id.mError);
         mNoData = (FrameLayout) view.findViewById(R.id.mNoData);
+
+        //define seach box
+        mExpanSearch = view.findViewById(R.id.mSearchBox);
+//        txtSearch = (EditText) view.findViewById(R.id.txtSearch);
+
+        //clear focus search
+        // txtSearch.clearFocus();
+
+
         txtClassAndTermName = (TextView) view.findViewById(R.id.txtClassAndTermName);
-        headerInputExam = (RelativeLayout) view.findViewById(R.id.header_input_exam);
-        headerInputExam.setVisibility(View.GONE);
-
-
-        //define toolbox
-        mToolBox = (RelativeLayout) view.findViewById(R.id.mToolBox);
-        btnShowSearch = (ImageView) view.findViewById(R.id.btnShowSearch);
-        SearchView searchStudent = (SearchView) view.findViewById(R.id.mSearchExamResults);
-        btnSelectedDateInput = (RelativeLayout) view.findViewById(R.id.btnMarkScoreAll);
-        mActionSubmitCancel = view.findViewById(R.id.mActionSubmitCancel);
-        mActionSubmitCancel.setVisibility(View.GONE);
-        btnCancelInputExamResult = (TextView) view.findViewById(R.id.btnCancelInputExamResult);
-        btnSubmitInputExamResult = (TextView) view.findViewById(R.id.btnSubmitInputExamResult);
-        lbInputDate = (TextView) mToolBox.findViewById(R.id.lbInputDate);
-
-        searchStudent.setQueryHint(getString(R.string.hint_search_exam_resutls));
-        searchStudent.setOnSearchClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                hideFilterShowData();
-            }
-        });
-        searchStudent.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                hideFilterShowData();
-            }
-        });
-
-        //set search plate color..
-        ViewGroup search_plate = (ViewGroup) searchStudent.findViewById(R.id.search_plate);
-        if (search_plate != null) {
-            search_plate.setBackgroundColor(Color.parseColor("#ffffff"));
-        }
-
+        mSugesstionSelectedSubject = view.findViewById(R.id.mSugesstionSelectedSubject);
+        mListExam = view.findViewById(R.id.mListExam);
         mResultListStudentBySuject = (ObservableRecyclerView) view.findViewById(R.id.mListExamResults);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 1);
         mResultListStudentBySuject.setLayoutManager(gridLayoutManager);
 
-        if (!alreadyExecuted && getUserVisibleHint()) {
-            if (currentRole == null) {
-                Log.d(TAG, "onResumeFragment() - current role null");
-                currentRole = LaoSchoolShared.ROLE_STUDENT;
-            }
-            if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
-                fillDataForTeacher();
-            }
 
-        }
+        //handler app bar
+        onAppBarExpanded();
+        //focus and collapse appbar
+        onOnFocusChangeBoxSearch();
+
+        onExpanSearch();
         return view;
+    }
+
+    private void onExpanSearch() {
+        mExpanSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MenuItemCompat.expandActionView(itemSearch);
+                itemSearch.setVisible(true);
+            }
+        });
+    }
+
+    private void onAppBarExpanded() {
+        appFilterBar.addOnOffsetChangedListener(new AppBarStateChangeListener() {
+            @Override
+            public void onStateChanged(AppBarLayout appBarLayout, State state) {
+                appBarState = state;
+            }
+        });
+    }
+
+    private void onOnFocusChangeBoxSearch() {
+//        txtSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View view, boolean hasFocus) {
+//                Log.d(TAG, "onFocusChange:" + hasFocus);
+//                if (hasFocus) {
+//                    if (appBarState == AppBarStateChangeListener.State.EXPANDED || appBarState == AppBarStateChangeListener.State.IDLE) {
+//                        setExpandedAppBar(false, true);
+//                    }
+//                }
+//
+//
+//            }
+//        });
+
+    }
+
+    private void setExpandedFilterBar(boolean expanded, boolean animate) {
+        appFilterBar.setExpanded(expanded, animate);
     }
 
     private void fillDataForTeacher() {
@@ -521,8 +612,6 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
 
         txtClassAndTermName.setText(className + " | " + termName + " / " + year);
         getFilterSubject();
-
-
     }
 
 
@@ -536,20 +625,22 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
             public void onSuccess(List<Master> result) {
                 listSubject = result;
                 Log.d(TAG, "getFilterSubject().onSuccess() -results size:" + result.size());
-                int subjectId = result.get(0).getId();
-                selectedSubjectId = subjectId;
-                String subjectName = result.get(0).getSval();
-                getExamResultsbySubject(false, subjectId);
-                lbSubjectSeleted.setText(subjectName);
-                fillInformationClass(subjectName);
+//                int subjectId = result.get(0).getId();
+//                selectedSubjectId = subjectId;
+//                String subjectName = result.get(0).getSval();
+//                getExamResultsbySubject(false, subjectId);
+//                lbSubjectSeleted.setText(subjectName);
+//                fillInformationClass(subjectName);
                 handlerSelectedSubject(result);
                 alreadyExecuted = true;
+                showProgressLoading(false);
             }
 
 
             @Override
             public void onFailure(String message) {
                 Log.e(ExamResultsByTermPagerAdapter.TAG, "getFilterSubject().onFailure() -message:" + message);
+                showError();
             }
 
             @Override
@@ -558,6 +649,27 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
                 LaoSchoolShared.goBackToLoginPage(context);
             }
 
+        });
+
+        mError.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (selectedSubjectId > -1) {
+                    getExamResultsbySubject(true, selectedSubjectId);
+                } else {
+                    getFilterSubject();
+                }
+            }
+        });
+        mNoData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (selectedSubjectId > -1) {
+                    getExamResultsbySubject(true, selectedSubjectId);
+                } else {
+                    getFilterSubject();
+                }
+            }
         });
 
     }
@@ -574,6 +686,12 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         }
         dialogSelectdSubject = makeDialogSelectdSubject(result, subjectNames);
         mSelectedSubject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogSelectdSubject.show();
+            }
+        });
+        mSugesstionSelectedSubject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialogSelectdSubject.show();
@@ -596,17 +714,19 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
 
 
         builder.setCustomTitle(header);
-        selectedSubjectId = result.get(0).getId();
         final ListAdapter subjectListAdapter = new ArrayAdapter<String>(context, R.layout.row_selected_subject, subjectNames);
 
         builder.setAdapter(subjectListAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(final DialogInterface dialogInterface, final int i) {
+                mSugesstionSelectedSubject.setVisibility(View.GONE);
+                mResultListStudentBySuject.setVisibility(View.VISIBLE);
+                mListExam.setVisibility(View.VISIBLE);
                 String subjectName = subjectNames.get(i);
                 int subjectId = result.get(i).getId();
                 selectedSubjectId = subjectId;
                 lbSubjectSeleted.setText(subjectName);
-                fillInformationClass(subjectName);
+                lbSubjectSeleted.setTextColor(Color.WHITE);
                 getExamResultsbySubject(true, subjectId);
             }
         });
@@ -618,17 +738,6 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
             }
         });
         return dialog;
-    }
-
-    private void fillInformationClass(String subjectName) {
-        ((TextView) mDataInfomation.findViewById(R.id.lbClassName)).setText(LaoSchoolShared.myProfile.getEclass().getTitle() + " - Term:" + LaoSchoolShared.myProfile.getEclass().getTerm());
-        ((TextView) mDataInfomation.findViewById(R.id.lbSubject)).setText("Subject:" + subjectName);
-        mDataInfomation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showFilterExamResults();
-            }
-        });
     }
 
 
@@ -707,11 +816,55 @@ public class ScreenExamResults extends Fragment implements FragmentLifecycle {
         return groupStudentMap;
     }
 
-    private void _fillDataForListResultFilter(int subjectId, RecyclerView recyclerView, Map<Integer, List<ExamResult>> result) {
-        ExamResultsforClassbySubjectAdapter resultsforClassbySubjectAdapter = new ExamResultsforClassbySubjectAdapter(this, subjectId, result);
+    private void _fillDataForListResultFilter(final int subjectId, RecyclerView recyclerView, Map<Integer, List<ExamResult>> result) {
+
+        resultsforClassbySubjectAdapter = new ExamResultsforClassbySubjectAdapter(this, subjectId, result);
         recyclerView.setAdapter(resultsforClassbySubjectAdapter);
         //hide loading
         showProgressLoading(false);
+
+        mSearchExamResults.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                Log.d(TAG, "query:" + query);
+                resultsforClassbySubjectAdapter.filter(query);
+                return true;
+            }
+        });
+
+        onTextChangeTextBoxSearch();
+
+    }
+
+    private void onTextChangeTextBoxSearch() {
+//        txtSearch.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//                if (appBarState == AppBarStateChangeListener.State.EXPANDED) {
+//                    setExpandedAppBar(true, true);
+//                }
+//                resultsforClassbySubjectAdapter.filter(charSequence.toString());
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//
+//            }
+//        });
+    }
+
+    private void setExpandedAppBar(boolean show, boolean show_animation) {
+        appFilterBar.setExpanded(show, show_animation);
     }
 
     @Override

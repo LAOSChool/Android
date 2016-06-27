@@ -9,19 +9,31 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,17 +44,15 @@ import com.laoschool.adapter.InputExamResultsAdapter;
 import com.laoschool.entities.ExamResult;
 import com.laoschool.entities.ExamType;
 import com.laoschool.entities.Master;
+import com.laoschool.listener.AppBarStateChangeListener;
+import com.laoschool.listener.RecyclerViewTouchListener;
 import com.laoschool.model.AsyncCallback;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
 
-import java.text.DateFormatSymbols;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -56,10 +66,11 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
     private TextView lbTermName;
     private TextView lbClassName;
     private View mSelectedSubject;
-    private View mToolBox;
+    private View mSelectedInputExamType;
     private TextView lbInputDate;
     private TextView lbSubjectSeleted;
     private RecyclerView listExamByStudent;
+    private View mContainer;
 
     private ProgressDialog progressDialog;
     private Dialog dialogSelectedSubject;
@@ -69,8 +80,22 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
 
     InputExamResultsAdapter resultsforClassbySubjectAdapter;
     public int selectedSubjectId;
-    private int selectedExamTypeId;
+    private int selectedExamTypeId = -1;
     public boolean onchange = false;
+
+    private List<ExamType> examType = new ArrayList<>();
+    private List<ExamResult> examListBySubjectId = new ArrayList<>();
+
+    AppBarLayout input_exam_appbar;
+    private EditText txtSearch;
+    private AppBarStateChangeListener.State appBarState = AppBarStateChangeListener.State.EXPANDED;
+    private View mSearchBox;
+    private View mSugesstionSelectedSubject;
+    private View mInput;
+    private View viewMain;
+    private View mSugesstionSelectedExamType;
+    private LinearLayoutManager layoutManager;
+
 
     interface IScreenInputExamResults {
         void cancelInputExamResults();
@@ -91,6 +116,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
             Log.d(TAG, "-Container Id:" + containerId);
         }
         progressDialog = new ProgressDialog(context);
+        progressDialog.setCancelable(false);
 
 
     }
@@ -99,35 +125,68 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.screen_input_exam_results_student, container, false);
+        viewMain = inflater.inflate(R.layout.screen_input_exam_results_student, container, false);
         HomeActivity activity = (HomeActivity) getActivity();
-        activity.hideBottomBar();
 
-        View customActionBar = View.inflate(context, R.layout.view_custom_action_bar_input_exam_results, null);
-        lbTermName = (TextView) customActionBar.findViewById(R.id.lbClassAndTermName);
-        lbClassName = (TextView) customActionBar.findViewById(R.id.lbClassName);
+        activity.hideBottomBar();//hide bottom bar
+
+        activity.getSupportActionBar().setTitle(R.string.title_screen_input_exam_resuls);
+
+        mContainer = viewMain.findViewById(R.id.coordinatorLayout);
+
+        input_exam_appbar = (AppBarLayout) viewMain.findViewById(R.id.input_exam_appbar);
+        onAppBarExpanded();
+
+        mSelectedSubject = viewMain.findViewById(R.id.mSelectedSubject);
+        lbSubjectSeleted = (TextView) mSelectedSubject.findViewById(R.id.lbSubjectSeleted);
+
+        //
+        mSugesstionSelectedSubject = viewMain.findViewById(R.id.mSugesstionSelectedSubject);
+        mSugesstionSelectedExamType = viewMain.findViewById(R.id.mSugesstionSelectedExamType);
+        mInput = viewMain.findViewById(R.id.mInput);
+        //define toolbox
+        mSelectedInputExamType = viewMain.findViewById(R.id.mToolBox);
+        lbInputDate = (TextView) mSelectedInputExamType.findViewById(R.id.lbInputDate);
+
+        listExamByStudent = (RecyclerView) viewMain.findViewById(R.id.listExamByStudent);
+
+        layoutManager = new LinearLayoutManager(context) {
+            @Override
+            public boolean canScrollVertically() {
+                return true;
+            }
+        };
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        //linearLayoutManager.setStackFromEnd(true);
+        listExamByStudent.setLayoutManager(layoutManager);
+
+        mSearchBox = viewMain.findViewById(R.id.mSearchBox);
+        mSearchBox.setVisibility(View.GONE);
+        txtSearch = (EditText) viewMain.findViewById(R.id.txtSearch);
+        onOnFocusChangeBoxSearch();
+        txtSearch.setEnabled(false);
+        txtSearch.clearFocus();
+
+
+        //
         String className = LaoSchoolShared.myProfile.getEclass().getTitle();
         String termName = String.valueOf("Term " + LaoSchoolShared.myProfile.getEclass().getTerm());
         String year = String.valueOf(LaoSchoolShared.myProfile.getEclass().getYears());
 
-        lbTermName.setText(termName + " / " + year);
-        lbClassName.setText(className);
-        activity.getSupportActionBar().setCustomView(customActionBar);
+        TextView txtClassAndTermName = (TextView) viewMain.findViewById(R.id.txtClassAndTermName);
+        txtClassAndTermName.setText(className + " | " + year + "   " + termName);
 
+        return viewMain;
+    }
 
-        mSelectedSubject = view.findViewById(R.id.mSelectedSubject);
-        lbSubjectSeleted = (TextView) mSelectedSubject.findViewById(R.id.lbSubjectSeleted);
-
-        //define toolbox
-        mToolBox = view.findViewById(R.id.mToolBox);
-        lbInputDate = (TextView) mToolBox.findViewById(R.id.lbInputDate);
-
-        listExamByStudent = (RecyclerView) view.findViewById(R.id.listExamByStudent);
-        listExamByStudent.setHasFixedSize(true);
-
-        listExamByStudent.setLayoutManager(new LinearLayoutManager(context));
-
-        return view;
+    private void onAppBarExpanded() {
+        input_exam_appbar.addOnOffsetChangedListener(new AppBarStateChangeListener() {
+            @Override
+            public void onStateChanged(AppBarLayout appBarLayout, State state) {
+                Log.d(TAG, "STATE:" + state.name());
+                appBarState = state;
+            }
+        });
     }
 
 
@@ -149,12 +208,17 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
 
     @Override
     public void onPauseFragment() {
+        selectedSubjectId = -1;
+        selectedExamTypeId = -1;
+        input_exam_appbar.setExpanded(true, false);
+        examListBySubjectId.clear();
     }
 
     @Override
     public void onResumeFragment() {
         try {
             onchange = false;
+            input_exam_appbar.setExpanded(true, true);
             String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_EXAM_RESULTS_2);
             ScreenExamResults screenExamResults = (ScreenExamResults) getFragmentManager().findFragmentByTag(tag);
 
@@ -162,31 +226,74 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
             if (subjectList != null) {
                 fillDataSubject(screenExamResults.listSubject, screenExamResults.selectedSubjectId);
             }
+            getExamType();
+
+            onSuggesstionSelectedSubjectCLick();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void getExamType(final List<ExamResult> examResults) {
+    private void onSuggesstionSelectedSubjectCLick() {
+        mSugesstionSelectedSubject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (dialogSelectedSubject != null) {
+                    dialogSelectedSubject.show();
+                }
+            }
+        });
+    }
+
+    private void getExamType() {
         int classId = LaoSchoolShared.myProfile.getEclass().getId();
         LaoSchoolSingleton.getInstance().getDataAccessService().getExamType(classId, new AsyncCallback<List<ExamType>>() {
             @Override
             public void onSuccess(List<ExamType> result) {
-                fillDataDateInputExamResults(examResults, result);
-                if (progressDialog != null)
-                    progressDialog.dismiss();
+                examType.addAll(result);
+                exam_months = new ArrayList<>();
+                List<Integer> integers = new ArrayList<>();
+                for (ExamType examType : result) {
+                    if (examType.getEx_type() <= 2) {
+                        exam_months.add(examType.getEx_name());
+                        Log.d(TAG, "exam_type:" + examType.toString());
+                        integers.add(examType.getId());
+                    }
+                }
+                if (exam_months.size() > 0) {
+                    dialogSelectedInputTypeDate = makeDialogSelectdInputExamType(exam_months, integers);
+                    onSelectedInputExamType();
+                }
             }
 
             @Override
             public void onFailure(String message) {
-                if (progressDialog != null)
-                    progressDialog.dismiss();
+
             }
 
             @Override
             public void onAuthFail(String message) {
-                if (progressDialog != null)
-                    progressDialog.dismiss();
+
+            }
+        });
+    }
+
+    private void onSelectedInputExamType() {
+        mSelectedInputExamType.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getView().requestFocus();
+                dialogSelectedInputTypeDate.show();
+            }
+        });
+    }
+
+    private void onSelectedSubject() {
+        mSelectedSubject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getView().requestFocus();
+                dialogSelectedSubject.show();
             }
         });
     }
@@ -198,19 +305,8 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
             subjectNames.add(master.getSval());
             subs.put(master.getId(), master.getSval());
         }
-        //First load
-        this.selectedSubjectId = selectedSubjectId;
-        lbSubjectSeleted.setText(subs.get(selectedSubjectId));
-        getExamResultsbySubjectId(true, selectedSubjectId);
-
         dialogSelectedSubject = makeDialogSelectdSubject(listSubject, subjectNames);
-        mSelectedSubject.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                clearFocus();
-                dialogSelectedSubject.show();
-            }
-        });
+        onSelectedSubject();
     }
 
 
@@ -236,8 +332,11 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
                 String subjectName = subjectNames.get(i);
                 int subjectId = result.get(i).getId();
                 lbSubjectSeleted.setText(subjectName);
+                lbSubjectSeleted.setTextColor(Color.WHITE);
                 getExamResultsbySubjectId(true, subjectId);
                 selectedSubjectId = subjectId;
+                mSugesstionSelectedSubject.setVisibility(View.GONE);
+                mInput.setVisibility(View.VISIBLE);
             }
         });
         final AlertDialog dialog = builder.create();
@@ -406,9 +505,14 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
             @Override
             public void onSuccess(List<ExamResult> result) {
                 if (result != null) {
-                    //Group data
-                    getExamType(result);
-
+                    examListBySubjectId.addAll(result);
+                    if (selectedExamTypeId > 0) {
+                        fillDataExamStudent(groupExamResultbyStudentId(examListBySubjectId, selectedExamTypeId), selectedExamTypeId);
+                    } else {
+                        showSugesstionSelectedExamType();
+                    }
+                    if (progressDialog != null || progressDialog.isShowing())
+                        progressDialog.dismiss();
                 } else {
                     Log.d(TAG, "getExamResultsbySubject().onSuccess() message:NUll");
                 }
@@ -432,6 +536,22 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         });
     }
 
+    private void showSugesstionSelectedExamType() {
+        mSugesstionSelectedExamType.setVisibility(View.VISIBLE);
+        onSuggesstionSelectedExamTypeClick();
+    }
+
+    private void onSuggesstionSelectedExamTypeClick() {
+        mSugesstionSelectedExamType.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (dialogSelectedInputTypeDate != null) {
+                    dialogSelectedInputTypeDate.show();
+                }
+            }
+        });
+    }
+
     private void fillDataDateInputExamResults(List<ExamResult> examResults, List<ExamType> examTypes) {
         exam_months = new ArrayList<>();
         List<Integer> integers = new ArrayList<>();
@@ -443,16 +563,13 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
             }
         }
         if (exam_months.size() > 0) {
-            //first
-            lbInputDate.setText(exam_months.get(0));
-            selectedExamTypeId = examTypes.get(0).getId();
-            fillDataExamStudent(groupExamResultbyStudentId(examResults, selectedExamTypeId), selectedExamTypeId);
             //
             dialogSelectedInputTypeDate = makeDialogSelectdInputExamType(examResults, exam_months, integers);
-            mToolBox.setOnClickListener(new View.OnClickListener() {
+            mSelectedInputExamType.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    clearFocus();
+                    //clearFocus();
+                    view.requestFocus();
                     dialogSelectedInputTypeDate.show();
                 }
             });
@@ -464,6 +581,9 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         if (view != null) {
             view.clearFocus();
         }
+//        mSearchCardBox.clearFocus();
+//        txtSearch.clearFocus();
+//        mContainer.requestFocus();
         LaoSchoolShared.hideSoftKeyboard(getActivity());
     }
 
@@ -486,7 +606,48 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
                 selectedExamTypeId = examTypeIds.get(position);
                 Log.d(TAG, "-selected " + position + " exam type Id:" + selectedExamTypeId);
                 lbInputDate.setText(selected);
-                fillDataExamStudent(groupExamResultbyStudentId(examResults, selectedExamTypeId), selectedExamTypeId);
+                lbInputDate.setTextColor(Color.WHITE);
+                if (examResults != null) {
+                    fillDataExamStudent(groupExamResultbyStudentId(examResults, selectedExamTypeId), selectedExamTypeId);
+                }
+
+
+            }
+        });
+        final AlertDialog dialog = builder.create();
+        (header.findViewById(R.id.imgCloseDialog)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        return dialog;
+    }
+
+
+    private Dialog makeDialogSelectdInputExamType(final List<String> exam_months, final List<Integer> examTypeIds) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        // builder.setTitle(R.string.title_selected_type_input_exam_results);
+        View header = View.inflate(context, R.layout.custom_hearder_dialog, null);
+        ImageView imgIcon = ((ImageView) header.findViewById(R.id.imgIcon));
+        imgIcon.setImageDrawable(LaoSchoolShared.getDraweble(context, R.drawable.ic_input_white_24dp));
+
+        ((TextView) header.findViewById(R.id.txbTitleDialog)).setText("Seleted date");
+
+        builder.setCustomTitle(header);
+        final ListAdapter subjectListAdapter = new ArrayAdapter<String>(context, R.layout.row_selected_subject, exam_months);
+
+        builder.setAdapter(subjectListAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(final DialogInterface dialogInterface, final int position) {
+                String selected = exam_months.get(position);
+                selectedExamTypeId = examTypeIds.get(position);
+                Log.d(TAG, "-selected " + position + " exam type Id:" + selectedExamTypeId);
+                lbInputDate.setText(selected);
+                lbInputDate.setTextColor(Color.WHITE);
+                if (examListBySubjectId.size() > 0) {
+                    fillDataExamStudent(groupExamResultbyStudentId(examListBySubjectId, selectedExamTypeId), selectedExamTypeId);
+                }
 
 
             }
@@ -502,25 +663,60 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
     }
 
     private void fillDataExamStudent(Map<Integer, ExamResult> groupStudentMap, int selectedExamTypeId) {
-        resultsforClassbySubjectAdapter = new InputExamResultsAdapter(context, groupStudentMap, selectedExamTypeId);
+        resultsforClassbySubjectAdapter = new InputExamResultsAdapter(getActivity(), context, groupStudentMap, selectedExamTypeId);
         listExamByStudent.setAdapter(resultsforClassbySubjectAdapter);
+        onTextChangeTextBoxSearch();
+        mSearchBox.setVisibility(View.VISIBLE);
+        txtSearch.setEnabled(true);
+        mSugesstionSelectedExamType.setVisibility(View.GONE);
     }
 
-    private Map<Long, String> groupMonth(List<ExamResult> result) {
-        Map<Long, String> groupMonth = new HashMap<Long, String>();
-        for (ExamResult examResult : result) {
-            if (examResult.getExam_type() <= 2) {
-                int exam_month = examResult.getExam_month();
-                groupMonth.put(Long.valueOf(exam_month), getMonthString(exam_month));
+    private void onTextChangeTextBoxSearch() {
+        txtSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
             }
-        }
-        return groupMonth;
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (appBarState == AppBarStateChangeListener.State.EXPANDED) {
+                    setExpandedAppBar(true, true);
+                }
+                resultsforClassbySubjectAdapter.filter(charSequence.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
     }
 
-    private String getMonthString(int month) {
-        DateFormatSymbols dateFormatSymbols = new DateFormatSymbols(Locale.UK);
-        String monthParse = dateFormatSymbols.getMonths()[month - 1];
-        return monthParse;
+    private void onOnFocusChangeBoxSearch() {
+        txtSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                Log.d(TAG, "onFocusChange:" + hasFocus);
+                if (hasFocus) {
+                    if (appBarState == AppBarStateChangeListener.State.EXPANDED || appBarState == AppBarStateChangeListener.State.IDLE) {
+                        setExpandedAppBar(false, true);
+                    }
+//                    else {
+//                        setExpandedAppBar(true, true);
+//                    }
+                } else {
+                    //txtSearch.clearFocus();
+                }
+
+
+            }
+        });
+
+    }
+
+    private void setExpandedAppBar(boolean show, boolean show_animation) {
+        input_exam_appbar.setExpanded(show, show_animation);
     }
 
     private Map<Integer, ExamResult> groupExamResultbyStudentId(List<ExamResult> result, int selectedExamTypeId) {
@@ -549,4 +745,8 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         iScreenInputExamResults = (IScreenInputExamResults) context;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
 }

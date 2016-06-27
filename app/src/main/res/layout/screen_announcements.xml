@@ -8,12 +8,13 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/mAnnouncement"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="center"
         android:orientation="vertical"
         tools:context="com.laoschool.screen.ScreenMessage"
-        android:layout_gravity="center"
-        android:id="@+id/mAnnouncement">
+        android:visibility="gone">
 
         <!-- TODO: Update blank fragment layout -->
         <com.astuetz.PagerSlidingTabStrip
@@ -28,6 +29,15 @@
             app:pstsShouldExpand="true"
             app:pstsTextAllCaps="false" />
 
+        <LinearLayout
+            android:id="@+id/mExpanSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <include layout="@layout/view_seach_button" />
+
+        </LinearLayout>
+
         <com.laoschool.view.ViewpagerDisableSwipeLeft
             android:id="@+id/notificationViewPage"
             android:layout_width="wrap_content"
@@ -37,10 +47,41 @@
     </LinearLayout>
 
     <ProgressBar
-        style="?android:attr/progressBarStyleLarge"
+        android:id="@+id/mProgress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/mProgress"
-        android:layout_gravity="center"
+        android:layout_gravity="center" />
+
+    <LinearLayout
+        android:id="@+id/mError"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <include layout="@layout/view_server_error" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mNoData"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <include layout="@layout/view_no_data" />
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/mSearchResults"
         android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/mBacgroundSearch"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#99000000"
+        android:orientation="horizontal"
+        android:visibility="gone"></LinearLayout>
+
 </FrameLayout>

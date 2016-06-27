@@ -144,4 +144,8 @@
     <string name="final_morality">Morality:</string>
     <string name="final_absents">Absents:</string>
     <string name="final_teacher_comment">Teacher comment:</string>
+    <string name="msg_no_selected_subject">No subject selected</string>
+    <string name="touch_here_to_select">Touch here to select</string>
+    <string name="msg_no_select_exam_type">No select exam type</string>
+    <string name="title_screen_input_exam_resuls">Input score</string>
 </resources>

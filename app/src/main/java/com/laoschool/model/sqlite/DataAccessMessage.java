@@ -284,5 +284,59 @@ public class DataAccessMessage {
         db.close();
     }
 
+    public static List<Message> searchMessageInbox(int toUserId, int isRead, String query) {
+        List<Message> messages = new ArrayList<>();
+        try {
+            //select * from messages WHERE messages.content LIKE '%a%'
+            String like_query = "Select * from messages WHERE "
+                    + Message.MessageColumns.COLUMN_NAME_TO_USR_ID + " = " + toUserId +
+                    ((isRead == 0) ? " AND " + Message.MessageColumns.COLUMN_NAME_IS_READ + " = " + isRead : "") +
+                    " AND " + Message.MessageColumns.COLUMN_NAME_TYPE + " = " + 0 +
+                    " AND " + "messages.content LIKE '%" + query + "%'";
+            Log.d(TAG, "searchMessageInbox() -query:" + like_query);
+            SQLiteDatabase db = databaseHandler.getReadableDatabase();
+
+            //query for cursor
+            Cursor cursor = db.rawQuery(like_query, null);
+
+            if (cursor.moveToFirst()) {
+                if (cursor.getCount() > 0)
+                    do {
+                        Message message = LaoSchoolShared.parseMessageFormSql(cursor);
+                        messages.add(message);
+                    } while (cursor.moveToNext());
+            }
+            Log.d(TAG, "searchMessageInbox(" + toUserId + "):Result size =" + messages.size());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return messages;
+    }
+
+    public static List<Message> searchMessageSend(int formUserId, String query) {
+        List<Message> messages = new ArrayList<>();
+        try {
+            String like_query = "Select * from messages WHERE " + Message.MessageColumns.COLUMN_NAME_FROM_USR_ID + " = " + formUserId +
+                    " AND " + Message.MessageColumns.COLUMN_NAME_TYPE + " = " + 0 +
+                    " AND messages.content LIKE '%" + query + "%'";
+            Log.d(TAG, "searchMessageSend() -query:" + like_query);
+            SQLiteDatabase db = databaseHandler.getReadableDatabase();
+            //query for cursor
+            Cursor cursor = db.rawQuery(like_query, null);
+
+            if (cursor.moveToFirst()) {
+                if (cursor.getCount() > 0)
+                    do {
+                        Message message = LaoSchoolShared.parseMessageFormSql(cursor);
+                        messages.add(message);
+                    } while (cursor.moveToNext());
+            }
+            Log.d(TAG, "searchMessageSend():Result size =" + messages.size());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return messages;
+    }
+
 
 }
