@@ -9,34 +9,24 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
@@ -45,7 +35,6 @@ import com.laoschool.entities.ExamResult;
 import com.laoschool.entities.ExamType;
 import com.laoschool.entities.Master;
 import com.laoschool.listener.AppBarStateChangeListener;
-import com.laoschool.listener.RecyclerViewTouchListener;
 import com.laoschool.model.AsyncCallback;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
@@ -87,14 +76,16 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
     private List<ExamResult> examListBySubjectId = new ArrayList<>();
 
     AppBarLayout input_exam_appbar;
-    private EditText txtSearch;
+    // private EditText txtSearch;
     private AppBarStateChangeListener.State appBarState = AppBarStateChangeListener.State.EXPANDED;
-    private View mSearchBox;
+    private View mExpanSearch;
     private View mSugesstionSelectedSubject;
     private View mInput;
     private View viewMain;
     private View mSugesstionSelectedExamType;
     private LinearLayoutManager layoutManager;
+    private MenuItem itemSearch;
+    private SearchView mSearch;
 
 
     interface IScreenInputExamResults {
@@ -128,9 +119,9 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         viewMain = inflater.inflate(R.layout.screen_input_exam_results_student, container, false);
         HomeActivity activity = (HomeActivity) getActivity();
 
-        activity.hideBottomBar();//hide bottom bar
+       // activity.hideBottomBar();//hide bottom bar
 
-        activity.getSupportActionBar().setTitle(R.string.title_screen_input_exam_resuls);
+        // activity.getSupportActionBar().setTitle(R.string.title_screen_input_exam_resuls);
 
         mContainer = viewMain.findViewById(R.id.coordinatorLayout);
 
@@ -160,12 +151,15 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         //linearLayoutManager.setStackFromEnd(true);
         listExamByStudent.setLayoutManager(layoutManager);
 
-        mSearchBox = viewMain.findViewById(R.id.mSearchBox);
-        mSearchBox.setVisibility(View.GONE);
-        txtSearch = (EditText) viewMain.findViewById(R.id.txtSearch);
+        mExpanSearch = viewMain.findViewById(R.id.mSearchBox);
+        mExpanSearch.setVisibility(View.GONE);
+
+        onExpanSearch();
+
+        // txtSearch = (EditText) viewMain.findViewById(R.id.txtSearch);
         onOnFocusChangeBoxSearch();
-        txtSearch.setEnabled(false);
-        txtSearch.clearFocus();
+//        txtSearch.setEnabled(false);
+//        txtSearch.clearFocus();
 
 
         //
@@ -177,6 +171,16 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         txtClassAndTermName.setText(className + " | " + year + "   " + termName);
 
         return viewMain;
+    }
+
+    private void onExpanSearch() {
+        mExpanSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MenuItemCompat.expandActionView(itemSearch);
+                itemSearch.setVisible(true);
+            }
+        });
     }
 
     private void onAppBarExpanded() {
@@ -192,7 +196,55 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
         inflater.inflate(R.menu.menu_screen_input_exam_results_student, menu);
+        itemSearch = menu.findItem(R.id.search);
+        itemSearch.setVisible(false);
+        mSearch = (SearchView) itemSearch.getActionView();
+        onExpandCollapseSearch();
+    }
+
+    private void onExpandCollapseSearch() {
+        MenuItemCompat.setOnActionExpandListener(itemSearch, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                itemSearch.setVisible(true);
+                mExpanSearch.setVisibility(View.GONE);
+                setExpandedAppBar(false, true);
+
+                ((HomeActivity) getActivity()).displaySearch();
+                expanSearch();
+                return true;
+            }
+
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                itemSearch.setVisible(false);
+                mExpanSearch.setVisibility(View.VISIBLE);
+                setExpandedAppBar(true, true);
+                resultsforClassbySubjectAdapter.filter("");
+                ((HomeActivity) getActivity()).cancelSearch();
+                return true;
+            }
+        });
+    }
+
+    private void expanSearch() {
+        mSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                if (!query.trim().isEmpty()) {
+                    resultsforClassbySubjectAdapter.filter(query);
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -666,52 +718,52 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         resultsforClassbySubjectAdapter = new InputExamResultsAdapter(getActivity(), context, groupStudentMap, selectedExamTypeId);
         listExamByStudent.setAdapter(resultsforClassbySubjectAdapter);
         onTextChangeTextBoxSearch();
-        mSearchBox.setVisibility(View.VISIBLE);
-        txtSearch.setEnabled(true);
+        mExpanSearch.setVisibility(View.VISIBLE);
+        //  txtSearch.setEnabled(true);
         mSugesstionSelectedExamType.setVisibility(View.GONE);
     }
 
     private void onTextChangeTextBoxSearch() {
-        txtSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (appBarState == AppBarStateChangeListener.State.EXPANDED) {
-                    setExpandedAppBar(true, true);
-                }
-                resultsforClassbySubjectAdapter.filter(charSequence.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
+//        txtSearch.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//                if (appBarState == AppBarStateChangeListener.State.EXPANDED) {
+//                    setExpandedAppBar(true, true);
+//                }
+//                resultsforClassbySubjectAdapter.filter(charSequence.toString());
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//
+//            }
+//        });
     }
 
     private void onOnFocusChangeBoxSearch() {
-        txtSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                Log.d(TAG, "onFocusChange:" + hasFocus);
-                if (hasFocus) {
-                    if (appBarState == AppBarStateChangeListener.State.EXPANDED || appBarState == AppBarStateChangeListener.State.IDLE) {
-                        setExpandedAppBar(false, true);
-                    }
-//                    else {
-//                        setExpandedAppBar(true, true);
+//        txtSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View view, boolean hasFocus) {
+//                Log.d(TAG, "onFocusChange:" + hasFocus);
+//                if (hasFocus) {
+//                    if (appBarState == AppBarStateChangeListener.State.EXPANDED || appBarState == AppBarStateChangeListener.State.IDLE) {
+//                        setExpandedAppBar(false, true);
 //                    }
-                } else {
-                    //txtSearch.clearFocus();
-                }
-
-
-            }
-        });
+////                    else {
+////                        setExpandedAppBar(true, true);
+////                    }
+//                } else {
+//                    //txtSearch.clearFocus();
+//                }
+//
+//
+//            }
+//        });
 
     }
 
