@@ -148,4 +148,7 @@
     <string name="touch_here_to_select">Touch here to select</string>
     <string name="msg_no_select_exam_type">No select exam type</string>
     <string name="title_screen_input_exam_resuls">Input score</string>
+    <string name="title_msg_comfirm_cancel_input_exam_results">Are you sure you want to cancel?</string>
+    <string name="btn_yes">yes</string>
+    <string name="btn_no">no</string>
 </resources>
