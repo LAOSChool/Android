@@ -417,7 +417,8 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
             getActivity().getCurrentFocus().clearFocus();
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(R.string.title_msg_comfirm_submit_input_exam_results);
+        builder.setTitle(R.string.title_msg_are_you_sure);
+        builder.setMessage(R.string.msg_comfirm_submit_input_exam_results);
         builder.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
