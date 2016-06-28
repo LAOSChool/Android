@@ -1,6 +1,8 @@
 package com.laoschool.screen;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -10,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -552,8 +555,7 @@ public class HomeActivity extends AppCompatActivity implements
                     screenCreateMessage.setTestMessage(null);
                 }
             } else if (currentPage == LaoSchoolShared.POSITION_SCREEN_MARK_SCORE_STUDENT_11) {
-                //back to tab exam
-                _gotoPage(LaoSchoolShared.POSITION_SCREEN_EXAM_RESULTS_2);
+                backToExamResults();
             } else if (currentPage == LaoSchoolShared.POSITION_SCREEN_MESSAGE_DETAILS_14) {
                 //
                 String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
@@ -596,6 +598,35 @@ public class HomeActivity extends AppCompatActivity implements
         getCurrentFocus().clearFocus();
         //Hide key board
         LaoSchoolShared.hideSoftKeyboard(this);
+
+    }
+
+    private void backToExamResults() {
+        String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_MARK_SCORE_STUDENT_11);
+        ScreenInputExamResultsStudent inputExamResultsStudent = (ScreenInputExamResultsStudent) getSupportFragmentManager().findFragmentByTag(tag);
+        if (inputExamResultsStudent.selectedSubjectId > 0 || inputExamResultsStudent.selectedExamTypeId > 0) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.title_msg_comfirm_cancel_input_exam_results);
+            builder.setNegativeButton(R.string.btn_no, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+            builder.setPositiveButton(R.string.btn_yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                    //back to tab exam
+                    _gotoPage(LaoSchoolShared.POSITION_SCREEN_EXAM_RESULTS_2);
+                }
+            });
+            Dialog dialog = builder.create();
+            dialog.show();
+        } else {
+            _gotoPage(LaoSchoolShared.POSITION_SCREEN_EXAM_RESULTS_2);
+        }
+
 
     }
 
