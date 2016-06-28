@@ -428,7 +428,6 @@ public class HomeActivity extends AppCompatActivity implements
             case LaoSchoolShared.POSITION_SCREEN_MARK_SCORE_STUDENT_11:
                 _setTitleandShowButtonBack(R.string.title_screen_input_exam_resuls, null, DisplayButtonHome.show);
                 getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_36dp);
-                getSupportActionBar().setDisplayShowCustomEnabled(false);
                 break;
             case LaoSchoolShared.POSITION_SCREEN_SETTING_12:
                 _setTitleandShowButtonBack(R.string.title_screen_setting, null, DisplayButtonHome.show);
@@ -753,13 +752,6 @@ public class HomeActivity extends AppCompatActivity implements
 
     String student;
 
-
-    public void gotoScreenMarkScoreStudentFromExamResults(String student) {
-        this.student = student;
-        _gotoPage(LaoSchoolShared.POSITION_SCREEN_MARK_SCORE_STUDENT_11);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_36dp);
-    }
-
     @Override
     public void cancelInputExamResults() {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
@@ -836,11 +828,13 @@ public class HomeActivity extends AppCompatActivity implements
     public void displaySearch() {
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(this.getResources().getColor(R.color.colorPrimarySearch)));
         setStatusBarColor(R.color.colorPrimaryDarkSearch);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
     public void cancelSearch() {
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(this.getResources().getColor(R.color.colorPrimary)));
         setStatusBarColor(R.color.colorPrimaryDark);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void setStatusBarColor(int colorId) {
