@@ -128,7 +128,7 @@
 
         <include
             android:id="@+id/mSearchBox"
-            layout="@layout/view_search" />
+            layout="@layout/view_search_button" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/listExamByStudent"
