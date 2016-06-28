@@ -68,8 +68,8 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
     private Dialog dialogSelectedInputTypeDate;
 
     InputExamResultsAdapter resultsforClassbySubjectAdapter;
-    public int selectedSubjectId;
-    private int selectedExamTypeId = -1;
+    public int selectedSubjectId = -1;
+    public int selectedExamTypeId = -1;
     public boolean onchange = false;
 
     private List<ExamType> examType = new ArrayList<>();
@@ -86,6 +86,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
     private LinearLayoutManager layoutManager;
     private MenuItem itemSearch;
     private SearchView mSearch;
+    private MenuItem itemSubmit;
 
 
     interface IScreenInputExamResults {
@@ -119,7 +120,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         viewMain = inflater.inflate(R.layout.screen_input_exam_results_student, container, false);
         HomeActivity activity = (HomeActivity) getActivity();
 
-       // activity.hideBottomBar();//hide bottom bar
+        // activity.hideBottomBar();//hide bottom bar
 
         // activity.getSupportActionBar().setTitle(R.string.title_screen_input_exam_resuls);
 
@@ -198,6 +199,8 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
         inflater.inflate(R.menu.menu_screen_input_exam_results_student, menu);
+        itemSubmit = menu.findItem(R.id.action_submit_input_exam_results);
+        itemSubmit.setEnabled(false);
         itemSearch = menu.findItem(R.id.search);
         itemSearch.setVisible(false);
         mSearch = (SearchView) itemSearch.getActionView();
@@ -389,6 +392,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
                 selectedSubjectId = subjectId;
                 mSugesstionSelectedSubject.setVisibility(View.GONE);
                 mInput.setVisibility(View.VISIBLE);
+                enabledSubmitInput();
             }
         });
         final AlertDialog dialog = builder.create();
@@ -399,6 +403,12 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
             }
         });
         return dialog;
+    }
+
+    private void enabledSubmitInput() {
+        if (selectedExamTypeId > 0 && selectedSubjectId > 0) {
+            itemSubmit.setEnabled(true);
+        }
     }
 
     private void submitInputExamResults() {
@@ -662,6 +672,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
                 if (examResults != null) {
                     fillDataExamStudent(groupExamResultbyStudentId(examResults, selectedExamTypeId), selectedExamTypeId);
                 }
+                enabledSubmitInput();
 
 
             }
@@ -700,6 +711,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
                 if (examListBySubjectId.size() > 0) {
                     fillDataExamStudent(groupExamResultbyStudentId(examListBySubjectId, selectedExamTypeId), selectedExamTypeId);
                 }
+                enabledSubmitInput();
 
 
             }
