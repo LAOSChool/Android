@@ -142,7 +142,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         mProgress = (ProgressBar) view.findViewById(R.id.mProgress);
         pager = (ViewpagerDisableSwipeLeft) view.findViewById(R.id.messageViewPage);
         tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
-        pager.setAllowedSwipeDirection(HomeActivity.SwipeDirection.none);
+        pager.setAllowedSwipeDirection(HomeActivity.SwipeDirection.all);
         mExspanSearch = view.findViewById(R.id.mExspanSearch);
         mBacgroundSearch = view.findViewById(R.id.mBacgroundSearch);
 
