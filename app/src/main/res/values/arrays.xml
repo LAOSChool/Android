@@ -41,8 +41,8 @@
     <string-array name="more_teacher">
         <item>@string/row_sub_header</item>
         <item>@string/title_screen_school_information</item>
-        <item>@string/row_line</item>
-        <item>@string/title_screen_schedule</item>
+        <!--<item>@string/row_line</item>-->
+        <!--<item>@string/title_screen_schedule</item>-->
         <item>@string/row_line</item>
         <item>@string/title_screen_list_student_of_class</item>
         <item>@string/row_line</item>
