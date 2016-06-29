@@ -415,6 +415,7 @@ public class HomeActivity extends AppCompatActivity implements
                 break;
             case LaoSchoolShared.POSITION_SCREEN_SCHEDULE_6:
                 _setTitleandShowButtonBack(R.string.title_screen_schedule, null, DisplayButtonHome.show);
+                getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
                 break;
             case LaoSchoolShared.POSITION_SCREEN_SCHOOL_RECORD_YEAR_7:
                 _setTitleandShowButtonBack(R.string.title_screen_final_results_student, null, DisplayButtonHome.show);
