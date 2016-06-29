@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 
@@ -27,7 +26,6 @@ import android.widget.ListAdapter;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -35,7 +33,7 @@ import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 
 
-import com.laoschool.adapter.FinalResultsPagerAdapter;
+import com.laoschool.adapter.MyFinalResultsPagerAdapter;
 import com.laoschool.entities.ExamResult;
 import com.laoschool.entities.FinalResult;
 import com.laoschool.entities.SchoolYears;
@@ -168,7 +166,7 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
 
         defineAvgFinalTotal(result);
 
-        final FinalResultsPagerAdapter resultsPagerAdapter = new FinalResultsPagerAdapter(getFragmentManager(), result);
+        final MyFinalResultsPagerAdapter resultsPagerAdapter = new MyFinalResultsPagerAdapter(getFragmentManager(),context, result);
         mPagerFinalResults.setAdapter(resultsPagerAdapter);
         mTab.setViewPager(mPagerFinalResults);
         mComment.setVisibility(View.VISIBLE);
@@ -244,6 +242,7 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
                     fillDataToSeletedYear(result);
                     showProgressLoading(false);
                 } else {
+                    Log.d(TAG, "-school year empty.");
                     showError();
                 }
 
