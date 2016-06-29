@@ -1838,9 +1838,15 @@ public class DataAccessImpl implements DataAccessInterface {
             public void onResponse(JSONObject response) {
                 try {
                     if (response != null) {
-                        JSONObject listMaster = response.getJSONObject("messageObject");
+                        JSONArray listMaster = response.getJSONArray("messageObject");
                         if (listMaster != null) {
-                            callback.onSuccess(FinalResult.fromJson(response));
+                            JSONObject finalObj = listMaster.getJSONObject(0);
+                            if (finalObj != null)
+                                callback.onSuccess(FinalResult.fromJson(finalObj));
+                            else {
+                                Log.d("Service", "getMyFinalResultsByYear() -obj null");
+                                callback.onSuccess(null);
+                            }
                         } else {
                             callback.onSuccess(null);
                         }
@@ -1885,7 +1891,7 @@ public class DataAccessImpl implements DataAccessInterface {
     @Override
     public void getMySchoolYears(final AsyncCallback<List<SchoolYears>> callback) {
         // Request a string response from the provided URL.
-        String url = HOST + "school_years/myprofile";
+        String url = HOST + "schools/years";
         JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
