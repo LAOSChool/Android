@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -22,8 +21,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,10 +28,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -45,9 +39,9 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
-import com.laoschool.adapter.ExamResultsByTermPagerAdapter;
 import com.laoschool.adapter.ExamResultsforClassbySubjectAdapter;
-import com.laoschool.adapter.ExamResultsForStudentAdapter;
+import com.laoschool.adapter.MyExamResultsAdapter;
+import com.laoschool.adapter.MyExamResultsPagerAdapter;
 import com.laoschool.entities.ExamResult;
 import com.laoschool.entities.Master;
 import com.laoschool.listener.AppBarStateChangeListener;
@@ -119,7 +113,6 @@ public class ScreenExamResults extends Fragment
 
     public IScreenExamResults iScreenExamResults;
     HomeActivity activity;
-
 
 
     static ViewpagerDisableSwipeLeft mViewPageStudent;
@@ -335,7 +328,7 @@ public class ScreenExamResults extends Fragment
 
         mViewPageStudent = (ViewpagerDisableSwipeLeft) view.findViewById(R.id.mViewPageScreenExamResultsStudent);
         tabsStrip = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
-        mViewPageStudent.setAllowedSwipeDirection(HomeActivity.SwipeDirection.none);
+        mViewPageStudent.setAllowedSwipeDirection(HomeActivity.SwipeDirection.all);
 
         _handlerOnclickError();
 
@@ -457,8 +450,9 @@ public class ScreenExamResults extends Fragment
         }
         Log.d(TAG, "_setDataforPageSemester() -term size:=" + hashterms.size() + ",mapTermExam:" + mapTermExam.size());
         //difine pager
-        ExamResultsByTermPagerAdapter examResultsByTerm = new ExamResultsByTermPagerAdapter(fr, hashterms, mapTermExam);
-        mViewPageStudent.setAdapter(examResultsByTerm);
+        MyExamResultsPagerAdapter myExamResultsAdapter = new MyExamResultsPagerAdapter(fr, context, result);
+        mViewPageStudent.setAdapter(myExamResultsAdapter);
+
         // Attach the view pager to the tab strip
         tabsStrip.setViewPager(mViewPageStudent);
 
@@ -637,13 +631,13 @@ public class ScreenExamResults extends Fragment
 
             @Override
             public void onFailure(String message) {
-                Log.e(ExamResultsByTermPagerAdapter.TAG, "getFilterSubject().onFailure() -message:" + message);
+                Log.e(TAG, "getFilterSubject().onFailure() -message:" + message);
                 showError();
             }
 
             @Override
             public void onAuthFail(String message) {
-                Log.e(ExamResultsByTermPagerAdapter.TAG, "getFilterSubject().onAuthFail() -message:" + message);
+                Log.e(TAG, "getFilterSubject().onAuthFail() -message:" + message);
                 LaoSchoolShared.goBackToLoginPage(context);
             }
 
@@ -834,32 +828,8 @@ public class ScreenExamResults extends Fragment
                 return true;
             }
         });
-
-        onTextChangeTextBoxSearch();
-
     }
 
-    private void onTextChangeTextBoxSearch() {
-//        txtSearch.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//                if (appBarState == AppBarStateChangeListener.State.EXPANDED) {
-//                    setExpandedAppBar(true, true);
-//                }
-//                resultsforClassbySubjectAdapter.filter(charSequence.toString());
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//
-//            }
-//        });
-    }
 
     private void setExpandedAppBar(boolean show, boolean show_animation) {
         appFilterBar.setExpanded(show, show_animation);
@@ -871,33 +841,32 @@ public class ScreenExamResults extends Fragment
         super.setUserVisibleHint(isVisibleToUser);
     }
 
-    public static class ExamResultsByTermPager extends Fragment {
-        public static final String ARG_PAGE = "ARG_PAGE";
+    public void reloadDataAfterInputSingleScore(int subjectId) {
+        Log.d(TAG, "reloadDataAfterInputSingleScore() -subjectId:" + subjectId);
+        getExamResultsbySubject(true, subjectId);
+    }
+
+    public static class MyExamResultsPager extends Fragment {
+        private static final String TAG = MyExamResultsPager.class.getSimpleName();
+        private static final String ARG_PAGE = "pager";
         private static final String ARG_LIST = "list";
-        private static final String ARG_SEMESTER_ID = "semesterId";
-        private static final String TAG = ExamResultsByTermPager.class.getSimpleName();
-        private int position;
-        ExamResultsByTermPager fragment;
-        private Context context;
+        private static final String ARG_TERM_NAME = "term_name";
         private RecyclerView recyclerView;
-        private ExamResultsForStudentAdapter studentSemesterAdapter;
+        private MyExamResultsAdapter myExamResultsAdapter;
         private List<ExamResult> f_results;
-        int semesterId;
+        private int position;
+        private Context context;
 
-        public ExamResultsByTermPager() {
-
-        }
-
-        public static ExamResultsByTermPager newInstance(int page, int semesterId, ArrayList<ExamResult> results) {
-            Log.d(TAG, "newInstance");
+        public static MyExamResultsPager newInstance(int page, String termName, ArrayList<ExamResult> results) {
             Bundle args = new Bundle();
             args.putInt(ARG_PAGE, page);
+            args.putString(ARG_TERM_NAME, termName);
             args.putParcelableArrayList(ARG_LIST, results);
-            args.putInt(ARG_SEMESTER_ID, semesterId);
-            ExamResultsByTermPager fragment = new ExamResultsByTermPager();
+            MyExamResultsPager fragment = new MyExamResultsPager();
             fragment.setArguments(args);
             return fragment;
         }
+
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -905,27 +874,22 @@ public class ScreenExamResults extends Fragment
             if (getArguments() != null) {
                 position = getArguments().getInt(ARG_PAGE);
                 f_results = getArguments().getParcelableArrayList(ARG_LIST);
-                semesterId = getArguments().getInt(ARG_SEMESTER_ID);
-                Log.d(TAG, "-size f_results:" + f_results.size());
             }
-            Log.d(TAG, "onCreate");
-            this.fragment = this;
             this.context = getActivity();
         }
 
-        // Inflate the fragment layout we defined above for this fragment
-        // Set the associated text for the title
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
-            Log.d(ExamResultsByTermPagerAdapter.TAG, TAG + ".onCreateView() position: " + position);
             View view = inflater.inflate(R.layout.view_exam_resluts_student_tab, container, false);
             recyclerView = (RecyclerView) view.findViewById(R.id.mRecyclerViewExamResultsStudentTab);
             final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
             recyclerView.setLayoutManager(linearLayoutManager);
 
-            studentSemesterAdapter = new ExamResultsForStudentAdapter(fragment, f_results);
-            recyclerView.setAdapter(studentSemesterAdapter);
+            //define adapter
+            myExamResultsAdapter = new MyExamResultsAdapter(this, position, f_results);
+            recyclerView.setAdapter(myExamResultsAdapter);
 
             //handler Scroll list and swipe refersh
             _handlerScrollList(mSwipeRefreshLayout);
@@ -951,7 +915,6 @@ public class ScreenExamResults extends Fragment
 
         }
 
-
         private void _handlerSwipeRefesh(final SwipeRefreshLayout mSwipeRefreshLayout) {
             mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
@@ -974,13 +937,13 @@ public class ScreenExamResults extends Fragment
                             alreadyExecuted = true;
 
                         } else {
-                            Log.d(ExamResultsByTermPagerAdapter.TAG, TAG + ".getMyExamResult(" + position + ").onAuthFail() message:NUll");
+                            Log.d(TAG, "getMyExamResult(" + position + ").onAuthFail() message:NUll");
                             showProgressLoading(false);
                             showNoData();
                             alreadyExecuted = true;
                         }
                     } else {
-                        Log.d(ExamResultsByTermPagerAdapter.TAG, TAG + ".getMyExamResult(" + position + ").onAuthFail() message:Size==0");
+                        Log.d(TAG, "getMyExamResult(" + position + ").onAuthFail() message:Size==0");
                         showProgressLoading(false);
                         showNoData();
                         alreadyExecuted = true;
@@ -990,7 +953,7 @@ public class ScreenExamResults extends Fragment
 
                 @Override
                 public void onFailure(String message) {
-                    Log.e(ExamResultsByTermPagerAdapter.TAG, TAG + ".getMyExamResult(" + position + ").onFailure() message:" + message);
+                    Log.e(TAG, "getMyExamResult(" + position + ").onFailure() message:" + message);
                     showProgressLoading(false);
                     showError();
                     alreadyExecuted = true;
@@ -998,7 +961,7 @@ public class ScreenExamResults extends Fragment
 
                 @Override
                 public void onAuthFail(String message) {
-                    Log.e(ExamResultsByTermPagerAdapter.TAG, TAG + "._getMyExamResult(" + position + ").onAuthFail() message:" + message);
+                    Log.e(TAG, "getMyExamResult(" + position + ").onAuthFail() message:" + message);
                     LaoSchoolShared.goBackToLoginPage(context);
                     showProgressLoading(false);
                     alreadyExecuted = true;
@@ -1007,40 +970,9 @@ public class ScreenExamResults extends Fragment
         }
 
         private void _refeshData(List<ExamResult> result) {
-            recyclerView.swapAdapter(new ExamResultsForStudentAdapter(this, hashDatafromSemestes(result)), true);
+            recyclerView.swapAdapter(new MyExamResultsAdapter(this, position, result), true);
 
         }
 
-        private ArrayList<ExamResult> hashDatafromSemestes(List<ExamResult> result) {
-            ArrayList<ExamResult> examResults = new ArrayList<>();
-            for (ExamResult examResult : result) {
-                if (examResult.getTerm_id() == semesterId) {
-                    examResults.add(examResult);
-                }
-            }
-            Log.d(TAG, "hashDatafromSemestes() -semesterId=" + semesterId + " ,size=" + examResults.size());
-            return examResults;
-        }
-    }
-
-    private void hideFilterShowData() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getActivity().getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(getResources().getColor(R.color.colorPriorityHigh));
-        }
-    }
-
-    private void showFilterExamResults() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getActivity().getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
-        }
-    }
-
-    public void reloadDataAfterInputSingleScore(int subjectId) {
-        Log.d(TAG, "reloadDataAfterInputSingleScore() -subjectId:" + subjectId);
-        getExamResultsbySubject(true, subjectId);
     }
 }
