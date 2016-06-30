@@ -23,6 +23,11 @@ import com.laoschool.model.AsyncCallback;
 import com.laoschool.screen.ScreenExamResults;
 import com.laoschool.shared.LaoSchoolShared;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Date;
+
 /**
  * Created by Hue on 6/9/2016.
  */
@@ -31,11 +36,15 @@ public class DialogInputExamResultsForStudent extends DialogFragment {
     public static final String TAG = DialogInputExamResultsForStudent.class.getSimpleName();
     private final ExamResult examResult;
     private final int subjectId;
+    private final int position;
+    private final int termId;
     private ScreenExamResults screenExamResults;
 
-    public DialogInputExamResultsForStudent(ScreenExamResults screenExamResults, int subjectId, ExamResult examResult) {
+    public DialogInputExamResultsForStudent(ScreenExamResults screenExamResults, int subjectId, int termId, int position, ExamResult examResult) {
         this.examResult = examResult;
         this.subjectId = subjectId;
+        this.termId = termId;
+        this.position = position;
         this.screenExamResults = screenExamResults;
     }
 
@@ -100,7 +109,7 @@ public class DialogInputExamResultsForStudent extends DialogFragment {
                             examResult.setNotice("");
                         }
                         examResult.setTeacher_id(LaoSchoolShared.myProfile.getId());
-                        Log.d(TAG, "-submit examResult:" + examResult.toJson());
+                        //Log.d(TAG, "-submit examResult:" + examResult.toJson());
                         inputExamResults(examResult);
                     } else {
                         txtScoreOfExam.setError("Score > 0  and score < 10");
@@ -128,6 +137,47 @@ public class DialogInputExamResultsForStudent extends DialogFragment {
     }
 
     private void inputExamResults(ExamResult examResult) {
+        String score = makeJsonScore(examResult.getSresult(), examResult.getNotice());
+        Log.d(TAG, "inputExamResults() -json score" + score);
+        if (termId == 1) {
+            switch (position) {
+                case 0:
+                    examResult.setM1(score);
+                    break;
+                case 1:
+                    examResult.setM2(score);
+                    break;
+                case 2:
+                    examResult.setM3(score);
+                    break;
+                case 3:
+                    examResult.setM4(score);
+                    break;
+                case 5:
+                    examResult.setM6(score);
+                    break;
+            }
+        } else {
+            switch (position) {
+                case 0:
+                    examResult.setM8(score);
+                    break;
+                case 1:
+                    examResult.setM9(score);
+                    break;
+                case 2:
+                    examResult.setM10(score);
+                    break;
+                case 3:
+                    examResult.setM11(score);
+                    break;
+                case 5:
+                    examResult.setM12(score);
+                    break;
+            }
+
+        }
+
         LaoSchoolSingleton.getInstance().getDataAccessService().inputExamResults(examResult, new AsyncCallback<ExamResult>() {
             @Override
             public void onSuccess(ExamResult result) {
@@ -147,5 +197,20 @@ public class DialogInputExamResultsForStudent extends DialogFragment {
                 Log.d(TAG, "inputExamResults().onAuthFail() -message:" + message);
             }
         });
+    }
+
+    private String makeJsonScore(String sresult, String comment) {
+        //{“sresult” = “10”;
+//                “notice” = “xxxxxx”;
+//                “exam_dt” = “2016-09-09”}
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("sresult", sresult);
+            jsonObject.put("notice", comment);
+            jsonObject.put("exam_dt", new Date().toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonObject.toString();
     }
 }
