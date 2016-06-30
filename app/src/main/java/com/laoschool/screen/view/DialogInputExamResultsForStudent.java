@@ -101,7 +101,7 @@ public class DialogInputExamResultsForStudent extends DialogFragment {
                 String notice = txtNoticeOfExam.getText().toString();
                 if (!exam.trim().toString().isEmpty()) {
                     Float score = Float.valueOf(exam);
-                    if (score > 0 && score < 10) {
+                    if (score > 0 && score <= 10) {
                         examResult.setSresult(exam);
                         if (!notice.trim().toString().isEmpty()) {
                             examResult.setNotice(notice);
