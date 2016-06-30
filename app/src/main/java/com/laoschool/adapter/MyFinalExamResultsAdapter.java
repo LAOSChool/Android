@@ -16,6 +16,9 @@ import com.laoschool.R;
 import com.laoschool.entities.ExamResult;
 import com.laoschool.shared.LaoSchoolShared;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -109,6 +112,9 @@ public class MyFinalExamResultsAdapter extends RecyclerView.Adapter<RecyclerView
         private final int positionTab;
         Context context;
         List<String> str_score = new ArrayList<>();
+        List<String> str_score_year = new ArrayList<>();
+        List<String> str_score_term1 = new ArrayList<>();
+        List<String> str_score_term2 = new ArrayList<>();
         List<String> str_score_name = new ArrayList<>();
         ExamResult examResult;
 
@@ -118,28 +124,31 @@ public class MyFinalExamResultsAdapter extends RecyclerView.Adapter<RecyclerView
             this.positionTab = position;
 
             if (position == 0) {
-                str_score.add(examResult.getM7());
-                str_score.add(examResult.getM14());
-                str_score.add(examResult.getM15());
+                str_score_year.add(examResult.getM7());
+                str_score_year.add(examResult.getM14());
+                str_score_year.add(examResult.getM15());
                 str_score_name.addAll(Arrays.asList(context.getResources().getStringArray(R.array.exam_name_year)));
+                str_score.addAll(str_score_year);
             } else if (position == 1) {
-                str_score.add(examResult.getM1());
-                str_score.add(examResult.getM2());
-                str_score.add(examResult.getM3());
-                str_score.add(examResult.getM4());
-                str_score.add(examResult.getM5());
+                str_score_term1.add(examResult.getM1());
+                str_score_term1.add(examResult.getM2());
+                str_score_term1.add(examResult.getM3());
+                str_score_term1.add(examResult.getM4());
+                str_score_term1.add(examResult.getM5());
+                str_score_term1.add(examResult.getM6());
 
-                str_score.add(examResult.getM6());
                 str_score_name.addAll(Arrays.asList(context.getResources().getStringArray(R.array.exam_name_term_1)));
+                str_score.addAll(str_score_term1);
             } else {
-                str_score.add(examResult.getM8());
-                str_score.add(examResult.getM9());
-                str_score.add(examResult.getM10());
+                str_score_term2.add(examResult.getM8());
+                str_score_term2.add(examResult.getM9());
+                str_score_term2.add(examResult.getM10());
+                str_score_term2.add(examResult.getM11());
+                str_score_term2.add(examResult.getM12());
+                str_score_term2.add(examResult.getM13());
 
-                str_score.add(examResult.getM11());
-                str_score.add(examResult.getM12());
-                str_score.add(examResult.getM13());
                 str_score_name.addAll(Arrays.asList(context.getResources().getStringArray(R.array.exam_name_term_2)));
+                str_score.addAll(str_score_term2);
             }
         }
 
@@ -154,11 +163,12 @@ public class MyFinalExamResultsAdapter extends RecyclerView.Adapter<RecyclerView
         @Override
         public void onBindViewHolder(final ExamResultsAdapterViewHolder holder, final int position) {
             View view = holder.view;
-            String score = str_score.get(0);
-
-            TextView lbScoreMonth = ((TextView) (view.findViewById(R.id.lbScoreMonth)));
-            TextView lbScore = ((TextView) (view.findViewById(R.id.lbScore)));
-            lbScoreMonth.setText(str_score_name.get(position));
+            String score = str_score.get(position);
+            String examName = str_score_name.get(position);
+            final TextView lbScoreMonth = ((TextView) (view.findViewById(R.id.lbScoreMonth)));
+            final TextView lbScore = ((TextView) (view.findViewById(R.id.lbScore)));
+            lbScoreMonth.setText(examName);
+            examResult.setExam_name(examName);
             if (this.positionTab > 0) {
                 if (position == 7) {
                     view.setBackgroundResource(R.drawable.bg_score_avg_year);
@@ -177,18 +187,41 @@ public class MyFinalExamResultsAdapter extends RecyclerView.Adapter<RecyclerView
                 }
             }
 
+            String sresult = "";
+            String notice = "";
+            String exam_dt = "";
             if (score != null && !score.trim().isEmpty()) {
-                lbScore.setText(score);
+                //{“sresult” = “10”;
+//                “notice” = “xxxxxx”;
+//                “exam_dt” = “2016-09-09”}
+                try {
+                    JSONObject scoreObj = new JSONObject(score);
+                    sresult = scoreObj.getString("sresult");
+                    notice = scoreObj.getString("notice");
+                    exam_dt = scoreObj.getString("exam_dt");
+                    lbScore.setText(sresult);
+                    examResult.setSresult(sresult);
+                    examResult.setNotice(notice);
+                    examResult.setExam_dt(exam_dt);
+                } catch (JSONException e) {
+                    lbScore.setText(score);
+                    e.printStackTrace();
+                }
             } else {
                 lbScore.setText("");
             }
-//        view.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Log.d(TAG, "onClick " + position);
-//                _showDetailsExamResults(examResult);
-//            }
-//        });
+            final String finalNotice = notice;
+            final String finalExam_dt = exam_dt;
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    examResult.setSresult(lbScore.getText().toString());
+                    examResult.setExam_name(lbScoreMonth.getText().toString());
+                    examResult.setNotice(finalNotice);
+                    examResult.setExam_dt(finalExam_dt);
+                    _showDetailsExamResults(examResult);
+                }
+            });
         }
 
         private void _showDetailsExamResults(ExamResult examResult) {

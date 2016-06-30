@@ -29,7 +29,7 @@ public class FinalExamPager extends Fragment {
     private static final String ARG_FINAL = "final";
     private int position;
     FinalResult finalResult;
-    ObservableRecyclerView mListExam;
+    RecyclerView mListExam;
     private View mNoData;
 
     public static FinalExamPager create(int position, FinalResult finalResult) {
@@ -60,7 +60,7 @@ public class FinalExamPager extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.final_exam_pager, container, false);
         mNoData = view.findViewById(R.id.mNoData);
-        mListExam = (ObservableRecyclerView) view.findViewById(R.id.mListExam);
+        mListExam = (RecyclerView) view.findViewById(R.id.mListExam);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         mListExam.setLayoutManager(linearLayoutManager);
         if (finalResult != null) {
@@ -70,7 +70,7 @@ public class FinalExamPager extends Fragment {
                     Log.d(TAG, "-size:" + finalResult.getExam_results().size());
                     MyFinalExamResultsAdapter myExamResultsAdapter = new MyFinalExamResultsAdapter(this, position, results);
                     mListExam.setAdapter(myExamResultsAdapter);
-                    mListExam.setNestedScrollingEnabled(false);
+                    //mListExam.setNestedScrollingEnabled(true);
                     mNoData.setVisibility(View.GONE);
                     mListExam.setVisibility(View.VISIBLE);
                 } else {
