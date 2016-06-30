@@ -39,7 +39,7 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
-import com.laoschool.adapter.ExamResultsforClassbySubjectAdapter;
+import com.laoschool.adapter.ExamResultsAdapter;
 import com.laoschool.adapter.MyExamResultsAdapter;
 import com.laoschool.adapter.MyExamResultsPagerAdapter;
 import com.laoschool.entities.ExamResult;
@@ -83,7 +83,7 @@ public class ScreenExamResults extends Fragment
     private View mSugesstionSelectedSubject;
     private MenuItem itemSearch;
     private SearchView mSearch;
-    private ExamResultsforClassbySubjectAdapter resultsforClassbySubjectAdapter;
+    private ExamResultsAdapter examResultsAdapter;
     private SearchView mSearchExamResults;
     private AppBarLayout appFilterBar;
     private CollapsingToolbarLayout collapsing;
@@ -247,7 +247,9 @@ public class ScreenExamResults extends Fragment
             @Override
             public boolean onQueryTextChange(String query) {
                 Log.d(TAG, "query:" + query);
-                resultsforClassbySubjectAdapter.filter(query);
+                if (examResultsAdapter != null) {
+                    examResultsAdapter.filter(query);
+                }
                 return true;
             }
         });
@@ -744,9 +746,10 @@ public class ScreenExamResults extends Fragment
             public void onSuccess(List<ExamResult> result) {
                 if (result != null) {
                     //Group data
-                    Map<Integer, List<ExamResult>> groupStudentMap = groupExamResultbyStudentId(result);
+                    // Map<Integer, List<ExamResult>> groupStudentMap = groupExamResultbyStudentId(result);
 
-                    _fillDataForListResultFilter(subjectId, mResultListStudentBySuject, new TreeMap<>(groupStudentMap));
+                    //_fillDataForListResultFilter(subjectId, mResultListStudentBySuject, new TreeMap<>(groupStudentMap));
+                    fillDataForListResultFilter(subjectId, mResultListStudentBySuject, result);
                 } else {
                     Log.d(TAG, "getExamResultsbySubject().onSuccess() message:NUll");
                 }
@@ -772,6 +775,27 @@ public class ScreenExamResults extends Fragment
                     finalProgressDialog.dismiss();
                 LaoSchoolShared.goBackToLoginPage(context);
                 showProgressLoading(false);
+            }
+        });
+    }
+
+    private void fillDataForListResultFilter(int subjectId, ObservableRecyclerView mResultListStudentBySuject, List<ExamResult> result) {
+        examResultsAdapter = new ExamResultsAdapter(this, subjectId, result);
+        mResultListStudentBySuject.setAdapter(examResultsAdapter);
+        //hide loading
+        showProgressLoading(false);
+
+        mSearchExamResults.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                Log.d(TAG, "query:" + query);
+                examResultsAdapter.filter(query);
+                return true;
             }
         });
     }
@@ -806,28 +830,6 @@ public class ScreenExamResults extends Fragment
             groupStudentMap.put(studentId, temp);
         }
         return groupStudentMap;
-    }
-
-    private void _fillDataForListResultFilter(final int subjectId, RecyclerView recyclerView, Map<Integer, List<ExamResult>> result) {
-
-        resultsforClassbySubjectAdapter = new ExamResultsforClassbySubjectAdapter(this, subjectId, result);
-        recyclerView.setAdapter(resultsforClassbySubjectAdapter);
-        //hide loading
-        showProgressLoading(false);
-
-        mSearchExamResults.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String query) {
-                Log.d(TAG, "query:" + query);
-                resultsforClassbySubjectAdapter.filter(query);
-                return true;
-            }
-        });
     }
 
 
