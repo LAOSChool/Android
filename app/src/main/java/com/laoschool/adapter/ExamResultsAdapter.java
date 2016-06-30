@@ -156,6 +156,7 @@ public class ExamResultsAdapter extends RecyclerView.Adapter<ExamResultsAdapter.
 
     class EditExamAdapter extends RecyclerView.Adapter<EditExamAdapter.ViewHolder> {
         private final String TAG = EditExamAdapter.class.getSimpleName();
+        private final int termId;
         Context context;
         List<String> str_score = new ArrayList<>();
         List<String> str_score_name = new ArrayList<>();
@@ -164,6 +165,7 @@ public class ExamResultsAdapter extends RecyclerView.Adapter<ExamResultsAdapter.
         public EditExamAdapter(Context context, int termId, ExamResult examResult) {
             this.context = context;
             this.examResult = examResult;
+            this.termId = termId;
             if (termId == 1) {
                 str_score.add(examResult.getM1());
                 str_score.add(examResult.getM2());
@@ -242,14 +244,14 @@ public class ExamResultsAdapter extends RecyclerView.Adapter<ExamResultsAdapter.
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    examResult.setSresult(lbScore.getText().toString());
+                    examResult.setExam_name(lbScoreMonth.getText().toString());
+                    examResult.setNotice(finalNotice);
+                    examResult.setExam_dt(finalExam_dt);
                     if (position < 4 || position == 5) {
-                        DialogInputExamResultsForStudent dialogInputExamResultsForStudent = new DialogInputExamResultsForStudent(screenExamResults, subjectId, examResult);
+                        DialogInputExamResultsForStudent dialogInputExamResultsForStudent = new DialogInputExamResultsForStudent(screenExamResults, subjectId, termId, position, examResult);
                         dialogInputExamResultsForStudent.show(screenExamResults.getActivity().getFragmentManager(), DialogInputExamResultsForStudent.TAG);
                     } else {
-                        examResult.setSresult(lbScore.getText().toString());
-                        examResult.setExam_name(lbScoreMonth.getText().toString());
-                        examResult.setNotice(finalNotice);
-                        examResult.setExam_dt(finalExam_dt);
                         _showDetailsExamResults(examResult);
                     }
                 }
