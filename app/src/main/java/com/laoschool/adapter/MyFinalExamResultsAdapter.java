@@ -74,8 +74,8 @@ public class MyFinalExamResultsAdapter extends RecyclerView.Adapter<RecyclerView
                     GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false);
                     mListScoreBySemester.setLayoutManager(gridLayoutManager);
 
-                    ExamResultsAdapter examResultsAdapter = new ExamResultsAdapter(context, this.position, examResults.get(position));
-                    mListScoreBySemester.setAdapter(examResultsAdapter);
+                    FinalExamAdapter finalExamAdapter = new FinalExamAdapter(context, this.position, examResults.get(position));
+                    mListScoreBySemester.setAdapter(finalExamAdapter);
                     mListScoreBySemester.setNestedScrollingEnabled(false);
                 } else {
 
@@ -107,8 +107,8 @@ public class MyFinalExamResultsAdapter extends RecyclerView.Adapter<RecyclerView
         }
     }
 
-    class ExamResultsAdapter extends RecyclerView.Adapter<ExamResultsAdapter.ExamResultsAdapterViewHolder> {
-        private final String TAG = ExamResultsAdapter.class.getSimpleName();
+    class FinalExamAdapter extends RecyclerView.Adapter<FinalExamAdapter.ExamResultsAdapterViewHolder> {
+        private final String TAG = FinalExamAdapter.class.getSimpleName();
         private final int positionTab;
         Context context;
         List<String> str_score = new ArrayList<>();
@@ -118,7 +118,7 @@ public class MyFinalExamResultsAdapter extends RecyclerView.Adapter<RecyclerView
         List<String> str_score_name = new ArrayList<>();
         ExamResult examResult;
 
-        public ExamResultsAdapter(Context context, int position, ExamResult examResult) {
+        public FinalExamAdapter(Context context, int position, ExamResult examResult) {
             this.context = context;
             this.examResult = examResult;
             this.positionTab = position;

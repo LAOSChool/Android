@@ -21,9 +21,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Hue on 6/29/2016.
@@ -76,8 +74,8 @@ public class MyExamResultsAdapter extends RecyclerView.Adapter<RecyclerView.View
                     GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false);
                     mListScoreBySemester.setLayoutManager(gridLayoutManager);
 
-                    ExamResultsAdapter examResultsAdapter = new ExamResultsAdapter(context, termId, examResults.get(position));
-                    mListScoreBySemester.setAdapter(examResultsAdapter);
+                    ExamsAdapter examsAdapter = new ExamsAdapter(context, termId, examResults.get(position));
+                    mListScoreBySemester.setAdapter(examsAdapter);
                     mListScoreBySemester.setNestedScrollingEnabled(false);
                 } else {
 
@@ -109,14 +107,14 @@ public class MyExamResultsAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
-    class ExamResultsAdapter extends RecyclerView.Adapter<ExamResultsAdapter.ExamResultsAdapterViewHolder> {
-        private final String TAG = ExamResultsAdapter.class.getSimpleName();
+    class ExamsAdapter extends RecyclerView.Adapter<ExamsAdapter.ExamResultsAdapterViewHolder> {
+        private final String TAG = ExamsAdapter.class.getSimpleName();
         Context context;
         List<String> str_score = new ArrayList<>();
         List<String> str_score_name = new ArrayList<>();
         ExamResult examResult;
 
-        public ExamResultsAdapter(Context context, int termId, ExamResult examResult) {
+        public ExamsAdapter(Context context, int termId, ExamResult examResult) {
             this.context = context;
             this.examResult = examResult;
             if (termId == 0) {
