@@ -51,6 +51,7 @@ import com.laoschool.view.FragmentLifecycle;
 import com.laoschool.view.ViewpagerDisableSwipeLeft;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -780,6 +781,7 @@ public class ScreenExamResults extends Fragment
     }
 
     private void fillDataForListResultFilter(int subjectId, ObservableRecyclerView mResultListStudentBySuject, List<ExamResult> result) {
+        Collections.sort(result);
         examResultsAdapter = new ExamResultsAdapter(this, subjectId, result);
         mResultListStudentBySuject.setAdapter(examResultsAdapter);
         //hide loading
