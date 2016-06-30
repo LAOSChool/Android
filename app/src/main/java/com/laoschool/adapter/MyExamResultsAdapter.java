@@ -16,6 +16,9 @@ import com.laoschool.R;
 import com.laoschool.entities.ExamResult;
 import com.laoschool.shared.LaoSchoolShared;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -36,10 +39,10 @@ public class MyExamResultsAdapter extends RecyclerView.Adapter<RecyclerView.View
     private int TYPE_TITLE = 1;
     private int TYPE_LINE = 2;
 
-    public MyExamResultsAdapter(Fragment screen,int termId, List<ExamResult> examResults) {
+    public MyExamResultsAdapter(Fragment screen, int termId, List<ExamResult> examResults) {
         this.screen = screen;
         this.context = screen.getActivity();
-        this.termId=termId;
+        this.termId = termId;
         this.examResults = examResults;
     }
 
@@ -68,7 +71,7 @@ public class MyExamResultsAdapter extends RecyclerView.Adapter<RecyclerView.View
 //                //Define and set data
                     TextView txtSubjectScreenResultsStudent = (TextView) view.findViewById(R.id.txtSubjectScreenResultsStudent);
                     txtSubjectScreenResultsStudent.setText(title);
-                    
+
                     RecyclerView mListScoreBySemester = (RecyclerView) view.findViewById(R.id.mListScoreBySemester);
                     GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false);
                     mListScoreBySemester.setLayoutManager(gridLayoutManager);
@@ -157,10 +160,10 @@ public class MyExamResultsAdapter extends RecyclerView.Adapter<RecyclerView.View
         @Override
         public void onBindViewHolder(final ExamResultsAdapterViewHolder holder, final int position) {
             View view = holder.view;
-            String score = str_score.get(0);
+            String score = str_score.get(position);
 
-            TextView lbScoreMonth = ((TextView) (view.findViewById(R.id.lbScoreMonth)));
-            TextView lbScore = ((TextView) (view.findViewById(R.id.lbScore)));
+            final TextView lbScoreMonth = ((TextView) (view.findViewById(R.id.lbScoreMonth)));
+            final TextView lbScore = ((TextView) (view.findViewById(R.id.lbScore)));
             lbScoreMonth.setText(str_score_name.get(position));
             if (position == 7) {
                 view.setBackgroundResource(R.drawable.bg_score_avg_year);
@@ -171,19 +174,41 @@ public class MyExamResultsAdapter extends RecyclerView.Adapter<RecyclerView.View
             } else if (position == 4) {
                 view.setBackgroundResource(R.drawable.bg_score_final);
             }
-
+            String sresult = "";
+            String notice = "";
+            String exam_dt = "";
             if (score != null && !score.trim().isEmpty()) {
-                lbScore.setText(score);
+                //{“sresult” = “10”;
+//                “notice” = “xxxxxx”;
+//                “exam_dt” = “2016-09-09”}
+                try {
+                    JSONObject scoreObj = new JSONObject(score);
+                    sresult = scoreObj.getString("sresult");
+                    notice = scoreObj.getString("notice");
+                    exam_dt = scoreObj.getString("exam_dt");
+                    lbScore.setText(sresult);
+                    examResult.setSresult(sresult);
+                    examResult.setNotice(notice);
+                    examResult.setExam_dt(exam_dt);
+                } catch (JSONException e) {
+                    lbScore.setText(score);
+                    e.printStackTrace();
+                }
             } else {
                 lbScore.setText("");
             }
-//        view.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Log.d(TAG, "onClick " + position);
-//                _showDetailsExamResults(examResult);
-//            }
-//        });
+            final String finalNotice = notice;
+            final String finalExam_dt = exam_dt;
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    examResult.setSresult(lbScore.getText().toString());
+                    examResult.setExam_name(lbScoreMonth.getText().toString());
+                    examResult.setNotice(finalNotice);
+                    examResult.setExam_dt(finalExam_dt);
+                    _showDetailsExamResults(examResult);
+                }
+            });
         }
 
         private void _showDetailsExamResults(ExamResult examResult) {
@@ -210,6 +235,7 @@ public class MyExamResultsAdapter extends RecyclerView.Adapter<RecyclerView.View
                 e.printStackTrace();
             }
         }
+
         @Override
         public int getItemCount() {
             return str_score.size();
@@ -226,7 +252,6 @@ public class MyExamResultsAdapter extends RecyclerView.Adapter<RecyclerView.View
             }
         }
     }
-
 
 
 }
