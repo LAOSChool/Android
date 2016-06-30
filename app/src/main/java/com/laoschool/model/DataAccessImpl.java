@@ -1706,7 +1706,7 @@ public class DataAccessImpl implements DataAccessInterface {
 
     @Override
     public void getExamResultsforMark(int filter_class_id, int filter_user_id, int filter_subject_id, final AsyncCallback<List<ExamResult>> callback) {
-        String url = HOST + "exam_results/marks";
+        String url = HOST + "exam_results";
         StringBuilder stringBuilder = new StringBuilder();
         int check = 0;
         if (filter_class_id > -1) {
