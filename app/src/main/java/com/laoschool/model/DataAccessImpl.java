@@ -1647,11 +1647,7 @@ public class DataAccessImpl implements DataAccessInterface {
 
             @Override
             public byte[] getBody() throws AuthFailureError {
-                if (examResult.getId() > 0) {
-                    return examResult.toJson().getBytes();
-                } else {
-                    return examResult.toCreateJson().getBytes();
-                }
+                return examResult.toCreateJson().getBytes();
             }
         };
 
@@ -1783,7 +1779,7 @@ public class DataAccessImpl implements DataAccessInterface {
 
     @Override
     public void getExamType(int filter_class_id, final AsyncCallback<List<ExamType>> callback) {
-        String url = HOST + "classes/exams?filter_class_id=" + filter_class_id;
+        String url = HOST + "schools/exams";
         JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -1792,9 +1788,13 @@ public class DataAccessImpl implements DataAccessInterface {
                         List<ExamType> masters = new ArrayList<>();
                         JSONArray listMaster = response.getJSONArray("messageObject");
                         if (listMaster != null) {
+                            int currentTerm = LaoSchoolShared.myProfile.getEclass().getTerm();
                             for (int i = 0; i < listMaster.length(); i++) {
                                 JSONObject objMaster = listMaster.getJSONObject(i);
-                                masters.add(ExamType.fromJson(objMaster.toString()));
+                                ExamType examType = ExamType.fromJson(objMaster.toString());
+                                if (examType.getTerm_val() == currentTerm) {
+                                    masters.add(examType);
+                                }
                             }
                         }
                         callback.onSuccess(masters);
