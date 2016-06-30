@@ -14,6 +14,9 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -82,6 +85,8 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
     private View mExamResults;
     private View mComment;
     private View btnShowComment;
+
+    private MenuItem itemRefersh;
 
     private Animation animShow, animHide;
 
@@ -165,7 +170,7 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
 
         defineAvgFinalTotal(result);
 
-        final MyFinalResultsPagerAdapter resultsPagerAdapter = new MyFinalResultsPagerAdapter(getFragmentManager(),context, result);
+        final MyFinalResultsPagerAdapter resultsPagerAdapter = new MyFinalResultsPagerAdapter(getFragmentManager(), context, result);
         mPagerFinalResults.setAdapter(resultsPagerAdapter);
         mTab.setViewPager(mPagerFinalResults);
         mComment.setVisibility(View.VISIBLE);
@@ -189,11 +194,36 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
                 }
             }
         });
+        itemRefersh.setVisible(true);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.menu_screen_final_results, menu);
+        itemRefersh = menu.findItem(R.id.action_refersh);
+        itemRefersh.setVisible(false);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_refersh:
+                refershData();
+                return true;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void refershData() {
+        getMyFinalResultsByYear(selectedYearId);
     }
 
     private void defineAvgFinalTotal(FinalResult result) {
