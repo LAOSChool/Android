@@ -47,7 +47,7 @@
                 android:layout_centerVertical="true"
                 android:src="@drawable/ic_keyboard_arrow_down_white_24dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp" />
+                android:layout_marginRight="12dp" />
 
         </RelativeLayout>
 
