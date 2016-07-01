@@ -289,6 +289,7 @@ public class ScreenExamResults extends Fragment
                     int subjectId = inputExamResultsStudent.selectedSubjectId;
                     String subjectName = mapSubject.get(subjectId);
                     lbSubjectSeleted.setText(subjectName);
+                    lbSubjectSeleted.setTextColor(Color.WHITE);
                     getExamResultsbySubject(true, subjectId);
                 }
         }
@@ -714,9 +715,6 @@ public class ScreenExamResults extends Fragment
         builder.setAdapter(subjectListAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(final DialogInterface dialogInterface, final int i) {
-                mSugesstionSelectedSubject.setVisibility(View.GONE);
-                mResultListStudentBySuject.setVisibility(View.VISIBLE);
-                mListExam.setVisibility(View.VISIBLE);
                 String subjectName = subjectNames.get(i);
                 int subjectId = result.get(i).getId();
                 selectedSubjectId = subjectId;
@@ -745,6 +743,9 @@ public class ScreenExamResults extends Fragment
         LaoSchoolSingleton.getInstance().getDataAccessService().getExamResultsforMark(LaoSchoolShared.myProfile.getEclass().getId(), -1, subjectId, new AsyncCallback<List<ExamResult>>() {
             @Override
             public void onSuccess(List<ExamResult> result) {
+                mSugesstionSelectedSubject.setVisibility(View.GONE);
+                mResultListStudentBySuject.setVisibility(View.VISIBLE);
+                mListExam.setVisibility(View.VISIBLE);
                 if (result != null) {
                     //Group data
                     // Map<Integer, List<ExamResult>> groupStudentMap = groupExamResultbyStudentId(result);
@@ -754,9 +755,9 @@ public class ScreenExamResults extends Fragment
                 } else {
                     Log.d(TAG, "getExamResultsbySubject().onSuccess() message:NUll");
                 }
-                if (finalProgressDialog != null)
+                if (finalProgressDialog != null) {
                     finalProgressDialog.dismiss();
-
+                }
                 showProgressLoading(false);
             }
 
