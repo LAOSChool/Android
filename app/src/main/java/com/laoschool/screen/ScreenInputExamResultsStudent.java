@@ -612,7 +612,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         Collections.sort(result);
         adapter = new InputExamResultsbyTypeAdapter(getActivity(), context, result, selectedExamTypeId);
         listExamByStudent.setAdapter(adapter);
-        listExamByStudent.setHasFixedSize(true);
+        listExamByStudent.setNestedScrollingEnabled(false);
         onTextChangeTextBoxSearch();
         mExpanSearch.setVisibility(View.VISIBLE);
         //  txtSearch.setEnabled(true);
@@ -633,9 +633,9 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
             @Override
             public void onSuccess(List<ExamResult> result) {
                 if (result != null) {
+                    examListBySubjectId.clear();
                     examListBySubjectId.addAll(result);
                     if (selectedExamTypeId > 0) {
-                        //fillDataExamStudent(groupExamResultbyStudentId(examListBySubjectId, selectedExamTypeId), selectedExamTypeId);
                         fillDataExamStudent2(examListBySubjectId, selectedExamTypeId);
                     } else {
                         showSugesstionSelectedExamType();

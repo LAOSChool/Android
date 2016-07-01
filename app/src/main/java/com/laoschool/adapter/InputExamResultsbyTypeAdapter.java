@@ -96,13 +96,23 @@ public class InputExamResultsbyTypeAdapter extends RecyclerView.Adapter<InputExa
 
             //fill data exam results
             holder.row_title.setText(userName);
-            holder.txtInputExamResults.setText(result.getSresult());
-//            if (position == (examResults.size() - 1)) {
-//                holder.txtInputExamResults.setImeOptions(EditorInfo.IME_ACTION_DONE);
-//            } else {
-//                holder.txtInputExamResults.setImeOptions(EditorInfo.IME_ACTION_NEXT);
-//            }
             holder.lbNickName.setText(result.getStd_nickname());
+            holder.txtInputExamResults.setText(result.getSresult());
+            if (position == (examResults.size() - 1)) {
+                holder.txtInputExamResults.setImeOptions(EditorInfo.IME_ACTION_DONE);
+            } else {
+                holder.txtInputExamResults.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+            }
+
+            //Load photo
+            String photo = result.getStd_photo();
+            if (photo != null) {
+                LaoSchoolSingleton.getInstance().getImageLoader().get(photo, ImageLoader.getImageListener(holder.imgUserAvata,
+                        R.drawable.ic_account_circle_black_36dp, R.drawable.ic_account_circle_black_36dp));
+                holder.imgUserAvata.setImageUrl(photo, LaoSchoolSingleton.getInstance().getImageLoader());
+            } else {
+                holder.imgUserAvata.setDefaultImageResId(R.drawable.ic_account_circle_black_36dp);
+            }
 
 
             //handler text changer
@@ -131,51 +141,30 @@ public class InputExamResultsbyTypeAdapter extends RecyclerView.Adapter<InputExa
                     }
                 }
             });
-//            holder.txtInputExamResults.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//                @Override
-//                public void onFocusChange(View view, boolean hasfocus) {
-//                    if (!hasfocus) {
-//                        Log.d(TAG, "-focus change:" + hasfocus);
-//                        if (!holder.txtInputExamResults.getText().toString().trim().isEmpty()) {
-//                            holder.txtInputExamResults.setText(result.getSresult());
-//                            //LaoSchoolShared.hideSoftKeyboard(activity);
-//                        }
-//                    }
-//                }
-//            });
+            holder.txtInputExamResults.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean hasfocus) {
+                    if (!hasfocus) {
+                        Log.d(TAG, "-focus change:" + hasfocus);
+                        if (!holder.txtInputExamResults.getText().toString().trim().isEmpty()) {
+                            holder.txtInputExamResults.setText(result.getSresult());
+                            //LaoSchoolShared.hideSoftKeyboard(activity);
+                        }
+                    }
+                }
+            });
 
             holder.txtInputExamResults.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
                 public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                     boolean handled = false;
-                    if (actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
-                        String score = textView.getText().toString();
-                        if (!score.trim().isEmpty()) {
-                            Log.d(TAG, "setOnEditorActionListener().onEditorAction(" + position + ") -exam:" + score);
-                            Float exam = Float.valueOf(score);
-                            result.setSresult(String.valueOf(exam));
-                            mapExam.put(studentId, result);
-                        }
-
-                        if (actionId == EditorInfo.IME_ACTION_DONE) {
-                            LaoSchoolShared.hideSoftKeyboard(activity);
-                        }
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        LaoSchoolShared.hideSoftKeyboard(activity);
                     }
-
                     return handled;
                 }
             });
 
-
-            //Load photo
-            String photo = result.getStd_photo();
-            if (photo != null) {
-                LaoSchoolSingleton.getInstance().getImageLoader().get(photo, ImageLoader.getImageListener(holder.imgUserAvata,
-                        R.drawable.ic_account_circle_black_36dp, R.drawable.ic_account_circle_black_36dp));
-                holder.imgUserAvata.setImageUrl(photo, LaoSchoolSingleton.getInstance().getImageLoader());
-            } else {
-                holder.imgUserAvata.setDefaultImageResId(R.drawable.ic_account_circle_black_36dp);
-            }
 
             holder.btnAddNoticeExamResutls.setOnClickListener(new View.OnClickListener() {
                 @Override
