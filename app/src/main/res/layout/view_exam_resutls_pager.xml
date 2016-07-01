@@ -19,7 +19,7 @@
         app:pstsShouldExpand="true"
         app:pstsTabPaddingLeftRight="18dp"
         app:pstsTextAllCaps="false" />
-    <com.laoschool.view.ScrollableViewPager
+    <com.laoschool.view.ViewpagerDisableSwipeLeft
         android:id="@+id/mPagerFinalResults"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

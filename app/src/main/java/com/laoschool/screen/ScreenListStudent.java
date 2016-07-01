@@ -48,6 +48,7 @@ public class ScreenListStudent extends Fragment implements FragmentLifecycle, Se
     private List<User> userList;
 
     SearchView mSearch;
+    MenuItem itemSearch;
 
 
     public interface IScreenListStudentOfClass {
@@ -166,11 +167,26 @@ public class ScreenListStudent extends Fragment implements FragmentLifecycle, Se
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
         inflater.inflate(R.menu.menu_screen_list_student_of_class, menu);
-        MenuItem item = menu.findItem(R.id.action_search);
-        mSearch = new SearchView(((HomeActivity) getActivity()).getSupportActionBar().getThemedContext());
-        MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
-        MenuItemCompat.setActionView(item, mSearch);
+        itemSearch = menu.findItem(R.id.action_search);
+        mSearch = (SearchView) itemSearch.getActionView();
+        onExpandCollapseSearch();
 
+    }
+
+    private void onExpandCollapseSearch() {
+        MenuItemCompat.setOnActionExpandListener(itemSearch, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                activity.displaySearch();
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                activity.cancelSearch();
+                return true;
+            }
+        });
     }
 
     @Override

@@ -327,7 +327,7 @@ public class FinalResult implements Parcelable {
         List<ExamResult> examResults = new ArrayList<>();
         try {
 
-            JSONObject finalJson = response.getJSONObject("messageObject");
+            JSONObject finalJson = response;
             JSONArray examArray = finalJson.getJSONArray("exam_results");
             for (int i = 0; i < examArray.length(); i++) {
                 JSONObject examJson = examArray.getJSONObject(i);

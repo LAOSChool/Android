@@ -18,102 +18,92 @@
             android:fitsSystemWindows="true"
             app:expandedTitleMarginEnd="64dp"
             app:expandedTitleMarginStart="48dp"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            android:background="@color/colorBackgroundFilter">
 
             <LinearLayout
                 android:id="@+id/mFilter"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|top"
+                android:animateLayoutChanges="true"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:id="@+id/mFitlerTerm"
+
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:animateLayoutChanges="true"
-                    android:background="#ffffff"
-                    android:orientation="vertical">
+                    android:layout_height="40dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp">
 
+                    <ImageView
+                        android:id="@+id/textView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_class_white_24dp"
+                        android:textColor="@color/textColorSubHeader" />
 
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:background="#00A261"
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp">
+                    <TextView
+                        android:id="@+id/txtClassAndTermName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="56dp"
+                        android:text="New Text"
+                        android:textColor="#fff"
+                        android:textStyle="bold" />
+                </RelativeLayout>
 
-                        <ImageView
-                            android:id="@+id/textView3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentStart="true"
-                            android:layout_centerVertical="true"
-                            android:src="@drawable/ic_class_white_24dp"
-                            android:textColor="@color/textColorSubHeader" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#FFF"
+                    android:orientation="vertical"></LinearLayout>
 
-                        <TextView
-                            android:id="@+id/txtClassAndTermName"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentStart="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginLeft="56dp"
-                            android:text="New Text"
-                            android:textColor="#fff"
-                            android:textStyle="bold" />
-                    </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/mSelectedSubject"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#fff"
-                        android:orientation="vertical"></LinearLayout>
+                    <ImageView
+                        android:id="@+id/textView4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_library_books_black_24dp"
+                        android:textColor="@color/textColorSubHeader"
+                        android:tint="@android:color/white" />
 
-                    <RelativeLayout
-                        android:id="@+id/mSelectedSubject"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:background="#00A261"
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp">
+                    <TextView
+                        android:id="@+id/lbSubjectSeleted"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="56dp"
+                        android:text="@string/selected_subject"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorTextUnSelected" />
 
-                        <ImageView
-                            android:id="@+id/textView4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentStart="true"
-                            android:layout_centerVertical="true"
-                            android:src="@drawable/ic_library_books_black_24dp"
-                            android:textColor="@color/textColorSubHeader"
-                            android:tint="@android:color/white" />
-
-                        <TextView
-                            android:id="@+id/lbSubjectSeleted"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentStart="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginLeft="56dp"
-                            android:text="@string/selected_subject"
-                            android:textStyle="bold" />
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
-                            android:layout_gravity="center_vertical|right"
-                            android:layout_marginLeft="16dp"
-                            android:src="@drawable/ic_keyboard_arrow_down_white_24dp" />
-
-                    </RelativeLayout>
-                </LinearLayout>
-
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical|right"
+                        android:layout_marginLeft="16dp"
+                        android:src="@drawable/ic_keyboard_arrow_down_white_24dp" />
+                </RelativeLayout>
             </LinearLayout>
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
@@ -132,7 +122,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <include layout="@layout/view_seach_button" />
+            <include layout="@layout/view_search_button" />
         </LinearLayout>
 
         <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
@@ -153,6 +143,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginTop="50dp"
             android:orientation="vertical">
 
             <ImageView
