@@ -15,12 +15,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.entities.Attendance;
@@ -31,7 +28,6 @@ import com.laoschool.entities.ExamType;
 import com.laoschool.entities.FinalResult;
 import com.laoschool.entities.Image;
 import com.laoschool.entities.ListAttendance;
-import com.laoschool.entities.ListExamResults;
 import com.laoschool.entities.ListMessages;
 import com.laoschool.entities.ListUser;
 import com.laoschool.entities.Master;
@@ -83,8 +79,8 @@ public class DataAccessImpl implements DataAccessInterface {
 
     //VDC:https://222.255.29.25:8443/laoschoolws/api
     //192.168.0.202:9443
-    final String LOGIN_HOST = "https://192.168.0.202:9443/laoschoolws/";
-    final String HOST = "https://192.168.0.202:9443/laoschoolws/api/";
+    final String LOGIN_HOST = "https://222.255.29.25:8443/laoschoolws/";
+    final String HOST = "https://222.255.29.25:8443/laoschoolws/api/";
 
 
     private DataAccessImpl(Context context) {
@@ -1613,7 +1609,7 @@ public class DataAccessImpl implements DataAccessInterface {
     public void inputExamResults(final ExamResult examResult, final AsyncCallback<ExamResult> callback) {
         // Request a string response from the provided URL.
         String url = HOST + "exam_results/input";
-        Log.d(TAG, "inputExamResults() -json input:" + examResult.toCreateJson());
+        Log.d(TAG, "inputExamResults() -json input:" + examResult.toCreateJsonString());
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -1647,7 +1643,7 @@ public class DataAccessImpl implements DataAccessInterface {
 
             @Override
             public byte[] getBody() throws AuthFailureError {
-                return examResult.toCreateJson().getBytes();
+                return examResult.toCreateJsonString().getBytes();
             }
         };
 
@@ -1936,5 +1932,59 @@ public class DataAccessImpl implements DataAccessInterface {
             }
         };
         mRequestQueue.add(jsonArrayRequest);
+    }
+
+    @Override
+    public void inputBatchExamResults(final List<ExamResult> examResults, final AsyncCallback<String> callback) {
+        // Request a string response from the provided URL.
+        String url = HOST + "exam_results/input/batch";
+        final String jsonData = createBatchExamResults(examResults);
+        Log.d("Service", "inputBatchExamResults() -array:" + jsonData.toString());
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        callback.onSuccess(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        NetworkResponse networkResponse = error.networkResponse;
+                        Log.e("Service", "inputBatchExamResults().onErrorResponse() -error status code " + networkResponse.statusCode + ", message:" + error.toString());
+                        if (networkResponse != null && networkResponse.statusCode == 409) {
+                            // HTTP Status Code: 409 Unauthorized Oo
+                            callback.onAuthFail(error.toString());
+                        } else {
+                            callback.onFailure(error.toString());
+                        }
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", getAuthKey());
+                params.put("Content-Type", "application/json");
+                return params;
+            }
+
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                return jsonData.getBytes();
+            }
+        };
+
+        mRequestQueue.add(stringRequest);
+    }
+
+    private String createBatchExamResults(List<ExamResult> examResults) {
+        JSONArray jsonArray = new JSONArray();
+        for (ExamResult result : examResults) {
+            jsonArray.put(result.toCreateJson());
+        }
+
+        return jsonArray.toString();
     }
 }
