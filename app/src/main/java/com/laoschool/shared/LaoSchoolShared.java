@@ -32,6 +32,9 @@ import com.laoschool.entities.Message;
 import com.laoschool.entities.User;
 import com.laoschool.screen.login.ScreenLogin;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.security.interfaces.RSAPrivateKey;
@@ -429,6 +432,22 @@ public class LaoSchoolShared {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(longDateInputExamResult * 1000);
         return cal.get(Calendar.YEAR);
+    }
+
+    public static String makeJsonScore(String sresult, String comment) {
+        //{“sresult” = “10”;
+//                “notice” = “xxxxxx”;
+//                “exam_dt” = “2016-09-09”}
+        JSONObject jsonObject = new JSONObject();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        try {
+            jsonObject.put("sresult", sresult);
+            jsonObject.put("notice", comment);
+            jsonObject.put("exam_dt", simpleDateFormat.format(new Date()));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonObject.toString();
     }
 
 }
