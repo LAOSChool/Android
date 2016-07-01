@@ -116,9 +116,9 @@ public class ScreenLoginMain extends Fragment {
                     public void onFailure(String message) {
                         if (thiz.getActivity() != null) {
                             if (message.contains("TimeoutError"))
-                                Toast.makeText(thiz.getActivity(), "No internet connection", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(thiz.getActivity(), R.string.SCCommon_NoInternet, Toast.LENGTH_SHORT).show();
                             else
-                                Toast.makeText(thiz.getActivity(), "Wrong username or password", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(thiz.getActivity(), R.string.SCLogin_WrongUsernameOrPass, Toast.LENGTH_SHORT).show();
                         }
                     }
 

@@ -29,7 +29,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/selected_year"
+                android:text="@string/SCFinalResult_SelectedYear"
                 android:id="@+id/lbSelectedSchoolYear"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="72dp"

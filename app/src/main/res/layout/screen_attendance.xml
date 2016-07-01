@@ -358,7 +358,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="No Data Found"
-            android:id="@+id/textView20"
+            android:id="@+id/txvNoData"
             android:layout_gravity="center_horizontal"
             android:textColor="@color/colorAccent"
             android:textSize="26dp"/>
@@ -383,7 +383,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Reload"
-                android:id="@+id/textView21"
+                android:id="@+id/txvReload"
                 android:layout_marginTop="10dp"
                 android:textSize="15dp"/>
         </LinearLayout>

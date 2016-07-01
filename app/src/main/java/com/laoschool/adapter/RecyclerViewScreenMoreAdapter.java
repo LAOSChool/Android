@@ -72,7 +72,7 @@ public class RecyclerViewScreenMoreAdapter extends RecyclerView.Adapter<Recycler
                     }
                 } else if (title.equals(context.getString(R.string.SCCommon_ListTeacher))) {
 
-                } else if (title.equals(context.getString(R.string.title_screen_list_student_of_class))) {
+                } else if (title.equals(context.getString(R.string.SCAttendance_ListStudents))) {
                     if (row_icon != null) {
                         row_icon.setImageDrawable(LaoSchoolShared.getDraweble(context, R.drawable.ic_people_black_24dp));
                     }

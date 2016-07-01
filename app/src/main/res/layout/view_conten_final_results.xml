@@ -286,14 +286,14 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="5dp"
-                android:text="@string/msg_no_year_selected" />
+                android:text="@string/SCFinalResult_NoYearSelected" />
 
             <TextView
                 android:id="@+id/textView65"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@string/msg_tab_to_selected_year"
+                android:text="@string/SCFinalResult_TabToSelectedYear"
                 android:textColor="@color/colorAccent"
                 android:textSize="20sp" />
         </LinearLayout>

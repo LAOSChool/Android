@@ -60,7 +60,7 @@ public class ListSubjectAdapter extends RecyclerView.Adapter<ListSubjectAdapter.
 
         final TimeTable timeTable = mDataset.get(position);
 
-        txtSubjectName.setText("Tiet "+ (position+1) + " - "+ timeTable.getSubject_Name());
+        txtSubjectName.setText(context.getString(R.string.SCAttendance_Sessions)+ " "+ (position+1) + " - "+ timeTable.getSubject_Name());
 
         btnRowSubject.setOnClickListener(new View.OnClickListener() {
             @Override

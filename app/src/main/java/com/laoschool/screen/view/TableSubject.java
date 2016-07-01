@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.laoschool.R;
 import com.laoschool.adapter.ListSubjectAdapter;
@@ -38,8 +39,10 @@ public class TableSubject extends View {
 
         tableSubjectView = (RecyclerView) v.findViewById(R.id.tableSubjectView);
         ImageView imageView15 = (ImageView) v.findViewById(R.id.imageView15);
+        TextView txvSubjectTitle = (TextView) v.findViewById(R.id.txvSubjectTitle);
 
         imageView15.setColorFilter(Color.parseColor("#ffffff"));
+        txvSubjectTitle.setText(context.getString(R.string.SCAttendance_Subjects));
 
         // use a linear layout manager
         final LinearLayoutManager mLayoutManager = new LinearLayoutManager(context);

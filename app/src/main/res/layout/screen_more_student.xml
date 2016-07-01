@@ -23,7 +23,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="User Profile"
-                android:id="@+id/textView17"
+                android:id="@+id/txvProfile"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="8dp"
@@ -38,7 +38,7 @@
                 android:src="@drawable/ic_mode_edit_black_18dp"
                 android:layout_marginRight="17dp"
                 android:layout_marginEnd="16dp"
-                android:layout_alignBottom="@+id/textView17"
+                android:layout_alignBottom="@+id/txvProfile"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 android:visibility="gone" />

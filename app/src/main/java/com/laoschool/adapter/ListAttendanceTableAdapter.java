@@ -102,7 +102,7 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
 //        }
 
         attendance_row.setBackgroundColor(context.getResources().getColor(R.color.color_bg_un_read));
-        txvAbsent.setText("Absent");
+        txvAbsent.setText(context.getString(R.string.SCAttendance_Absent));
         btnAbsent.setBackgroundColor(Color.parseColor("#37000000"));
 
         if(mDataset2 != null) {
@@ -110,7 +110,7 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
                 if (attendance.getStudent_id() == student.getId() &&
                         (attendance.getSession_id() == null || attendance.getSession_id().equals(String.valueOf(timeTable.getSession_id())))) {
                     attendance_row.setBackgroundColor(context.getResources().getColor(R.color.color_bg_read));
-                    txvAbsent.setText("Cancel");
+                    txvAbsent.setText(context.getString(R.string.SCCommon_Cancel));
                     txvAbsent.setTextColor(Color.parseColor("#80000000"));
                     btnAbsent.setBackgroundColor(context.getResources().getColor(R.color.color_bg_un_read));
                     break;
@@ -122,7 +122,7 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
             @Override
             public void onClick(View view) {
                 if(timeTable != null) {
-                    if(txvAbsent.getText().equals("Absent")) {
+                    if(txvAbsent.getText().equals(context.getString(R.string.SCAttendance_Absent))) {
                         final AlertDialog dialog = new AlertDialog.Builder(context).create();
                         dialog.setView(new AttendanceTableAbsent(context, student, date, timeTable, new AttendanceTableAbsent.AttendanceTableAbsentListener() {
                             @Override
@@ -136,7 +136,7 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
                     } else {
                         new AlertDialog.Builder(context)
                                 .setTitle("")
-                                .setMessage("Are you sure to cancel this attendance?")
+                                .setMessage(context.getString(R.string.SCAttendance_CancelAbsentConfirm))
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         for (Attendance attendance : mDataset2) {
@@ -157,7 +157,7 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
                                 .show();
                     }
                 } else {
-                    Toast.makeText(context, "Chose a subject first", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context,context.getString(R.string.SCAttendance_NeedChoseSubject), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -184,8 +184,13 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
 
                 @Override
                 public void onFailure(String message) {
-                    Bitmap icon = BitmapFactory.decodeResource(context.getResources(),
-                            R.drawable.ic_account_circle_black_36dp);
+                    Bitmap icon;
+                    if(student.getGender().equals("male"))
+                        icon = BitmapFactory.decodeResource(context.getResources(),
+                                R.drawable.ic_male);
+                    else
+                        icon = BitmapFactory.decodeResource(context.getResources(),
+                                R.drawable.ic_female);
                     student.setUserPhoto(icon);
                     imgStudent.setImageBitmap(student.getUserPhoto());
                     imgStudent.setVisibility(View.VISIBLE);

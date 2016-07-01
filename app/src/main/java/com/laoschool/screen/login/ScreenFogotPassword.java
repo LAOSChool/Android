@@ -105,7 +105,9 @@ public class ScreenFogotPassword extends Fragment {
                 String sso_id = txbUserName.getText().toString();
                 String phone = txbPhoneNumber.getText().toString();
 
-                final ProgressDialog ringProgressDialog = ProgressDialog.show(thiz.getActivity(), "Please wait ...", "Sending your request ...", true);
+                final ProgressDialog ringProgressDialog = ProgressDialog.show(thiz.getActivity(),
+                        thiz.getContext().getString(R.string.SCCommon_PleaseWait)+ " ...",
+                        thiz.getContext().getString(R.string.SCCommon_Sending)+ " ...", true);
 
 //                AlertDialog.Builder builder1 = new AlertDialog.Builder(thiz.getActivity());
 //                builder1.setMessage("Your password has been reset !");
@@ -116,18 +118,18 @@ public class ScreenFogotPassword extends Fragment {
                     @Override
                     public void onSuccess(String result) {
                         ringProgressDialog.dismiss();
-                        Toast.makeText(thiz.getActivity(), "Your password has been reset !", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(thiz.getActivity(), R.string.SCForgotPass_ResetPassSuccess, Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onFailure(String message) {
                         ringProgressDialog.dismiss();
                         if(message.contains("sso_id"))
-                            Toast.makeText(thiz.getActivity(), "Username not exist !", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(thiz.getActivity(), R.string.SCForgotPass_UserNameNotExist, Toast.LENGTH_SHORT).show();
                         else if(message.contains("phone"))
-                            Toast.makeText(thiz.getActivity(), "Phone number not match with username !", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(thiz.getActivity(), R.string.SCForgotPass_PhoneNumberNotMatch, Toast.LENGTH_SHORT).show();
                         else
-                            Toast.makeText(thiz.getActivity(), message, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(thiz.getActivity(), R.string.SCCommon_UnknowError, Toast.LENGTH_SHORT).show();
                     }
 
                     @Override

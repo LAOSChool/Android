@@ -63,6 +63,14 @@ public class ScreenSetting extends Fragment implements FragmentLifecycle {
         txbNewPassword = (EditText) view.findViewById(R.id.txbNewPassword);
         txbConfirmPassword = (EditText) view.findViewById(R.id.txbConfirmPassword);
         TextView btnSubmit = (TextView) view.findViewById(R.id.btnSubmit);
+        TextView txvOldPass = (TextView) view.findViewById(R.id.txvOldPass);
+        TextView txvNewPass = (TextView) view.findViewById(R.id.txvNewPass);
+        TextView txvConfirmPass = (TextView) view.findViewById(R.id.txvConfirmPass);
+
+        txvOldPass.setText(R.string.SCChangePass_OldPass);
+        txvNewPass.setText(R.string.SCChangePass_NewPass);
+        txvConfirmPass.setText(R.string.SCChangePass_ConfirmPass);
+        btnSubmit.setText(R.string.SCCommon_Submit);
 
         rootLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override

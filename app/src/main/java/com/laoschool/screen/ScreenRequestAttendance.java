@@ -110,7 +110,7 @@ public class ScreenRequestAttendance extends Fragment implements FragmentLifecyc
         int mYear=mcurrentDate.get(Calendar.YEAR);
         int mMonth=mcurrentDate.get(Calendar.MONTH);
         int mDay=mcurrentDate.get(Calendar.DAY_OF_MONTH);
-        DatePickerDialog mDatePicker=new DatePickerDialog(thiz.getContext(), new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog mDatePicker = new DatePickerDialog(thiz.getContext(), new DatePickerDialog.OnDateSetListener() {
             public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
                 // TODO Auto-generated method stub
                 String formatDate;
@@ -132,7 +132,8 @@ public class ScreenRequestAttendance extends Fragment implements FragmentLifecyc
                 }
             }
         },mYear, mMonth, mDay);
-        mDatePicker.setTitle("Select date");
+        mDatePicker.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+        mDatePicker.setTitle(R.string.SCAttendance_SelectDate);
         mDatePicker.show();
     }
 
@@ -172,7 +173,9 @@ public class ScreenRequestAttendance extends Fragment implements FragmentLifecyc
 
     private void submitForm() {
         if(LaoSchoolShared.myProfile != null) {
-            final ProgressDialog ringProgressDialog = ProgressDialog.show(thiz.getActivity(), "Please wait ...", "Sending ...", true);
+            final ProgressDialog ringProgressDialog = ProgressDialog.show(this.getActivity(),
+                    thiz.getContext().getString(R.string.SCCommon_PleaseWait)+ " ...",
+                    thiz.getContext().getString(R.string.SCCommon_Sending)+ " ...", true);
             //Hide soft keyboard
             InputMethodManager imm = (InputMethodManager)thiz.getActivity().getSystemService(thiz.getContext().INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(containerView.getWindowToken(), 0);
@@ -210,9 +213,9 @@ public class ScreenRequestAttendance extends Fragment implements FragmentLifecyc
                 public void onFailure(String message) {
                     ringProgressDialog.dismiss();
                     if(message.contains("invalid"))
-                        Toast.makeText(thiz.getContext(), "Absent date is not valid!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(thiz.getContext(), thiz.getContext().getString(R.string.SCAttendance_NotValid), Toast.LENGTH_SHORT).show();
                     else
-                        Toast.makeText(thiz.getContext(), "Some error occur!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(thiz.getContext(), thiz.getContext().getString(R.string.SCAttendance_SendFail), Toast.LENGTH_SHORT).show();
                 }
 
                 @Override

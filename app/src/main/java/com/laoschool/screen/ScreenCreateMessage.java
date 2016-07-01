@@ -108,7 +108,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                 if (selectedStudents.size() == listStudents.size())
                     txtMessageTo.setText(context.getString(R.string.SCCommon_Class) + " " + LaoSchoolShared.selectedClass.getTitle());
                 else
-                    txtMessageTo.setText("All students attendant");
+                    txtMessageTo.setText(context.getString(R.string.SCCreateMessage_TitleAllStudentsAttendance));
                 txtMessageContent.setText(defaultText);
             } else {
                 if (listStudents.isEmpty())
@@ -130,7 +130,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
 
             @Override
             public void onFailure(String message) {
-                Toast.makeText(context, "Can't get students list!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, context.getString(R.string.SCCreateMessage_CannotGetStudentsList), Toast.LENGTH_SHORT).show();
                 ringProgressDialog.dismiss();
             }
 
@@ -391,11 +391,11 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
         LaoSchoolShared.hideSoftKeyboard(getActivity());
         if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
             if(txtMessageTo.getText().equals("")) {
-                Toast.makeText(context, "Found no one to sending message!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, context.getString(R.string.SCCreateMessage_SendNoOne), Toast.LENGTH_SHORT).show();
                 return;
             }
             if(txtMessageContent.getText().equals("")) {
-                Toast.makeText(context, "Can't sending empty message!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, context.getString(R.string.SCCreateMessage_EmptyMessage), Toast.LENGTH_SHORT).show();
                 return;
             }
             //Building message
@@ -418,7 +418,9 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
             Log.d(TAG, "Message results: " + message.toJson());
 
             //Sending message
-            final ProgressDialog ringProgressDialog = ProgressDialog.show(this.getActivity(), "Please wait ...", "Sending ...", true);
+            final ProgressDialog ringProgressDialog = ProgressDialog.show(this.getActivity(),
+                    context.getString(R.string.SCCommon_PleaseWait)+ " ...",
+                    context.getString(R.string.SCCommon_Sending)+ " ...", true);
             service.createMessage(message, new AsyncCallback<Message>() {
                 @Override
                 public void onSuccess(Message result) {
@@ -430,14 +432,14 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                         iScreenCreateMessage.goBackToMessage();
                     }
                     ringProgressDialog.dismiss();
-                    _showAlertMessage(context.getString(R.string.msg_create_message_sucessfully));
+                    _showAlertMessage(context.getString(R.string.SCCreateMessage_SendSuccessful));
                 }
 
                 @Override
                 public void onFailure(String message1) {
                     Log.d(TAG, R.string.err_msg_create_message + ":" + message1);
                     ringProgressDialog.dismiss();
-                    _showAlertMessage(getString(R.string.err_msg_create_message));
+                    _showAlertMessage(getString(R.string.SCCreateMessage_SendFail));
                 }
 
                 @Override
@@ -467,9 +469,9 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                     message.setClass_id(LaoSchoolShared.myProfile.getEclass().getId());
                     message.setSchool_id(LaoSchoolShared.myProfile.getSchool_id());
 
-                    final ProgressDialog progressDialog = new ProgressDialog(context);
-                    progressDialog.setMessage(getString(R.string.msg_create_process));
-                    progressDialog.show();
+                    final ProgressDialog ringProgressDialog = ProgressDialog.show(this.getActivity(),
+                            context.getString(R.string.SCCommon_PleaseWait)+ " ...",
+                            context.getString(R.string.SCCommon_Sending)+ " ...", true);
                     service.createMessage(message, new AsyncCallback<Message>() {
                         @Override
                         public void onSuccess(Message result) {
@@ -481,15 +483,15 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                             if (iScreenCreateMessage != null) {
                                 iScreenCreateMessage.goBackToMessage();
                             }
-                            progressDialog.dismiss();
-                            _showAlertMessage(context.getString(R.string.msg_create_message_sucessfully));
+                            ringProgressDialog.dismiss();
+                            _showAlertMessage(context.getString(R.string.SCCreateMessage_SendSuccessful));
                         }
 
                         @Override
                         public void onFailure(String message1) {
                             Log.d(TAG, R.string.err_msg_create_message + ":" + message1);
-                            progressDialog.dismiss();
-                            _showAlertMessage(getString(R.string.err_msg_create_message));
+                            ringProgressDialog.dismiss();
+                            _showAlertMessage(getString(R.string.SCCreateMessage_SendFail));
 
                         }
 
@@ -500,16 +502,16 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                     });
 
                 } else {
-                    Toast.makeText(context, R.string.err_msg_create_message, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.SCCreateMessage_SendFail, Toast.LENGTH_SHORT).show();
                     Log.d(TAG, R.string.err_msg_create_message + "_1");
 
                 }
             } else {
-                Toast.makeText(context, R.string.err_msg_create_message, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.SCCreateMessage_SendFail, Toast.LENGTH_SHORT).show();
                 Log.d(TAG, R.string.err_msg_create_message + "_2");
             }
         } else {
-            Toast.makeText(context, R.string.err_msg_network_disconnect, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.SCCommon_NoInternet, Toast.LENGTH_SHORT).show();
         }
         // }
     }

@@ -5,6 +5,27 @@
     android:gravity="center">
 
     <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/colorLaosRed"
+        android:paddingLeft="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Absent"
+            android:id="@+id/txvProfile"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:textColor="#ffffff"
+            android:textSize="18dp"
+            android:layout_marginLeft="2dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
         android:layout_width="170dp"
         android:layout_height="50dp"
         android:gravity="center"
@@ -26,7 +47,7 @@
             android:text="2016-17-05"
             android:id="@+id/txbAttDt"
             android:layout_gravity="center_horizontal"
-            android:textSize="20dp"
+            android:textSize="18dp"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
             android:textColor="#000000"/>
@@ -55,12 +76,13 @@
         android:layout_marginRight="15dp" />
 
     <RelativeLayout
-        android:layout_width="100dp"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         android:gravity="center"
-        android:layout_marginBottom="20dp"
-        android:id="@+id/formBtnClose">
+        android:layout_marginBottom="0dp"
+        android:id="@+id/formBtnClose"
+        android:background="#EEEEEE">
 
         <ImageView
             android:layout_width="wrap_content"

@@ -40,7 +40,7 @@ public class Languages extends View {
     public View getView() {
         View view = View.inflate(context, R.layout.view_language, null);
 
-        TextView txvHeader = (TextView) view.findViewById(R.id.txvHeader);
+        TextView txvHeader = (TextView) view.findViewById(R.id.txvProfile);
         RelativeLayout btnEnglish = (RelativeLayout) view.findViewById(R.id.btnEnglish);
         RelativeLayout btnLaos = (RelativeLayout) view.findViewById(R.id.btnLaos);
         TextView txvEnglish = (TextView) view.findViewById(R.id.txvEnglish);

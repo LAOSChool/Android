@@ -44,6 +44,8 @@ public class User implements Comparable<User>{
 
     String roles;
 
+    String gender;
+
     UserDetail user_detail;
 
     Class eclass;
@@ -158,6 +160,14 @@ public class User implements Comparable<User>{
         this.roles = roles;
     }
 
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
     public UserDetail getUserDetail() {
         return user_detail;
     }
@@ -217,6 +227,7 @@ public class User implements Comparable<User>{
             user.setRoles(mainObject.getString("roles"));
             user.setSchoolName(mainObject.getString("schoolName"));
             user.setPhoto(mainObject.getString("photo"));
+            user.setGender(mainObject.getString("gender"));
             // User detail
             UserDetail userDetail = new UserDetail();
             userDetail.setAddr1(mainObject.getString("addr1"));

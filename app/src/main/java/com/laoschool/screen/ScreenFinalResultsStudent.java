@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 
@@ -27,7 +26,6 @@ import android.widget.ListAdapter;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -431,7 +429,7 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
         drawable.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
         imgIcon.setImageDrawable(drawable);
 
-        ((TextView) header.findViewById(R.id.txbTitleDialog)).setText(R.string.selected_year);
+        ((TextView) header.findViewById(R.id.txbTitleDialog)).setText(R.string.SCFinalResult_SelectedYear);
 
         builder.setCustomTitle(header);
         final ListAdapter subjectListAdapter = new ArrayAdapter<>(context, R.layout.row_selected_subject, yearsNames);

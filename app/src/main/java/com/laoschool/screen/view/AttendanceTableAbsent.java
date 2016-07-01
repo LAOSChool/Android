@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.laoschool.LaoSchoolSingleton;
@@ -55,6 +56,8 @@ public class AttendanceTableAbsent extends View {
     public View getView() {
         View view = View.inflate(context, R.layout.view_attendance_table_absent, null);
 
+        TextView txvCreateAbsent = (TextView) view.findViewById(R.id.txvCreateAbsent);
+        TextView txvNoReason = (TextView) view.findViewById(R.id.txvNoReason);
         RelativeLayout btnReason1 = (RelativeLayout) view.findViewById(R.id.btnReason1);
         RelativeLayout btnReason2 = (RelativeLayout) view.findViewById(R.id.btnReason2);
         RelativeLayout btnReason3 = (RelativeLayout) view.findViewById(R.id.btnReason3);
@@ -73,6 +76,11 @@ public class AttendanceTableAbsent extends View {
         imgReason3.setColorFilter(Color.parseColor("#0099cc"));
         imgReason4.setColorFilter(Color.parseColor("#0099cc"));
         imgReason5.setColorFilter(Color.parseColor("#0099cc"));
+
+        txvCreateAbsent.setText(context.getString(R.string.SCAttendance_TeacherCreate));
+        txvNoReason.setText(context.getString(R.string.SCAttendance_NoReason));
+        cbFulldays.setText(context.getString(R.string.SCAttendance_Fulldays));
+        btnSend.setText(context.getString(R.string.SCCommon_Send));
 
         imgReason1.setVisibility(VISIBLE);
 
@@ -142,19 +150,19 @@ public class AttendanceTableAbsent extends View {
                         break;
                     case 2:
                         attendance.setExcused(1);
-                        attendance.setNotice("Ly do 1");
+                        attendance.setNotice("Reason 1");
                         break;
                     case 3:
                         attendance.setExcused(1);
-                        attendance.setNotice("Ly do 2");
+                        attendance.setNotice("Reason 2");
                         break;
                     case 4:
                         attendance.setExcused(1);
-                        attendance.setNotice("Ly do 3");
+                        attendance.setNotice("Reason 3");
                         break;
                     case 5:
                         attendance.setExcused(1);
-                        attendance.setNotice("Ly do 4");
+                        attendance.setNotice("Reason 4");
                         break;
                 }
                 if(!cbFulldays.isChecked()) {
@@ -166,7 +174,9 @@ public class AttendanceTableAbsent extends View {
 
 //                Log.i("RequestAttendance", attendance.toJson());
 
-                final ProgressDialog ringProgressDialog = ProgressDialog.show(context, "Please wait ...", "Sending ...", true);
+                final ProgressDialog ringProgressDialog = ProgressDialog.show(context,
+                        context.getString(R.string.SCCommon_PleaseWait)+ " ...",
+                        context.getString(R.string.SCCommon_Sending)+ " ...", true);
                 LaoSchoolSingleton.getInstance().getDataAccessService().createAttendance(attendance, new AsyncCallback<Attendance>() {
                     @Override
                     public void onSuccess(Attendance result) {
@@ -179,9 +189,9 @@ public class AttendanceTableAbsent extends View {
                     public void onFailure(String message) {
                         ringProgressDialog.dismiss();
                         if(message.contains("invalid"))
-                            Toast.makeText(context, "Absent date is not valid!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, context.getString(R.string.SCAttendance_NotValid), Toast.LENGTH_SHORT).show();
                         else
-                            Toast.makeText(context, "Some error occur!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, context.getString(R.string.SCCommon_UnknowError), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override

@@ -139,6 +139,7 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
             ImageView schoolImage = (ImageView) view.findViewById(R.id.schoolImage);
             ImageView termImage = (ImageView) view.findViewById(R.id.termImage);
             ImageView imgEditProfile = (ImageView) view.findViewById(R.id.imgEditProfile);
+            TextView txvProfile = (TextView) view.findViewById(R.id.txvProfile);
 
             int color = Color.parseColor("#808080");
             int color2 = Color.parseColor("#424242");
@@ -158,10 +159,11 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
 //                }
 //            });
 
-            txtStudentName.setText(LaoSchoolShared.myProfile.getFullname() + " - Class " + LaoSchoolShared.myProfile.getEclass().getTitle());
+            txvProfile.setText(R.string.SCCommon_Profile);
+            txtStudentName.setText(LaoSchoolShared.myProfile.getFullname() + " - " + context.getString(R.string.SCCommon_Class) + " " + LaoSchoolShared.myProfile.getEclass().getTitle());
             txtSchoolName.setText(LaoSchoolShared.myProfile.getSchoolName());
             String split[] = LaoSchoolShared.myProfile.getEclass().getYears().split("-");
-            String years = "Năm học: " + split[0] + " - " + split[1];
+            String years = context.getString(R.string.SCCommon_Years) +": " + split[0] + " - " + split[1];
             txtTerm.setText(years);
 
             //init adapte
@@ -187,6 +189,7 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
             TextView txtSchoolName = (TextView) view.findViewById(R.id.txtSchoolNameScreenMoreTeacher);
             TextView txtClassName = (TextView) view.findViewById(R.id.txtContactPhoneScreenMoreTeacher);
             RecyclerView mRecylerViewFunctionMore = (RecyclerView) view.findViewById(R.id.mRecylerViewFunctionMore);
+            TextView txvProfile = (TextView) view.findViewById(R.id.txvProfile);
 
             Typeface roboto = Typeface.createFromAsset(context.getAssets(),
                     "font/Roboto-Regular.ttf"); //use this.getAssets if you are calling from an Activity
@@ -203,7 +206,8 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
 
             txtUserName.setText(LaoSchoolShared.myProfile.getFullname());
             txtSchoolName.setText(LaoSchoolShared.myProfile.getSchoolName());
-            txtClassName.setText("Class " + LaoSchoolShared.myProfile.getEclass().getTitle());
+            txvProfile.setText(R.string.SCCommon_Profile);
+            txtClassName.setText(context.getString(R.string.SCCommon_Class)+ " " + LaoSchoolShared.myProfile.getEclass().getTitle());
 
             //init adapte
             final List<String> more_teacher = Arrays.asList(getResources().getStringArray(R.array.more_teacher));

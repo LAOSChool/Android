@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -41,6 +43,7 @@ import com.laoschool.model.AsyncCallback;
 import com.laoschool.model.DataAccessImpl;
 import com.laoschool.model.DataAccessInterface;
 import com.laoschool.screen.view.AttendanceStart;
+import com.laoschool.screen.view.Languages;
 import com.laoschool.screen.view.TableSubject;
 import com.laoschool.screen.widgets.MyEditText;
 import com.laoschool.shared.LaoSchoolShared;
@@ -53,6 +56,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -134,7 +138,9 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
         isLoad = true;
         ringProgressDialog = new ProgressDialog(thiz.getContext());
         if(attendancesRefreshLayout != null && attendancesRefreshLayout.isRefreshing() == false)
-            ringProgressDialog = ringProgressDialog.show(this.getActivity(), "Please wait ...", "Loading ...", true);
+            ringProgressDialog = ringProgressDialog.show(this.getActivity(),
+                    thiz.getContext().getString(R.string.SCCommon_PleaseWait)+ " ...",
+                    thiz.getContext().getString(R.string.SCCommon_Loading)+ " ...", true);
         service.getMyAttendances("", "", new AsyncCallback<List<Attendance>>() {
             @Override
             public void onSuccess(List<Attendance> result) {
@@ -165,7 +171,7 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                 containerView.setVisibility(View.GONE);
                 emptyView.setVisibility(View.VISIBLE);
                 if (thiz.getActivity() != null)
-                    Toast.makeText(thiz.getActivity(), "Some error occur !", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(thiz.getActivity(), thiz.getContext().getString(R.string.SCCommon_UnknowError), Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -176,7 +182,9 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
     }
 
     protected void getAttendanceRollup(int class_id, String date) {
-        final ProgressDialog ringProgressDialog = ProgressDialog.show(this.getActivity(), "Please wait ...", "Loading ...", true);
+        final ProgressDialog ringProgressDialog = ProgressDialog.show(this.getActivity(),
+                thiz.getContext().getString(R.string.SCCommon_PleaseWait)+ " ...",
+                thiz.getContext().getString(R.string.SCCommon_Sending)+ " ...", true);
         service.rollupAttendance(class_id, date, new AsyncCallback<AttendanceRollup>() {
             @Override
             public void onSuccess(AttendanceRollup result) {
@@ -368,6 +376,7 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
         final TextView txtSubjectN = (TextView) view.findViewById(R.id.txtSubjectN);
         final RelativeLayout btnStartAttendance = (RelativeLayout) view.findViewById(R.id.btnStartAttendance);
         final MyEditText edtSearch = (MyEditText) view.findViewById(R.id.edtSearch);
+        TextView txvListStudent = (TextView) view.findViewById(R.id.txvListStudent);
 
 //        imgClass.setColorFilter(getResources().getColor(R.color.colorIconOnFragment));
 //        imgAttDt.setColorFilter(getResources().getColor(R.color.colorIconOnFragment));
@@ -379,6 +388,16 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
         final String currentDateandTime = sdf.format(new Date());
         txtAttendanceDate.setText(currentDateandTime);
         txtClassName.setText(thiz.getContext().getString(R.string.SCCommon_Class)+ " "+ LaoSchoolShared.selectedClass.getTitle());
+        txtSession.setText(R.string.SCAttendance_ChoseSubjects);
+        txvListStudent.setText(R.string.SCAttendance_ListStudents);
+        SharedPreferences prefs = thiz.getActivity().getSharedPreferences(
+                LaoSchoolShared.SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
+        String language = prefs.getString(Languages.PREFERENCES_NAME, null);
+        if(language != null && language.equals(Languages.LANGUAGE_LAOS)) {
+            txvListStudent.setTextSize(13);
+        } else {
+            txvListStudent.setTextSize(14);
+        }
 
         // use a linear layout manager
         final LinearLayoutManager mLayoutManager = new LinearLayoutManager(thiz.getContext());
@@ -410,13 +429,14 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                             }
                             if(!formatDate.equals(txtAttendanceDate.getText().toString())) {
                                 txtAttendanceDate.setText(formatDate);
-                                txtSession.setText("Chose Subject");
+                                txtSession.setText(R.string.SCAttendance_ChoseSubjects);
                                 edtSearch.getText().clear();
                                 getAttendanceRollup(LaoSchoolShared.selectedClass.getId(), sendDate);
                             }
                         }
                     },mYear, mMonth, mDay);
-                    mDatePicker.setTitle("Select date");
+                    mDatePicker.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+                    mDatePicker.setTitle(R.string.SCAttendance_SelectDate);
                     mDatePicker.show();
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -432,11 +452,11 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                     @Override
                     public void onSelectSubject(TimeTable timeTable) {
                         selectedTimetable = timeTable;
-                        txtSession.setText("Tiet "+ (attendanceRollup.getTimetables().indexOf(timeTable)+1)+ " - "+ timeTable.getSubject_Name());
+                        txtSession.setText(thiz.getContext().getString(R.string.SCAttendance_Sessions)+ " "+ (attendanceRollup.getTimetables().indexOf(timeTable)+1)+ " - "+ timeTable.getSubject_Name());
 //                        formHeader.setVisibility(View.GONE);
 //                        btnScrolldown.setVisibility(View.VISIBLE);
                         txtClassN.setText(txtClassName.getText());
-                        txtSubjectN.setText("Mon "+ timeTable.getSubject_Name());
+                        txtSubjectN.setText(thiz.getContext().getString(R.string.SCAttendance_Subjects)+ " "+ timeTable.getSubject_Name());
                         dialog.dismiss();
                         mAdapterTeacherAttendance.swap(attendanceRollup.getStudents(), attendanceRollup.getAttendances(), timeTable, txtAttendanceDate.getText().toString());
                         tableStudentView.smoothScrollToPosition(0);
@@ -572,11 +592,15 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
         attendancesRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.attendancesRefreshLayout);
         TextView txvExcused = (TextView) view.findViewById(R.id.txvExcused);
         TextView txvNoExcused = (TextView) view.findViewById(R.id.txvNoExcused);
+        TextView txvNoData = (TextView) view.findViewById(R.id.txvNoData);
+        TextView txvReload = (TextView) view.findViewById(R.id.txvReload);
 
         txbTotalFullday.setText(R.string.SCAttendance_Fulldays);
         txbTotalSession.setText(R.string.SCAttendance_Sessions);
         txvExcused.setText(R.string.SCAttendance_Excused);
         txvNoExcused.setText(R.string.SCAttendance_NoExcused);
+        txvNoData.setText(R.string.SCAttendance_NoAbsent);
+        txvReload.setText(R.string.SCCommon_Reload);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -652,9 +676,10 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                                         break;
                                     }
                             }
-                            String defaultText = "* Ngay " + txtAttendanceDate.getText().toString() + " * " + "\r\n \r\n" +
-                                    "Mon " + selectedTimetable.getSubject_Name() + ", \r\n \r\n" +
-                                    "Nha truong thong bao hoc sinh da di hoc dung gio.";
+                            String defaultText = "* " + thiz.getContext().getString(R.string.SCCommon_Date) + " " +
+                                    txtAttendanceDate.getText().toString() + " * " + "\r\n \r\n" +
+                                    thiz.getContext().getString(R.string.SCAttendance_Subjects)+ " " + selectedTimetable.getSubject_Name() + ", \r\n \r\n" +
+                                    thiz.getContext().getString(R.string.SCAttendance_DefaultMessage1);
                             iScreenAttended.goToCreateMessagefromScreenAttendance(attendanceRollup.getStudents(), selectedStudents, defaultText);
                         } else
                             Toast.makeText(thiz.getContext(), "Fail to get data", Toast.LENGTH_SHORT).show();

@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Please re-enter your password:"
-            android:id="@+id/textView22"
+            android:id="@+id/txvOldPass"
             android:layout_marginTop="10dp"
             android:textSize="15dp"/>
 
@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Enter your new password:"
-            android:id="@+id/textView23"
+            android:id="@+id/txvNewPass"
             android:layout_marginTop="15dp"
             android:textSize="15dp"/>
 
@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Confirm your new password:"
-            android:id="@+id/textView30"
+            android:id="@+id/txvConfirmPass"
             android:layout_marginTop="15dp"
             android:textSize="15dp" />
 

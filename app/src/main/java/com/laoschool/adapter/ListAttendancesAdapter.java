@@ -78,9 +78,13 @@ public class ListAttendancesAdapter extends RecyclerView.Adapter<ListAttendances
 
         final ScreenAttended.GroupAttendance groupAttendance = mDataset.get(position);
 
-        txbAttDt.setText(groupAttendance.getAtt_dt());
+        String[] shortAttDt = groupAttendance.getAtt_dt().split(" ");
+        String[] attdts = shortAttDt[0].split("-");
+        txbAttDt.setText(attdts[0]+ " - "+ attdts[1]+ " - "+ attdts[2]);
+
         if(groupAttendance.getAttendances().size() == 1) {
-            btnDropDown.setImageResource(R.drawable.ic_info_black_24dp);
+            btnDropDown.setImageResource(R.drawable.ic_priority_high_black_24dp);
+            btnDropDown.setVisibility(View.VISIBLE);
             txbAbsent.setText(context.getString(R.string.SCAttendance_Fulldays));
             if(groupAttendance.getAttendances().get(0).getExcused() == 1) {
                 txbExcused.setText(context.getString(R.string.SCCommon_Yes));
@@ -93,7 +97,8 @@ public class ListAttendancesAdapter extends RecyclerView.Adapter<ListAttendances
             txbAbsent.setTextSize(12);
             txbExcused.setTextSize(12);
         } else {
-            btnDropDown.setImageResource(R.drawable.ic_keyboard_arrow_down_black_24dp);
+            btnDropDown.setVisibility(View.VISIBLE);
+            btnDropDown.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp);
             txbAbsent.setText(groupAttendance.getAttendances().size()+ "");
             int totalExcused = 0;
             for(Attendance attendance: groupAttendance.getAttendances()) {
@@ -157,11 +162,11 @@ public class ListAttendancesAdapter extends RecyclerView.Adapter<ListAttendances
                 } else {
                     if(sessionView.getVisibility() == View.GONE) {
                         sessionView.setVisibility(View.VISIBLE);
-                        btnDropDown.setImageResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
+                        btnDropDown.setImageResource(R.drawable.ic_arrow_drop_up_black_24dp);
                     }
                     else {
                         sessionView.setVisibility(View.GONE);
-                        btnDropDown.setImageResource(R.drawable.ic_keyboard_arrow_down_black_24dp);
+                        btnDropDown.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp);
                     }
                 }
             }
@@ -179,13 +184,19 @@ public class ListAttendancesAdapter extends RecyclerView.Adapter<ListAttendances
         TextView txbReason = (TextView) v.findViewById(R.id.txbReason);
         RelativeLayout formBtnClose = (RelativeLayout) v.findViewById(R.id.formBtnClose);
         ImageView imgBtnClose = (ImageView) v.findViewById(R.id.imgBtnClose);
+        TextView btnClose = (TextView) v.findViewById(R.id.btnClose);
+        TextView txvHeader = (TextView) v.findViewById(R.id.txvProfile);
 
         imgBtnClose.setColorFilter(Color.parseColor("#9E9E9E"));
 
-        txbAttDt.setText(attendance.getAtt_dt());
+        String[] shortAttDt = attendance.getAtt_dt().split(" ");
+        String[] attdts = shortAttDt[0].split("-");
+        txbAttDt.setText(attdts[0]+ " - "+ attdts[1]+ " - "+ attdts[2]);
+        txvHeader.setText(context.getString(R.string.SCAttendance_Absent));
+        btnClose.setText(context.getString(R.string.SCCommon_Close));
 
         if(attendance.getSession_id() == null)
-            txbSession.setText("Full day");
+            txbSession.setText(context.getString(R.string.SCAttendance_Fulldays));
         else
             txbSession.setText(attendance.getSession()+ " - "+ attendance.getSubject());
 
@@ -194,7 +205,7 @@ public class ListAttendancesAdapter extends RecyclerView.Adapter<ListAttendances
             txbReason.setTextColor(context.getResources().getColor(R.color.colorAttendanceHasReason));
         }
         else {
-            txbReason.setText("No reason");
+            txbReason.setText(context.getString(R.string.SCAttendance_NoReason));
             txbReason.setTextColor(context.getResources().getColor(R.color.colorAttendanceNoReason));
         }
 
