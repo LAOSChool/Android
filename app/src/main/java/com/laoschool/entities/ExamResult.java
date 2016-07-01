@@ -6,34 +6,47 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.laoschool.shared.LaoSchoolShared;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by Tran An on 11/03/2016.
  */
 public class ExamResult implements Parcelable, Comparable<ExamResult> {
-//            "id": null,
+//             "id": 1,
 //            "school_id": 1,
 //            "class_id": 1,
-//            "exam_id": 1,
-//            "exam_name": "Normal exam",
-//            "exam_type": 1,
-//            "exam_dt": null,
-//            "subject_id": 2,
-//            "teacher_id": null,
 //            "student_id": 10,
 //            "student_name": "00000010",
-//            "notice": "BLANK",
-//            "sresult": null,
-//            "term_id": 1,
-//            "exam_month": 9,
-//            "exam_year": null,
-//            "term_val": 1,
-//            "sch_year_id": 1,
-//            "subject": "Ly",
-//            "teacher": null,
+//            "subject_id": 1,
+//            "subject_name": "Toan",
+//            "notice": null,
+//            "sch_year_id": 2,
+//            "m1": "3.8",
+//            "m2": "4.6@2016-06-29",
+//            "m3": null,
+//            "m4": null,
+//            "m5": "4.2",
+//            "m6": null,
+//            "m7": null,
+//            "m8": null,
+//            "m9": null,
+//            "m10": null,
+//            "m11": null,
+//            "m12": null,
+//            "m13": null,
+//            "m14": null,
+//            "m15": null,
+//            "m16": null,
+//            "m17": null,
+//            "m18": null,
+//            "m19": null,
+//            "m20": null,
 //            "std_photo": "http://192.168.0.202:9090/eschool_content/avatar/student1.png",
-//            "std_nickname": "Student 10",
-//            "term": "HK 1"
+//            "std_nickname": "Student 10"
+
 
     static final String Entity_Name = "exam_results";
 
@@ -69,7 +82,7 @@ public class ExamResult implements Parcelable, Comparable<ExamResult> {
 
     String term;
 
-    String subject;
+    String subject_name;
 
     int exam_month;
 
@@ -85,11 +98,54 @@ public class ExamResult implements Parcelable, Comparable<ExamResult> {
 
     String exam_name;
 
+    String m1;
+
+    String m2;
+    String m3;
+    String m4;
+    String m5;
+    String m6;
+    String m7;
+    String m8;
+    String m9;
+    String m10;
+    String m11;
+    String m12;
+    String m13;
+
+    String m14;
+    String m15;
+    String m16;
+    String m17;
+    String m18;
+    String m19;
+    String m20;
+
+//            "m2": "4.6@2016-06-29",
+//            "m3": null,
+//            "m4": null,
+//            "m5": "4.2",
+//            "m6": null,
+//            "m7": null,
+//            "m8": null,
+//            "m9": null,
+//            "m10": null,
+//            "m11": null,
+//            "m12": null,
+//            "m13": null,
+//            "m14": null,
+//            "m15": null,
+//            "m16": null,
+//            "m17": null,
+//            "m18": null,
+//            "m19": null,
+//            "m20": null,
+
 
     public ExamResult() {
     }
 
-    public ExamResult(int id, int school_id, int class_id, int exam_type, String exam_dt, int subject_id, int teacher_id, int student_id, String student_name, String notice, int result_type_id, int iresult, float fresult, String sresult, int term_id, String term, String subject, int exam_month, int exam_year, String teacher, int exam_id, String std_photo, String std_nickname, String exam_name) {
+    public ExamResult(int id, int school_id, int class_id, int exam_type, String exam_dt, int subject_id, int teacher_id, int student_id, String student_name, String notice, int result_type_id, int iresult, float fresult, String sresult, int term_id, String term, String subject, int exam_month, int exam_year, String teacher, int exam_id, String std_photo, String std_nickname, String exam_name, String m1, String m2, String m3, String m4, String m5, String m6, String m7, String m8, String m9, String m10, String m11, String m12, String m13, String m14, String m15, String m16, String m17, String m18, String m19, String m20) {
         this.id = id;
         this.school_id = school_id;
         this.class_id = class_id;
@@ -106,7 +162,7 @@ public class ExamResult implements Parcelable, Comparable<ExamResult> {
         this.sresult = sresult;
         this.term_id = term_id;
         this.term = term;
-        this.subject = subject;
+        this.subject_name = subject;
         this.exam_month = exam_month;
         this.exam_year = exam_year;
         this.teacher = teacher;
@@ -114,6 +170,26 @@ public class ExamResult implements Parcelable, Comparable<ExamResult> {
         this.std_photo = std_photo;
         this.std_nickname = std_nickname;
         this.exam_name = exam_name;
+        this.m1 = m1;
+        this.m2 = m2;
+        this.m3 = m3;
+        this.m4 = m4;
+        this.m5 = m5;
+        this.m6 = m6;
+        this.m7 = m7;
+        this.m8 = m8;
+        this.m9 = m9;
+        this.m10 = m10;
+        this.m11 = m11;
+        this.m12 = m12;
+        this.m13 = m13;
+        this.m14 = m14;
+        this.m15 = m15;
+        this.m16 = m16;
+        this.m17 = m17;
+        this.m18 = m18;
+        this.m19 = m19;
+        this.m20 = m20;
     }
 
     public int getId() {
@@ -245,11 +321,11 @@ public class ExamResult implements Parcelable, Comparable<ExamResult> {
     }
 
     public String getSubjectName() {
-        return subject;
+        return subject_name;
     }
 
     public void setSubjectName(String subject) {
-        this.subject = subject;
+        this.subject_name = subject;
     }
 
     public int getExam_month() {
@@ -308,6 +384,166 @@ public class ExamResult implements Parcelable, Comparable<ExamResult> {
         this.exam_name = exam_name;
     }
 
+    public String getM1() {
+        return m1;
+    }
+
+    public void setM1(String m1) {
+        this.m1 = m1;
+    }
+
+    public String getM2() {
+        return m2;
+    }
+
+    public void setM2(String m2) {
+        this.m2 = m2;
+    }
+
+    public String getM3() {
+        return m3;
+    }
+
+    public void setM3(String m3) {
+        this.m3 = m3;
+    }
+
+    public String getM4() {
+        return m4;
+    }
+
+    public void setM4(String m4) {
+        this.m4 = m4;
+    }
+
+    public String getM5() {
+        return m5;
+    }
+
+    public void setM5(String m5) {
+        this.m5 = m5;
+    }
+
+    public String getM6() {
+        return m6;
+    }
+
+    public void setM6(String m6) {
+        this.m6 = m6;
+    }
+
+    public String getM7() {
+        return m7;
+    }
+
+    public void setM7(String m7) {
+        this.m7 = m7;
+    }
+
+    public String getM8() {
+        return m8;
+    }
+
+    public void setM8(String m8) {
+        this.m8 = m8;
+    }
+
+    public String getM9() {
+        return m9;
+    }
+
+    public void setM9(String m9) {
+        this.m9 = m9;
+    }
+
+    public String getM10() {
+        return m10;
+    }
+
+    public void setM10(String m10) {
+        this.m10 = m10;
+    }
+
+    public String getM11() {
+        return m11;
+    }
+
+    public void setM11(String m11) {
+        this.m11 = m11;
+    }
+
+    public String getM12() {
+        return m12;
+    }
+
+    public void setM12(String m12) {
+        this.m12 = m12;
+    }
+
+    public String getM13() {
+        return m13;
+    }
+
+    public void setM13(String m13) {
+        this.m13 = m13;
+    }
+
+    public String getM14() {
+        return m14;
+    }
+
+    public void setM14(String m14) {
+        this.m14 = m14;
+    }
+
+    public String getM15() {
+        return m15;
+    }
+
+    public void setM15(String m15) {
+        this.m15 = m15;
+    }
+
+    public String getM16() {
+        return m16;
+    }
+
+    public void setM16(String m16) {
+        this.m16 = m16;
+    }
+
+    public String getM17() {
+        return m17;
+    }
+
+    public void setM17(String m17) {
+        this.m17 = m17;
+    }
+
+    public String getM18() {
+        return m18;
+    }
+
+    public void setM18(String m18) {
+        this.m18 = m18;
+    }
+
+    public String getM19() {
+        return m19;
+    }
+
+    public void setM19(String m19) {
+        this.m19 = m19;
+    }
+
+    public String getM20() {
+        return m20;
+    }
+
+    public void setM20(String m20) {
+        this.m20 = m20;
+    }
+
     public String toJson() {
         Gson gson = new Gson();
         String jsonString = gson.toJson(this);
@@ -353,7 +589,7 @@ public class ExamResult implements Parcelable, Comparable<ExamResult> {
         sresult = in.readString();
         term_id = in.readInt();
         term = in.readString();
-        subject = in.readString();
+        subject_name = in.readString();
         exam_month = in.readInt();
         exam_year = in.readInt();
         teacher = in.readString();
@@ -361,6 +597,30 @@ public class ExamResult implements Parcelable, Comparable<ExamResult> {
         std_photo = in.readString();
         std_nickname = in.readString();
         exam_name = in.readString();
+
+        m1 = in.readString();
+        m2 = in.readString();
+        m3 = in.readString();
+        m4 = in.readString();
+        m5 = in.readString();
+
+        m6 = in.readString();
+        m7 = in.readString();
+        m8 = in.readString();
+        m9 = in.readString();
+        m10 = in.readString();
+
+        m11 = in.readString();
+        m12 = in.readString();
+        m13 = in.readString();
+        m14 = in.readString();
+        m15 = in.readString();
+
+        m16 = in.readString();
+        m17 = in.readString();
+        m18 = in.readString();
+        m19 = in.readString();
+        m20 = in.readString();
     }
 
     @Override
@@ -387,7 +647,7 @@ public class ExamResult implements Parcelable, Comparable<ExamResult> {
         dest.writeString(sresult);
         dest.writeInt(term_id);
         dest.writeString(term);
-        dest.writeString(subject);
+        dest.writeString(subject_name);
         dest.writeInt(exam_month);
         dest.writeInt(exam_year);
         dest.writeString(teacher);
@@ -395,6 +655,31 @@ public class ExamResult implements Parcelable, Comparable<ExamResult> {
         dest.writeString(std_photo);
         dest.writeString(std_nickname);
         dest.writeString(exam_name);
+
+        dest.writeString(m1);
+        dest.writeString(m2);
+        dest.writeString(m3);
+        dest.writeString(m4);
+        dest.writeString(m5);
+
+        dest.writeString(m6);
+        dest.writeString(m7);
+        dest.writeString(m8);
+        dest.writeString(m9);
+        dest.writeString(m10);
+
+        dest.writeString(m11);
+        dest.writeString(m12);
+        dest.writeString(m13);
+        dest.writeString(m14);
+        dest.writeString(m15);
+
+        dest.writeString(m16);
+        dest.writeString(m17);
+        dest.writeString(m18);
+        dest.writeString(m19);
+        dest.writeString(m20);
+
     }
 
     @SuppressWarnings("unused")
@@ -410,32 +695,81 @@ public class ExamResult implements Parcelable, Comparable<ExamResult> {
         }
     };
 
-    public String toCreateJson() {
+    public String toCreateJsonString() {
+//        {
+//            "m6": {“sresult":"10","exam_dt":"2016-06-30","notice":"Comment"},
+//            "class_id":"1",
+//                    "subject_id":"1",
+//                    "school_id":1,
+//                    "student_id":"10"
+//        }
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("school_id", school_id);
-        jsonObject.addProperty("class_id", class_id);
-        jsonObject.addProperty("sresult", sresult);
+        jsonObject.addProperty("class_id", LaoSchoolShared.myProfile.getEclass().getId());
 
         jsonObject.addProperty("student_id", student_id);
         jsonObject.addProperty("subject_id", subject_id);
 
-        jsonObject.addProperty("exam_id", exam_id);
-        jsonObject.addProperty("teacher_id", teacher_id);
-        jsonObject.addProperty("term_id", term_id);
         if (notice != null)
             jsonObject.addProperty("notice", notice);
+        if (m1 != null) jsonObject.addProperty("m1", m1);
+        if (m2 != null) jsonObject.addProperty("m2", m2);
+        if (m3 != null) jsonObject.addProperty("m3", m3);
+        if (m4 != null) jsonObject.addProperty("m4", m4);
+        if (m6 != null) jsonObject.addProperty("m6", m6);
+        if (m7 != null) jsonObject.addProperty("m7", m7);
+        if (m8 != null) jsonObject.addProperty("m8", m8);
+        if (m9 != null) jsonObject.addProperty("m9", m9);
+        if (m10 != null) jsonObject.addProperty("m10", m10);
+        if (m12 != null) jsonObject.addProperty("m12", m12);
+
 
         Gson gson = new Gson();
         String jsonString = gson.toJson(jsonObject);
-        Log.d("", "toCreateJson():" + jsonString);
+        //Log.d("", "toCreateJsonString():" + jsonString);
         return jsonString;
+    }
+
+    public JSONObject toCreateJson() {
+//        {
+//            "m6": {“sresult":"10","exam_dt":"2016-06-30","notice":"Comment"},
+//            "class_id":"1",
+//                    "subject_id":"1",
+//                    "school_id":1,
+//                    "student_id":"10"
+//        }
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("school_id", school_id);
+            jsonObject.put("class_id", LaoSchoolShared.myProfile.getEclass().getId());
+
+            jsonObject.put("student_id", student_id);
+            jsonObject.put("subject_id", subject_id);
+
+            if (notice != null)
+                jsonObject.put("notice", notice);
+            if (m1 != null) jsonObject.put("m1", m1);
+            if (m2 != null) jsonObject.put("m2", m2);
+            if (m3 != null) jsonObject.put("m3", m3);
+            if (m4 != null) jsonObject.put("m4", m4);
+            if (m6 != null) jsonObject.put("m6", m6);
+            if (m7 != null) jsonObject.put("m7", m7);
+            if (m8 != null) jsonObject.put("m8", m8);
+            if (m9 != null) jsonObject.put("m9", m9);
+            if (m10 != null) jsonObject.put("m10", m10);
+            if (m12 != null)
+                jsonObject.put("m12", m12);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonObject;
     }
 
     @Override
     public int compareTo(ExamResult examResult) {
-        int exam_id = ((ExamResult) examResult).getExam_id();
+        int student_id = ((ExamResult) examResult).getStudent_id();
 
         //ascending order
-        return this.exam_id - exam_id;
+        return this.student_id - student_id;
     }
 }
