@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="term_names">
+        <item>@string/term_1</item>
+        <item>@string/term_2</item>
+    </array>
+    <array name="exam_name_year">
+        <item>@string/avg_term1</item>
+        <item>@string/avg_term2</item>
+        <item>@string/avg_year</item>
+    </array>
+    <array name="exam_name_term_1">
+        <item>@string/month_9</item>
+        <item>@string/month_10</item>
+        <item>@string/month_11</item>
+        <item>@string/month_12</item>
+
+        <item>@string/avg_m1</item>
+        <item>@string/test_term1</item>
+        <item>@string/avg_term1</item>
+    </array>
+
+    <array name="exam_name_term_2">
+        <item>@string/month_2</item>
+        <item>@string/month_3</item>
+        <item>@string/month_4</item>
+        <item>@string/month_5</item>
+
+        <item>@string/avg_m2</item>
+        <item>@string/test_term2</item>
+        <item>@string/avg_term2</item>
+        <item>@string/avg_year</item>
+    </array>
+
+    <string-array name="final_titles">
+        <item>@string/avg_year</item>
+        <item>@string/term_1</item>
+        <item>@string/term_2</item>
+    </string-array>
+
+    <string-array name="more_teacher">
+        <item>@string/row_sub_header</item>
+        <item>@string/title_screen_school_information</item>
+        <!--<item>@string/row_line</item>-->
+        <!--<item>@string/title_screen_schedule</item>-->
+        <item>@string/row_line</item>
+        <item>@string/title_screen_list_student_of_class</item>
+        <item>@string/row_line</item>
+        <item>@string/title_screen_setting</item>
+        <item>@string/row_line</item>
+        <item>@string/action_log_out</item>
+        <item>@string/row_line</item>
+    </string-array>
+
+    <string-array name="more_student">
+        <item>@string/title_screen_school_information</item>
+        <item>@string/row_line</item>
+        <item>@string/title_screen_final_results_student</item>
+        <item>@string/row_line</item>
+        <item>@string/title_screen_schedule</item>
+        <item>@string/row_line</item>
+        <item>@string/title_screen_list_teacher</item>
+        <item>@string/row_line</item>
+        <item>@string/title_screen_setting</item>
+        <item>@string/row_line</item>
+        <item>@string/action_log_out</item>
+        <item>@string/row_line</item>
+    </string-array>
+
+    <string-array name="settings">
+        <item>@string/setting_change_language</item>
+    </string-array>
+</resources>

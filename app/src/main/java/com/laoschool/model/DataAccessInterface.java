@@ -295,4 +295,7 @@ public interface DataAccessInterface {
 
     public void getMySchoolYears(AsyncCallback<List<SchoolYears>> callback);
 
+    public void inputBatchExamResults(List<ExamResult> examResult, AsyncCallback<String> callback);
+
+
 }

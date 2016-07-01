@@ -11,10 +11,12 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -27,7 +29,6 @@ import android.widget.ListAdapter;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -35,7 +36,7 @@ import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 
 
-import com.laoschool.adapter.FinalResultsPagerAdapter;
+import com.laoschool.adapter.MyFinalResultsPagerAdapter;
 import com.laoschool.entities.ExamResult;
 import com.laoschool.entities.FinalResult;
 import com.laoschool.entities.SchoolYears;
@@ -43,6 +44,7 @@ import com.laoschool.model.AsyncCallback;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
 import com.laoschool.view.ScrollableViewPager;
+import com.laoschool.view.ViewpagerDisableSwipeLeft;
 
 
 import java.util.ArrayList;
@@ -71,19 +73,20 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
     private ScreenFinalResultsStudent fragment;
     private View mContainer;
     private ActionBar mActionBar;
-    ScrollableViewPager mPagerFinalResults;
+    ViewpagerDisableSwipeLeft mPagerFinalResults;
     PagerSlidingTabStrip mTab;
     private List<SchoolYears> schoolYears;
     private View mDataFinal;
     private View mSucgestionSelectedYear;
     private View mProgressLoadingFinal;
-    ScrollView mScroll;
     private Dialog dialogSelectedYear;
     private View mErrorFinal;
     private int selectedYearId;
     private View mExamResults;
     private View mComment;
     private View btnShowComment;
+
+    private MenuItem itemRefersh;
 
     private Animation animShow, animHide;
 
@@ -125,7 +128,6 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
             lbSelectedSchoolYear = (TextView) view.findViewById(R.id.lbSelectedSchoolYear);
 
             //Filter content
-            mScroll = (ScrollView) view.findViewById(R.id.mScroll);
 
             //Header infor final results
             mExamResults = view.findViewById(R.id.mExamResults);
@@ -141,7 +143,7 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
 
 
             //Pager
-            mPagerFinalResults = (ScrollableViewPager) view.findViewById(R.id.mPagerFinalResults);
+            mPagerFinalResults = (ViewpagerDisableSwipeLeft) view.findViewById(R.id.mPagerFinalResults);
             mTab = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
 
             //Fill data
@@ -168,7 +170,7 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
 
         defineAvgFinalTotal(result);
 
-        final FinalResultsPagerAdapter resultsPagerAdapter = new FinalResultsPagerAdapter(getFragmentManager(), result);
+        final MyFinalResultsPagerAdapter resultsPagerAdapter = new MyFinalResultsPagerAdapter(getFragmentManager(), context, result);
         mPagerFinalResults.setAdapter(resultsPagerAdapter);
         mTab.setViewPager(mPagerFinalResults);
         mComment.setVisibility(View.VISIBLE);
@@ -192,11 +194,36 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
                 }
             }
         });
+        itemRefersh.setVisible(true);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.menu_screen_final_results, menu);
+        itemRefersh = menu.findItem(R.id.action_refersh);
+        itemRefersh.setVisible(false);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_refersh:
+                refershData();
+                return true;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void refershData() {
+        getMyFinalResultsByYear(selectedYearId);
     }
 
     private void defineAvgFinalTotal(FinalResult result) {
@@ -244,6 +271,7 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
                     fillDataToSeletedYear(result);
                     showProgressLoading(false);
                 } else {
+                    Log.d(TAG, "-school year empty.");
                     showError();
                 }
 
@@ -369,7 +397,6 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
         mDataFinal.setVisibility(View.GONE);
         mSucgestionSelectedYear.setVisibility(View.GONE);
         mProgressLoadingFinal.setVisibility(View.GONE);
-        mScroll.setVisibility(View.GONE);
         mExamResults.setVisibility(View.GONE);
         mComment.setVisibility(View.GONE);
         mErrorFinal.setVisibility(View.VISIBLE);
@@ -382,11 +409,9 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
             mDataFinal.setVisibility(View.GONE);
             mNoDataFinal.setVisibility(View.GONE);
             mErrorFinal.setVisibility(View.GONE);
-            mScroll.setVisibility(View.GONE);
             mExamResults.setVisibility(View.GONE);
             mComment.setVisibility(View.GONE);
         } else {
-            mScroll.setVisibility(View.VISIBLE);
             mDataFinal.setVisibility(View.VISIBLE);
             mSucgestionSelectedYear.setVisibility(View.GONE);
             mNoDataFinal.setVisibility(View.GONE);
@@ -403,7 +428,6 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
         mNoDataFinal.setVisibility(View.GONE);
         mProgressLoadingFinal.setVisibility(View.GONE);
         mErrorFinal.setVisibility(View.GONE);
-        mScroll.setVisibility(View.GONE);
         mExamResults.setVisibility(View.GONE);
         mComment.setVisibility(View.GONE);
 
@@ -415,7 +439,6 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
         mSucgestionSelectedYear.setVisibility(View.GONE);
         mProgressLoadingFinal.setVisibility(View.GONE);
         mErrorFinal.setVisibility(View.GONE);
-        mScroll.setVisibility(View.GONE);
         mExamResults.setVisibility(View.GONE);
         mComment.setVisibility(View.GONE);
     }

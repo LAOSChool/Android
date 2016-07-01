@@ -1,10 +1,12 @@
 package com.laoschool.adapter;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.ViewGroup;
 
+import com.laoschool.R;
 import com.laoschool.entities.ExamResult;
 import com.laoschool.entities.FinalResult;
 import com.laoschool.screen.pager.FinalExamPager;
@@ -19,17 +21,14 @@ import java.util.List;
 /**
  * Created by Hue on 6/13/2016.
  */
-public class FinalResultsPagerAdapter extends FragmentStatePagerAdapter {
-    public static final String TAG = FinalResultsPagerAdapter.class.getSimpleName();
-    private List<String> finaExamlTitle = Arrays.asList("Total", "Term 1", "Term 2", "Reviews");
+public class MyFinalResultsPagerAdapter extends FragmentStatePagerAdapter {
+    public static final String TAG = MyFinalResultsPagerAdapter.class.getSimpleName();
+    private List<String> finaExamlTitle = new ArrayList<>();
     FinalResult finalResult;
-    List<ExamResult> resultsforTerm1 = new ArrayList<>();
-    List<ExamResult> resultsforTerm2 = new ArrayList<>();
-    List<ExamResult> resultsforTotal = new ArrayList<>();
-
-    public FinalResultsPagerAdapter(FragmentManager fm, FinalResult result) {
+    public MyFinalResultsPagerAdapter(FragmentManager fm, Context context, FinalResult result) {
         super(fm);
         this.finalResult = result;
+        finaExamlTitle.addAll(Arrays.asList(context.getResources().getStringArray(R.array.final_titles)));
 
 //        1  Normal
 //        2  Thi Hoc Ky
@@ -38,18 +37,6 @@ public class FinalResultsPagerAdapter extends FragmentStatePagerAdapter {
 //        5  Trung Binh Ca Nam
 //        6  Thi Lai Ca Nam
 //        7  Thi Tot Nghiep Cap
-        List<ExamResult> resultList = result.getExam_results();
-        for (ExamResult examResult : resultList) {
-            if (examResult.getExam_type() < 4) {
-                if (examResult.getTerm_id() == 1) {
-                    resultsforTerm1.add(examResult);
-                } else if (examResult.getTerm_id() == 2) {
-                    resultsforTerm2.add(examResult);
-                }
-            } else {
-                resultsforTotal.add(examResult);
-            }
-        }
     }
 
     @Override
@@ -68,13 +55,13 @@ public class FinalResultsPagerAdapter extends FragmentStatePagerAdapter {
         finalResult.setTeacher_name(this.finalResult.getTeacher_name());
         finalResult.setPassed(this.finalResult.getPassed());
         if (position == 0) {
-            finalResult.setExam_results(resultsforTotal);
+            finalResult.setExam_results(this.finalResult.getExam_results());
             return FinalExamPager.create(0, finalResult);
         } else if (position == 1) {
-            finalResult.setExam_results(resultsforTerm1);
+            finalResult.setExam_results(this.finalResult.getExam_results());
             return FinalExamPager.create(1, finalResult);
         } else if (position == 2) {
-            finalResult.setExam_results(resultsforTerm2);
+            finalResult.setExam_results(this.finalResult.getExam_results());
             return FinalExamPager.create(2, finalResult);
         } else return null;
     }

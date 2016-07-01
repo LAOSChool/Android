@@ -54,40 +54,6 @@
     <string name="annocement_title_to">To</string>
     <string name="err_msg_limit_img_seleted">Limit 5 image</string>
 
-
-    <string-array name="more_teacher">
-        <item>@string/row_sub_header</item>
-        <item>@string/title_screen_school_information</item>
-        <item>@string/row_line</item>
-        <item>@string/title_screen_schedule</item>
-        <item>@string/row_line</item>
-        <item>@string/title_screen_list_student_of_class</item>
-        <item>@string/row_line</item>
-        <item>@string/title_screen_setting</item>
-        <item>@string/row_line</item>
-        <item>@string/action_log_out</item>
-        <item>@string/row_line</item>
-    </string-array>
-
-    <string-array name="more_student">
-        <item>@string/title_screen_school_information</item>
-        <item>@string/row_line</item>
-        <item>@string/title_screen_final_results_student</item>
-        <item>@string/row_line</item>
-        <item>@string/title_screen_schedule</item>
-        <item>@string/row_line</item>
-        <item>@string/title_screen_list_teacher</item>
-        <item>@string/row_line</item>
-        <item>@string/title_screen_setting</item>
-        <item>@string/row_line</item>
-        <item>@string/action_log_out</item>
-        <item>@string/row_line</item>
-    </string-array>
-
-    <string-array name="settings">
-        <item>@string/setting_change_language</item>
-    </string-array>
-
     <string name="title_activity_preview_image"></string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
@@ -111,12 +77,11 @@
     <string name="title_selected_type_input_exam_results">Select type exam results</string>
     <string name="hint_input_exam_results">Please input</string>
     <string name="action_submit">Submit</string>
-    <string name="title_msg_comfirm_submit_input_exam_results">Are you sure?</string>
+    <string name="msg_comfirm_submit_input_exam_results">Please double check information before you submit scores?</string>
     <string name="btnSelectedDate">Selected date</string>
     <string name="sub_header_student_name">Name</string>
     <string name="sub_header_score">Score</string>
-    <string name="selected_subject">Selected subject</string>
-    <string name="lipsum">Lorem ipsum dolor sit amet, ut duis lorem provident sed felis blandit, condimentum donec lectus ipsum et mauris, morbi porttitor interdum feugiat nulla donec sodales, vestibulum nisl primis a molestie vestibulum quam, sapien mauris metus risus suspendisse magnis. Augue viverra nulla faucibus egestas eu, a etiam id congue rutrum ante, arcu tincidunt donec quam felis at ornare, iaculis ligula sodales venenatis commodo volutpat neque, suspendisse elit praesent tellus felis mi amet. Inceptos amet tempor lectus lorem est non, ac donec ac libero neque mauris, tellus ante metus eget leo consequat. Scelerisque dolor curabitur pretium blandit ut feugiat, amet lacus pulvinar justo convallis ut, sed natoque ipsum urna posuere nibh eu. Sed at sed vulputate sit orci, facilisis a aliquam tellus quam aliquam, eu aliquam donec at molestie ante, pellentesque mauris lorem ultrices libero faucibus porta, imperdiet adipiscing sit hac diam ut nulla. Lacus enim elit pulvinar donec vehicula dapibus, accumsan purus officia cursus dolor sapien, eu amet dis mauris mi nulla ut. Non accusamus etiam pede non urna tempus, vestibulum aliquam tortor eget pharetra sodales, in vestibulum ut justo orci nulla, lobortis purus sem semper consectetuer magni purus. Dolor a leo vestibulum amet ut sit, arcu ut eaque urna fusce aliquet turpis, sed fermentum sed vestibulum nisl pede, tristique enim lorem posuere in laborum ut. Vestibulum id id justo leo nulla, magna lobortis ullamcorper et dignissim pellentesque, duis suspendisse quis id lorem ante. Vivamus a nullam ante adipiscing amet, mi vel consectetuer nunc aenean pede quisque, eget rhoncus dis porttitor habitant nunc vivamus, duis cubilia blandit non donec justo dictumst, praesent vitae nulla nam pulvinar urna. Adipiscing adipiscing justo urna pulvinar imperdiet nullam, vitae fusce rhoncus proin nonummy suscipit, ullamcorper amet et non potenti platea ultrices, mauris nullam sapien nunc justo vel, eu semper pellentesque arcu fusce augue. Malesuada mauris nibh sit a a scelerisque, velit sem lectus tellus convallis consectetuer, ultricies auctor a ante eros amet sed.\\n\\n Risus lacus duis leo platea wisi, felis maecenas rutrum in id in donec, non id a potenti libero eget, posuere elit ea sed pellentesque quis. Sunt lacus urna lorem elit duis, nibh donec purus quisque consectetuer dolor, neque vestibulum proin ornare eros nonummy phasellus. Iaculis cras eu at egestas dolor montes, viverra quisque malesuada consectetuer semper maecenas, a sed vitae donec tempor aliqua metus, ornare mollis suscipit et erat fusce, sit orci aut auctor elementum fames aliquam. Platea dui integer magnis non metus, minus dignissimos ante massa nostra et, rutrum sapien egestas quis sapien donec donec. Erat sit a eros aenean natoque, quam libero id lorem enim proin, lorem ipsum fermentum mattis metus et. Aliquam aliquet suscipit purus conubia at neque, platea vivamus vestibulum nulla quibusdam senectus, et morbi lectus malesuada gravida donec, elementum sit convallis pellentesque velit amet. Et eveniet viverra vehicula consectetuer justo, provident sed commodo non lacinia velit, tempor phasellus vel leo nisl cras, vivamus et arcu interdum dui eu amet. Volutpat wisi rhoncus vel turpis diam quibusdam, dapibus elit est quisque cubilia mauris, nulla elit magna tempor accumsan bibendum, lorem varius sed interdum eget mattis, scelerisque egestas feugiat donec dui molestie. Leo facilisis nisl sit montes ligula sed, enim commodo consectetuer nunc est et, ut sed vehicula dolor luctus elit. Fermentum cras donec eget nibh est vel, sed justo risus et pharetra diam, eu vivamus egestas ligula risus diam, sed justo eget hac ut mauris. Vestibulum diam nec vitae mi eget suspendisse, aenean arcu purus facilisis purus class in, id aliquam sit id scelerisque sapien etiam. Ut nullam sit sed at mauris lobortis, consequat dolor autem ipsum euismod nulla, elit quis proin eget conubia varius, erat arcu massa mus in mauris, scelerisque ut eu sollicitudin libero leo urna.\\n\\n Consectetuer luctus tempor elit ut dolor ligula, quis dui per dui hendrerit ante sagittis, in quisque pretium in eleifend enim. Condimentum iaculis vitae feugiat dis tellus vel, lectus dolor nec dui nulla nascetur, et pellentesque curabitur lorem leo velit eget. Id nascetur arcu lobortis suspendisse imperdiet urna, natoque nascetur ante in porta a, interdum hendrerit mi bibendum platea tellus, urna in enim ornare vestibulum faucibus enim. Leo fusce egestas ante nec volutpat, in tempor vel facilisis potenti ut, pede at non lorem a commodo, nulla dolor orci interdum vestibulum nulla. Dui nulla vestibulum quisque a pharetra porta, integer nec ipsum nec sed dui pharetra, magna et dignissim ipsum sed dictum, litora eros vivamus scelerisque libero ipsum. Sed ac ac lorem molestie adipiscing morbi, pellentesque imperdiet nunc quis morbi amet ante, libero dui ligula nec risus neque et, velit nonummy phasellus et facilisi amet, ligula in elementum non sapien pulvinar faucibus. Eu leo ut posuere sed aliquet, tincidunt vel urna volutpat tempus sem, sit felis aliquet vestibulum condimentum sit, amet nibh vel tellus purus ullamcorper libero, nulla vestibulum pede ut vestibulum pretium. Eu nulla vestibulum a neque in metus, quisquam nam sed cursus eget luctus, pede ultrices nec sed dignissim pellentesque, sit class cursus metus nulla placerat mauris, consequat mollis neque vivamus amet pede. Mauris dolor nulla diam eros bibendum, quam ante vestibulum morbi non ligula vel, molestie curabitur rhoncus nulla euismod interdum non. Nulla fringilla lorem mollis ad massa, sit molestie nibh lorem arcu volutpat, accumsan commodo lectus eu et donec, sit tempor tempus rutrum in curabitur amet. Nec urna euismod a tincidunt commodo, eu pede turpis libero vitae viverra, ante vestibulum nam non habitasse potenti, mauris imperdiet in in nunc convallis. Et nostra wisi in est accumsan vehicula, quisque vitae felis mauris sed vulputate nec, ante imperdiet sollicitudin massa iaculis massa sit.\\n\\n Quam libero nulla netus eu porta curae, ut nulla bibendum facilisis et</string>
+    <string name="selected_subject">Select a subject</string>
     <string name="err_msg_input_exam">Input fails</string>
     <string name="action_input_exam_results">Input</string>
     <string name="msg_input_exam_results_successfully">Input successfully</string>
@@ -133,13 +98,13 @@
     <string name="parrent_name">Name</string>
     <string name="avg_of_term1">Term 1 : </string>
     <string name="avg_of_term2">Term 2 : </string>
-    <string name="avg_of_year" >Year   : </string>
+    <string name="avg_of_year">Year   : </string>
     <string name="msg_tab_to_selected_year">Tab to selected year</string>
     <string name="class_information">Class information</string>
     <string name="exam_results_average">Exam average</string>
     <string name="exam_results_details">Exam details</string>
     <string name="msg_no_year_selected">No year selected</string>
-    <string name="selected_year">Selected year</string>
+    <string name="selected_year">Select a score type</string>
     <string name="final_passed">Passed</string>
     <string name="final_morality">Morality:</string>
     <string name="final_absents">Absents:</string>
@@ -147,5 +112,37 @@
     <string name="msg_no_selected_subject">No subject selected</string>
     <string name="touch_here_to_select">Touch here to select</string>
     <string name="msg_no_select_exam_type">No select exam type</string>
-    <string name="title_screen_input_exam_resuls">Input score</string>
+    <string name="title_screen_input_exam_resuls">Add scores</string>
+    <string name="title_msg_comfirm_cancel_input_exam_results">Are you sure you want to cancel?</string>
+    <string name="btn_yes">yes</string>
+    <string name="btn_no">no</string>
+    <string name="title_msg_are_you_sure">Are you sure</string>
+
+    <string name="term_1">Term 1</string>
+    <string name="term_2">Term 2</string>
+
+    <string name="month_9">Sep</string>
+    <string name="month_10">Otc</string>
+    <string name="month_11">Nov</string>
+    <string name="month_12">Dec</string>
+    <string name="avg_m1">Avg</string>
+    <string name="test_term1">Test term 1</string>
+    <string name="avg_term1">Avg term1</string>
+
+    <string name="month_2">Fer</string>
+    <string name="month_3">Mar</string>
+    <string name="month_4">Apr</string>
+    <string name="month_5">May</string>
+    <string name="avg_m2">Avg</string>
+    <string name="test_term2">Test term 2</string>
+    <string name="avg_term2">Avg term 2</string>
+
+    <string name="avg_year">Avg year</string>
+    <string name="retest">Retest</string>
+
+    <string name="test_grad">Test grad</string>
+
+
+
+
 </resources>

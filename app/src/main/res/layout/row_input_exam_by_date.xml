@@ -47,7 +47,7 @@
     <EditText
         android:id="@+id/txtInputExamResults"
         android:layout_width="70dp"
-        android:layout_height="wrap_content"
+        android:layout_height="35dp"
         android:layout_alignParentEnd="false"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
@@ -59,7 +59,9 @@
         android:gravity="center"
         android:inputType="numberDecimal"
         android:textColor="@android:color/holo_red_light"
-        android:textSize="25dp" />
+        android:textSize="25dp"
+        android:imeOptions="actionNext"
+         />
 
     <ImageView
         android:id="@+id/btnAddNoticeExamResutls"
