@@ -57,7 +57,7 @@
                 android:layout_height="40dp"
                 android:layout_marginLeft="16dp"
                 android:gravity="center_vertical"
-                android:text="@string/basic_infomation"
+                android:text="@string/SCProfile_basic_infomation"
                 android:textColor="@color/colorPrimary"
                 android:textSize="14sp" />
 
@@ -121,7 +121,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="16dp"
-                    android:text="@string/address1"
+                    android:text="@string/SCProfile_address"
                     android:textSize="16sp" />
 
                 <TextView
@@ -165,7 +165,7 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="@string/address2"
+                    android:text="@string/SCProfile_address"
                     android:textSize="16sp" />
 
                 <TextView
@@ -185,7 +185,7 @@
                 android:layout_height="40dp"
                 android:layout_marginLeft="16dp"
                 android:gravity="center_vertical"
-                android:text="@string/parent_details"
+                android:text="@string/SCProfile_parent_details"
                 android:textColor="@color/colorPrimary"
                 android:textSize="14sp" />
 
@@ -212,7 +212,7 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="@string/parrent_name"
+                    android:text="@string/SCProfile_parrent_name"
                     android:textSize="16sp" />
 
                 <TextView

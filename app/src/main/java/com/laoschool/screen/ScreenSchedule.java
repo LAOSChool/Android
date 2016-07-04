@@ -67,6 +67,8 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
     private ViewPager mPageTimeTableStudent;
     private PagerSlidingTabStrip tabStripStudent;
 
+    MenuItem itemRefesh;
+
 
     private FragmentManager fr;
 
@@ -164,17 +166,22 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
     }
 
     private View _defineScreenSchedulebyRole(LayoutInflater inflater, ViewGroup container) {
-        if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
-            return _defineSrceenScheduleTeacher(inflater, container);
-        } else {
-            return _defineSrceenScheduleStudent(inflater, container);
-        }
+//        if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
+//            return _defineSrceenScheduleTeacher(inflater, container);
+//        } else {
+        return _defineSrceenScheduleStudent(inflater, container);
+//        }
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (currentRole != null)
+        if (currentRole != null) {
             inflater.inflate(R.menu.menu_screen_schedule, menu);
+            itemRefesh = menu.findItem(R.id.action_refersh_time_table);
+            itemRefesh.setVisible(false);
+
+        }
+
     }
 
     @Override
@@ -216,11 +223,11 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
                 Log.d(TAG, "onResumeFragment() - current role null");
                 currentRole = LaoSchoolShared.ROLE_STUDENT;
             }
-            if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
-            } else {
-                getInformationStudent();
-                getTimeTable();
-            }
+//            if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
+//            } else {
+            getInformationStudent();
+            getTimeTable();
+//            }
 
         }
     }
@@ -229,9 +236,12 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
         try {
             if (LaoSchoolShared.myProfile != null) {
                 //set infomation
+                String termName = String.valueOf(context.getString(R.string.SCCommon_Term) + " " + LaoSchoolShared.myProfile.getEclass().getTerm());
+                String year = String.valueOf(LaoSchoolShared.myProfile.getEclass().getYears());
+
                 lbSchoolNameStudent.setText(LaoSchoolShared.myProfile.getEclass().getTitle());
                 lbGvcnStudent.setText(LaoSchoolShared.myProfile.getEclass().getHeadTeacherName());
-                lbTermStudent.setText(LaoSchoolShared.myProfile.getEclass().getTerm() + "/" + LaoSchoolShared.myProfile.getEclass().getYears());
+                lbTermStudent.setText(year + "   " + termName);
             }
         } catch (Exception e) {
             Log.e(TAG, "getInformationStudent() -exception:" + e.getMessage());
@@ -313,10 +323,10 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
                 }
                 timeTablebyDayMap.put(day, timeTables);
             }
-            TimeTablePageAdapter timeTablePageAdapter = new TimeTablePageAdapter(getActivity().getSupportFragmentManager(), timeTablebyDayMap);
+            TimeTablePageAdapter timeTablePageAdapter = new TimeTablePageAdapter(getActivity().getSupportFragmentManager(), context, timeTablebyDayMap);
             mPageTimeTableStudent.setAdapter(timeTablePageAdapter);
             tabStripStudent.setViewPager(mPageTimeTableStudent);
-
+            itemRefesh.setVisible(true);
             _scrollToTopStudent();
             _setTargetDisplayDay();
             _showProgressLoadingStudent(false);

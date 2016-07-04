@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -31,6 +30,8 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
@@ -46,6 +47,7 @@ import com.laoschool.model.DataAccessInterface;
 import com.laoschool.model.sqlite.DataAccessImage;
 import com.laoschool.model.sqlite.DataAccessMessage;
 import com.laoschool.screen.ScreenCreateAnnouncement.IScreenCreateAnnouncement;
+import com.laoschool.screen.ScreenProfile.IProfile;
 import com.laoschool.screen.login.ScreenLogin;
 import com.laoschool.screen.view.Languages;
 import com.laoschool.shared.LaoSchoolShared;
@@ -63,7 +65,8 @@ public class HomeActivity extends AppCompatActivity implements
         ScreenListTeacher.IScreenListTeacher,
         ScreenInputExamResultsStudent.IScreenInputExamResults,
         IScreenCreateAnnouncement,
-        ScreenListStudent.IScreenListStudentOfClass {
+        ScreenListStudent.IScreenListStudentOfClass,
+        IProfile {
     private static final String TAG = "HomeScreen";
 
     private TabHost mTabHost;
@@ -431,14 +434,14 @@ public class HomeActivity extends AppCompatActivity implements
                 _setTitleandShowButtonBack(R.string.title_screen_select_list_student, null, DisplayButtonHome.show);
                 break;
             case LaoSchoolShared.POSITION_SCREEN_MARK_SCORE_STUDENT_11:
-                _setTitleandShowButtonBack(R.string.title_screen_input_exam_resuls, null, DisplayButtonHome.show);
+                _setTitleandShowButtonBack(R.string.SCExamResults_AddScore, null, DisplayButtonHome.show);
                 getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_36dp);
                 break;
             case LaoSchoolShared.POSITION_SCREEN_SETTING_12:
                 _setTitleandShowButtonBack(R.string.SCCommon_ChangePassword, null, DisplayButtonHome.show);
                 break;
             case LaoSchoolShared.POSITION_SCREEN_PROFILE_13:
-                _setTitleandShowButtonBack(R.string.title_screen_profile, null, DisplayButtonHome.show);
+                _setTitleandShowButtonBack(R.string.SCCommon_Profile, null, DisplayButtonHome.show);
                 break;
             case LaoSchoolShared.POSITION_SCREEN_MESSAGE_DETAILS_14:
                 _setTitleandShowButtonBack(R.string.title_screen_message_details, null, DisplayButtonHome.show);
@@ -455,7 +458,7 @@ public class HomeActivity extends AppCompatActivity implements
                 getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_36dp);
                 break;
             case LaoSchoolShared.POSITION_SCREEN_LIST_STUDENT_OF_CLASS_18:
-                _setTitleandShowButtonBack(R.string.title_screen_list_student_of_class, null, DisplayButtonHome.show);
+                _setTitleandShowButtonBack(R.string.SCCommon_ListStudent, null, DisplayButtonHome.show);
                 getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
                 break;
             default:
@@ -607,14 +610,14 @@ public class HomeActivity extends AppCompatActivity implements
         ScreenInputExamResultsStudent inputExamResultsStudent = (ScreenInputExamResultsStudent) getSupportFragmentManager().findFragmentByTag(tag);
         if (inputExamResultsStudent.selectedSubjectId > 0 || inputExamResultsStudent.selectedExamTypeId > 0) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(R.string.title_msg_comfirm_cancel_input_exam_results);
-            builder.setNegativeButton(R.string.btn_no, new DialogInterface.OnClickListener() {
+            builder.setMessage(R.string.SCExamResults_CancelInputExam);
+            builder.setNegativeButton(R.string.SCCommon_No, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     dialogInterface.dismiss();
                 }
             });
-            builder.setPositiveButton(R.string.btn_yes, new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(R.string.SCCommon_Yes, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     dialogInterface.dismiss();
@@ -812,6 +815,11 @@ public class HomeActivity extends AppCompatActivity implements
             screenMessage.reloadDataAfterCreateMessages();
             //back to tab message
             _gotoPage(LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
+        } else if (beforePosition == LaoSchoolShared.POSITION_SCREEN_PROFILE_13) {
+
+            //back to tab message
+            beforePosition=LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5;
+            _gotoPage(LaoSchoolShared.POSITION_SCREEN_PROFILE_13);
         } else {
             //back to tab attender
             _gotoPage(LaoSchoolShared.POSITION_SCREEN_ATTENDED_3);
@@ -885,13 +893,13 @@ public class HomeActivity extends AppCompatActivity implements
     public void displaySearch() {
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(this.getResources().getColor(R.color.colorPrimarySearch)));
         setStatusBarColor(R.color.colorPrimaryDarkSearch);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        // getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
     public void cancelSearch() {
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(this.getResources().getColor(R.color.colorPrimary)));
         setStatusBarColor(R.color.colorPrimaryDark);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
     private void setStatusBarColor(int colorId) {
@@ -900,5 +908,14 @@ public class HomeActivity extends AppCompatActivity implements
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(getResources().getColor(colorId));
         }
+    }
+
+    @Override
+    public void sendMessage(User selectedStudent) {
+        beforePosition = LaoSchoolShared.POSITION_SCREEN_PROFILE_13;
+        _gotoPage(LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
+        String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
+        ScreenCreateMessage screenCreateMessage = (ScreenCreateMessage) getSupportFragmentManager().findFragmentByTag(tag);
+        screenCreateMessage.presetData(Arrays.asList(selectedStudent), Arrays.asList(selectedStudent), "");
     }
 }

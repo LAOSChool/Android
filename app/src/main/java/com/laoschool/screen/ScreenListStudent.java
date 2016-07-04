@@ -169,6 +169,7 @@ public class ScreenListStudent extends Fragment implements FragmentLifecycle, Se
         inflater.inflate(R.menu.menu_screen_list_student_of_class, menu);
         itemSearch = menu.findItem(R.id.action_search);
         mSearch = (SearchView) itemSearch.getActionView();
+        mSearch.setQueryHint(context.getString(R.string.SCCommon_Search));
         onExpandCollapseSearch();
 
     }

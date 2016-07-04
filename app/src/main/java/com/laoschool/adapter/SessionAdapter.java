@@ -54,11 +54,11 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.SessionA
                 }
                 String lessonName = "";
                 if (lessonId == 1)
-                    lessonName = "Morning";
+                    lessonName = context.getString(R.string.SCSchedule_Morning);
                 if (lessonId == 2)
-                    lessonName = "Afternoon";
+                    lessonName = context.getString(R.string.SCSchedule_Afternoon);
                 if (lessonId == 3)
-                    lessonName = "Evening";
+                    lessonName = context.getString(R.string.SCSchedule_Evening);
 
                 lessionNameMap.put(lessonId, lessonName);
                 lessionMap.put(lessonId, paList);

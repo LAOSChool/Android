@@ -56,7 +56,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -197,6 +196,7 @@ public class ScreenExamResults extends Fragment
                 inflater.inflate(R.menu.menu_screen_exam_results_teacher, menu);
                 itemSearch = menu.findItem(R.id.search);
                 mSearchExamResults = (SearchView) itemSearch.getActionView();
+                mSearchExamResults.setQueryHint(context.getString(R.string.SCCommon_Search));
                 onExpanCollapseSearch();
             }
         } catch (Exception e) {
@@ -603,10 +603,10 @@ public class ScreenExamResults extends Fragment
 
     private void fillDataForTeacher() {
         String className = LaoSchoolShared.myProfile.getEclass().getTitle();
-        String termName = String.valueOf("Term " + LaoSchoolShared.myProfile.getEclass().getTerm());
+        String termName = String.valueOf(context.getString(R.string.SCCommon_Term) + " " + LaoSchoolShared.myProfile.getEclass().getTerm());
         String year = String.valueOf(LaoSchoolShared.myProfile.getEclass().getYears());
 
-        txtClassAndTermName.setText(className + " | " + termName + " / " + year);
+        txtClassAndTermName.setText(className + " | " + year + "   " + termName);
         getFilterSubject();
     }
 
@@ -698,7 +698,7 @@ public class ScreenExamResults extends Fragment
 
     private Dialog makeDialogSelectdSubject(final List<Master> result, final List<String> subjectNames) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(R.string.title_selected_type_input_exam_results);
+        builder.setTitle(R.string.SCExamResults_SelectScoreType);
         View header = View.inflate(context, R.layout.custom_hearder_dialog, null);
         ImageView imgIcon = ((ImageView) header.findViewById(R.id.imgIcon));
         Drawable drawable = LaoSchoolShared.getDraweble(context, R.drawable.ic_library_books_black_24dp);
@@ -706,7 +706,7 @@ public class ScreenExamResults extends Fragment
         drawable.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
         imgIcon.setImageDrawable(drawable);
 
-        ((TextView) header.findViewById(R.id.txbTitleDialog)).setText(R.string.selected_subject);
+        ((TextView) header.findViewById(R.id.txbTitleDialog)).setText(R.string.SCExamResults_SelectSubject);
 
 
         builder.setCustomTitle(header);

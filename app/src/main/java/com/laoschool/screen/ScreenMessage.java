@@ -354,6 +354,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
             itemSearch = menu.findItem(R.id.search);
             itemSearch.setVisible(false);
             mSearchMessage = (SearchView) menu.findItem(R.id.search).getActionView();
+            mSearchMessage.setQueryHint(context.getString(R.string.SCCommon_Search));
             onExpanCollapseSearch();
         }
     }

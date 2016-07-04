@@ -4,7 +4,7 @@
     <item
         android:id="@+id/action_send_message"
         android:icon="@drawable/ic_send_white_24dp"
-        android:title="@string/action_send_message"
+        android:title="@string/SCCommon_Send"
         app:showAsAction="always" />
 
 </menu>

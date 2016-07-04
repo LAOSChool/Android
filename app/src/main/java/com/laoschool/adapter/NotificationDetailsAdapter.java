@@ -261,11 +261,11 @@ public class NotificationDetailsAdapter extends RecyclerView.Adapter<Notificatio
             //update local url image
             image.setLocal_file_url(file.getAbsolutePath());
             DataAccessImage.updateImage(image);
-            Toast.makeText(context, R.string.msg_download_image_sucessfuly, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.SCCreateAnnocement_SaveImage, Toast.LENGTH_SHORT).show();
 
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(context, R.string.err_msg_download_image_fails, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.SCCreateAnnocement_err_msg_download_image_fails, Toast.LENGTH_SHORT).show();
         }
     }
 

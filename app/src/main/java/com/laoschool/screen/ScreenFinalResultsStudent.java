@@ -446,7 +446,7 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
 
     private Dialog makeDialogSelectdYear(final List<SchoolYears> result, final List<String> yearsNames) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(R.string.title_selected_type_input_exam_results);
+        builder.setTitle(R.string.SCExamResults_SelectScoreType);
         View header = View.inflate(context, R.layout.custom_hearder_dialog, null);
         ImageView imgIcon = ((ImageView) header.findViewById(R.id.imgIcon));
         Drawable drawable = LaoSchoolShared.getDraweble(context, R.drawable.ic_timer_black_24dp);

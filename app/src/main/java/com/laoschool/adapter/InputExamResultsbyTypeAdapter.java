@@ -91,7 +91,7 @@ public class InputExamResultsbyTypeAdapter extends RecyclerView.Adapter<InputExa
             result.setSresult(sresult);
             result.setNotice(notice);
             result.setExam_dt(exam_dt);
-            String userName = result.getStudent_name();
+            String userName = result.getStd_fullname();
             final int studentId = result.getStudent_id();
 
             //fill data exam results
@@ -133,7 +133,7 @@ public class InputExamResultsbyTypeAdapter extends RecyclerView.Adapter<InputExa
                         Log.d(TAG, "addTextChangedListener().afterTextChanged(" + position + ") -exam:" + editable.toString());
                         Float exam = Float.valueOf(score);
                         if (exam < 0 || exam > 10) {
-                            holder.txtInputExamResults.setError(context.getString(R.string.err_limit_input_score));
+                            holder.txtInputExamResults.setError("");
                             return;
                         }
                         result.setSresult(String.valueOf(exam));
@@ -285,7 +285,7 @@ public class InputExamResultsbyTypeAdapter extends RecyclerView.Adapter<InputExa
         txtNoticeOfExam.setText(examResults.getNotice());
         builder.setView(inputNotice);
 
-        builder.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.SCCommon_Ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 String notice = txtNoticeOfExam.getText().toString();
@@ -296,7 +296,7 @@ public class InputExamResultsbyTypeAdapter extends RecyclerView.Adapter<InputExa
             }
         });
 
-        builder.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.SCCommon_Cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();

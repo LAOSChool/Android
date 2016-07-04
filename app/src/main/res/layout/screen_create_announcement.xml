@@ -76,7 +76,7 @@
                     android:singleLine="true"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
-                    android:hint="@string/hint_message_subject" />
+                    android:hint="@string/SCreateAnnouncement_HintMessageSubject" />
 
                 <TextView
                     android:id="@+id/textView31"
@@ -116,7 +116,7 @@
                     android:paddingTop="8dp"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
-                    android:hint="@string/hint_message_content" />
+                    android:hint="@string/SCreateAnnouncement_HintMessageContent" />
 
                 <TextView
                     android:id="@+id/textView32"

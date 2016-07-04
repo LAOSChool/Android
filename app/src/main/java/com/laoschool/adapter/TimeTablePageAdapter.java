@@ -30,13 +30,14 @@ import java.util.Map;
  */
 public class TimeTablePageAdapter extends FragmentStatePagerAdapter {
     private static final String TAG = TimeTablePageAdapter.class.getSimpleName();
-    private List<String> dayOfWeeks = new ArrayList<>(Arrays.asList("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"));
+    private List<String> dayOfWeeks = new ArrayList<>();
     Map<Integer, ArrayList<TimeTable>> timeTablebyDayMap;
     private FragmentManager fragmentManager;
     private Map<Integer, String> mFragmentTags;
 
-    public TimeTablePageAdapter(FragmentManager fragmentManager, Map<Integer, ArrayList<TimeTable>> timeTablebyDayMap) {
+    public TimeTablePageAdapter(FragmentManager fragmentManager, Context context, Map<Integer, ArrayList<TimeTable>> timeTablebyDayMap) {
         super(fragmentManager);
+        dayOfWeeks.addAll(Arrays.asList(context.getResources().getStringArray(R.array.dayNames)));
         this.fragmentManager = fragmentManager;
         this.timeTablebyDayMap = timeTablebyDayMap;
         this.mFragmentTags = new HashMap<Integer, String>();
@@ -49,7 +50,7 @@ public class TimeTablePageAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 7;
+        return dayOfWeeks.size();
     }
 
     @Override
@@ -120,19 +121,20 @@ public class TimeTablePageAdapter extends FragmentStatePagerAdapter {
         }
 
 
-
         private void sortSessionTimeTable(List<TimeTable> list) {
             List<Integer> sessionIds = new ArrayList<Integer>();
             timeTables = new ArrayList<>();
-            //sort session
-            for (TimeTable timeTable : list) {
-                sessionIds.add(timeTable.getSession_id());
-            }
-            Collections.sort(sessionIds);
-            for (Integer sesisionId : sessionIds) {
+            if (list != null) {
+                //sort session
                 for (TimeTable timeTable : list) {
-                    if (sesisionId == timeTable.getSession_id()) {
-                        timeTables.add(timeTable);
+                    sessionIds.add(timeTable.getSession_id());
+                }
+                Collections.sort(sessionIds);
+                for (Integer sesisionId : sessionIds) {
+                    for (TimeTable timeTable : list) {
+                        if (sesisionId == timeTable.getSession_id()) {
+                            timeTables.add(timeTable);
+                        }
                     }
                 }
             }

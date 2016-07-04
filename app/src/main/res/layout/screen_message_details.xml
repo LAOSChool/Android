@@ -184,7 +184,7 @@
                     android:id="@+id/txtConversionMessage"
                     android:layout_toLeftOf="@+id/btnSendMesasage"
                     android:layout_toStartOf="@+id/btnSendMesasage"
-                    android:hint="@string/hint_input_messsage"/>
+                   />
 
                 <TextView
                     android:layout_width="wrap_content"

@@ -4,11 +4,11 @@
     <item
         android:id="@+id/action_attach_file"
         android:icon="@drawable/ic_attachment_white_24dp"
-        android:title="@string/action_attach_file"
+        android:title="@string/SCCreateAnnocement_AttachFile"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_send_announcement"
         android:icon="@drawable/ic_send_white_24dp"
-        android:title="@string/action_send_announcement"
+        android:title="@string/SCCommon_Send"
         app:showAsAction="always" />
 </menu>
