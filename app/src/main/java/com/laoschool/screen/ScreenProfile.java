@@ -4,6 +4,7 @@ package com.laoschool.screen;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.view.menu.MenuView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -40,6 +41,7 @@ public class ScreenProfile extends Fragment implements FragmentLifecycle {
     TextView lbNickName;
     int fromPosition = -1;
     User user;
+    MenuItem itemSendMessage;
 
     interface IProfile {
         void sendMessage(User user);
@@ -81,9 +83,19 @@ public class ScreenProfile extends Fragment implements FragmentLifecycle {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         if (fromPosition > -1) {
             inflater.inflate(R.menu.menu_screen_profile, menu);
+            itemSendMessage = menu.findItem(R.id.action_send_message);
             if (fromPosition == LaoSchoolShared.POSITION_SCREEN_MORE_4) {
+                itemSendMessage.setVisible(false);
             } else if (fromPosition == LaoSchoolShared.POSITION_SCREEN_LIST_TEACHER_9) {
-
+                Toast.makeText(activity, activity.selectedTeacher, Toast.LENGTH_SHORT).show();
+                itemSendMessage.setVisible(false);
+            } else if (fromPosition == LaoSchoolShared.POSITION_SCREEN_LIST_STUDENT_OF_CLASS_18) {
+                itemSendMessage.setVisible(true);
+            } else if (fromPosition == LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5) {
+                itemSendMessage.setVisible(true);
+            } else {
+                itemSendMessage.setVisible(false);
+                //fillProfile();
             }
         } else {
 
