@@ -15,37 +15,38 @@ import org.json.JSONObject;
  * Created by Tran An on 11/03/2016.
  */
 public class ExamResult implements Parcelable, Comparable<ExamResult> {
-//             "id": 1,
-//            "school_id": 1,
-//            "class_id": 1,
-//            "student_id": 10,
-//            "student_name": "00000010",
-//            "subject_id": 1,
-//            "subject_name": "Toan",
-//            "notice": null,
-//            "sch_year_id": 2,
-//            "m1": "3.8",
-//            "m2": "4.6@2016-06-29",
-//            "m3": null,
-//            "m4": null,
-//            "m5": "4.2",
-//            "m6": null,
-//            "m7": null,
-//            "m8": null,
-//            "m9": null,
-//            "m10": null,
-//            "m11": null,
-//            "m12": null,
-//            "m13": null,
-//            "m14": null,
-//            "m15": null,
-//            "m16": null,
-//            "m17": null,
-//            "m18": null,
-//            "m19": null,
-//            "m20": null,
-//            "std_photo": "http://192.168.0.202:9090/eschool_content/avatar/student1.png",
-//            "std_nickname": "Student 10"
+    //"id": 161,
+//        "school_id": 1,
+//        "class_id": null,
+//        "student_id": 24,
+//        "student_name": "00000024",
+//        "subject_id": 1,
+//        "subject_name": "Toan",
+//        "notice": null,
+//        "sch_year_id": 1,
+//        "m1": null,
+//        "m2": null,
+//        "m3": null,
+//        "m4": null,
+//        "m5": "{\"sresult\":\"\",\"notice\":\"AUTO\",\"exam_dt\":\"2016-07-04 10:22:33\"}",
+//        "m6": null,
+//        "m7": "{\"sresult\":\"\",\"notice\":\"AUTO\",\"exam_dt\":\"2016-07-04 10:22:33\"}",
+//        "m8": null,
+//        "m9": null,
+//        "m10": null,
+//        "m11": null,
+//        "m12": "{\"sresult\":\"\",\"notice\":\"AUTO\",\"exam_dt\":\"2016-07-04 10:22:33\"}",
+//        "m13": null,
+//        "m14": "{\"sresult\":\"\",\"notice\":\"AUTO\",\"exam_dt\":\"2016-07-04 10:22:33\"}",
+//        "m15": "{\"sresult\":\"\",\"notice\":\"AUTO\",\"exam_dt\":\"2016-07-04 10:22:33\"}",
+//        "m16": null,
+//        "m17": null,
+//        "m18": null,
+//        "m19": null,
+//        "m20": null,
+//        "std_photo": null,
+//        "std_nickname": null,
+//        "std_fullname": null
 
 
     static final String Entity_Name = "exam_results";
@@ -121,6 +122,8 @@ public class ExamResult implements Parcelable, Comparable<ExamResult> {
     String m19;
     String m20;
 
+    String std_fullname;
+
 //            "m2": "4.6@2016-06-29",
 //            "m3": null,
 //            "m4": null,
@@ -145,7 +148,7 @@ public class ExamResult implements Parcelable, Comparable<ExamResult> {
     public ExamResult() {
     }
 
-    public ExamResult(int id, int school_id, int class_id, int exam_type, String exam_dt, int subject_id, int teacher_id, int student_id, String student_name, String notice, int result_type_id, int iresult, float fresult, String sresult, int term_id, String term, String subject, int exam_month, int exam_year, String teacher, int exam_id, String std_photo, String std_nickname, String exam_name, String m1, String m2, String m3, String m4, String m5, String m6, String m7, String m8, String m9, String m10, String m11, String m12, String m13, String m14, String m15, String m16, String m17, String m18, String m19, String m20) {
+    public ExamResult(int id, int school_id, int class_id, int exam_type, String exam_dt, int subject_id, int teacher_id, int student_id, String student_name, String notice, int result_type_id, int iresult, float fresult, String sresult, int term_id, String term, String subject, int exam_month, int exam_year, String teacher, int exam_id, String std_photo, String std_nickname, String exam_name, String m1, String m2, String m3, String m4, String m5, String m6, String m7, String m8, String m9, String m10, String m11, String m12, String m13, String m14, String m15, String m16, String m17, String m18, String m19, String m20, String std_fullname) {
         this.id = id;
         this.school_id = school_id;
         this.class_id = class_id;
@@ -190,6 +193,7 @@ public class ExamResult implements Parcelable, Comparable<ExamResult> {
         this.m18 = m18;
         this.m19 = m19;
         this.m20 = m20;
+        this.std_fullname = std_fullname;
     }
 
     public int getId() {
@@ -544,6 +548,14 @@ public class ExamResult implements Parcelable, Comparable<ExamResult> {
         this.m20 = m20;
     }
 
+    public String getStd_fullname() {
+        return std_fullname;
+    }
+
+    public void setStd_fullname(String std_fullname) {
+        this.std_fullname = std_fullname;
+    }
+
     public String toJson() {
         Gson gson = new Gson();
         String jsonString = gson.toJson(this);
@@ -621,6 +633,8 @@ public class ExamResult implements Parcelable, Comparable<ExamResult> {
         m18 = in.readString();
         m19 = in.readString();
         m20 = in.readString();
+
+        std_fullname=in.readString();
     }
 
     @Override
@@ -679,6 +693,7 @@ public class ExamResult implements Parcelable, Comparable<ExamResult> {
         dest.writeString(m18);
         dest.writeString(m19);
         dest.writeString(m20);
+        dest.writeString(std_fullname);
 
     }
 
