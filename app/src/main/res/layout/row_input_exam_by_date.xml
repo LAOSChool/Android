@@ -72,8 +72,6 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:src="@drawable/ic_message_black_24dp"
-
-        android:text="@string/action_add_notice_exam_results"
         android:tint="#BDBDBD" />
 
     <LinearLayout

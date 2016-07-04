@@ -4,7 +4,7 @@
     <item
         android:id="@+id/action_create_announcement"
         android:icon="@drawable/ic_mode_edit_white_18dp"
-        android:title="@string/action_create_announcement"
+        android:title="@string/SCCommon_Create"
         app:showAsAction="always" />
     <item
         android:id="@+id/search"

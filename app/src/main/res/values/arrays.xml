@@ -5,35 +5,35 @@
         <item>@string/SCCommon_Term_2</item>
     </array>
     <array name="exam_name_year">
-        <item>@string/avg_term1</item>
-        <item>@string/avg_term2</item>
-        <item>@string/avg_year</item>
+        <item>@string/SCExanResults_avg_term1</item>
+        <item>@string/SCExanResults_avg_term2</item>
+        <item>@string/SCExanResults_avg_year</item>
     </array>
     <array name="exam_name_term_1">
-        <item>@string/month_9</item>
-        <item>@string/month_10</item>
-        <item>@string/month_11</item>
-        <item>@string/month_12</item>
+        <item>@string/SCExanResults_month_9</item>
+        <item>@string/SCExanResults_month_10</item>
+        <item>@string/SCExanResults_month_11</item>
+        <item>@string/SCExanResults_month_12</item>
 
-        <item>@string/avg_m1</item>
-        <item>@string/test_term1</item>
-        <item>@string/avg_term1</item>
+        <item>@string/SCExanResults_avg_m1</item>
+        <item>@string/SCExanResults_test_term1</item>
+        <item>@string/SCExanResults_avg_term1</item>
     </array>
 
     <array name="exam_name_term_2">
-        <item>@string/month_2</item>
-        <item>@string/month_3</item>
-        <item>@string/month_4</item>
-        <item>@string/month_5</item>
+        <item>@string/SCExanResults_month_2</item>
+        <item>@string/SCExanResults_month_3</item>
+        <item>@string/SCExanResults_month_4</item>
+        <item>@string/SCExanResults_month_5</item>
 
-        <item>@string/avg_m2</item>
-        <item>@string/test_term2</item>
-        <item>@string/avg_term2</item>
-        <item>@string/avg_year</item>
+        <item>@string/SCExanResults_avg_m2</item>
+        <item>@string/SCExanResults_test_term2</item>
+        <item>@string/SCExanResults_avg_term2</item>
+        <item>@string/SCExanResults_avg_year</item>
     </array>
 
     <string-array name="final_titles">
-        <item>@string/avg_year</item>
+        <item>@string/SCExanResults_avg_year</item>
         <item>@string/SCCommon_Term_1</item>
         <item>@string/SCCommon_Term_2</item>
     </string-array>
@@ -72,9 +72,7 @@
         <item>@string/row_line</item>
     </string-array>
 
-    <string-array name="settings">
-        <item>@string/setting_change_language</item>
-    </string-array>
+
     <string-array name="dayNames">
         <item>@string/SCSchedule_Mon</item>
         <item>@string/SCSchedule_Mon</item>

@@ -123,7 +123,7 @@ public class InputExamResultsAdapter extends RecyclerView.Adapter<InputExamResul
                     if (!editable.toString().trim().isEmpty()) {
                         Float exam = Float.valueOf(editable.toString());
                         if (exam < 0 || exam > 10) {
-                            holder.txtInputExamResults.setError(context.getString(R.string.err_limit_input_score));
+                            holder.txtInputExamResults.setError(null);
                             return;
                         }
                         Log.d(TAG, "addTextChangedListener().afterTextChanged(" + position + ") -exam:" + exam);

@@ -42,6 +42,7 @@
     <string name="SCCommon_Error">Error</string>
     <string name="SCCommon_ListStudent">Students list</string>
     <string name="SCCommon_Successfully">Successfully</string>
+    <string name="SCCommon_err_msg_network_disconnect">Failed to connect to server. Please try again</string>
 
     <!--Login screen-->
     <string name="SCLogin_Login">SIGN IN</string>
@@ -70,6 +71,9 @@
     <string name="SCCreateMessage_EmptyMessage">Can\'t sending empty message</string>
     <string name="SCCreateMessage_TitleAllStudentsAttendance">All students attendant</string>
     <string name="SCCreateMessage_CannotGetStudentsList">Can\'t get students list</string>
+    <string name="SCCreateMessage_err_msg_input_message_title">Please enter title</string>
+    <string name="SCCreateMessage_err_msg_input_message_conten">Please enter content!</string>
+    <string name="SCCreateMessage_err_msg_create_message">There was an error while sending message. Please try again</string>
 
     <!--Attendance screen-->
     <string name="SCAttendance_Subjects">Subjects</string>
@@ -130,9 +134,9 @@
 
     <string name="SCExamResults_CancelInputExam">Are you sure you want to cancel?</string>
 
-    <string name="SCExamResults_msg_no_selected_subject" translatable="false">No select subject</string>
-    <string name="SCExamResults_touch_here_to_select" translatable="false">Touch here to select</string>
-    <string name="SCExamResults_msg_no_select_exam_type" translatable="false">No select exam type</string>
+    <string name="SCExamResults_msg_no_selected_subject" >No select subject</string>
+    <string name="SCExamResults_touch_here_to_select" >Touch here to select</string>
+    <string name="SCExamResults_msg_no_select_exam_type" >No select exam type</string>
 
 
     <string name="subject_exam" translatable="false">Subject</string>
@@ -156,99 +160,66 @@
 
 
     <!-- profile screen-->
-    <string name="SCProfile_basic_infomation" >Basic Information</string>
+    <string name="SCProfile_basic_infomation">Basic Information</string>
     <string name="SCProfile_parent_details">Parent details</string>
     <string name="SCProfile_address">Address</string>
     <string name="SCProfile_parrent_name">Parent name</string>
 
     <string name="row_line" translatable="false">line</string>
-    <string name="setting_change_language" translatable="false">Change language</string>
     <string name="row_sub_header" translatable="false">sub header</string>
-    <string name="action_edit" translatable="false">Edit</string>
 
-    <string name="action_sort_by" translatable="false">Sort by</string>
-
-    <string name="err_msg_input_message_title" translatable="false">Enter message title</string>
-    <string name="err_msg_input_message_conten" translatable="false">Please enter conten !!!</string>
-    <string name="err_msg_create_message" translatable="false">Create message fails</string>
-    <string name="action_set_chanel_create_message" translatable="false">SMS</string>
-    <string name="msg_create_message_sucessfully" translatable="false">Create message sucessfully</string>
-    <string name="err_msg_network_disconnect" translatable="false">Network disconnect</string>
-    <string name="hint_input_messsage" translatable="false">Write a message</string>
-    <string name="action_view_profile" translatable="false">View Profile</string>
-    <string name="action_create_announcement" translatable="false">Create annocemnet</string>
-    <string name="action_send_announcement" translatable="false">Send</string>
-    <string name="action_attach_file" translatable="false">Acttach file</string>
-    <string name="annocement_title_to" translatable="false">To</string>
-    <string name="err_msg_limit_img_seleted" translatable="false">Limit 5 image</string>
+    <!--annocement screen-->
+    <string name="SCCreateAnnocement_AttachFile">Attach file</string>
+    <string name="SCCreateAnnocement_err_msg_limit_img_seleted">Limit 5 image</string>
     <string name="title_activity_preview_image" translatable="false"></string>
-    <string name="err_msg_download_image_fails" translatable="false">Download file image fails</string>
-    <string name="msg_download_image_sucessfuly" translatable="false">Save image</string>
-    <string name="hint_write_caption_message" translatable="false">Write caption image</string>
-    <string name="msg_confirm_sent_notication" translatable="false">Send notifications to</string>
-    <string name="msg_create_process" translatable="false">Create...</string>
-    <string name="msg_re_login_application" translatable="false">This account was being logged in by other device. Please re-login.</string>
-    <string name="err" translatable="false">Error</string>
-    <string name="SCCommon_ServerError" >Server error !!!</string>
+    <string name="SCCreateAnnocement_err_msg_download_image_fails">Download file image fails</string>
+    <string name="SCCreateAnnocement_SaveImage">Save image</string>
+    <string name="SCCreateAnnocement_hint_write_caption_message">Please write caption image</string>
+    <string name="SCCreateAnnocement_msg_confirm_sent_notication">Send this announcement to class </string>
 
-    <string name="reload_application" translatable="false">Reload application</string>
-    <string name="msg_no_message" translatable="false">No messages.</string>
-    <string name="msg_no_notification" translatable="false">No notification.</string>
-    <string name="action_refersh_time_table" translatable="false">Refersh time table</string>
-    <string name="title_selected_type_input_exam_results" translatable="false">Select type exam results</string>
-    <string name="hint_input_exam_results" translatable="false">Please input</string>
-    <string name="action_submit" translatable="false">Submit</string>
-    <string name="msg_comfirm_submit_input_exam_results" translatable="false">Please double check information before you submit scores?</string>
-    <string name="btnSelectedDate" translatable="false">Selected date</string>
+    <string name="SCCommon_re_login_application">This account was being logged in by other device. Please re-login.</string>
+    <string name="SCCommon_ServerError">Server error !!!</string>
+    <string name="SCCommon_reload_application">Reload application</string>
+
+    <string name="SCMessage_NoMessage">No messages.</string>
+    <string name="SCAnnocements_NoAnnocement">No Announcements</string>
+
+
     <string name="sub_header_student_name" translatable="false">Name</string>
     <string name="sub_header_score" translatable="false">Score</string>
 
-    <string name="err_msg_input_exam" translatable="false">Input fails</string>
-    <string name="action_input_exam_results" translatable="false">Input</string>
 
-    <string name="action_add_notice_exam_results" translatable="false"><u>Add</u></string>
-    <string name="err_limit_input_score" translatable="false"><![CDATA[Score > 0 and score < 10]]></string>
+    <string name="SCFinalExamResults_Passed">Passed</string>
+    <string name="SCFinalExamResults_Morality">Morality:</string>
+    <string name="SCFinalExamResults_Absents">Absents:</string>
+    <string name="SCFinalExamResults_TeacherComment">Teacher comment:</string>
+    <string name="SCFinalExamResults_avg_of_term1">Term I :</string>
+    <string name="SCFinalExamResults_avg_of_term2">Term II :</string>
+    <string name="SCFinalExamResults_avg_of_year">Years</string>
 
+    <string name="SCExanResults_month_9">Sep</string>
+    <string name="SCExanResults_month_10">Otc</string>
+    <string name="SCExanResults_month_11">Nov</string>
+    <string name="SCExanResults_month_12">Dec</string>
+    <string name="SCExanResults_avg_m1">Avg m1</string>
+    <string name="SCExanResults_test_term1">Test term 1</string>
+    <string name="SCExanResults_avg_term1">Avg term1</string>
+    <string name="SCExanResults_month_2">Fer</string>
+    <string name="SCExanResults_month_3">Mar</string>
+    <string name="SCExanResults_month_4">Apr</string>
+    <string name="SCExanResults_month_5">May</string>
+    <string name="SCExanResults_avg_m2">Avg m2</string>
+    <string name="SCExanResults_test_term2">Test term 2</string>
+    <string name="SCExanResults_avg_term2">Avg term 2</string>
+    <string name="SCExanResults_avg_year">Avg year</string>
+    <string name="SCExanResults_retest">Retest</string>
+    <string name="SCExanResults_test_grad_II">Test grad</string>
+    <string name="SCExanResults_test_grad_III">Test grad</string>
 
-
-    <string name="avg_of_term1" translatable="false">Term 1 : </string>
-    <string name="avg_of_term2" translatable="false">Term 2 : </string>
-    <string name="avg_of_year" translatable="false">Year   : </string>
-    <string name="msg_tab_to_selected_year" translatable="false">Tab to selected year</string>
-    <string name="class_information" translatable="false">Class information</string>
-    <string name="exam_results_average" translatable="false">Exam average</string>
-    <string name="exam_results_details" translatable="false">Exam details</string>
-    <string name="msg_no_year_selected" translatable="false">No year selected</string>
-
-    <string name="final_passed" translatable="false">Passed</string>
-    <string name="final_morality" translatable="false">Morality:</string>
-    <string name="final_absents" translatable="false">Absents:</string>
-    <string name="final_teacher_comment" translatable="false">Teacher comment:</string>
-
-
-    <string name="btn_yes" translatable="false">yes</string>
-    <string name="btn_no" translatable="false">no</string>
-    <string name="title_msg_are_you_sure" translatable="false">Are you sure</string>
-
-    <string name="month_9" translatable="false">Sep</string>
-    <string name="month_10" translatable="false">Otc</string>
-    <string name="month_11" translatable="false">Nov</string>
-    <string name="month_12" translatable="false">Dec</string>
-    <string name="avg_m1" translatable="false">Avg</string>
-    <string name="test_term1" translatable="false">Test term 1</string>
-    <string name="avg_term1" translatable="false">Avg term1</string>
-    <string name="month_2" translatable="false">Fer</string>
-    <string name="month_3" translatable="false">Mar</string>
-    <string name="month_4" translatable="false">Apr</string>
-    <string name="month_5" translatable="false">May</string>
-    <string name="avg_m2" translatable="false">Avg</string>
-    <string name="test_term2" translatable="false">Test term 2</string>
-    <string name="avg_term2" translatable="false">Avg term 2</string>
-    <string name="avg_year" translatable="false">Avg year</string>
-    <string name="retest" translatable="false">Retest</string>
-    <string name="test_grad" translatable="false">Test grad</string>
     <string name="SCCommon_Ok">Ok</string>
     <string name="SCShedule_NoSession">No session</string>
     <string name="SCProfile_SendMessage">Send message</string>
+    <string name="SCCommon_Create">Create</string>
+    <string name="SCExamResults_Input">Input</string>
 
 </resources>

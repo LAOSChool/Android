@@ -309,7 +309,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
     private boolean validateMessageTitle(EditText edit) {
         if (edit.getText().toString().trim().isEmpty()) {
             requestFocus(edit);
-            Toast.makeText(context, R.string.err_msg_input_message_title, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.SCCreateMessage_err_msg_input_message_title, Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
@@ -317,7 +317,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
 
     private boolean validateMessageConten(EditText edit) {
         if (edit.getText().toString().trim().isEmpty()) {
-            _showErorMessage(getString(R.string.err_msg_input_message_conten), edit);
+            _showErorMessage(getString(R.string.SCCreateMessage_err_msg_input_message_conten), edit);
             return false;
         }
         return true;
@@ -437,7 +437,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
 
                 @Override
                 public void onFailure(String message1) {
-                    Log.d(TAG, R.string.err_msg_create_message + ":" + message1);
+                    Log.d(TAG, R.string.SCCreateMessage_err_msg_create_message + ":" + message1);
                     ringProgressDialog.dismiss();
                     _showAlertMessage(getString(R.string.SCCreateMessage_SendFail));
                 }
@@ -489,7 +489,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
 
                         @Override
                         public void onFailure(String message1) {
-                            Log.d(TAG, R.string.err_msg_create_message + ":" + message1);
+                            Log.d(TAG, R.string.SCCreateMessage_err_msg_create_message + ":" + message1);
                             ringProgressDialog.dismiss();
                             _showAlertMessage(getString(R.string.SCCreateMessage_SendFail));
 
@@ -503,12 +503,12 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
 
                 } else {
                     Toast.makeText(context, R.string.SCCreateMessage_SendFail, Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, R.string.err_msg_create_message + "_1");
+                    Log.d(TAG, R.string.SCCreateMessage_err_msg_create_message + "_1");
 
                 }
             } else {
                 Toast.makeText(context, R.string.SCCreateMessage_SendFail, Toast.LENGTH_SHORT).show();
-                Log.d(TAG, R.string.err_msg_create_message + "_2");
+                Log.d(TAG, R.string.SCCreateMessage_err_msg_create_message + "_2");
             }
         } else {
             Toast.makeText(context, R.string.SCCommon_NoInternet, Toast.LENGTH_SHORT).show();
