@@ -245,5 +245,6 @@
     <string name="retest" translatable="false">Retest</string>
     <string name="test_grad" translatable="false">Test grad</string>
     <string name="SCCommon_Ok">Ok</string>
+    <string name="SCShedule_NoSession">No session</string>
 
 </resources>

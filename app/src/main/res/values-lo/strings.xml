@@ -127,5 +127,6 @@
     <string name="SCSchedule_Evening">ຕອນແລງ</string>
 
     <string name="SCCommon_ServerError" >ເຊີບເວີຜິດພາດ</string>
+    <string name="SCShedule_NoSession">ບໍ່ມີກອງປະຊຸມ</string>
 
 </resources>
