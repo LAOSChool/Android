@@ -30,6 +30,8 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
@@ -45,6 +47,7 @@ import com.laoschool.model.DataAccessInterface;
 import com.laoschool.model.sqlite.DataAccessImage;
 import com.laoschool.model.sqlite.DataAccessMessage;
 import com.laoschool.screen.ScreenCreateAnnouncement.IScreenCreateAnnouncement;
+import com.laoschool.screen.ScreenProfile.IProfile;
 import com.laoschool.screen.login.ScreenLogin;
 import com.laoschool.screen.view.Languages;
 import com.laoschool.shared.LaoSchoolShared;
@@ -62,7 +65,8 @@ public class HomeActivity extends AppCompatActivity implements
         ScreenListTeacher.IScreenListTeacher,
         ScreenInputExamResultsStudent.IScreenInputExamResults,
         IScreenCreateAnnouncement,
-        ScreenListStudent.IScreenListStudentOfClass {
+        ScreenListStudent.IScreenListStudentOfClass,
+        IProfile {
     private static final String TAG = "HomeScreen";
 
     private TabHost mTabHost;
@@ -811,6 +815,11 @@ public class HomeActivity extends AppCompatActivity implements
             screenMessage.reloadDataAfterCreateMessages();
             //back to tab message
             _gotoPage(LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
+        } else if (beforePosition == LaoSchoolShared.POSITION_SCREEN_PROFILE_13) {
+
+            //back to tab message
+            beforePosition=LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5;
+            _gotoPage(LaoSchoolShared.POSITION_SCREEN_PROFILE_13);
         } else {
             //back to tab attender
             _gotoPage(LaoSchoolShared.POSITION_SCREEN_ATTENDED_3);
@@ -884,7 +893,7 @@ public class HomeActivity extends AppCompatActivity implements
     public void displaySearch() {
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(this.getResources().getColor(R.color.colorPrimarySearch)));
         setStatusBarColor(R.color.colorPrimaryDarkSearch);
-       // getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        // getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
     public void cancelSearch() {
@@ -899,5 +908,14 @@ public class HomeActivity extends AppCompatActivity implements
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(getResources().getColor(colorId));
         }
+    }
+
+    @Override
+    public void sendMessage(User selectedStudent) {
+        beforePosition = LaoSchoolShared.POSITION_SCREEN_PROFILE_13;
+        _gotoPage(LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
+        String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
+        ScreenCreateMessage screenCreateMessage = (ScreenCreateMessage) getSupportFragmentManager().findFragmentByTag(tag);
+        screenCreateMessage.presetData(Arrays.asList(selectedStudent), Arrays.asList(selectedStudent), "");
     }
 }

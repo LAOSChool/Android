@@ -132,5 +132,6 @@
     <string name="SCProfile_parent_details">ລາຍລະອຽດຂອງພໍ່ແມ່</string>
     <string name="SCProfile_address">ທີ່ຢູ່</string>
     <string name="SCProfile_parrent_name">ຊື່ຂອງພໍ່ແມ່</string>
+    <string name="SCProfile_SendMessage">ສົ່ງ​ຂໍ້​ຄວາມ</string>
 
 </resources>
