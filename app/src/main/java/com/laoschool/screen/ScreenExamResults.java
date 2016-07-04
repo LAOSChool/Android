@@ -196,6 +196,7 @@ public class ScreenExamResults extends Fragment
                 inflater.inflate(R.menu.menu_screen_exam_results_teacher, menu);
                 itemSearch = menu.findItem(R.id.search);
                 mSearchExamResults = (SearchView) itemSearch.getActionView();
+                mSearchExamResults.setQueryHint(context.getString(R.string.SCCommon_Search));
                 onExpanCollapseSearch();
             }
         } catch (Exception e) {
@@ -230,6 +231,7 @@ public class ScreenExamResults extends Fragment
 
                 ((HomeActivity) getActivity()).cancelSearch();
                 ((HomeActivity) getActivity()).showBottomBar();
+                ((HomeActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(false);
                 return true;  // Return true to collapse action view
             }
 

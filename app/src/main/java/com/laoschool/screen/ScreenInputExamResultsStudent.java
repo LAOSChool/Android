@@ -201,6 +201,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         itemSearch = menu.findItem(R.id.search);
         itemSearch.setVisible(false);
         mSearch = (SearchView) itemSearch.getActionView();
+        mSearch.setQueryHint(context.getString(R.string.SCCommon_Search));
         onExpandCollapseSearch();
     }
 

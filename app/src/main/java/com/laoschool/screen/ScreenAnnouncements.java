@@ -387,6 +387,7 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
             itemSearch = menu.findItem(R.id.search);
             itemSearch.setVisible(false);
             mSearch = (SearchView) itemSearch.getActionView();
+            mSearch.setQueryHint(context.getString(R.string.SCCommon_Search));
             if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER))
                 itemCreateAnnocement.setVisible(true);
             else itemCreateAnnocement.setVisible(false);
