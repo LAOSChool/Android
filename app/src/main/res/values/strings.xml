@@ -155,6 +155,12 @@
     <string name="SCSchedule_Evening">Evening</string>
 
 
+    <!-- profile screen-->
+    <string name="SCProfile_basic_infomation" >Basic Information</string>
+    <string name="SCProfile_parent_details">Parent details</string>
+    <string name="SCProfile_address">Address</string>
+    <string name="SCProfile_parrent_name">Parent name</string>
+
     <string name="row_line" translatable="false">line</string>
     <string name="setting_change_language" translatable="false">Change language</string>
     <string name="row_sub_header" translatable="false">sub header</string>
@@ -203,11 +209,8 @@
     <string name="action_add_notice_exam_results" translatable="false"><u>Add</u></string>
     <string name="err_limit_input_score" translatable="false"><![CDATA[Score > 0 and score < 10]]></string>
 
-    <string name="basic_infomation" translatable="false">Basic Information</string>
-    <string name="parent_details" translatable="false">Parent details</string>
-    <string name="address1" translatable="false">Address1</string>
-    <string name="address2" translatable="false">Address2</string>
-    <string name="parrent_name" translatable="false">Name</string>
+
+
     <string name="avg_of_term1" translatable="false">Term 1 : </string>
     <string name="avg_of_term2" translatable="false">Term 2 : </string>
     <string name="avg_of_year" translatable="false">Year   : </string>
