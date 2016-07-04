@@ -231,7 +231,6 @@ public class ScreenExamResults extends Fragment
 
                 ((HomeActivity) getActivity()).cancelSearch();
                 ((HomeActivity) getActivity()).showBottomBar();
-                ((HomeActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(false);
                 return true;  // Return true to collapse action view
             }
 

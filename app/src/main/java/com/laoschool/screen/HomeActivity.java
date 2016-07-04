@@ -884,13 +884,13 @@ public class HomeActivity extends AppCompatActivity implements
     public void displaySearch() {
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(this.getResources().getColor(R.color.colorPrimarySearch)));
         setStatusBarColor(R.color.colorPrimaryDarkSearch);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+       // getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
     public void cancelSearch() {
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(this.getResources().getColor(R.color.colorPrimary)));
         setStatusBarColor(R.color.colorPrimaryDark);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
     private void setStatusBarColor(int colorId) {
