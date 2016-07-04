@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="listTeacher">
+    <string-array name="listTeacher" translatable="false">
         <!--<item>@string/row_header_title</item>-->
         <!--<item>@string/row_line</item>-->
         <item>Nguyen thi anh</item>
@@ -14,7 +14,7 @@
     </string-array>
 
 
-    <string-array name="termTest">
+    <string-array name="termTest" translatable="false">
         <item>@string/selected</item>
         <item>Term 1 2013-2014</item>
         <item>Term 2 2013-2014</item>
@@ -24,7 +24,7 @@
         <item>Term 2 2015-2016</item>
     </string-array>
 
-    <string-array name="classTest">
+    <string-array name="classTest" translatable="false">
         <item>@string/selected</item>
         <item>1</item>
         <item>2</item>
@@ -32,7 +32,7 @@
         <item>4</item>
     </string-array>
 
-    <string-array name="subjectTest">
+    <string-array name="subjectTest" translatable="false">
         <item>@string/selected</item>
         <item>Math</item>
         <item>History</item>
@@ -40,7 +40,7 @@
         <item>College</item>
     </string-array>
 
-    <string-array name="subjects">
+    <string-array name="subjects" translatable="false">
         <item>Geography</item>
 
         <item>Ancient Civilizations</item>
@@ -83,7 +83,7 @@
 
         <item>Occupational Therapy</item>
     </string-array>
-    <string-array name="subjects1">
+    <string-array name="subjects1" translatable="false">
 
         <item> Language Arts</item>
 
@@ -117,7 +117,7 @@
 
         <item>Leadership</item>
     </string-array>
-    <string-array name="subjects2">
+    <string-array name="subjects2" translatable="false">
 
         <item>Special Education Day Class</item>
 
@@ -165,5 +165,5 @@
 
 
     </string-array>
-    <string name="selected">Selected</string>
+    <string name="selected" translatable="false">Selected</string>
 </resources>

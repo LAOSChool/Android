@@ -287,13 +287,13 @@ public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecy
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(getString(R.string.msg_confirm_sent_notication) + " " + LaoSchoolShared.myProfile.getEclass().getTitle());
 
-        builder.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.SCCommon_Ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 _createNotification(message);
             }
         });
-        builder.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.SCCommon_Cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -341,7 +341,7 @@ public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecy
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
         builder.setMessage(alert);
-        builder.setNegativeButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.SCCommon_Ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 _resetForm();

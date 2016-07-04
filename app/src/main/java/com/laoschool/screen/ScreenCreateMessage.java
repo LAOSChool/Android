@@ -535,7 +535,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
         builder.setMessage(alert);
-        builder.setNegativeButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.SCCommon_Ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 requestFocus(edit);

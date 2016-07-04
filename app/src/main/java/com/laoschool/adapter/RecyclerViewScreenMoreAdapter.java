@@ -124,7 +124,7 @@ public class RecyclerViewScreenMoreAdapter extends RecyclerView.Adapter<Recycler
                             iScreenMore.gotoExamResultsformMore();
                         }else if (title.equals(context.getString(R.string.SCCommon_TimeTable))) {
                             iScreenMore.gotoScheduleformMore();
-                        }if (title.equals(context.getString(R.string.title_screen_list_student_of_class))) {
+                        }if (title.equals(context.getString(R.string.SCCommon_ListStudent))) {
                             iScreenMore.gotoListStudentformMore();
                         }
                     }

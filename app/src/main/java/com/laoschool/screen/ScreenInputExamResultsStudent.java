@@ -39,10 +39,6 @@ import com.laoschool.model.AsyncCallback;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -166,7 +162,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
 
         //
         String className = LaoSchoolShared.myProfile.getEclass().getTitle();
-        String termName = String.valueOf("Term " + LaoSchoolShared.myProfile.getEclass().getTerm());
+        String termName = String.valueOf(context.getString(R.string.SCCommon_Term) + " " + LaoSchoolShared.myProfile.getEclass().getTerm());
         String year = String.valueOf(LaoSchoolShared.myProfile.getEclass().getYears());
 
         TextView txtClassAndTermName = (TextView) viewMain.findViewById(R.id.txtClassAndTermName);
@@ -380,7 +376,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         drawable.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
         imgIcon.setImageDrawable(drawable);
 
-        ((TextView) header.findViewById(R.id.txbTitleDialog)).setText(R.string.selected_subject);
+        ((TextView) header.findViewById(R.id.txbTitleDialog)).setText(R.string.SCExamResults_SelectSubject);
 
 
         builder.setCustomTitle(header);
@@ -422,16 +418,16 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
             getActivity().getCurrentFocus().clearFocus();
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(R.string.title_msg_are_you_sure);
-        builder.setMessage(R.string.msg_comfirm_submit_input_exam_results);
-        builder.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+        //builder.setTitle(R.string.title_msg_are_you_sure);
+        builder.setMessage(R.string.SCExamResults_msg_check_submit_score);
+        builder.setNegativeButton(R.string.SCCommon_Cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
                 dialogInterface.dismiss();
             }
         });
-        builder.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.SCCommon_Ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 //if (resultsforClassbySubjectAdapter.getInputExamResults().size() > 0) {
@@ -555,8 +551,8 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         // resultsforClassbySubjectAdapter.clearData();
         adapter.clearData();
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(R.string.msg_input_exam_results_successfully);
-        builder.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+        builder.setTitle(R.string.SCCommon_Successfully);
+        builder.setPositiveButton(R.string.SCCommon_Ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
@@ -763,7 +759,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         ImageView imgIcon = ((ImageView) header.findViewById(R.id.imgIcon));
         imgIcon.setImageDrawable(LaoSchoolShared.getDraweble(context, R.drawable.ic_input_white_24dp));
 
-        ((TextView) header.findViewById(R.id.txbTitleDialog)).setText("Seleted date");
+        ((TextView) header.findViewById(R.id.txbTitleDialog)).setText(R.string.SCExamResults_SelectScoreType);
 
         builder.setCustomTitle(header);
         final ListAdapter subjectListAdapter = new ArrayAdapter<String>(context, R.layout.row_selected_subject, exam_months);

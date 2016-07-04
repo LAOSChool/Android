@@ -87,4 +87,30 @@
     <string name="SCCommon_Date">ວັນທີ່ສະຫມັກ</string>
     <string name="SCAttendance_DefaultMessage1">ໂຮງຮຽນລາວປະກາດນັກສຶກສານີ້ມີໃນຫ້ອງຮຽນໄດ້.</string>
     <string name="SCAttendance_SelectDate">ເລືອກວັນທີ່</string>
+    <string name="SCCommon_Ok">ຕົກ​ລົງ</string>
+    <string name="SCreateAnnouncement_HintMessageContent">ກະ​ລຸ​ນາ​ໃສ່​ເນື້ອ​ໃນ</string>
+    <string name="SCreateAnnouncement_HintMessageSubject">ກະລຸນາໃສ່ຊື່!</string>
+    <string name="SCCommon_Error">ຜິດ​ພາດ</string>
+    <string name="SCCommon_ListStudent">ລາຍ​ຊື່​ນັກ​ຮຽນ</string>
+    <string name="SCExamResults_SelectSubject">ເລື​ອກ​ຫົວ​ຂໍ້</string>
+    <string name="SCExamResults_CancelInputExam" >ທ່່ານ​ຈ​ະ​ຍົກ​ເລີກ​ບໍ?</string>
+    <string name="SCExamResults_SelectScoreType">ເລືື​ອກ​ປະ​ເພດ​ຄະ​ແນນ</string>
+
+    <string name="SCCommon_Term_1" >ພາກ​ຮຽນ I</string>
+    <string name="SCCommon_Term_2" >ພາກ​ຮຽນ II</string>
+
+    <string name="SCExamResults_Score">ຄະ​ແນນ</string>
+    <string name="SCExamResults_Comment">ຄຳ​ຄິດ​ເຫັນ</string>
+
+    <string name="SCExamResults_msg_check_submit_score">ກະ​ລຸ​ນາ​ກວດ​ຄືນ​ອີກ​ຄັ້ງ ກ່ອນ​ທີ່​ທ່ານ​ຈະ​ເຂົ້າ​ຂໍ້​ມູນຄະ​ແນນ</string>
+    <string name="SCExamResults_msg_err_submit_score">ມີ​ຂໍ້​ຜິດ​ພາດໃນ​ການ​ເຂົ້າ​ຄະ​ແນນ​. ກະ​ລຸ​ນາ​ລອງໃໝ່​ອີກ​ຄັ້ງ.</string>
+    <string name="SCExamResults_msg_you_do_not_complete_filling_scores">ທ່ານ​ຍັງ​ໃສ່​ຄະ​ແນນບໍ່​ສຳ​ເລັດ. ກົດໃສ່ ​"ເຂົາ​ຂໍ້​ມຸນ​" ດຽວ​ນີ້.</string>
+
+    <string name="SCExamResults_AddScore" >ໃສ່​ຄະ​ແນນ</string>
+    <string name="SCCommon_Successfully">ສຳ​ເລັດ</string>
+
+    <string name="SCExamResults_msg_no_selected_subject" >ບໍ່ເລືອກວິຊາ</string>
+    <string name="SCExamResults_touch_here_to_select" >ສໍາຜັດທີ່ນີ້ເພື່ອຄັດເລືອກເອົາ</string>
+    <string name="SCExamResults_msg_no_select_exam_type">ການຄັດເລືອກປະເພດການສອບເສັງ</string>
+
 </resources>
