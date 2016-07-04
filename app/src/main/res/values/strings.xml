@@ -114,7 +114,7 @@
 
 
     <!--input exam screen-->
-    <string name="SCExamResults_AddScore" >Add scores</string>
+    <string name="SCExamResults_AddScore">Add scores</string>
     <string name="SCExamResults_SelectSubject">Select a subject</string>
     <string name="SCExamResults_SelectScoreType">Select a score type</string>
 
@@ -135,13 +135,24 @@
     <string name="SCExamResults_msg_no_select_exam_type" translatable="false">No select exam type</string>
 
 
-
     <string name="subject_exam" translatable="false">Subject</string>
 
 
     <!--create annocement screen-->
     <string name="SCreateAnnouncement_HintMessageSubject">Please enter title!</string>
     <string name="SCreateAnnouncement_HintMessageContent">Please enter content!</string>
+    <!-- schedule screen-->
+    <string name="SCSchedule_Mon">Mon</string>
+    <string name="SCSchedule_Tue">Tue</string>
+    <string name="SCSchedule_Wed">Wed</string>
+    <string name="SCSchedule_Thu">Thu</string>
+    <string name="SCSchedule_Fri">Fri</string>
+    <string name="SCSchedule_Sat">Sat</string>
+    <string name="SCSchedule_Sun">Sun</string>
+
+    <string name="SCSchedule_Morning">Morning</string>
+    <string name="SCSchedule_Afternoon">Afternoon</string>
+    <string name="SCSchedule_Evening">Evening</string>
 
 
     <string name="row_line" translatable="false">line</string>
@@ -210,7 +221,6 @@
     <string name="final_morality" translatable="false">Morality:</string>
     <string name="final_absents" translatable="false">Absents:</string>
     <string name="final_teacher_comment" translatable="false">Teacher comment:</string>
-
 
 
     <string name="btn_yes" translatable="false">yes</string>

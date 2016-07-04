@@ -75,4 +75,14 @@
     <string-array name="settings">
         <item>@string/setting_change_language</item>
     </string-array>
+    <string-array name="dayNames">
+        <item>@string/SCSchedule_Mon</item>
+        <item>@string/SCSchedule_Mon</item>
+        <item>@string/SCSchedule_Tue</item>
+        <item>@string/SCSchedule_Wed</item>
+        <item>@string/SCSchedule_Thu</item>
+        <item>@string/SCSchedule_Fri</item>
+        <item>@string/SCSchedule_Sat</item>
+        <item>@string/SCSchedule_Sun</item>
+    </string-array>
 </resources>

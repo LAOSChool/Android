@@ -113,4 +113,17 @@
     <string name="SCExamResults_touch_here_to_select" >ສໍາຜັດທີ່ນີ້ເພື່ອຄັດເລືອກເອົາ</string>
     <string name="SCExamResults_msg_no_select_exam_type">ການຄັດເລືອກປະເພດການສອບເສັງ</string>
 
+
+    <string name="SCSchedule_Mon">ຈັນ</string>
+    <string name="SCSchedule_Tue">ວັນອັງຄານ</string>
+    <string name="SCSchedule_Wed">ວັນພຸດ</string>
+    <string name="SCSchedule_Thu">ວັນພະຫັດ</string>
+    <string name="SCSchedule_Fri">ສຸກ</string>
+    <string name="SCSchedule_Sat">ວັນເສົາ</string>
+    <string name="SCSchedule_Sun">ວັນອາທິດ</string>
+
+    <string name="SCSchedule_Morning">ໃນຕອນເຊົ້າ</string>
+    <string name="SCSchedule_Afternoon">ຕອນບ່າຍ</string>
+    <string name="SCSchedule_Evening">ຕອນແລງ</string>
+
 </resources>
