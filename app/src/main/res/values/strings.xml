@@ -183,7 +183,7 @@
     <string name="msg_create_process" translatable="false">Create...</string>
     <string name="msg_re_login_application" translatable="false">This account was being logged in by other device. Please re-login.</string>
     <string name="err" translatable="false">Error</string>
-    <string name="server_error" translatable="false">Server error !!!</string>
+    <string name="SCCommon_ServerError" >Server error !!!</string>
 
     <string name="reload_application" translatable="false">Reload application</string>
     <string name="msg_no_message" translatable="false">No messages.</string>

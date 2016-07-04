@@ -126,4 +126,6 @@
     <string name="SCSchedule_Afternoon">ຕອນບ່າຍ</string>
     <string name="SCSchedule_Evening">ຕອນແລງ</string>
 
+    <string name="SCCommon_ServerError" >ເຊີບເວີຜິດພາດ</string>
+
 </resources>
