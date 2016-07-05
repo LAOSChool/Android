@@ -146,7 +146,7 @@ public class HomeActivity extends AppCompatActivity implements
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        thiz = this;
         service = LaoSchoolSingleton.getInstance().getDataAccessService();
 //        Toast.makeText(this, "Getting profile", Toast.LENGTH_SHORT).show();
         if (LaoSchoolShared.myProfile == null) {
@@ -818,7 +818,7 @@ public class HomeActivity extends AppCompatActivity implements
         } else if (beforePosition == LaoSchoolShared.POSITION_SCREEN_PROFILE_13) {
 
             //back to tab message
-            beforePosition=LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5;
+            beforePosition = LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5;
             _gotoPage(LaoSchoolShared.POSITION_SCREEN_PROFILE_13);
         } else {
             //back to tab attender
