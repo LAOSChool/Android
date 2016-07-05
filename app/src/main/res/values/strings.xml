@@ -222,4 +222,8 @@
     <string name="SCCommon_Create">Create</string>
     <string name="SCExamResults_Input">Input</string>
 
+    <string name="SCCreateAnnocement_TakePhoto">Take Photo</string>
+    <string name="SCCreateAnnocement_ChooseFromLibrary">Choose from Library</string>
+
+
 </resources>
