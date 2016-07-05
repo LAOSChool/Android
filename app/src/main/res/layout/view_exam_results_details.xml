@@ -65,7 +65,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Close"
+        android:text="@string/SCCommon_Close"
         android:id="@+id/lbExamClose"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp" />
