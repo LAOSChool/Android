@@ -450,7 +450,7 @@ public class HomeActivity extends AppCompatActivity implements
                 _setTitleandShowButtonBack(R.string.title_screen_announcement_details, null, DisplayButtonHome.show);
                 break;
             case LaoSchoolShared.POSITION_SCREEN_CREATE_ANNOUNCEMENT_16:
-                _setTitleandShowButtonBack(-1, "", DisplayButtonHome.show);
+                _setTitleandShowButtonBack(R.string.SCCreateAnnocement_NewAnouncement, null, DisplayButtonHome.show);
                 getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_36dp);
                 break;
             case LaoSchoolShared.POSITION_SCREEN_REQUEST_ATTENDANCE_17:

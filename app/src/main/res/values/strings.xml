@@ -230,7 +230,7 @@
     <string name="SCCreateAnnocement_ChooseFromLibrary">Choose from Library</string>
 
     <string name="SCCommon_Ranking">Ranking</string>
-
+    <string name="SCCreateAnnocement_NewAnouncement">New anouncement</string>
 
 
 </resources>
