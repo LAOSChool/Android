@@ -20,6 +20,7 @@
             android:background="@color/colorLaosRed"
             android:textColor="@color/abc_primary_text_disable_only_material_dark"
             app:pstsDividerColor="#ffffff"
+
             app:pstsIndicatorColor="#7E57C2"
             app:pstsIndicatorHeight="3dp"
             app:pstsShouldExpand="true"
@@ -39,15 +40,16 @@
         android:visibility="gone" />
 
     <include
-        layout="@layout/view_server_error"
         android:id="@+id/mError"
+        layout="@layout/view_server_error"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:visibility="gone" />
+
     <include
-        layout="@layout/view_no_data"
         android:id="@+id/mNoData"
+        layout="@layout/view_no_data"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
