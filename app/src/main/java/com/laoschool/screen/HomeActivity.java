@@ -585,7 +585,12 @@ public class HomeActivity extends AppCompatActivity implements
                     _gotoPage(LaoSchoolShared.POSITION_SCREEN_MORE_4);
                 }
             } else if (currentPage == LaoSchoolShared.POSITION_SCREEN_CREATE_ANNOUNCEMENT_16) {
+                //
+                String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_ANNOUNCEMENTS_1);
+                ScreenAnnouncements screenAnnouncements = (ScreenAnnouncements) getSupportFragmentManager().findFragmentByTag(tag);
+                screenAnnouncements.reloadAffterCreate();
                 _gotoPage(LaoSchoolShared.POSITION_SCREEN_ANNOUNCEMENTS_1);
+
             } else if (currentPage == LaoSchoolShared.POSITION_SCREEN_REQUEST_ATTENDANCE_17) {
                 _gotoPage(LaoSchoolShared.POSITION_SCREEN_ATTENDED_3);
             } else {
