@@ -180,5 +180,12 @@
     <string name="SCCreateAnnocement_TakePhoto">ຖ່າຍ​ຮູບ</string>
     <string name="SCCreateAnnocement_ChooseFromLibrary">ເລືອກຈາກຫ້ອງສະຫມຸດ</string>
 
+    <string name="SCExanResults_Average">ສະເລ່ຍ</string>
+    <string name="SCExanResults_Grade">ຮຽນ</string>
+    <string name="SCExanResults_Rank">ອັນດັບ</string>
+
+    <string name="SCCommon_Ranking">ຈັດລຽງລໍາດັບ</string>
+
+
 
 </resources>

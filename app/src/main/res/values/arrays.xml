@@ -3,6 +3,7 @@
     <array name="term_names">
         <item>@string/SCCommon_Term_1</item>
         <item>@string/SCCommon_Term_2</item>
+        <item>@string/SCCommon_Ranking</item>
     </array>
     <array name="exam_name_year">
         <item>@string/SCExanResults_avg_term1</item>
@@ -83,4 +84,26 @@
         <item>@string/SCSchedule_Sat</item>
         <item>@string/SCSchedule_Sun</item>
     </string-array>
+
+    <string-array name="examTypeNames">
+        <item>@string/SCExanResults_month_9</item>
+        <item>@string/SCExanResults_month_10</item>
+        <item>@string/SCExanResults_month_11</item>
+        <item>@string/SCExanResults_month_12</item>
+        <item>@string/SCExanResults_avg_m1</item>
+        <item>@string/SCExanResults_test_term1</item>
+        <item>@string/SCExanResults_avg_term1</item>
+
+        <item>@string/SCExanResults_month_2</item>
+        <item>@string/SCExanResults_month_3</item>
+        <item>@string/SCExanResults_month_4</item>
+        <item>@string/SCExanResults_month_5</item>
+
+        <item>@string/SCExanResults_avg_m2</item>
+        <item>@string/SCExanResults_test_term2</item>
+        <item>@string/SCExanResults_avg_term2</item>
+
+        <item>@string/SCExanResults_avg_year</item>
+    </string-array>
+
 </resources>
