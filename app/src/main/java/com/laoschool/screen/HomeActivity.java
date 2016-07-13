@@ -923,4 +923,6 @@ public class HomeActivity extends AppCompatActivity implements
         ScreenCreateMessage screenCreateMessage = (ScreenCreateMessage) getSupportFragmentManager().findFragmentByTag(tag);
         screenCreateMessage.presetData(Arrays.asList(selectedStudent), Arrays.asList(selectedStudent), "");
     }
+
+
 }
