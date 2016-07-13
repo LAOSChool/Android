@@ -134,9 +134,9 @@
 
     <string name="SCExamResults_CancelInputExam">Are you sure you want to cancel?</string>
 
-    <string name="SCExamResults_msg_no_selected_subject" >No select subject</string>
-    <string name="SCExamResults_touch_here_to_select" >Touch here to select</string>
-    <string name="SCExamResults_msg_no_select_exam_type" >No select exam type</string>
+    <string name="SCExamResults_msg_no_selected_subject">No select subject</string>
+    <string name="SCExamResults_touch_here_to_select">Touch here to select</string>
+    <string name="SCExamResults_msg_no_select_exam_type">No select exam type</string>
 
 
     <string name="subject_exam" translatable="false">Subject</string>
@@ -216,10 +216,21 @@
     <string name="SCExanResults_test_grad_II">Test grad</string>
     <string name="SCExanResults_test_grad_III">Test grad</string>
 
+    <string name="SCExanResults_Average">Average:</string>
+    <string name="SCExanResults_Grade">Grade:</string>
+    <string name="SCExanResults_Rank">Rank:</string>
+
     <string name="SCCommon_Ok">Ok</string>
     <string name="SCShedule_NoSession">No session</string>
     <string name="SCProfile_SendMessage">Send message</string>
     <string name="SCCommon_Create">Create</string>
     <string name="SCExamResults_Input">Input</string>
+
+    <string name="SCCreateAnnocement_TakePhoto">Take Photo</string>
+    <string name="SCCreateAnnocement_ChooseFromLibrary">Choose from Library</string>
+
+    <string name="SCCommon_Ranking">Ranking</string>
+    <string name="SCCreateAnnocement_NewAnouncement">New anouncement</string>
+
 
 </resources>

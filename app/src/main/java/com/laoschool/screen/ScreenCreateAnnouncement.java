@@ -147,7 +147,7 @@ public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecy
 
 
     @Override
-    public void onAttach(Activity context) {
+    public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof IScreenCreateAnnouncement) {
             mListener = (IScreenCreateAnnouncement) context;
@@ -219,7 +219,9 @@ public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecy
     }
 
     private void _showDialogChooseFile() {
-        final CharSequence[] items = {"Take Photo", "Choose from Library", "Cancel"};
+        final CharSequence[] items = {context.getString(R.string.SCCreateAnnocement_AttachFile)
+                , context.getString(R.string.SCCreateAnnocement_ChooseFromLibrary),
+                context.getString(R.string.SCCommon_Cancel)};
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         //builder.setMessage(items[0]);
 
@@ -227,14 +229,14 @@ public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecy
             @Override
             public void onClick(DialogInterface dialog, int item) {
                 if (files.size() < 5) {
-                    if (items[item].equals("Take Photo")) {
+                    if (items[item].equals(context.getString(R.string.SCCreateAnnocement_AttachFile))) {
                         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         startActivityForResult(intent, LaoSchoolShared.SELECT_CAMERA);
-                    } else if (items[item].equals("Choose from Library")) {
+                    } else if (items[item].equals(context.getString(R.string.SCCreateAnnocement_ChooseFromLibrary))) {
 
                         _chosseImageFormSdCard();
 
-                    } else if (items[item].equals("Cancel")) {
+                    } else if (items[item].equals(context.getString(R.string.SCCommon_Cancel))) {
                         dialog.dismiss();
                     }
                 } else {

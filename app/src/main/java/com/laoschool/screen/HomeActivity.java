@@ -146,7 +146,7 @@ public class HomeActivity extends AppCompatActivity implements
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        thiz = this;
         service = LaoSchoolSingleton.getInstance().getDataAccessService();
 //        Toast.makeText(this, "Getting profile", Toast.LENGTH_SHORT).show();
         if (LaoSchoolShared.myProfile == null) {
@@ -450,7 +450,7 @@ public class HomeActivity extends AppCompatActivity implements
                 _setTitleandShowButtonBack(R.string.title_screen_announcement_details, null, DisplayButtonHome.show);
                 break;
             case LaoSchoolShared.POSITION_SCREEN_CREATE_ANNOUNCEMENT_16:
-                _setTitleandShowButtonBack(-1, "", DisplayButtonHome.show);
+                _setTitleandShowButtonBack(R.string.SCCreateAnnocement_NewAnouncement, null, DisplayButtonHome.show);
                 getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_36dp);
                 break;
             case LaoSchoolShared.POSITION_SCREEN_REQUEST_ATTENDANCE_17:
@@ -585,7 +585,9 @@ public class HomeActivity extends AppCompatActivity implements
                     _gotoPage(LaoSchoolShared.POSITION_SCREEN_MORE_4);
                 }
             } else if (currentPage == LaoSchoolShared.POSITION_SCREEN_CREATE_ANNOUNCEMENT_16) {
+                //
                 _gotoPage(LaoSchoolShared.POSITION_SCREEN_ANNOUNCEMENTS_1);
+
             } else if (currentPage == LaoSchoolShared.POSITION_SCREEN_REQUEST_ATTENDANCE_17) {
                 _gotoPage(LaoSchoolShared.POSITION_SCREEN_ATTENDED_3);
             } else {
@@ -818,7 +820,7 @@ public class HomeActivity extends AppCompatActivity implements
         } else if (beforePosition == LaoSchoolShared.POSITION_SCREEN_PROFILE_13) {
 
             //back to tab message
-            beforePosition=LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5;
+            beforePosition = LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5;
             _gotoPage(LaoSchoolShared.POSITION_SCREEN_PROFILE_13);
         } else {
             //back to tab attender
@@ -853,7 +855,10 @@ public class HomeActivity extends AppCompatActivity implements
 
     @Override
     public void _goBackAnnocements() {
-        onBackPressed();
+        String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_ANNOUNCEMENTS_1);
+        ScreenAnnouncements screenAnnouncements = (ScreenAnnouncements) getSupportFragmentManager().findFragmentByTag(tag);
+        screenAnnouncements.reloadAffterCreate();
+        _gotoPage(LaoSchoolShared.POSITION_SCREEN_ANNOUNCEMENTS_1);
     }
 
     public void reloadApplication(View view) {

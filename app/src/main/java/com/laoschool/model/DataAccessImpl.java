@@ -34,6 +34,7 @@ import com.laoschool.entities.Master;
 import com.laoschool.entities.Message;
 import com.laoschool.entities.School;
 import com.laoschool.entities.SchoolYears;
+import com.laoschool.entities.StudentRanking;
 import com.laoschool.entities.TimeTable;
 import com.laoschool.entities.User;
 import com.laoschool.shared.LaoSchoolShared;
@@ -79,8 +80,8 @@ public class DataAccessImpl implements DataAccessInterface {
 
     //VDC:https://222.255.29.25:8443/laoschoolws/api
     //192.168.0.202:9443
-    final String LOGIN_HOST = "https://222.255.29.25:8443/laoschoolws/";
-    final String HOST = "https://222.255.29.25:8443/laoschoolws/api/";
+    final String LOGIN_HOST = "https://192.168.0.202:9443/laoschoolws/";
+    final String HOST = "https://192.168.0.202:9443/laoschoolws/api/";
 
 
     private DataAccessImpl(Context context) {
@@ -746,7 +747,7 @@ public class DataAccessImpl implements DataAccessInterface {
                             // HTTP Status Code: 409 Unauthorized Oo
                             Log.e("Service/deleteAtten()", "error status code " + networkResponse.statusCode);
                             callback.onAuthFail(error.toString());
-                        } else if(networkResponse != null) {
+                        } else if (networkResponse != null) {
                             Log.e("Service/deleteAtten()", new String(networkResponse.data));
                         } else {
                             Log.e("Service/deleteAtten()", error.toString());
@@ -1183,7 +1184,7 @@ public class DataAccessImpl implements DataAccessInterface {
         jsonObject.addProperty("content", message.getContent());
         jsonObject.addProperty("from_usr_id", message.getFrom_usr_id());
         jsonObject.addProperty("to_usr_id", message.getTo_usr_id());
-        if(message.getCc_list() != null && !message.getCc_list().isEmpty())
+        if (message.getCc_list() != null && !message.getCc_list().isEmpty())
             jsonObject.addProperty("cc_list", message.getCc_list());
         Gson gson = new Gson();
         String jsonString = gson.toJson(jsonObject);
@@ -2100,5 +2101,55 @@ public class DataAccessImpl implements DataAccessInterface {
         }
 
         return jsonArray.toString();
+    }
+
+    @Override
+    public void getMyRanking(final AsyncCallback<StudentRanking> callback) {
+        String url = HOST + "exam_results/ranks?filter_class_id=" + LaoSchoolShared.myProfile.getEclass().getId() + "&filter_year_id=1&filter_student_id=" + LaoSchoolShared.myProfile.getId();
+        JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    if (response != null) {
+                        JSONArray rankingStudentArray = response.getJSONArray("messageObject");
+                        StudentRanking studentRanking = new StudentRanking();
+                        if (rankingStudentArray != null) {
+                            if (rankingStudentArray.length() > 0) {
+                                //  yearsList = SchoolYears.fromArray(rankingStudentArray.toString());
+                                studentRanking = StudentRanking.toStudentRanking(rankingStudentArray.getJSONObject(0));
+                            }
+                            callback.onSuccess(studentRanking);
+                        } else {
+                            callback.onSuccess(studentRanking);
+                        }
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    callback.onSuccess(new StudentRanking());
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                NetworkResponse networkResponse = error.networkResponse;
+                Log.e("Service", "getMyRanking() -error status code " + networkResponse.statusCode + ",message:" + error.toString());
+                if (networkResponse != null && networkResponse.statusCode == 409) {
+                    // HTTP Status Code: 409 Unauthorized Oo
+                    callback.onAuthFail(error.toString());
+                } else {
+                    callback.onFailure(error.toString());
+                }
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", getAuthKey());
+                return params;
+            }
+        };
+        mRequestQueue.add(jsonArrayRequest);
     }
 }

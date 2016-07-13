@@ -177,5 +177,15 @@
     <string name="SCExanResults_test_term1">ພາກ​ຮຽນ 1</string>
     <string name="SCExanResults_test_grad_III">ເສັງ​ຈົບມໍ 7</string>
 
+    <string name="SCCreateAnnocement_TakePhoto">ຖ່າຍ​ຮູບ</string>
+    <string name="SCCreateAnnocement_ChooseFromLibrary">ເລືອກຈາກຫ້ອງສະຫມຸດ</string>
+
+    <string name="SCExanResults_Average">ສະເລ່ຍ</string>
+    <string name="SCExanResults_Grade">ຮຽນ</string>
+    <string name="SCExanResults_Rank">ອັນດັບ</string>
+
+    <string name="SCCommon_Ranking">ຈັດລຽງລໍາດັບ</string>
+    <string name="SCCreateAnnocement_NewAnouncement">ປະ​ກາດ​ໃໝ່</string>
+
 
 </resources>
