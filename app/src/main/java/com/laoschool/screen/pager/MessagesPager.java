@@ -38,6 +38,7 @@ public class MessagesPager extends Fragment {
     private ScreenMessage screenMessage;
     private Context context;
     SwipeRefreshLayout mSwipeRefreshLayout;
+    TextView lbNoMessage;
     private List<Message> messages;
 
     public MessagesPager() {
@@ -67,7 +68,7 @@ public class MessagesPager extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.view_message_list, container, false);
-        TextView lbNoMessage = (TextView) view.findViewById(R.id.lbNoMessage);
+        lbNoMessage = (TextView) view.findViewById(R.id.lbNoMessage);
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
         mRecyclerListMessage = (RecyclerView) view.findViewById(R.id.mRecyclerListMessage);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
@@ -181,6 +182,13 @@ public class MessagesPager extends Fragment {
 
     public void setListMessage(final List<Message> messages, final int position, boolean swapData) {
         try {
+            if (messages.size() > 0) {
+                lbNoMessage.setVisibility(View.GONE);
+                mSwipeRefreshLayout.setVisibility(View.VISIBLE);
+            } else {
+                lbNoMessage.setVisibility(View.VISIBLE);
+                mSwipeRefreshLayout.setVisibility(View.GONE);
+            }
             final ListMessageAdapter listMessageAdapter = new ListMessageAdapter(mRecyclerListMessage, screenMessage, messages, position);
             listMessageAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
                                                          @Override

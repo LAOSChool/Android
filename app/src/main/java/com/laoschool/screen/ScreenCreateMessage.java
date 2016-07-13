@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -23,6 +24,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.entities.Message;
@@ -197,9 +200,9 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
         btnStudentPicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(dialog == null)
+                if (dialog == null)
                     dialog = new AlertDialog.Builder(context).create();
-                if(tableStudents == null) {
+                if (tableStudents == null) {
                     tableStudents = new TableStudents(context, new TableStudents.TableStudentsListener() {
                         @Override
                         public void onBtnDoneClick(List<User> result) {
@@ -223,7 +226,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
 
                         @Override
                         public void onSearch(List<User> searchList) {
-                            if(searchList.size() > 4) {
+                            if (searchList.size() > 4) {
                                 WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
                                 lp.copyFrom(dialog.getWindow().getAttributes());
                                 lp.width = WindowManager.LayoutParams.MATCH_PARENT;
@@ -254,7 +257,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                 dialog.show();
                 dialog.setCanceledOnTouchOutside(true);
 
-                if(listStudents.size() > 4) {
+                if (listStudents.size() > 4) {
                     WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
                     lp.copyFrom(dialog.getWindow().getAttributes());
                     lp.width = WindowManager.LayoutParams.MATCH_PARENT;
@@ -267,7 +270,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
         btnSmsCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(cbSendSms.isChecked())
+                if (cbSendSms.isChecked())
                     cbSendSms.setChecked(false);
                 else
                     cbSendSms.setChecked(true);
@@ -277,7 +280,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
         btnImportantCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(cbImportant.isChecked())
+                if (cbImportant.isChecked())
                     cbImportant.setChecked(false);
                 else
                     cbImportant.setChecked(true);
@@ -393,11 +396,11 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
     private void _submitForm(String currentRole) {
         LaoSchoolShared.hideSoftKeyboard(getActivity());
         if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
-            if(txtMessageTo.getText().equals("")) {
+            if (txtMessageTo.getText().equals("")) {
                 Toast.makeText(context, context.getString(R.string.SCCreateMessage_SendNoOne), Toast.LENGTH_SHORT).show();
                 return;
             }
-            if(txtMessageContent.getText().equals("")) {
+            if (txtMessageContent.getText().equals("")) {
                 Toast.makeText(context, context.getString(R.string.SCCreateMessage_EmptyMessage), Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -414,7 +417,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
             message.setSchool_id(LaoSchoolShared.myProfile.getSchool_id());
             //Building cc_list
             String cc_list = "";
-            for(User student: selectedStudents)
+            for (User student : selectedStudents)
                 cc_list = cc_list + student.getId() + ",";
             message.setCc_list(cc_list);
 
@@ -422,8 +425,8 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
 
             //Sending message
             final ProgressDialog ringProgressDialog = ProgressDialog.show(this.getActivity(),
-                    context.getString(R.string.SCCommon_PleaseWait)+ " ...",
-                    context.getString(R.string.SCCommon_Sending)+ " ...", true);
+                    context.getString(R.string.SCCommon_PleaseWait) + " ...",
+                    context.getString(R.string.SCCommon_Sending) + " ...", true);
             service.createMessage(message, new AsyncCallback<Message>() {
                 @Override
                 public void onSuccess(Message result) {
@@ -431,11 +434,18 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                     //Save local
                     dataAccessMessage.addMessage(result);
                     _resetForm();
+
                     if (iScreenCreateMessage != null) {
-                        iScreenCreateMessage.goBackToMessage();
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                iScreenCreateMessage.goBackToMessage();
+                                ringProgressDialog.dismiss();
+                                _showAlertMessage(context.getString(R.string.SCCreateMessage_SendSuccessful));
+                            }
+                        }, 500);
                     }
-                    ringProgressDialog.dismiss();
-                    _showAlertMessage(context.getString(R.string.SCCreateMessage_SendSuccessful));
+
                 }
 
                 @Override
@@ -473,8 +483,8 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                     message.setSchool_id(LaoSchoolShared.myProfile.getSchool_id());
 
                     final ProgressDialog ringProgressDialog = ProgressDialog.show(this.getActivity(),
-                            context.getString(R.string.SCCommon_PleaseWait)+ " ...",
-                            context.getString(R.string.SCCommon_Sending)+ " ...", true);
+                            context.getString(R.string.SCCommon_PleaseWait) + " ...",
+                            context.getString(R.string.SCCommon_Sending) + " ...", true);
                     service.createMessage(message, new AsyncCallback<Message>() {
                         @Override
                         public void onSuccess(Message result) {
@@ -483,11 +493,15 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                             // save local
                             dataAccessMessage.addMessage(result);
                             _resetForm();
-                            if (iScreenCreateMessage != null) {
-                                iScreenCreateMessage.goBackToMessage();
-                            }
-                            ringProgressDialog.dismiss();
-                            _showAlertMessage(context.getString(R.string.SCCreateMessage_SendSuccessful));
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    iScreenCreateMessage.goBackToMessage();
+                                    ringProgressDialog.dismiss();
+                                    _showAlertMessage(context.getString(R.string.SCCreateMessage_SendSuccessful));
+                                }
+                            }, 500);
+
                         }
 
                         @Override

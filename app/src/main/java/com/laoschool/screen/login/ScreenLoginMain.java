@@ -38,6 +38,7 @@ public class ScreenLoginMain extends Fragment {
 
     private DataAccessInterface service;
     private ScreenLoginMain thiz = this;
+    Bundle mainBudle;
 
     ScreenLogin container;
 
@@ -53,6 +54,9 @@ public class ScreenLoginMain extends Fragment {
         super.onCreate(savedInstanceState);
 
         service = DataAccessImpl.getInstance(this.getActivity());
+        if (getArguments() != null) {
+            mainBudle = getArguments();
+        }
     }
 
 
@@ -82,8 +86,8 @@ public class ScreenLoginMain extends Fragment {
         btnChangeLanguage.setText(R.string.SCCommon_Language);
         btnFogetPass.setText(R.string.SCLogin_ForgotPass);
 
-        btnChangeLanguage.setPaintFlags(btnChangeLanguage.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
-        btnFogetPass.setPaintFlags(btnFogetPass.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
+        btnChangeLanguage.setPaintFlags(btnChangeLanguage.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        btnFogetPass.setPaintFlags(btnFogetPass.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
         int color = Color.parseColor("#ffffff"); //The color u want
         btnQuestion.setColorFilter(color);
@@ -215,6 +219,7 @@ public class ScreenLoginMain extends Fragment {
 
     public void goToHomeScreen() {
         Intent intent = new Intent(this.getActivity(), HomeActivity.class);
+        if (mainBudle != null) intent.putExtras(mainBudle);
         startActivity(intent);
         this.getActivity().finish();
     }

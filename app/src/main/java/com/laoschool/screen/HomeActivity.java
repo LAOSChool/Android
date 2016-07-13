@@ -35,6 +35,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
 import com.laoschool.R;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.adapter.LaoSchoolPagerAdapter;
@@ -50,6 +52,7 @@ import com.laoschool.screen.ScreenProfile.IProfile;
 import com.laoschool.screen.login.ScreenLogin;
 import com.laoschool.screen.view.Languages;
 import com.laoschool.shared.LaoSchoolShared;
+import com.laoschool.tools.LaoSchoolFirebaseMessagingService;
 import com.laoschool.view.FragmentLifecycle;
 import com.laoschool.view.ViewpagerDisableSwipeLeft;
 
@@ -66,7 +69,7 @@ public class HomeActivity extends AppCompatActivity implements
         IScreenCreateAnnouncement,
         ScreenListStudent.IScreenListStudentOfClass,
         IProfile {
-    private static final String TAG = "HomeScreen";
+    private static final String TAG = HomeActivity.class.getSimpleName();
 
     private TabHost mTabHost;
     private ViewpagerDisableSwipeLeft mViewPager;
@@ -165,6 +168,14 @@ public class HomeActivity extends AppCompatActivity implements
         }
         // Intialise ViewPager
         intialiseViewPager(currentRole);
+
+        if (getIntent().getExtras() != null) {
+            for (String key : getIntent().getExtras().keySet()) {
+                String value = getIntent().getExtras().getString(key);
+                Log.d(TAG, "Key: " + key + " Value: " + value);
+            }
+
+        }
     }
 
     private void getUserProfile() {
@@ -922,4 +933,6 @@ public class HomeActivity extends AppCompatActivity implements
         ScreenCreateMessage screenCreateMessage = (ScreenCreateMessage) getSupportFragmentManager().findFragmentByTag(tag);
         screenCreateMessage.presetData(Arrays.asList(selectedStudent), Arrays.asList(selectedStudent), "");
     }
+
+
 }
