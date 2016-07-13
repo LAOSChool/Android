@@ -586,9 +586,6 @@ public class HomeActivity extends AppCompatActivity implements
                 }
             } else if (currentPage == LaoSchoolShared.POSITION_SCREEN_CREATE_ANNOUNCEMENT_16) {
                 //
-                String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_ANNOUNCEMENTS_1);
-                ScreenAnnouncements screenAnnouncements = (ScreenAnnouncements) getSupportFragmentManager().findFragmentByTag(tag);
-                screenAnnouncements.reloadAffterCreate();
                 _gotoPage(LaoSchoolShared.POSITION_SCREEN_ANNOUNCEMENTS_1);
 
             } else if (currentPage == LaoSchoolShared.POSITION_SCREEN_REQUEST_ATTENDANCE_17) {
@@ -858,7 +855,10 @@ public class HomeActivity extends AppCompatActivity implements
 
     @Override
     public void _goBackAnnocements() {
-        onBackPressed();
+        String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_ANNOUNCEMENTS_1);
+        ScreenAnnouncements screenAnnouncements = (ScreenAnnouncements) getSupportFragmentManager().findFragmentByTag(tag);
+        screenAnnouncements.reloadAffterCreate();
+        _gotoPage(LaoSchoolShared.POSITION_SCREEN_ANNOUNCEMENTS_1);
     }
 
     public void reloadApplication(View view) {

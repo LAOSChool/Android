@@ -744,7 +744,7 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
                                 notifragment._setListNotification(notificationForUser, position);
                                 _showProgressLoading(false);
                             }
-                        }, 2000);
+                        }, 1000);
                     } else {
                         showNodata();
                     }
