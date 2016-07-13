@@ -42,14 +42,14 @@ import java.util.Locale;
 public class SplashScreen extends Activity {
 
     private static final long SPLASH_TIME_OUT = 1000;
-    public final String TAG = "SplashScreen";
+    public final String TAG = SplashScreen.class.getSimpleName();
     SplashScreen thiz;
 
     void setLanguage() {
         SharedPreferences prefs = getSharedPreferences(
                 LaoSchoolShared.SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
         String language = prefs.getString(Languages.PREFERENCES_NAME, null);
-        if(language != null && language.equals(Languages.LANGUAGE_LAOS)) {
+        if (language != null && language.equals(Languages.LANGUAGE_LAOS)) {
             Locale locale = new Locale("lo");
             Locale.setDefault(locale);
             Configuration config = new Configuration();
@@ -162,6 +162,9 @@ public class SplashScreen extends Activity {
 
     private void startLogin() {
         Intent intent = new Intent(SplashScreen.this, ScreenLogin.class);
+        if (getIntent().getExtras() != null) {
+            intent.putExtras(getIntent().getExtras());
+        }
         startActivity(intent);
         this.finish();
     }
@@ -172,6 +175,9 @@ public class SplashScreen extends Activity {
             public void onSuccess(User result) {
                 LaoSchoolShared.myProfile = result;
                 Intent intent = new Intent(SplashScreen.this, HomeActivity.class);
+                if (getIntent().getExtras() != null) {
+                    intent.putExtras(getIntent().getExtras());
+                }
                 startActivity(intent);
                 finish();
             }
