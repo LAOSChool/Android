@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="8dp"
-                android:text="@string/class_information"
+                android:text=""
                 android:textColor="#fff"
                 android:textSize="14sp" />
         </RelativeLayout>
@@ -102,7 +102,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="8dp"
-                android:text="@string/exam_results_average"
+                android:text=""
                 android:textColor="#fff"
                 android:textSize="14sp"
                 android:visibility="gone" />
@@ -120,7 +120,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_gravity="center_vertical"
-                android:text="@string/avg_of_term1"
+                android:text="@string/SCFinalExamResults_avg_of_term1"
                 android:textColor="#fff" />
 
             <TextView
@@ -129,7 +129,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="56dp"
+                android:layout_marginLeft="100dp"
                 android:text="New Text"
                 android:textColor="#fff"
                 android:textSize="18sp"
@@ -148,7 +148,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_gravity="center_vertical"
-                android:text="@string/avg_of_term2"
+                android:text="@string/SCFinalExamResults_avg_of_term2"
                 android:textColor="#fff" />
 
             <TextView
@@ -157,7 +157,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_gravity="center_vertical|left"
-                android:layout_marginLeft="56dp"
+                android:layout_marginLeft="100dp"
                 android:text="New Text"
                 android:textColor="#fff"
                 android:textSize="18sp"
@@ -176,7 +176,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_gravity="center_vertical"
-                android:text="@string/avg_of_year"
+                android:text="@string/SCFinalExamResults_avg_of_year"
                 android:textColor="#fff" />
 
             <TextView
@@ -185,7 +185,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="56dp"
+                android:layout_marginLeft="100dp"
                 android:text="New Text"
                 android:textColor="#fff"
                 android:textSize="18sp"

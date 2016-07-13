@@ -147,7 +147,7 @@ public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecy
 
 
     @Override
-    public void onAttach(Activity context) {
+    public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof IScreenCreateAnnouncement) {
             mListener = (IScreenCreateAnnouncement) context;
@@ -219,7 +219,9 @@ public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecy
     }
 
     private void _showDialogChooseFile() {
-        final CharSequence[] items = {"Take Photo", "Choose from Library", "Cancel"};
+        final CharSequence[] items = {context.getString(R.string.SCCreateAnnocement_AttachFile)
+                , context.getString(R.string.SCCreateAnnocement_ChooseFromLibrary),
+                context.getString(R.string.SCCommon_Cancel)};
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         //builder.setMessage(items[0]);
 
@@ -227,18 +229,18 @@ public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecy
             @Override
             public void onClick(DialogInterface dialog, int item) {
                 if (files.size() < 5) {
-                    if (items[item].equals("Take Photo")) {
+                    if (items[item].equals(context.getString(R.string.SCCreateAnnocement_AttachFile))) {
                         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         startActivityForResult(intent, LaoSchoolShared.SELECT_CAMERA);
-                    } else if (items[item].equals("Choose from Library")) {
+                    } else if (items[item].equals(context.getString(R.string.SCCreateAnnocement_ChooseFromLibrary))) {
 
                         _chosseImageFormSdCard();
 
-                    } else if (items[item].equals("Cancel")) {
+                    } else if (items[item].equals(context.getString(R.string.SCCommon_Cancel))) {
                         dialog.dismiss();
                     }
                 } else {
-                    Toast.makeText(context, R.string.err_msg_limit_img_seleted, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.SCCreateAnnocement_err_msg_limit_img_seleted, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -285,15 +287,15 @@ public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecy
     private void _confirmSentNotification(final Message message) {
         LaoSchoolShared.hideSoftKeyboard(getActivity());
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage(getString(R.string.msg_confirm_sent_notication) + " " + LaoSchoolShared.myProfile.getEclass().getTitle());
+        builder.setMessage(getString(R.string.SCCreateAnnocement_msg_confirm_sent_notication) + " " + LaoSchoolShared.myProfile.getEclass().getTitle());
 
-        builder.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.SCCommon_Ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 _createNotification(message);
             }
         });
-        builder.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.SCCommon_Cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -308,14 +310,14 @@ public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecy
     private void _createNotification(Message message) {
         try {
             final ProgressDialog progressDialog = new ProgressDialog(context);
-            progressDialog.setMessage(getString(R.string.msg_create_process));
+            progressDialog.setMessage(getString(R.string.SCCommon_Create));
             progressDialog.show();
             LaoSchoolSingleton.getInstance().getDataAccessService().createNotification(message, new AsyncCallback<Message>() {
                 @Override
                 public void onSuccess(Message result) {
                     progressDialog.dismiss();
                     Log.d(TAG, result.toString());
-                    String alert = getString(R.string.msg_create_message_sucessfully);
+                    String alert = getString(R.string.SCCommon_Successfully);
                     _showAlertMessage(alert);
                 }
 
@@ -323,7 +325,7 @@ public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecy
                 public void onFailure(String message) {
                     progressDialog.dismiss();
                     Log.e(TAG, message);
-                    String alert = getString(R.string.err_msg_create_message);
+                    String alert = getString(R.string.SCCreateMessage_err_msg_create_message);
                     _showAlertMessage(alert);
                 }
 
@@ -341,7 +343,7 @@ public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecy
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
         builder.setMessage(alert);
-        builder.setNegativeButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.SCCommon_Ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 _resetForm();
@@ -401,7 +403,7 @@ public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecy
     private boolean validateMessageTitle(EditText edit) {
         if (edit.getText().toString().trim().isEmpty()) {
             requestFocus(edit);
-            Toast.makeText(context, R.string.err_msg_input_message_title, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.SCCreateMessage_err_msg_input_message_title, Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
@@ -410,7 +412,7 @@ public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecy
     private boolean validateMessageConten(EditText edit) {
         if (edit.getText().toString().trim().isEmpty()) {
             requestFocus(edit);
-            Toast.makeText(context, R.string.err_msg_input_message_conten, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.SCCreateMessage_err_msg_input_message_conten, Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
@@ -469,7 +471,7 @@ public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecy
             files.add(newImage);
             listImageSelectedAdapter.notifyItemInserted(files.size());
         } else {
-            Log.d(TAG, getString(R.string.err_msg_limit_img_seleted));
+            Log.d(TAG, getString(R.string.SCCreateAnnocement_err_msg_limit_img_seleted));
         }
     }
 }

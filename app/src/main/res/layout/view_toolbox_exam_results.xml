@@ -52,7 +52,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/btnSelectedDate"
+            android:text="@string/SCExamResults_SelectScoreType"
             android:id="@+id/lbInputDate"
             android:layout_gravity="center_vertical"
             android:layout_centerVertical="true"

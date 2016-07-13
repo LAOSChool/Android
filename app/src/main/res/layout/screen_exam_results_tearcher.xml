@@ -91,7 +91,7 @@
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="56dp"
-                        android:text="@string/selected_subject"
+                        android:text="@string/SCExamResults_SelectSubject"
                         android:textStyle="bold"
                         android:textColor="@color/colorTextUnSelected" />
 
@@ -159,7 +159,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@string/msg_no_selected_subject"
+                android:text="@string/SCExamResults_msg_no_selected_subject"
                 android:textSize="20sp" />
 
             <TextView
@@ -167,7 +167,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@string/touch_here_to_select" />
+                android:text="@string/SCExamResults_touch_here_to_select" />
         </LinearLayout>
 
     </FrameLayout>

@@ -4,6 +4,6 @@
     <item
         android:id="@+id/action_refersh_time_table"
         android:icon="@drawable/ic_refresh_white_24dp"
-        android:title="@string/action_refersh_time_table"
+        android:title="@string/SCCommon_Reload"
         app:showAsAction="always" />
 </menu>

@@ -13,6 +13,7 @@ import com.laoschool.entities.Master;
 import com.laoschool.entities.Message;
 import com.laoschool.entities.School;
 import com.laoschool.entities.SchoolYears;
+import com.laoschool.entities.StudentRanking;
 import com.laoschool.entities.TimeTable;
 import com.laoschool.entities.User;
 
@@ -313,6 +314,8 @@ public interface DataAccessInterface {
     public void getMySchoolYears(AsyncCallback<List<SchoolYears>> callback);
 
     public void inputBatchExamResults(List<ExamResult> examResult, AsyncCallback<String> callback);
+
+    public void getMyRanking(AsyncCallback<StudentRanking> callback);
 
 
 }

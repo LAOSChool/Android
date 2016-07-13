@@ -76,7 +76,7 @@ public class ExamResultsAdapter extends RecyclerView.Adapter<ExamResultsAdapter.
                 } else if (holder.viewType == TYPE_EXAM) {
                     View view = infomationViewHolder.view;
                     ExamResult examResult = examResults.get(position);
-                    String userName = examResult.getStudent_name();
+                    String userName = examResult.getStd_fullname();
 
                     TextView row_title = (TextView) view.findViewById(R.id.row_title);
                     TextView lbNickName = (TextView) view.findViewById(R.id.lbNickName);
@@ -145,7 +145,7 @@ public class ExamResultsAdapter extends RecyclerView.Adapter<ExamResultsAdapter.
             examResults.addAll(origin_examResults);
         } else {
             for (ExamResult examResult : origin_examResults) {
-                String studentName = examResult.getStudent_name();
+                String studentName =  examResult.getStudent_name();
                 if (charText.length() != 0 && studentName.toLowerCase(Locale.getDefault()).contains(charText)) {
                     examResults.add(examResult);
                 }

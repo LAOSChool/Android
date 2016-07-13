@@ -314,8 +314,8 @@ public class LaoSchoolShared {
         preferences.edit().remove("auth_key").commit();
 
         AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-        builder1.setTitle(context.getString(R.string.err));
-        builder1.setMessage(context.getString(R.string.msg_re_login_application));
+        builder1.setTitle(context.getString(R.string.SCCommon_Error));
+        builder1.setMessage(context.getString(R.string.SCCommon_re_login_application));
         builder1.setCancelable(true);
 
         final Context finalContext = context;

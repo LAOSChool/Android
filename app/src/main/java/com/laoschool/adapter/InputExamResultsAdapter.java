@@ -95,7 +95,7 @@ public class InputExamResultsAdapter extends RecyclerView.Adapter<InputExamResul
         try {
             final int studentId = studentIds.get(position);
             final ExamResult examResults = groupExamByStudent.get(studentId);
-            String userName = examResults.getStudent_name();
+            String userName = examResults.getStd_fullname();
             //fill data exam results
             holder.row_title.setText(userName);
             holder.txtInputExamResults.setText(examResults.getSresult());
@@ -123,7 +123,7 @@ public class InputExamResultsAdapter extends RecyclerView.Adapter<InputExamResul
                     if (!editable.toString().trim().isEmpty()) {
                         Float exam = Float.valueOf(editable.toString());
                         if (exam < 0 || exam > 10) {
-                            holder.txtInputExamResults.setError(context.getString(R.string.err_limit_input_score));
+                            holder.txtInputExamResults.setError(null);
                             return;
                         }
                         Log.d(TAG, "addTextChangedListener().afterTextChanged(" + position + ") -exam:" + exam);
@@ -206,7 +206,7 @@ public class InputExamResultsAdapter extends RecyclerView.Adapter<InputExamResul
         txtNoticeOfExam.setText(examResults.getNotice());
         builder.setView(inputNotice);
 
-        builder.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.SCCommon_Ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 String notice = txtNoticeOfExam.getText().toString();
@@ -217,7 +217,7 @@ public class InputExamResultsAdapter extends RecyclerView.Adapter<InputExamResul
             }
         });
 
-        builder.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.SCCommon_Cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();

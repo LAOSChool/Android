@@ -90,6 +90,7 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
         this.notification = message;
     }
 
+
     public interface IScreenAnnouncements {
 
         void gotoScreenAnnouncementDetails(Message notificaiton);
@@ -281,10 +282,12 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     }
 
     private static void _initPageData() {
+
         List<Message> notificationForUserInbox = accessNotification.getListNotificationForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
         List<Message> notificationForUserUnread = accessNotification.getListNotificationForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 0);
         notificationPagerAdapter = new NotificationPagerAdapter(fr, notificationForUserInbox, notificationForUserUnread);
         viewPage.setAdapter(notificationPagerAdapter);
+
         tabs.setViewPager(viewPage);
     }
 
@@ -387,6 +390,7 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
             itemSearch = menu.findItem(R.id.search);
             itemSearch.setVisible(false);
             mSearch = (SearchView) itemSearch.getActionView();
+            mSearch.setQueryHint(context.getString(R.string.SCCommon_Search));
             if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER))
                 itemCreateAnnocement.setVisible(true);
             else itemCreateAnnocement.setVisible(false);
@@ -717,5 +721,50 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         Log.d(TAG, "setUserVisibleHint() -isVisibleToUser:" + isVisibleToUser);
+    }
+
+    public void reloadAffterCreate() {
+        Log.d(TAG, "reloadAffterCreate()");
+        _showProgressLoading(true);
+        service.getNotification(new AsyncCallback<List<Message>>() {
+            @Override
+            public void onSuccess(final List<Message> result) {
+                try {
+                    if (result != null) {
+                        for (Message message : result) {
+                            accessNotification.addOrUpdateNotification(message);
+                        }
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                int position = viewPage.getCurrentItem();
+                                Log.d(TAG, "reloadAffterCreate() position = " + position);
+                                List<Message> notificationForUser = accessNotification.getListNotificationForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, (position == 0) ? 1 : 0);
+                                NotificationList notifragment = ((NotificationPagerAdapter) (viewPage.getAdapter())).getFragment(position);
+                                notifragment._setListNotification(notificationForUser, position);
+                                _showProgressLoading(false);
+                            }
+                        }, 1000);
+                    } else {
+                        showNodata();
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "reloadAffterCreate()/getNotification() Exception=" + e.getMessage());
+                    showError();
+
+                }
+            }
+
+            @Override
+            public void onFailure(String message) {
+                Log.e(TAG, "reloadAffterCreate()/getNotification() onFailure=" + message);
+                showError();
+            }
+
+            @Override
+            public void onAuthFail(String message) {
+                LaoSchoolShared.goBackToLoginPage(context);
+            }
+        });
     }
 }

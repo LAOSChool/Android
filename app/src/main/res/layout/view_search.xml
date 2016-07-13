@@ -31,7 +31,7 @@
             android:layout_height="35dp"
             android:layout_marginLeft="30dp"
             android:background="@android:color/transparent"
-            android:hint="@string/hint_search_exam_resutls"
+            android:hint="@string/SCCommon_Search"
             android:imeOptions="actionSearch"
             android:inputType="text"
             android:textSize="14sp">
