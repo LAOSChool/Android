@@ -527,19 +527,19 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
 
     public void reloadDataAfterCreateMessages() {
         try {
-            MessagesPager notifragment = ((MessagesPagerAdapter) (pager.getAdapter())).getFragment(pager.getCurrentItem());
+            MessagesPager messagesPager = ((MessagesPagerAdapter) (pager.getAdapter())).getFragment(pager.getCurrentItem());
             switch (pager.getCurrentItem()) {
                 case 0:
                     List<Message> messagesForUserInbox = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
-                    notifragment.setListMessage(messagesForUserInbox, 0, true);
+                    messagesPager.setListMessage(messagesForUserInbox, 0, true);
                     break;
                 case 1:
                     List<Message> messagesForUserUnread = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 0);
-                    notifragment.setListMessage(messagesForUserUnread, 1, true);
+                    messagesPager.setListMessage(messagesForUserUnread, 1, true);
                     break;
                 case 2:
                     List<Message> messagesFormUser = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
-                    notifragment.setListMessage(messagesFormUser, 2, true);
+                    messagesPager.setListMessage(messagesFormUser, 2, true);
                     break;
             }
         } catch (Exception e) {
