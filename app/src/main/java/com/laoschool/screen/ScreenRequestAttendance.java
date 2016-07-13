@@ -212,7 +212,7 @@ public class ScreenRequestAttendance extends Fragment implements FragmentLifecyc
                 @Override
                 public void onFailure(String message) {
                     ringProgressDialog.dismiss();
-                    if(message.contains("invalid"))
+                    if(message.contains("Attendance already existing"))
                         Toast.makeText(thiz.getContext(), thiz.getContext().getString(R.string.SCAttendance_NotValid), Toast.LENGTH_SHORT).show();
                     else
                         Toast.makeText(thiz.getContext(), thiz.getContext().getString(R.string.SCAttendance_SendFail), Toast.LENGTH_SHORT).show();

@@ -40,7 +40,7 @@
     <string name="SCCommon_Close">Close</string>
     <string name="SCCommon_Date">Date</string>
     <string name="SCCommon_Error">Error</string>
-    <string name="SCCommon_ListStudent">Students list</string>
+    <string name="SCCommon_ClassInfo">Class information</string>
     <string name="SCCommon_Successfully">Successfully</string>
     <string name="SCCommon_err_msg_network_disconnect">Failed to connect to server. Please try again</string>
 
@@ -80,6 +80,7 @@
     <string name="SCAttendance_ChoseSubjects">Chose Subject</string>
     <string name="SCAttendance_ListStudents">List students</string>
     <string name="SCAttendance_Absent">Absent</string>
+    <string name="SCAttendance_Inform">Inform</string>
     <string name="SCAttendance_Fulldays">Full days</string>
     <string name="SCAttendance_Sessions">Sessions</string>
     <string name="SCAttendance_Excused">Excused</string>
@@ -94,6 +95,7 @@
     <string name="SCAttendance_CancelAbsentConfirm">Are you sure to cancel this absent?</string>
     <string name="SCAttendance_TeacherCreate">Create Absent</string>
     <string name="SCAttendance_DefaultMessage1">LaoSchool announced this student has in the class.</string>
+    <string name="SCAttendance_DefaultMessage2">LaoSchool announced this student is absent.</string>
     <string name="SCAttendance_SelectDate">Select Date</string>
 
     <!--ChangePass screen-->

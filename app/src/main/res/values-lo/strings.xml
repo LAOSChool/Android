@@ -87,11 +87,13 @@
     <string name="SCCommon_Date">ວັນທີ່ສະຫມັກ</string>
     <string name="SCAttendance_DefaultMessage1">ໂຮງຮຽນລາວປະກາດນັກສຶກສານີ້ມີໃນຫ້ອງຮຽນໄດ້.</string>
     <string name="SCAttendance_SelectDate">ເລືອກວັນທີ່</string>
+    <string name="SCAttendance_DefaultMessage2">ໂຮງຮຽນລາວປະກາດນັກສຶກສານີ້ແມ່ນບໍ່.</string>
+    <string name="SCAttendance_Inform">ແຈ້ງ</string>
     <string name="SCCommon_Ok">ຕົກ​ລົງ</string>
     <string name="SCreateAnnouncement_HintMessageContent">ກະ​ລຸ​ນາ​ໃສ່​ເນື້ອ​ໃນ</string>
     <string name="SCreateAnnouncement_HintMessageSubject">ກະລຸນາໃສ່ຊື່!</string>
     <string name="SCCommon_Error">ຜິດ​ພາດ</string>
-    <string name="SCCommon_ListStudent">ລາຍ​ຊື່​ນັກ​ຮຽນ</string>
+    <string name="SCCommon_ClassInfo">ຂໍ້ມູນລະດັບ</string>
     <string name="SCExamResults_SelectSubject">ເລື​ອກ​ຫົວ​ຂໍ້</string>
     <string name="SCExamResults_CancelInputExam">ທ່່ານ​ຈ​ະ​ຍົກ​ເລີກ​ບໍ?</string>
     <string name="SCExamResults_SelectScoreType">ເລືື​ອກ​ປະ​ເພດ​ຄະ​ແນນ</string>
@@ -186,6 +188,5 @@
 
     <string name="SCCommon_Ranking">ຈັດລຽງລໍາດັບ</string>
     <string name="SCCreateAnnocement_NewAnouncement">ປະ​ກາດ​ໃໝ່</string>
-
 
 </resources>

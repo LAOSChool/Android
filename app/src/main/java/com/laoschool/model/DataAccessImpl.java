@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.entities.Attendance;
+import com.laoschool.entities.AttendanceReason;
 import com.laoschool.entities.AttendanceRollup;
 import com.laoschool.entities.Class;
 import com.laoschool.entities.ExamResult;
@@ -769,6 +770,60 @@ public class DataAccessImpl implements DataAccessInterface {
 //                params.put("attendance_id", String.valueOf(attendanceId));
 //                return params;
 //            };
+        };
+
+        mRequestQueue.add(stringRequest);
+    }
+
+    @Override
+    public void getAttendanceReason(final AsyncCallback<List<AttendanceReason>> callback) {
+        // Request a string response from the provided URL.
+        String url = HOST + "sys/sys_att_reason";
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url.trim(),
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("Service/getAttReason()", response);
+                        try {
+                            JSONObject mainObject = new JSONObject(response);
+                            JSONArray listAttReason = mainObject.getJSONArray("list");
+                            List<AttendanceReason> datas = new ArrayList<AttendanceReason>();
+                            for(int i = 0; i < listAttReason.length(); i++) {
+                                AttendanceReason attendanceReason =
+                                        AttendanceReason.fromJson(listAttReason.getJSONObject(i).toString());
+                                datas.add(attendanceReason);
+                            }
+                            callback.onSuccess(datas);
+                        } catch (JSONException e) {
+                            Log.d("Service/getAttReason()", "Can not parse json object data");
+                            callback.onFailure(e.toString());
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && networkResponse.statusCode == 409) {
+                            // HTTP Status Code: 409 Unauthorized Oo
+                            Log.e("Service/getAttReason()", "error status code " + networkResponse.statusCode);
+                            callback.onAuthFail(error.toString());
+                        } else if(networkResponse != null) {
+                            Log.e("Service/getAttReason()", new String(networkResponse.data));
+                        } else {
+                            Log.e("Service/getAttReason()", error.toString());
+                            callback.onFailure(error.toString());
+                        }
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", getAuthKey());
+                return params;
+            }
         };
 
         mRequestQueue.add(stringRequest);

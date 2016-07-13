@@ -118,7 +118,8 @@
                 <EditText
                     android:id="@+id/txtMessageContentStudent"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="200dp"
+                    android:isScrollContainer="true"
                     android:layout_gravity="center_horizontal"
                     android:background="@android:color/transparent"
                     android:gravity="left|top"

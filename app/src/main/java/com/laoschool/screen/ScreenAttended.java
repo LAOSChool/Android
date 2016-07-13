@@ -191,7 +191,7 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                 ringProgressDialog.dismiss();
                 attendanceRollup = result;
                 if(mAdapterTeacherAttendance == null) {
-                    mAdapterTeacherAttendance = new ListAttendanceTableAdapter(result.getStudents(), null, null, thiz.getContext(), txtAttendanceDate.getText().toString());
+                    mAdapterTeacherAttendance = new ListAttendanceTableAdapter(iScreenAttended, result.getStudents(), null, null, thiz.getContext(), txtAttendanceDate.getText().toString());
                     tableStudentView.setAdapter(mAdapterTeacherAttendance);
                 } else
                     mAdapterTeacherAttendance.swap(result.getStudents(), null, null, txtAttendanceDate.getText().toString());
@@ -398,6 +398,7 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
         } else {
             txvListStudent.setTextSize(14);
         }
+        edtSearch.setHint(R.string.SCCommon_Search);
 
         // use a linear layout manager
         final LinearLayoutManager mLayoutManager = new LinearLayoutManager(thiz.getContext());
@@ -525,7 +526,7 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                 final int DRAWABLE_BOTTOM = 3;
 
                 if(event.getAction() == MotionEvent.ACTION_UP) {
-                    if((event.getRawX() + 10) >= (edtSearch.getRight() - edtSearch.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                    if((event.getRawX() - 30) <= (edtSearch.getCompoundDrawables()[DRAWABLE_LEFT].getBounds().width())) {
                         edtSearch.getText().clear();
                         formHeader.setVisibility(View.VISIBLE);
                         formHeader.requestFocus();
@@ -533,6 +534,8 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                         return true;
                     } else {
+//                        HomeActivity homeActivity = (HomeActivity) thiz.getActivity();
+//                        homeActivity.hideBottomBar();
                         formHeader.setVisibility(View.GONE);
                     }
                 }
@@ -552,9 +555,9 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 //                 Log.i("edtSearch", "key press!");
                 if(!edtSearch.getText().toString().isEmpty())
-                    edtSearch.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_close_black_24dp, 0);
+                    edtSearch.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_close_black_24dp, 0, 0, 0);
                 else
-                    edtSearch.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_search_black_24dp, 0);
+                    edtSearch.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_search_black_24dp, 0, 0, 0);
 
                 List<User> findUsers = new ArrayList<User>();
                 for(User student: attendanceRollup.getStudents()) {
@@ -682,10 +685,10 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                                     thiz.getContext().getString(R.string.SCAttendance_DefaultMessage1);
                             iScreenAttended.goToCreateMessagefromScreenAttendance(attendanceRollup.getStudents(), selectedStudents, defaultText);
                         } else
-                            Toast.makeText(thiz.getContext(), "Fail to get data", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(thiz.getContext(), thiz.getContext().getString(R.string.SCCommon_UnknowError), Toast.LENGTH_SHORT).show();
                     }
                     else
-                        Toast.makeText(thiz.getContext(), "Chose a subject first", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(thiz.getContext(), thiz.getContext().getString(R.string.SCAttendance_NeedChoseSubject), Toast.LENGTH_SHORT).show();
                 }
                 return true;
         }

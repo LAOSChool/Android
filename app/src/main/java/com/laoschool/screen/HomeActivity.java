@@ -30,7 +30,6 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -469,7 +468,7 @@ public class HomeActivity extends AppCompatActivity implements
                 getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_36dp);
                 break;
             case LaoSchoolShared.POSITION_SCREEN_LIST_STUDENT_OF_CLASS_18:
-                _setTitleandShowButtonBack(R.string.SCCommon_ListStudent, null, DisplayButtonHome.show);
+                _setTitleandShowButtonBack(R.string.SCCommon_ClassInfo, null, DisplayButtonHome.show);
                 getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
                 break;
             default:

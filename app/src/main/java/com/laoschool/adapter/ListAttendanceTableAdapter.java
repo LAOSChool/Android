@@ -9,9 +9,12 @@ import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -20,12 +23,15 @@ import android.widget.Toast;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.entities.Attendance;
+import com.laoschool.entities.AttendanceReason;
 import com.laoschool.entities.TimeTable;
 import com.laoschool.entities.User;
 import com.laoschool.model.AsyncCallback;
+import com.laoschool.screen.ScreenAttended;
 import com.laoschool.screen.view.AttendanceTableAbsent;
 import com.laoschool.shared.LaoSchoolShared;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -39,6 +45,10 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
     private TimeTable timeTable;
     private String date;
     private Context context;
+
+    private ScreenAttended.IScreenAttended iScreenAttended;
+
+    List<AttendanceReason> attendanceReasons = new ArrayList<>();
 
     boolean showdata = false;
 
@@ -55,12 +65,13 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public ListAttendanceTableAdapter(List<User> listStudent, List<Attendance> listAttendance, TimeTable timeTable, Context context, String date) {
+    public ListAttendanceTableAdapter(ScreenAttended.IScreenAttended iScreenAttended, List<User> listStudent, List<Attendance> listAttendance, TimeTable timeTable, Context context, String date) {
         mDataset = listStudent;
         mDataset2 = listAttendance;
         this.timeTable = timeTable;
         this.date = date;
         this.context = context;
+        this.iScreenAttended = iScreenAttended;
     }
 
     // Create new views (invoked by the layout manager)
@@ -81,14 +92,17 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
         ImageView icCP = (ImageView) v.findViewById(R.id.icCP);
         ImageView icKP = (ImageView) v.findViewById(R.id.icKP);
         final RelativeLayout attendance_row = (RelativeLayout) v.findViewById(R.id.attendance_row);
+        LinearLayout bottom_wrapper = (LinearLayout) v.findViewById(R.id.bottom_wrapper);
         RelativeLayout btnAbsent = (RelativeLayout) v.findViewById(R.id.btnAbsent);
+        RelativeLayout btnInform = (RelativeLayout) v.findViewById(R.id.btnInform);
         final TextView txvAbsent = (TextView) v.findViewById(R.id.txvAbsent);
+        final TextView txvInform = (TextView) v.findViewById(R.id.txvInform);
         final ImageView imgStudent = (ImageView) v.findViewById(R.id.imgStudent);
         final ProgressBar progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
 
         final User student = mDataset.get(position);
 
-        txtStudentName.setText(student.getFullname());
+        txtStudentName.setText(student.getFullname()+ " - "+ student.getNickname());
 
 //        Random rand = new Random();;
 //        int randomNum = rand.nextInt((3 - 1) + 1) + 1;
@@ -102,21 +116,47 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
 //        }
 
         attendance_row.setBackgroundColor(context.getResources().getColor(R.color.color_bg_un_read));
+        txvInform.setText(context.getString(R.string.SCAttendance_Inform));
         txvAbsent.setText(context.getString(R.string.SCAttendance_Absent));
         btnAbsent.setBackgroundColor(Color.parseColor("#37000000"));
+        bottom_wrapper.setLayoutParams(new FrameLayout.LayoutParams(300,
+                LinearLayout.LayoutParams.MATCH_PARENT));
+        btnInform.setVisibility(View.VISIBLE);
 
         if(mDataset2 != null) {
             for (Attendance attendance : mDataset2) {
-                if (attendance.getStudent_id() == student.getId() &&
-                        (attendance.getSession_id() == null || attendance.getSession_id().equals(String.valueOf(timeTable.getSession_id())))) {
-                    attendance_row.setBackgroundColor(context.getResources().getColor(R.color.color_bg_read));
-                    txvAbsent.setText(context.getString(R.string.SCCommon_Cancel));
-                    txvAbsent.setTextColor(Color.parseColor("#80000000"));
-                    btnAbsent.setBackgroundColor(context.getResources().getColor(R.color.color_bg_un_read));
-                    break;
+                if(timeTable != null) {
+                    if (attendance.getStudent_id() == student.getId() &&
+                            (attendance.getSession_id() == null || attendance.getSession_id().equals(String.valueOf(timeTable.getSession_id())))) {
+                        attendance_row.setBackgroundColor(context.getResources().getColor(R.color.color_bg_read));
+                        txvAbsent.setText(context.getString(R.string.SCCommon_Cancel));
+                        txvAbsent.setTextColor(Color.parseColor("#80000000"));
+                        btnAbsent.setBackgroundColor(context.getResources().getColor(R.color.color_bg_un_read));
+                        btnInform.setVisibility(View.GONE);
+                        bottom_wrapper.setLayoutParams(new FrameLayout.LayoutParams(150,
+                                LinearLayout.LayoutParams.MATCH_PARENT));
+                        break;
+                    }
                 }
             }
         }
+
+        attendance_row.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mDataset2 != null) {
+                    for (Attendance attendance : mDataset2) {
+                        if(timeTable != null) {
+                            if (attendance.getStudent_id() == student.getId() &&
+                                    (attendance.getSession_id() == null || attendance.getSession_id().equals(String.valueOf(timeTable.getSession_id())))) {
+                                openAttendanceDetail(attendance);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        });
 
         btnAbsent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,15 +164,39 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
                 if(timeTable != null) {
                     if(txvAbsent.getText().equals(context.getString(R.string.SCAttendance_Absent))) {
                         final AlertDialog dialog = new AlertDialog.Builder(context).create();
-                        dialog.setView(new AttendanceTableAbsent(context, student, date, timeTable, new AttendanceTableAbsent.AttendanceTableAbsentListener() {
+                        final AttendanceTableAbsent attendanceTableAbsent = new AttendanceTableAbsent(context, student, date, timeTable, new AttendanceTableAbsent.AttendanceTableAbsentListener() {
                             @Override
                             public void onAttendanceRequestSuccess(Attendance attendance) {
                                 dialog.dismiss();
                                 mDataset2.add(attendance);
                                 notifyDataSetChanged();
                             }
-                        }).getView());
-                        dialog.show();
+                        });
+                        dialog.setView(attendanceTableAbsent.getView());
+                        if(!attendanceReasons.isEmpty()) {
+                            attendanceTableAbsent.setListAttendanceReason(attendanceReasons);
+                            dialog.show();
+                        }
+                        else {
+                            LaoSchoolSingleton.getInstance().getDataAccessService().getAttendanceReason(new AsyncCallback<List<AttendanceReason>>() {
+                                @Override
+                                public void onSuccess(List<AttendanceReason> result) {
+                                    attendanceReasons.addAll(result);
+                                    attendanceTableAbsent.setListAttendanceReason(attendanceReasons);
+                                    dialog.show();
+                                }
+
+                                @Override
+                                public void onFailure(String message) {
+                                    Toast.makeText(context, context.getString(R.string.SCCommon_UnknowError), Toast.LENGTH_SHORT).show();
+                                }
+
+                                @Override
+                                public void onAuthFail(String message) {
+                                    LaoSchoolShared.goBackToLoginPage(context);
+                                }
+                            });
+                        }
                     } else {
                         new AlertDialog.Builder(context)
                                 .setTitle("")
@@ -159,6 +223,23 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
                 } else {
                     Toast.makeText(context,context.getString(R.string.SCAttendance_NeedChoseSubject), Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        btnInform.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(timeTable != null) {
+                    List<User> selectedStudents = new ArrayList<>();
+                    selectedStudents.add(student);
+                    String defaultText = "* " + context.getString(R.string.SCCommon_Date) + " " +
+                            date + " * " + "\r\n \r\n" +
+                            context.getString(R.string.SCAttendance_Subjects)+ " " + timeTable.getSubject_Name() + ", \r\n \r\n" +
+                            context.getString(R.string.SCAttendance_DefaultMessage2);
+                    iScreenAttended.goToCreateMessagefromScreenAttendance(mDataset, selectedStudents, defaultText);
+                }
+                else
+                    Toast.makeText(context, context.getString(R.string.SCAttendance_NeedChoseSubject), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -221,6 +302,50 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
             params.setMargins(30, 0, 0, 0);
             txtStudentName.setLayoutParams(params);
         }
+    }
+
+    void openAttendanceDetail(Attendance attendance) {
+        final AlertDialog dialog = new AlertDialog.Builder(context).create();
+        View v = View.inflate(context, R.layout.view_attendance_detail, null);
+        dialog.setView(v);
+        dialog.show();
+
+        TextView txbAttDt = (TextView) v.findViewById(R.id.txbAttDt);
+        TextView txbSession = (TextView) v.findViewById(R.id.txbSession);
+        TextView txbReason = (TextView) v.findViewById(R.id.txbReason);
+        RelativeLayout formBtnClose = (RelativeLayout) v.findViewById(R.id.formBtnClose);
+        ImageView imgBtnClose = (ImageView) v.findViewById(R.id.imgBtnClose);
+        TextView btnClose = (TextView) v.findViewById(R.id.btnClose);
+        TextView txvHeader = (TextView) v.findViewById(R.id.txvProfile);
+
+        imgBtnClose.setColorFilter(Color.parseColor("#9E9E9E"));
+
+        String[] shortAttDt = attendance.getAtt_dt().split(" ");
+        String[] attdts = shortAttDt[0].split("-");
+        txbAttDt.setText(attdts[0]+ " - "+ attdts[1]+ " - "+ attdts[2]);
+        txvHeader.setText(context.getString(R.string.SCAttendance_Absent));
+        btnClose.setText(context.getString(R.string.SCCommon_Close));
+
+        if(attendance.getSession_id() == null)
+            txbSession.setText(context.getString(R.string.SCAttendance_Fulldays));
+        else
+            txbSession.setText(attendance.getSession()+ " - "+ attendance.getSubject());
+
+        if(attendance.getExcused() == 1) {
+            txbReason.setText(attendance.getNotice());
+            txbReason.setTextColor(context.getResources().getColor(R.color.colorAttendanceHasReason));
+        }
+        else {
+            txbReason.setText(context.getString(R.string.SCAttendance_NoReason));
+            txbReason.setTextColor(context.getResources().getColor(R.color.colorAttendanceNoReason));
+        }
+
+        formBtnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
     }
 
     public void cancelAttendance(final Attendance attendance) {
