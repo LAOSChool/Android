@@ -73,6 +73,7 @@
     <string name="SCAttendance_ChoseSubjects">Chose Subject</string>
     <string name="SCAttendance_ListStudents">List students</string>
     <string name="SCAttendance_Absent">Absent</string>
+    <string name="SCAttendance_Inform">Inform</string>
     <string name="SCAttendance_Fulldays">Full days</string>
     <string name="SCAttendance_Sessions">Sessions</string>
     <string name="SCAttendance_Excused">Excused</string>
@@ -87,6 +88,7 @@
     <string name="SCAttendance_CancelAbsentConfirm">Are you sure to cancel this absent?</string>
     <string name="SCAttendance_TeacherCreate">Create Absent</string>
     <string name="SCAttendance_DefaultMessage1">LaoSchool announced this student has in the class.</string>
+    <string name="SCAttendance_DefaultMessage2">LaoSchool announced this student is absent.</string>
     <string name="SCAttendance_SelectDate">Select Date</string>
 
     <!--ChangePass screen-->

@@ -82,20 +82,29 @@ public class ListAttendancesAdapter extends RecyclerView.Adapter<ListAttendances
         String[] attdts = shortAttDt[0].split("-");
         txbAttDt.setText(attdts[0]+ " - "+ attdts[1]+ " - "+ attdts[2]);
 
-        if(groupAttendance.getAttendances().size() == 1) {
+        if(groupAttendance.getAttendances().size() == 1 && groupAttendance.getAttendances().get(0).getSession_id() == null) {
             btnDropDown.setImageResource(R.drawable.ic_priority_high_black_24dp);
             btnDropDown.setVisibility(View.VISIBLE);
             txbAbsent.setText(context.getString(R.string.SCAttendance_Fulldays));
-            if(groupAttendance.getAttendances().get(0).getExcused() == 1) {
+            if (groupAttendance.getAttendances().get(0).getExcused() == 1) {
                 txbExcused.setText(context.getString(R.string.SCCommon_Yes));
                 txbExcused.setTextColor(context.getResources().getColor(R.color.colorAttendanceHasReason));
-            }
-            else {
+            } else {
                 txbExcused.setText(context.getString(R.string.SCCommon_No));
                 txbExcused.setTextColor(context.getResources().getColor(R.color.colorAttendanceNoReason));
             }
             txbAbsent.setTextSize(12);
             txbExcused.setTextSize(12);
+        } else if(groupAttendance.getAttendances().size() == 1 && groupAttendance.getAttendances().get(0).getSession_id() != null) {
+            btnDropDown.setVisibility(View.VISIBLE);
+            btnDropDown.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp);
+            txbAbsent.setText(groupAttendance.getAttendances().size()+ "");
+            int totalExcused = 0;
+            for(Attendance attendance: groupAttendance.getAttendances()) {
+                if(attendance.getExcused() == 1)
+                    totalExcused++;
+            }
+            txbExcused.setText(totalExcused+ "");
         } else {
             btnDropDown.setVisibility(View.VISIBLE);
             btnDropDown.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp);
@@ -108,7 +117,8 @@ public class ListAttendancesAdapter extends RecyclerView.Adapter<ListAttendances
             txbExcused.setText(totalExcused+ "");
         }
 
-        if(groupAttendance.getAttendances().size() > 1) {
+        if(groupAttendance.getAttendances().size() > 1 ||
+                (groupAttendance.getAttendances().size() == 1 && groupAttendance.getAttendances().get(0).getSession_id() != null)) {
             for(final Attendance attendance: groupAttendance.getAttendances()) {
                 LinearLayout relativeLayout = new LinearLayout(context);
                 relativeLayout.setBackgroundColor(Color.parseColor("#E0E0E0"));
@@ -157,7 +167,7 @@ public class ListAttendancesAdapter extends RecyclerView.Adapter<ListAttendances
         groupAttendancesView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(groupAttendance.getAttendances().size() == 1) {
+                if(groupAttendance.getAttendances().size() == 1 && groupAttendance.getAttendances().get(0).getSession_id() == null) {
                     openAttendanceDetail(groupAttendance.getAttendances().get(0));
                 } else {
                     if(sessionView.getVisibility() == View.GONE) {

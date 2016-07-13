@@ -107,6 +107,9 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                 }
                 if (selectedStudents.size() == listStudents.size())
                     txtMessageTo.setText(context.getString(R.string.SCCommon_Class) + " " + LaoSchoolShared.selectedClass.getTitle());
+                else if(selectedStudents.size() == 1) {
+                    txtMessageTo.setText(selectedStudents.get(0).getFullname());
+                }
                 else
                     txtMessageTo.setText(context.getString(R.string.SCCreateMessage_TitleAllStudentsAttendance));
                 txtMessageContent.setText(defaultText);
@@ -555,7 +558,8 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
             selectedStudents.clear();
             selectedStudents.addAll(listStudents);
             txtMessageTo.setText(context.getString(R.string.SCCommon_Class) + " " + LaoSchoolShared.selectedClass.getTitle());
-            tableStudents.reset();
+            if(tableStudents != null)
+                tableStudents.reset();
         } else {
             txtMessageTitleStudent.getText().clear();
             txtMessageContentStudent.getText().clear();

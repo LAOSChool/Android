@@ -3,6 +3,7 @@ package com.laoschool.model;
 import android.graphics.Bitmap;
 
 import com.laoschool.entities.Attendance;
+import com.laoschool.entities.AttendanceReason;
 import com.laoschool.entities.AttendanceRollup;
 import com.laoschool.entities.Class;
 import com.laoschool.entities.ExamResult;
@@ -138,6 +139,8 @@ public interface DataAccessInterface {
      * @param callback
      */
     public void deleteAttendance(int attendanceId, AsyncCallback<String> callback);
+
+    public void getAttendanceReason(AsyncCallback<List<AttendanceReason>> callback);
 
     //----- ExamResult -----//
 

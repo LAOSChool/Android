@@ -87,4 +87,6 @@
     <string name="SCCommon_Date">ວັນທີ່ສະຫມັກ</string>
     <string name="SCAttendance_DefaultMessage1">ໂຮງຮຽນລາວປະກາດນັກສຶກສານີ້ມີໃນຫ້ອງຮຽນໄດ້.</string>
     <string name="SCAttendance_SelectDate">ເລືອກວັນທີ່</string>
+    <string name="SCAttendance_DefaultMessage2">ໂຮງຮຽນລາວປະກາດນັກສຶກສານີ້ແມ່ນບໍ່.</string>
+    <string name="SCAttendance_Inform">ແຈ້ງ</string>
 </resources>
