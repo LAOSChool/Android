@@ -122,8 +122,8 @@ public class DataAccessImpl implements DataAccessInterface {
             KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
             keyStore.load(null);
             KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore.getEntry(LaoSchoolShared.KEY_STORE_ALIAS, null);
-            RSAPrivateKey privateKey = (RSAPrivateKey) privateKeyEntry.getPrivateKey();
-            String decode_auth_key = LaoSchoolShared.decrypt(auth_key, privateKey);
+//            RSAPrivateKey privateKey = (RSAPrivateKey) privateKeyEntry.getPrivateKey();
+            String decode_auth_key = LaoSchoolShared.decrypt(auth_key, privateKeyEntry.getPrivateKey());
 
             return decode_auth_key;
         } catch (KeyStoreException e) {
@@ -148,11 +148,12 @@ public class DataAccessImpl implements DataAccessInterface {
             KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
             keyStore.load(null);
             KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore.getEntry(LaoSchoolShared.KEY_STORE_ALIAS, null);
-            RSAPublicKey publicKey = (RSAPublicKey) privateKeyEntry.getCertificate().getPublicKey();
-            String encrypt_auth_key = LaoSchoolShared.encrypt(auth_key, publicKey);
+//            RSAPublicKey publicKey = (RSAPublicKey) privateKeyEntry.getCertificate().getPublicKey();
+            String encrypt_auth_key = LaoSchoolShared.encrypt(auth_key, privateKeyEntry.getCertificate().getPublicKey());
 
             SharedPreferences prefs = mCtx.getSharedPreferences(
                     LaoSchoolShared.SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
+//            Log.i("EncryptAuthKey", encrypt_auth_key);
             prefs.edit().putString("auth_key", encrypt_auth_key).apply();
             return;
         } catch (KeyStoreException e) {

@@ -37,6 +37,8 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.text.DateFormat;
@@ -191,10 +193,11 @@ public class LaoSchoolShared {
         }
     }
 
-    public static String encrypt(String plainText, RSAPublicKey publicKey)
+    public static String encrypt(String plainText, PublicKey publicKey)
             throws Exception {
         try {
-            Cipher input = Cipher.getInstance("RSA/ECB/PKCS1Padding", "AndroidOpenSSL");
+//            Cipher input = Cipher.getInstance("RSA/ECB/PKCS1Padding", "AndroidOpenSSL");
+            Cipher input = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             input.init(Cipher.ENCRYPT_MODE, publicKey);
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -211,10 +214,11 @@ public class LaoSchoolShared {
         }
     }
 
-    public static String decrypt(String encryptedText, RSAPrivateKey privateKey)
+    public static String decrypt(String encryptedText, PrivateKey privateKey)
             throws Exception {
         try {
-            Cipher output = Cipher.getInstance("RSA/ECB/PKCS1Padding", "AndroidOpenSSL");
+//            Cipher output = Cipher.getInstance("RSA/ECB/PKCS1Padding", "AndroidOpenSSL");
+            Cipher output = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             output.init(Cipher.DECRYPT_MODE, privateKey);
 
             CipherInputStream cipherInputStream = new CipherInputStream(
