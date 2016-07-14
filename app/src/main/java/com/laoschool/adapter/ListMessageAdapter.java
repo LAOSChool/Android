@@ -120,6 +120,7 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         txtDateSend.setTypeface(null, Typeface.NORMAL);
                         imgGotoDetails.setColorFilter(context.getResources().getColor(R.color.colorRead));
                         view.setBackgroundColor(context.getResources().getColor(R.color.color_bg_read));
+                        message.setFrm_user_photo(LaoSchoolShared.myProfile.getPhoto());
                     } else {
                         txbSender.setText(message.getFrom_user_name());
                         if (message.getIs_read() == 0) {
