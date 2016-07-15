@@ -173,36 +173,41 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     }
 
     public static void getDataFormServer() {
-        service.getNotification(new AsyncCallback<List<Message>>() {
-            @Override
-            public void onSuccess(final List<Message> result) {
-                try {
-                    if (result != null) {
-                        for (Message message : result) {
-                            accessNotification.addOrUpdateNotification(message);
+        try {
+            service.getNotification(new AsyncCallback<List<Message>>() {
+                @Override
+                public void onSuccess(final List<Message> result) {
+                    try {
+                        if (result != null) {
+                            for (Message message : result) {
+                                accessNotification.addOrUpdateNotification(message);
+                            }
+                            getDataFormLocal(-1);
+                        } else {
+                            showNodata();
                         }
-                        getDataFormLocal(-1);
-                    } else {
-                        showNodata();
+                    } catch (Exception e) {
+                        Log.e(TAG, "getDataFormServer()/getNotification() Exception=" + e.getMessage());
+                        showError();
+
                     }
-                } catch (Exception e) {
-                    Log.e(TAG, "getDataFormServer()/getNotification() Exception=" + e.getMessage());
-                    showError();
-
                 }
-            }
 
-            @Override
-            public void onFailure(String message) {
-                Log.e(TAG, "getDataFormServer()/getNotification() onFailure=" + message);
-                showError();
-            }
+                @Override
+                public void onFailure(String message) {
+                    Log.e(TAG, "getDataFormServer()/getNotification() onFailure=" + message);
+                    showError();
+                }
 
-            @Override
-            public void onAuthFail(String message) {
-                LaoSchoolShared.goBackToLoginPage(context);
-            }
-        });
+                @Override
+                public void onAuthFail(String message) {
+                    LaoSchoolShared.goBackToLoginPage(context);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError();
+        }
     }
 
     private static void showNodata() {
