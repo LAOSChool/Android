@@ -69,10 +69,12 @@ public class Message implements Parcelable {
 
     String frm_user_photo;
 
+    String to_user_photo;
+
     public Message() {
     }
 
-    public Message(int id, int school_id, int class_id, int from_usr_id, String from_user_name, int to_usr_id, String to_user_name, String content, int channel, int is_sent, String sent_dt, int is_read, String read_dt, String other, int msg_type_id, int imp_flg, String title, String schoolName, String messageType, String cc_list, int cId, int type, List<Image> notifyImages, int task_id, String frm_user_photo) {
+    public Message(int id, int school_id, int class_id, int from_usr_id, String from_user_name, int to_usr_id, String to_user_name, String content, int channel, int is_sent, String sent_dt, int is_read, String read_dt, String other, int msg_type_id, int imp_flg, String title, String schoolName, String messageType, String cc_list, int cId, int type, List<Image> notifyImages, int task_id, String frm_user_photo, String to_user_photo) {
         this.id = id;
         this.school_id = school_id;
         this.class_id = class_id;
@@ -98,6 +100,7 @@ public class Message implements Parcelable {
         this.notifyImages = notifyImages;
         this.task_id = task_id;
         this.frm_user_photo = frm_user_photo;
+        this.to_user_photo = to_user_photo;
     }
 
     public int getId() {
@@ -300,6 +303,14 @@ public class Message implements Parcelable {
         this.frm_user_photo = frm_user_photo;
     }
 
+    public String getTo_user_photo() {
+        return to_user_photo;
+    }
+
+    public void setTo_user_photo(String to_user_photo) {
+        this.to_user_photo = to_user_photo;
+    }
+
     public String toJson() {
         Gson gson = new Gson();
         String jsonString = gson.toJson(this);
@@ -368,6 +379,7 @@ public class Message implements Parcelable {
         }
         task_id = in.readInt();
         frm_user_photo = in.readString();
+        to_user_photo = in.readString();
     }
 
     @Override
@@ -408,6 +420,7 @@ public class Message implements Parcelable {
         }
         dest.writeInt(task_id);
         dest.writeString(frm_user_photo);
+        dest.writeString(to_user_photo);
     }
 
     @SuppressWarnings("unused")
@@ -462,6 +475,7 @@ public class Message implements Parcelable {
         public static final String COLUMN_NAME_TASK_ID = "task_id";
 
         public static final String COLUMN_NAME_FRM_USER_PHOTO = "frm_user_photo";
+        public static final String COLUMN_NAME_TO_USER_PHOTO = "to_user_photo";
 
 
         public static final int COLUMN_NAME_ID_INDEX_0 = 0;
@@ -495,8 +509,9 @@ public class Message implements Parcelable {
         public static final int COLUMN_NAME_TYPE_INDEX_21 = 21;
         public static final int COLUMN_NAME_TASK_ID_INDEX_22 = 22;
         public static final int COLUMN_NAME_FRM_USER_PHOTO_INDEX_23 = 23;
+        public static final int COLUMN_NAME_TO_USER_PHOTO_INDEX_24 = 24;
 
-        public static final int COLUMN_NAME_FILE_URL_INDEX_24 = 24;
+
 
 
         public static final String CREATE_MESSAGES_TABLE = "CREATE TABLE " + TABLE_NAME + "("
@@ -532,8 +547,9 @@ public class Message implements Parcelable {
 
                 + COLUMN_NAME_CLIENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," //20
                 + COLUMN_NAME_TYPE + " INTEGER," //21
-                + COLUMN_NAME_TASK_ID + " INTEGER," //21
-                + COLUMN_NAME_FRM_USER_PHOTO + " TEXT" //21
+                + COLUMN_NAME_TASK_ID + " INTEGER," //22
+                + COLUMN_NAME_FRM_USER_PHOTO + " TEXT," //23
+                + COLUMN_NAME_TO_USER_PHOTO + " TEXT" //24
                 + ")";
     }
 

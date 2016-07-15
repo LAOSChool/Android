@@ -272,6 +272,7 @@ public class LaoSchoolShared {
         message.setType(cursor.getInt(Message.MessageColumns.COLUMN_NAME_TYPE_INDEX_21));
         message.setTask_id(cursor.getInt(Message.MessageColumns.COLUMN_NAME_TASK_ID_INDEX_22));
         message.setFrm_user_photo(cursor.getString(Message.MessageColumns.COLUMN_NAME_FRM_USER_PHOTO_INDEX_23));
+        message.setTo_user_photo(cursor.getString(Message.MessageColumns.COLUMN_NAME_TO_USER_PHOTO_INDEX_24));
         //message.setFile_url(cursor.getString(Message.MessageColumns.COLUMN_NAME_FILE_URL_INDEX_22));
         //Log.d(TAG,message.toString());
         return message;

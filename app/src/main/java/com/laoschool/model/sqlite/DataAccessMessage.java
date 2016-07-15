@@ -55,6 +55,7 @@ public class DataAccessMessage {
         values.put(Message.MessageColumns.COLUMN_NAME_SCHOOL_NAME, message.getSchoolName());
         values.put(Message.MessageColumns.COLUMN_NAME_MESSAGE_TYPE, message.getMessageType());
         values.put(Message.MessageColumns.COLUMN_NAME_FRM_USER_PHOTO, message.getFrm_user_photo());
+        values.put(Message.MessageColumns.COLUMN_NAME_TO_USER_PHOTO, message.getTo_user_photo());
         values.put(Message.MessageColumns.COLUMN_NAME_TYPE, 0);
 
         // Inserting Row
