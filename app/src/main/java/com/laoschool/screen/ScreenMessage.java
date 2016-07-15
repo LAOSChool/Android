@@ -189,8 +189,11 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
 
     private static void _getDataFormServer(final int position) {
         Log.d(TAG, "_getDataFormServer() position=" + position);
+        if (position == -1) {
+            initDataMessage();
+            return;
+        }
         int form_id = DataAccessMessage.getMaxMessagesID(LaoSchoolShared.myProfile.getId());
-
         final String classID = "";
         final String fromUserID = ((position == 2) ? String.valueOf(LaoSchoolShared.myProfile.getId()) : "");
         final String fromDate = "";
@@ -227,12 +230,59 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
 
                     @Override
                     public void onFailure(String message) {
-                        Log.e(TAG, "NotificationList:setOnRefreshListener():\n" +
-                                "getMessagesFormServer(classID=" + classID + "\n" +
-                                ",fromUserID=" + fromUserID + ",fromDate=" + fromDate + "\n" +
-                                ",toUserID=" + toUserID + ",toDate=" + toDate + "\n" +
-                                ",channel=" + channel + ",status=" + status + "\n" +
-                                ",fromID=" + fromID + ")/onFailure():" + message);
+                        Log.e(TAG, "onFailure():" + message);
+                    }
+
+                    @Override
+                    public void onAuthFail(String message) {
+                        LaoSchoolShared.goBackToLoginPage(context);
+                    }
+                });
+    }
+
+    private static void initDataMessage() {
+        final String userID = String.valueOf(LaoSchoolShared.myProfile.getId());
+        service.getMessages("", "", "", "", userID, "", "", ""
+                , new AsyncCallback<List<Message>>() {
+                    @Override
+                    public void onSuccess(final List<Message> result) {
+                        try {
+                            for (Message message : result) {
+                                dataAccessMessage.addOrUpdateMessage(message);
+                            }
+                            service.getMessages("", userID, "", "", "", "", "", "", new AsyncCallback<List<Message>>() {
+                                @Override
+                                public void onSuccess(final List<Message> result) {
+                                    try {
+                                        for (Message message : result) {
+                                            dataAccessMessage.addOrUpdateMessage(message);
+                                        }
+                                        _getDataFormLocal(-1);
+                                    } catch (Exception e) {
+                                        Log.d(TAG, "_getDataFormServer() onSuccess Exception=" + e.getMessage());
+                                    }
+
+                                }
+
+                                @Override
+                                public void onFailure(String message) {
+                                    Log.e(TAG, "onFailure():" + message);
+                                }
+
+                                @Override
+                                public void onAuthFail(String message) {
+                                    LaoSchoolShared.goBackToLoginPage(context);
+                                }
+                            });
+                        } catch (Exception e) {
+                            Log.d(TAG, "_getDataFormServer() onSuccess Exception=" + e.getMessage());
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(String message) {
+                        Log.e(TAG, "onFailure():" + message);
                     }
 
                     @Override
@@ -306,6 +356,8 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
                     case 2:
                         List<Message> messagesFormUser = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
                         notifragment.setListMessage(messagesFormUser, 2, true);
+
+
                         break;
                 }
             }
