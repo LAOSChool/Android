@@ -58,6 +58,7 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public View mView;
+
         public ViewHolder(View v) {
             super(v);
             mView = v;
@@ -102,7 +103,7 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
 
         final User student = mDataset.get(position);
 
-        txtStudentName.setText(student.getFullname()+ " - "+ student.getNickname());
+        txtStudentName.setText(student.getFullname() + " - " + student.getNickname());
 
 //        Random rand = new Random();;
 //        int randomNum = rand.nextInt((3 - 1) + 1) + 1;
@@ -123,9 +124,9 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
                 LinearLayout.LayoutParams.MATCH_PARENT));
         btnInform.setVisibility(View.VISIBLE);
 
-        if(mDataset2 != null) {
+        if (mDataset2 != null) {
             for (Attendance attendance : mDataset2) {
-                if(timeTable != null) {
+                if (timeTable != null) {
                     if (attendance.getStudent_id() == student.getId() &&
                             (attendance.getSession_id() == null || attendance.getSession_id().equals(String.valueOf(timeTable.getSession_id())))) {
                         attendance_row.setBackgroundColor(context.getResources().getColor(R.color.color_bg_read));
@@ -144,9 +145,9 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
         attendance_row.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mDataset2 != null) {
+                if (mDataset2 != null) {
                     for (Attendance attendance : mDataset2) {
-                        if(timeTable != null) {
+                        if (timeTable != null) {
                             if (attendance.getStudent_id() == student.getId() &&
                                     (attendance.getSession_id() == null || attendance.getSession_id().equals(String.valueOf(timeTable.getSession_id())))) {
                                 openAttendanceDetail(attendance);
@@ -161,8 +162,8 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
         btnAbsent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(timeTable != null) {
-                    if(txvAbsent.getText().equals(context.getString(R.string.SCAttendance_Absent))) {
+                if (timeTable != null) {
+                    if (txvAbsent.getText().equals(context.getString(R.string.SCAttendance_Absent))) {
                         final AlertDialog dialog = new AlertDialog.Builder(context).create();
                         final AttendanceTableAbsent attendanceTableAbsent = new AttendanceTableAbsent(context, student, date, timeTable, new AttendanceTableAbsent.AttendanceTableAbsentListener() {
                             @Override
@@ -173,11 +174,10 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
                             }
                         });
                         dialog.setView(attendanceTableAbsent.getView());
-                        if(!attendanceReasons.isEmpty()) {
+                        if (!attendanceReasons.isEmpty()) {
                             attendanceTableAbsent.setListAttendanceReason(attendanceReasons);
                             dialog.show();
-                        }
-                        else {
+                        } else {
                             LaoSchoolSingleton.getInstance().getDataAccessService().getAttendanceReason(new AsyncCallback<List<AttendanceReason>>() {
                                 @Override
                                 public void onSuccess(List<AttendanceReason> result) {
@@ -221,7 +221,7 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
                                 .show();
                     }
                 } else {
-                    Toast.makeText(context,context.getString(R.string.SCAttendance_NeedChoseSubject), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.SCAttendance_NeedChoseSubject), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -229,27 +229,55 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
         btnInform.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(timeTable != null) {
+                if (timeTable != null) {
                     List<User> selectedStudents = new ArrayList<>();
                     selectedStudents.add(student);
                     String defaultText = "* " + context.getString(R.string.SCCommon_Date) + " " +
                             date + " * " + "\r\n \r\n" +
-                            context.getString(R.string.SCAttendance_Subjects)+ " " + timeTable.getSubject_Name() + ", \r\n \r\n" +
+                            context.getString(R.string.SCAttendance_Subjects) + " " + timeTable.getSubject_Name() + ", \r\n \r\n" +
                             context.getString(R.string.SCAttendance_DefaultMessage2);
                     iScreenAttended.goToCreateMessagefromScreenAttendance(mDataset, selectedStudents, defaultText);
-                }
-                else
+                } else
                     Toast.makeText(context, context.getString(R.string.SCAttendance_NeedChoseSubject), Toast.LENGTH_SHORT).show();
             }
         });
 
-        if(student.getUserPhoto() == null) {
+        if (student.getUserPhoto() == null) {
 //            Log.i("ListStudent", "positon running: "+position);
             LaoSchoolSingleton.getInstance().getDataAccessService().getImageBitmap(student.getPhoto(), new AsyncCallback<Bitmap>() {
                 @Override
                 public void onSuccess(Bitmap result) {
-                    if (result != null) {
-                        student.setUserPhoto(result);
+                    try {
+                        if (result != null) {
+                            student.setUserPhoto(result);
+                            imgStudent.setImageBitmap(student.getUserPhoto());
+                            imgStudent.setVisibility(View.VISIBLE);
+                            progressBar.setVisibility(View.GONE);
+                            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                                    RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                            params.addRule(RelativeLayout.RIGHT_OF, imgStudent.getId());
+                            params.addRule(RelativeLayout.END_OF, imgStudent.getId());
+                            params.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+                            params.setMargins(30, 0, 0, 0);
+                            txtStudentName.setLayoutParams(params);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+                @Override
+                public void onFailure(String message) {
+                    try {
+                        Bitmap icon;
+                        if (student.getGender().equals("male"))
+                            icon = BitmapFactory.decodeResource(context.getResources(),
+                                    R.drawable.ic_male);
+                        else
+                            icon = BitmapFactory.decodeResource(context.getResources(),
+                                    R.drawable.ic_female);
+                        student.setUserPhoto(icon);
                         imgStudent.setImageBitmap(student.getUserPhoto());
                         imgStudent.setVisibility(View.VISIBLE);
                         progressBar.setVisibility(View.GONE);
@@ -260,29 +288,9 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
                         params.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
                         params.setMargins(30, 0, 0, 0);
                         txtStudentName.setLayoutParams(params);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                }
-
-                @Override
-                public void onFailure(String message) {
-                    Bitmap icon;
-                    if(student.getGender().equals("male"))
-                        icon = BitmapFactory.decodeResource(context.getResources(),
-                                R.drawable.ic_male);
-                    else
-                        icon = BitmapFactory.decodeResource(context.getResources(),
-                                R.drawable.ic_female);
-                    student.setUserPhoto(icon);
-                    imgStudent.setImageBitmap(student.getUserPhoto());
-                    imgStudent.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
-                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                            RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    params.addRule(RelativeLayout.RIGHT_OF, imgStudent.getId());
-                    params.addRule(RelativeLayout.END_OF, imgStudent.getId());
-                    params.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
-                    params.setMargins(30, 0, 0, 0);
-                    txtStudentName.setLayoutParams(params);
                 }
 
                 @Override
@@ -322,20 +330,19 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
 
         String[] shortAttDt = attendance.getAtt_dt().split(" ");
         String[] attdts = shortAttDt[0].split("-");
-        txbAttDt.setText(attdts[0]+ " - "+ attdts[1]+ " - "+ attdts[2]);
+        txbAttDt.setText(attdts[0] + " - " + attdts[1] + " - " + attdts[2]);
         txvHeader.setText(context.getString(R.string.SCAttendance_Absent));
         btnClose.setText(context.getString(R.string.SCCommon_Close));
 
-        if(attendance.getSession_id() == null)
+        if (attendance.getSession_id() == null)
             txbSession.setText(context.getString(R.string.SCAttendance_Fulldays));
         else
-            txbSession.setText(attendance.getSession()+ " - "+ attendance.getSubject());
+            txbSession.setText(attendance.getSession() + " - " + attendance.getSubject());
 
-        if(attendance.getExcused() == 1) {
+        if (attendance.getExcused() == 1) {
             txbReason.setText(attendance.getNotice());
             txbReason.setTextColor(context.getResources().getColor(R.color.colorAttendanceHasReason));
-        }
-        else {
+        } else {
             txbReason.setText(context.getString(R.string.SCAttendance_NoReason));
             txbReason.setTextColor(context.getResources().getColor(R.color.colorAttendanceNoReason));
         }
