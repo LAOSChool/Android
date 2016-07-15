@@ -52,7 +52,7 @@ public class ScreenListStudent extends Fragment implements FragmentLifecycle, Se
 
 
     public interface IScreenListStudentOfClass {
-        void gotoDetailsStudent(User user);
+        void gotoDetailsStudent(List<User> userList, User user);
     }
 
     public IScreenListStudentOfClass iScreenListStudentOfClass;
