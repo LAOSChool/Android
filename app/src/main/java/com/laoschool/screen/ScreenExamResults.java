@@ -36,7 +36,6 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
-import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.adapter.ExamResultsAdapter;
@@ -121,7 +120,7 @@ public class ScreenExamResults extends Fragment
     static View mProgress;
     static FrameLayout mError;
     static FrameLayout mNoData;
-    private ObservableRecyclerView mResultListStudentBySuject;
+    private RecyclerView mResultListStudentBySuject;
     private int subjectIdSeleted = 0;
     private Dialog dialogSelectdSubject;
     ProgressDialog progressDialog;
@@ -554,7 +553,7 @@ public class ScreenExamResults extends Fragment
         txtClassAndTermName = (TextView) view.findViewById(R.id.txtClassAndTermName);
         mSugesstionSelectedSubject = view.findViewById(R.id.mSugesstionSelectedSubject);
         mListExam = view.findViewById(R.id.mListExam);
-        mResultListStudentBySuject = (ObservableRecyclerView) view.findViewById(R.id.mListExamResults);
+        mResultListStudentBySuject = (RecyclerView) view.findViewById(R.id.mListExamResults);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 1);
         mResultListStudentBySuject.setLayoutManager(gridLayoutManager);
 
@@ -808,7 +807,7 @@ public class ScreenExamResults extends Fragment
         });
     }
 
-    private void fillDataForListResultFilter(int subjectId, ObservableRecyclerView mResultListStudentBySuject, List<ExamResult> result) {
+    private void fillDataForListResultFilter(int subjectId, RecyclerView mResultListStudentBySuject, List<ExamResult> result) {
         Collections.sort(result);
         examResultsAdapter = new ExamResultsAdapter(this, subjectId, result);
         mResultListStudentBySuject.setAdapter(examResultsAdapter);
