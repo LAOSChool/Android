@@ -8,7 +8,7 @@
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="48dp"
         android:layout_gravity="center_horizontal"
         android:background="#00A261">
 
@@ -46,8 +46,8 @@
 
         <com.android.volley.toolbox.NetworkImageView
             android:id="@+id/imgIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="35dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
@@ -81,7 +81,7 @@
         <TextView
             android:id="@+id/lbSubjectOfExam"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="30dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginLeft="56dp"
             android:gravity="center_vertical"
@@ -105,7 +105,7 @@
         <TextView
             android:id="@+id/lbMonthOfExam"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="30dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginLeft="56dp"
             android:gravity="center_vertical"
@@ -138,7 +138,8 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="16dp"
 
-            android:text="@string/SCExamResults_Score" />
+            android:text="@string/SCExamResults_Score"
+            android:textSize="12sp" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -167,7 +168,8 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="16dp"
-            android:text="@string/SCExamResults_Comment" />
+            android:text="@string/SCExamResults_Comment"
+            android:textSize="12sp" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -186,7 +188,12 @@
             android:gravity="center"
             android:text="@string/SCExamResults_Input"
             android:textAllCaps="true"
-            android:textColor="#00A261" />
+            android:background="@drawable/bg_button_input_active"
+            android:textColor="#ffffff"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp" />
 
         <TextView
             android:id="@+id/btnCancelSubmitInputExamResults"
@@ -198,7 +205,8 @@
             android:layout_toStartOf="@+id/btnSubmitInputExamResults"
             android:gravity="center"
             android:text="@string/SCCommon_Cancel"
-            android:textAllCaps="true" />
+            android:textAllCaps="true"
+            android:textColor="@color/button_material_dark" />
     </RelativeLayout>
 
 </LinearLayout>

@@ -58,7 +58,7 @@
                 android:layout_marginLeft="56dp" />
 
             <com.android.volley.toolbox.NetworkImageView
-                android:layout_width="wrap_content"
+                android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/imgUserSentMessageAvata"
                 android:src="@drawable/ic_account_circle_black_36dp" />
