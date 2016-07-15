@@ -129,7 +129,9 @@ public class ScreenMessageDetails extends Fragment implements FragmentLifecycle 
                 Message message = screenMessage.getMessage();
 
                 //set Title Message
-                ((HomeActivity) getActivity()).getSupportActionBar().setTitle(message.getFrom_user_name());
+                ((HomeActivity) getActivity()).getSupportActionBar().setTitle((LaoSchoolShared.myProfile.getId() == message.getFrom_usr_id()) ?
+                        message.getTo_user_name() :
+                        message.getFrom_user_name());
 
                 txtTilteMessageDetails.setText(message.getTitle());
                 txtContentMessageDetails.setText(message.getContent());
@@ -143,16 +145,19 @@ public class ScreenMessageDetails extends Fragment implements FragmentLifecycle 
                     imgPiorityMessageDetails.setTag(R.color.colorPriorityHigh);
                 }
                 // _handlerImagePriotyClick(message);
-                if (message.getFrm_user_photo() != null) {
-                    LaoSchoolSingleton.getInstance().getImageLoader().get(message.getFrm_user_photo(), ImageLoader.getImageListener(imgUserSentMessageAvata,
+                String photo = (LaoSchoolShared.myProfile.getId() == message.getTo_usr_id()) ? message.getFrm_user_photo() : message.getTo_user_photo();
+                if (photo != null) {
+                    LaoSchoolSingleton.getInstance().getImageLoader().get(photo, ImageLoader.getImageListener(imgUserSentMessageAvata,
                             R.drawable.ic_account_circle_black_36dp, android.R.drawable
                                     .ic_dialog_alert));
-                    imgUserSentMessageAvata.setImageUrl(message.getFrm_user_photo(), LaoSchoolSingleton.getInstance().getImageLoader());
+                    imgUserSentMessageAvata.setImageUrl(photo, LaoSchoolSingleton.getInstance().getImageLoader());
                 } else {
                     imgUserSentMessageAvata.setDefaultImageResId(R.drawable.ic_account_circle_black_36dp);
                 }
 
-                txtFormUserNameMessageDetails.setText(message.getFrom_user_name());
+                txtFormUserNameMessageDetails.setText((LaoSchoolShared.myProfile.getId() == message.getFrom_usr_id()) ?
+                        message.getTo_user_name() :
+                        message.getFrom_user_name());
                 txtToUserNameMessageDetails.setText("to " + message.getTo_user_name());
 
                 //set Adaper
