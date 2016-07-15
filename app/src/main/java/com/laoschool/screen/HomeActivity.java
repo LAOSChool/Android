@@ -35,8 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.RemoteMessage;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.laoschool.R;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.adapter.LaoSchoolPagerAdapter;
@@ -52,7 +51,6 @@ import com.laoschool.screen.ScreenProfile.IProfile;
 import com.laoschool.screen.login.ScreenLogin;
 import com.laoschool.screen.view.Languages;
 import com.laoschool.shared.LaoSchoolShared;
-import com.laoschool.tools.LaoSchoolFirebaseMessagingService;
 import com.laoschool.view.FragmentLifecycle;
 import com.laoschool.view.ViewpagerDisableSwipeLeft;
 
@@ -85,6 +83,7 @@ public class HomeActivity extends AppCompatActivity implements
     public User selectedStudent;
     private Animation animShow, animHide;
     private int clickPressBack = 0;
+    public List<User> selectedUserList;
 
 
     public enum DisplayButtonHome {
@@ -176,6 +175,7 @@ public class HomeActivity extends AppCompatActivity implements
             }
 
         }
+        Log.d(TAG, "current_token:" + FirebaseInstanceId.getInstance().getToken());
     }
 
     private void getUserProfile() {
@@ -822,13 +822,9 @@ public class HomeActivity extends AppCompatActivity implements
     @Override
     public void goBackToMessage() {
         if (beforePosition == LaoSchoolShared.POSITION_SCREEN_MESSAGE_0) {
-            String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
-            ScreenMessage screenMessage = (ScreenMessage) getSupportFragmentManager().findFragmentByTag(tag);
-            screenMessage.reloadDataAfterCreateMessages();
             //back to tab message
             _gotoPage(LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
         } else if (beforePosition == LaoSchoolShared.POSITION_SCREEN_PROFILE_13) {
-
             //back to tab message
             beforePosition = LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5;
             _gotoPage(LaoSchoolShared.POSITION_SCREEN_PROFILE_13);
@@ -836,6 +832,9 @@ public class HomeActivity extends AppCompatActivity implements
             //back to tab attender
             _gotoPage(LaoSchoolShared.POSITION_SCREEN_ATTENDED_3);
         }
+        String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
+        ScreenMessage screenMessage = (ScreenMessage) getSupportFragmentManager().findFragmentByTag(tag);
+        screenMessage.reloadDataAfterCreateMessages();
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
     }
 
@@ -894,9 +893,10 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void gotoDetailsStudent(User user) {
+    public void gotoDetailsStudent(List<User> userList, User user) {
         beforePosition = LaoSchoolShared.POSITION_SCREEN_LIST_STUDENT_OF_CLASS_18;
         selectedStudent = user;
+        selectedUserList = userList;
         _gotoPage(LaoSchoolShared.POSITION_SCREEN_PROFILE_13);
     }
 
@@ -926,12 +926,12 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void sendMessage(User selectedStudent) {
+    public void sendMessage(List<User> userList, User selectedStudent) {
         beforePosition = LaoSchoolShared.POSITION_SCREEN_PROFILE_13;
         _gotoPage(LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
         String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
         ScreenCreateMessage screenCreateMessage = (ScreenCreateMessage) getSupportFragmentManager().findFragmentByTag(tag);
-        screenCreateMessage.presetData(Arrays.asList(selectedStudent), Arrays.asList(selectedStudent), "");
+        screenCreateMessage.presetData(userList, Arrays.asList(selectedStudent), "");
     }
 
 
