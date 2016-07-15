@@ -194,17 +194,11 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         final String classID = "";
         final String fromUserID = ((position == 2) ? String.valueOf(LaoSchoolShared.myProfile.getId()) : "");
         final String fromDate = "";
-        final String toUserID = ((position == 0 || position == 1) ? String.valueOf(LaoSchoolShared.myProfile.getId()) : "");
+        final String toUserID = ((position < 2) ? String.valueOf(LaoSchoolShared.myProfile.getId()) : "");
         final String toDate = "";
         final String channel = "";
         final String status = "";
         final String fromID = ((form_id > 0) ? String.valueOf(form_id) : "");
-        Log.d(TAG, "_getDataFormServer()):\n" +
-                "getMessagesFormServer(classID=" + classID + "\n" +
-                ",fromUserID=" + fromUserID + ",fromDate=" + fromDate + "\n" +
-                ",toUserID=" + toUserID + ",toDate=" + toDate + "\n" +
-                ",channel=" + channel + ",status=" + status + "\n" +
-                ",fromID=" + fromID + ")");
         service.getMessages(
                 classID//classID
                 , fromUserID//from user ID
@@ -551,11 +545,11 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         Log.d(TAG, "setUserVisibleHint() -isVisibleToUser:" + isVisibleToUser);
         super.setUserVisibleHint(isVisibleToUser);
-        try {
-            if (!alreadyExecuted && isVisibleToUser)
-                _defineData();
-        } catch (Exception e) {
-            Log.e(TAG, "setUserVisibleHint() -exception:" + e.getMessage());
-        }
+//        try {
+//            if (!alreadyExecuted && isVisibleToUser)
+//                _defineData();
+//        } catch (Exception e) {
+//            Log.e(TAG, "setUserVisibleHint() -exception:" + e.getMessage());
+//        }
     }
 }
