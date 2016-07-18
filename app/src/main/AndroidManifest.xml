@@ -26,7 +26,7 @@
             android:name=".screen.HomeActivity"
             android:label="@string/SCCommon_AppName"
             android:theme="@style/HomeScreen"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="stateVisible|adjustResize|adjustPan|stateHidden" />
         <activity
             android:name=".screen.login.ScreenLogin"
             android:label="@string/title_activity_screen_login"
