@@ -190,6 +190,7 @@ public class LaoSchoolShared {
             inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus()
                     .getWindowToken(), 0);
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
