@@ -248,7 +248,11 @@ public class User implements Comparable<User>{
                 eclass.setSchool_id(eclassObj.getInt("school_id"));
                 eclass.setTitle(eclassObj.getString("title"));
                 eclass.setLocation(eclassObj.getString("location"));
-                eclass.setTerm(eclassObj.getInt("term"));
+                try {
+                    eclass.setTerm(eclassObj.getInt("term"));
+                } catch (JSONException e) {
+                    Log.w("UserProfile", "term in class is null");
+                }
                 eclass.setYears(eclassObj.getString("years"));
                 eclass.setStart_dt(eclassObj.getString("start_dt"));
                 eclass.setEnd_dt(eclassObj.getString("end_dt"));

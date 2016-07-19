@@ -17,6 +17,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +25,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.ImageView;
@@ -464,10 +466,18 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                         edtSearch.getText().clear();
                     }
                 });
+
                 dialog.setView(tableSubject.getView());
+                tableSubject.setListSubject(attendanceRollup.getTimetables());
                 dialog.show();
 
-                tableSubject.setListSubject(attendanceRollup.getTimetables());
+                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                lp.copyFrom(dialog.getWindow().getAttributes());
+                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 480, getResources().getDisplayMetrics());
+                lp.height = height;
+//                lp.dimAmount = 1.0f;
+                dialog.getWindow().setAttributes(lp);
             }
         });
 

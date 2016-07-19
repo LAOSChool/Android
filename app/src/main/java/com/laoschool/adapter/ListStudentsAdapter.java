@@ -127,7 +127,7 @@ public class ListStudentsAdapter extends RecyclerView.Adapter<ListStudentsAdapte
                         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                                 RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                         params.addRule(RelativeLayout.RIGHT_OF, imgStudent.getId());
-                        params.addRule(RelativeLayout.END_OF, imgStudent.getId());
+//                        params.addRule(RelativeLayout.END_OF, imgStudent.getId());
                         params.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
                         params.setMargins(30, 0, 0, 0);
                         studentName.setLayoutParams(params);
@@ -145,7 +145,7 @@ public class ListStudentsAdapter extends RecyclerView.Adapter<ListStudentsAdapte
                     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                             RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                     params.addRule(RelativeLayout.RIGHT_OF, imgStudent.getId());
-                    params.addRule(RelativeLayout.END_OF, imgStudent.getId());
+//                    params.addRule(RelativeLayout.END_OF, imgStudent.getId());
                     params.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
                     params.setMargins(30, 0, 0, 0);
                     studentName.setLayoutParams(params);
@@ -163,7 +163,7 @@ public class ListStudentsAdapter extends RecyclerView.Adapter<ListStudentsAdapte
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                     RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             params.addRule(RelativeLayout.RIGHT_OF, imgStudent.getId());
-            params.addRule(RelativeLayout.END_OF, imgStudent.getId());
+//            params.addRule(RelativeLayout.END_OF, imgStudent.getId());
             params.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
             params.setMargins(30, 0, 0, 0);
             studentName.setLayoutParams(params);

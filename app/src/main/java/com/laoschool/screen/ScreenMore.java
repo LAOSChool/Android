@@ -162,9 +162,13 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
             txvProfile.setText(R.string.SCCommon_Profile);
             txtStudentName.setText(LaoSchoolShared.myProfile.getFullname() + " - " + context.getString(R.string.SCCommon_Class) + " " + LaoSchoolShared.myProfile.getEclass().getTitle());
             txtSchoolName.setText(LaoSchoolShared.myProfile.getSchoolName());
-            String split[] = LaoSchoolShared.myProfile.getEclass().getYears().split("-");
-            String years = context.getString(R.string.SCCommon_Years) +": " + split[0] + " - " + split[1];
-            txtTerm.setText(years);
+            try {
+                String split[] = LaoSchoolShared.myProfile.getEclass().getYears().split("-");
+                String years = context.getString(R.string.SCCommon_Years) + ": " + split[0] + " - " + split[1];
+                txtTerm.setText(years);
+            } catch (Exception e) {
+                txtTerm.setText(context.getString(R.string.SCCommon_Years));
+            }
 
             //init adapte
             List<String> more_student = Arrays.asList(getResources().getStringArray(R.array.more_student));
