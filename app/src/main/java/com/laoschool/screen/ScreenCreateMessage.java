@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -238,7 +239,8 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                                 WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
                                 lp.copyFrom(dialog.getWindow().getAttributes());
                                 lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-                                lp.height = 980;
+                                int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 480, getResources().getDisplayMetrics());
+                                lp.height = height;
                                 dialog.getWindow().setAttributes(lp);
                             } else {
                                 WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
@@ -269,7 +271,8 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                     WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
                     lp.copyFrom(dialog.getWindow().getAttributes());
                     lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-                    lp.height = 980;
+                    int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 480, getResources().getDisplayMetrics());
+                    lp.height = height;
                     dialog.getWindow().setAttributes(lp);
                 }
             }

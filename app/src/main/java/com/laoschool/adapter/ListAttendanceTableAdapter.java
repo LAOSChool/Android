@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -120,7 +121,8 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
         txvInform.setText(context.getString(R.string.SCAttendance_Inform));
         txvAbsent.setText(context.getString(R.string.SCAttendance_Absent));
         btnAbsent.setBackgroundColor(Color.parseColor("#37000000"));
-        bottom_wrapper.setLayoutParams(new FrameLayout.LayoutParams(300,
+        int width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 141, context.getResources().getDisplayMetrics());
+        bottom_wrapper.setLayoutParams(new FrameLayout.LayoutParams(width,
                 LinearLayout.LayoutParams.MATCH_PARENT));
         btnInform.setVisibility(View.VISIBLE);
 
@@ -134,7 +136,8 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
                         txvAbsent.setTextColor(Color.parseColor("#80000000"));
                         btnAbsent.setBackgroundColor(context.getResources().getColor(R.color.color_bg_un_read));
                         btnInform.setVisibility(View.GONE);
-                        bottom_wrapper.setLayoutParams(new FrameLayout.LayoutParams(150,
+                        width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 71, context.getResources().getDisplayMetrics());
+                        bottom_wrapper.setLayoutParams(new FrameLayout.LayoutParams(width,
                                 LinearLayout.LayoutParams.MATCH_PARENT));
                         break;
                     }
@@ -265,32 +268,27 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
                         e.printStackTrace();
                     }
                 }
-
-
+                
                 @Override
                 public void onFailure(String message) {
-                    try {
-                        Bitmap icon;
-                        if (student.getGender().equals("male"))
-                            icon = BitmapFactory.decodeResource(context.getResources(),
-                                    R.drawable.ic_male);
-                        else
-                            icon = BitmapFactory.decodeResource(context.getResources(),
-                                    R.drawable.ic_female);
-                        student.setUserPhoto(icon);
-                        imgStudent.setImageBitmap(student.getUserPhoto());
-                        imgStudent.setVisibility(View.VISIBLE);
-                        progressBar.setVisibility(View.GONE);
-                        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                        params.addRule(RelativeLayout.RIGHT_OF, imgStudent.getId());
-                        params.addRule(RelativeLayout.END_OF, imgStudent.getId());
-                        params.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
-                        params.setMargins(30, 0, 0, 0);
-                        txtStudentName.setLayoutParams(params);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    Bitmap icon;
+                    if (student.getGender().equals("male"))
+                        icon = BitmapFactory.decodeResource(context.getResources(),
+                                R.drawable.ic_male);
+                    else
+                        icon = BitmapFactory.decodeResource(context.getResources(),
+                                R.drawable.ic_female);
+                    student.setUserPhoto(icon);
+                    imgStudent.setImageBitmap(student.getUserPhoto());
+                    imgStudent.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                            RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    params.addRule(RelativeLayout.RIGHT_OF, imgStudent.getId());
+//                    params.addRule(RelativeLayout.END_OF, imgStudent.getId());
+                    params.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+                    params.setMargins(30, 0, 0, 0);
+                    txtStudentName.setLayoutParams(params);
                 }
 
                 @Override
@@ -305,7 +303,7 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                     RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             params.addRule(RelativeLayout.RIGHT_OF, imgStudent.getId());
-            params.addRule(RelativeLayout.END_OF, imgStudent.getId());
+//            params.addRule(RelativeLayout.END_OF, imgStudent.getId());
             params.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
             params.setMargins(30, 0, 0, 0);
             txtStudentName.setLayoutParams(params);

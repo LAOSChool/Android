@@ -164,6 +164,7 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
 //                }
 //            });
 
+
             fillUserDetailsStudent();
 
             //init adapte

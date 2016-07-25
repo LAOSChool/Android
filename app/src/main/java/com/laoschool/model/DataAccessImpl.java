@@ -79,10 +79,13 @@ public class DataAccessImpl implements DataAccessInterface {
 
     private static String api_key = "TEST_API_KEY";
 
-    //VDC:https://222.255.29.25:8443/laoschoolws/api
-    //192.168.0.202:9443
-    final String LOGIN_HOST = "https://192.168.0.202:9443/laoschoolws/";
-    final String HOST = "https://192.168.0.202:9443/laoschoolws/api/";
+    //Lab02
+//    final String LOGIN_HOST = "https://192.168.0.202:9443/laoschoolws/";
+//    final String HOST = "https://192.168.0.202:9443/laoschoolws/api/";
+
+    //VDC
+    final String LOGIN_HOST = "https://222.255.29.25:8443/laoschoolws/";
+    final String HOST = "https://222.255.29.25:8443/laoschoolws/api/";
 
 
     private DataAccessImpl(Context context) {
@@ -359,9 +362,7 @@ public class DataAccessImpl implements DataAccessInterface {
                     public void onResponse(String response) {
                         Log.d("Service/gUserProfile()", response);
                         User user = User.parseFromJson(response);
-
                         LaoSchoolShared.selectedClass = user.getEclass();
-
                         callback.onSuccess(user);
                     }
                 },
@@ -373,6 +374,9 @@ public class DataAccessImpl implements DataAccessInterface {
                             // HTTP Status Code: 409 Unauthorized Oo
                             Log.e("Service/gUserProfile()", "error status code " + networkResponse.statusCode);
                             callback.onAuthFail(error.toString());
+                        } else if(networkResponse != null) {
+                            Log.e("Service/gUserProfile()", new String(networkResponse.data));
+                            callback.onFailure(new String(networkResponse.data));
                         } else {
                             Log.e("Service/gUserProfile()", error.toString());
                             callback.onFailure(error.toString());
@@ -1207,6 +1211,9 @@ public class DataAccessImpl implements DataAccessInterface {
                             // HTTP Status Code: 409 Unauthorized Oo
                             Log.e("Service/createMessage()", "error status code " + networkResponse.statusCode);
                             callback.onAuthFail(error.toString());
+                        } else if(networkResponse != null) {
+                            Log.e("Service/createMessage()", new String(networkResponse.data));
+                            callback.onFailure(new String(networkResponse.data));
                         } else {
                             Log.e("Service/createMessage()", error.toString());
                             callback.onFailure(error.toString());
@@ -1429,26 +1436,30 @@ public class DataAccessImpl implements DataAccessInterface {
         ImageLoader imageLoader = LaoSchoolSingleton.getInstance().getImageLoader();
 
         // If you are using normal ImageView
-        imageLoader.get(url, new ImageLoader.ImageListener() {
-            @Override
-            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                callback.onSuccess(response.getBitmap());
-            }
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                NetworkResponse networkResponse = error.networkResponse;
-                if (networkResponse != null && networkResponse.statusCode == 409) {
-                    // HTTP Status Code: 409 Unauthorized Oo
-                    Log.e("Service/getImage()", "error status code " + networkResponse.statusCode);
-                    callback.onAuthFail(error.toString());
-                } else {
-                    Log.e("Service/getImage()", error.toString());
-                    callback.onFailure(error.toString());
+        if(url != null) {
+            imageLoader.get(url, new ImageLoader.ImageListener() {
+                @Override
+                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                    callback.onSuccess(response.getBitmap());
                 }
-            }
-        });
 
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    NetworkResponse networkResponse = error.networkResponse;
+                    if (networkResponse != null && networkResponse.statusCode == 409) {
+                        // HTTP Status Code: 409 Unauthorized Oo
+                        Log.e("Service/getImage()", "error status code " + networkResponse.statusCode);
+                        callback.onAuthFail(error.toString());
+                    } else {
+                        Log.e("Service/getImage()", error.toString());
+                        callback.onFailure(error.toString());
+                    }
+                }
+            });
+        } else {
+            Log.e("Service/getImage()", "image url is empty");
+            callback.onFailure("image url is empty");
+        }
     }
 
     @Override
