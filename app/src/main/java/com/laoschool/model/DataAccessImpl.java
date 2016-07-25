@@ -79,13 +79,13 @@ public class DataAccessImpl implements DataAccessInterface {
 
     private static String api_key = "TEST_API_KEY";
 
-    //Lab02
-//    final String LOGIN_HOST = "https://192.168.0.202:9443/laoschoolws/";
-//    final String HOST = "https://192.168.0.202:9443/laoschoolws/api/";
+//    Lab02
+    final String LOGIN_HOST = "https://192.168.0.202:9443/laoschoolws/";
+    final String HOST = "https://192.168.0.202:9443/laoschoolws/api/";
 
-    //VDC
-    final String LOGIN_HOST = "https://222.255.29.25:8443/laoschoolws/";
-    final String HOST = "https://222.255.29.25:8443/laoschoolws/api/";
+//    //VDC
+//    final String LOGIN_HOST = "https://222.255.29.25:8443/laoschoolws/";
+//    final String HOST = "https://222.255.29.25:8443/laoschoolws/api/";
 
 
     private DataAccessImpl(Context context) {

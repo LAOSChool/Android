@@ -443,7 +443,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                 public void onSuccess(Message result) {
                     result.setIs_read(1);
                     //Save local
-                    dataAccessMessage.addMessage(result);
+                   // dataAccessMessage.addMessage(result);
                     _resetForm();
 
                     if (iScreenCreateMessage != null) {
