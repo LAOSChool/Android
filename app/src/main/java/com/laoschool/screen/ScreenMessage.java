@@ -645,7 +645,9 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
 
     public void reloadDataAfterCreateMessages() {
         try {
-            updateDataMessage(pager.getCurrentItem());
+//            updateDataMessage(0);
+//            updateDataMessage(1);
+            updateDataMessage(2);
         } catch (Exception e) {
             Log.e(TAG, "reloadDataAfterCreateMessages() -exception:" + e.getMessage());
         }
