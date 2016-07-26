@@ -244,10 +244,16 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
             public void onSuccess(final List<Message> result) {
                 try {
                     if (result != null) {
-                        for (Message message : result) {
+                        int resultsSize = result.size();
+                        int end = 0;
+                        for (int i = 0; i < resultsSize; i++) {
+                            Message message = result.get(i);
                             accessNotification.addOrUpdateNotification(message);
+                            end = i;
                         }
-                        getDataFormLocal(position);
+                        if (end == (resultsSize - 1)) {
+                            reloadDataFormLocal();
+                        }
                     } else {
                         showNodata();
                     }
@@ -593,6 +599,7 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
         private Context context;
         SwipeRefreshLayout mSwipeRefreshLayout;
         private List<Message> notificationForUser;
+        private TextView lbNoNotification;
 
         public NotificationList() {
 
@@ -612,28 +619,13 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View view = inflater.inflate(R.layout.view_notification_pager, container, false);
-            TextView lbNoNotification = (TextView) view.findViewById(R.id.lbNoNotification);
+            lbNoNotification = (TextView) view.findViewById(R.id.lbNoNotification);
             mRecyclerListMessage = (RecyclerView) view.findViewById(R.id.mListNotification);
             mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
             //set adapter
             mRecyclerListMessage.setLayoutManager(linearLayoutManager);
-            if (notificationForUser != null) {
-                if (notificationForUser.size() > 0) {
-                    lbNoNotification.setVisibility(View.GONE);
-                    mSwipeRefreshLayout.setVisibility(View.VISIBLE);
-                    _setListNotification(notificationForUser, position);
-                    _handlerSwipeReload();
-                } else {
-                    lbNoNotification.setVisibility(View.VISIBLE);
-                    mSwipeRefreshLayout.setVisibility(View.GONE);
-                }
-            } else {
-                lbNoNotification.setVisibility(View.VISIBLE);
-                mSwipeRefreshLayout.setVisibility(View.GONE);
-            }
-
-
+            _setListNotification(notificationForUser, position);
             return view;
         }
 
@@ -646,7 +638,7 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
                         try {
                             ListNotificationAdapter listMessageAdapter = (ListNotificationAdapter) mRecyclerListMessage.getAdapter();
                             int form_id = listMessageAdapter.getNotificationList().get(0).getId();
-                            getDataFormServer(form_id, position);
+                            getDataFormServer(form_id, viewPage.getCurrentItem());
                         } catch (Exception e) {
                             getDataFormServer();
                         }
@@ -655,29 +647,45 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
                     }
                     // Refresh items
                     mSwipeRefreshLayout.setRefreshing(false);
+                    Log.d(TAG, "onRefesh()");
                 }
             });
         }
 
         private void _setListNotification(final List<Message> messages, final int position) {
             try {
-                final ListNotificationAdapter listMessageAdapter = new ListNotificationAdapter(thiz, mRecyclerListMessage, position, messages);
-                listMessageAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
-                    @Override
-                    public void onLoadMore() {
-                        int countMessageFormLocal = accessNotification.getNotificationCount((position == 0) ? 1 : 0);
-                        if (messages.size() < countMessageFormLocal) {
-                            Log.d(TAG, "Load more notification !!!");
-                            messages.add(null);
-                            listMessageAdapter.notifyItemInserted(messages.size() - 1);
-                            _loadMoreData(messages, listMessageAdapter, position);
-                        } else {
-                            Log.d(TAG, "No notification load !!!");
-                        }
+                _showProgressLoading(false);
+                if (notificationForUser != null) {
+                    if (notificationForUser.size() > 0) {
+                        lbNoNotification.setVisibility(View.GONE);
+                        mSwipeRefreshLayout.setVisibility(View.VISIBLE);
 
+                        final ListNotificationAdapter listMessageAdapter = new ListNotificationAdapter(thiz, mRecyclerListMessage, position, messages);
+                        listMessageAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
+                            @Override
+                            public void onLoadMore() {
+                                int countMessageFormLocal = accessNotification.getNotificationCount((position == 0) ? 1 : 0);
+                                if (messages.size() < countMessageFormLocal) {
+                                    Log.d(TAG, "Load more notification !!!");
+                                    messages.add(null);
+                                    listMessageAdapter.notifyItemInserted(messages.size() - 1);
+                                    _loadMoreData(messages, listMessageAdapter, position);
+                                } else {
+                                    Log.d(TAG, "No notification load !!!");
+                                }
+
+                            }
+                        });
+                        mRecyclerListMessage.setAdapter(listMessageAdapter);
+                        _handlerSwipeReload();
+                    } else {
+                        lbNoNotification.setVisibility(View.VISIBLE);
+                        mSwipeRefreshLayout.setVisibility(View.GONE);
                     }
-                });
-                mRecyclerListMessage.setAdapter(listMessageAdapter);
+                } else {
+                    lbNoNotification.setVisibility(View.VISIBLE);
+                    mSwipeRefreshLayout.setVisibility(View.GONE);
+                }
 
             } catch (Exception e) {
                 Log.e(TAG, "NotificationList:_setListNotification():" + e.getMessage());
@@ -736,20 +744,16 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
             public void onSuccess(final List<Message> result) {
                 try {
                     if (result != null) {
-                        for (Message message : result) {
+                        int resultsSize = result.size();
+                        int end = 0;
+                        for (int i = 0; i < resultsSize; i++) {
+                            Message message = result.get(i);
                             accessNotification.addOrUpdateNotification(message);
+                            end = i;
                         }
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                int position = viewPage.getCurrentItem();
-                                Log.d(TAG, "reloadAffterCreate() position = " + position);
-                                List<Message> notificationForUser = accessNotification.getListNotificationForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, (position == 0) ? 1 : 0);
-                                NotificationList notifragment = ((NotificationPagerAdapter) (viewPage.getAdapter())).getFragment(position);
-                                notifragment._setListNotification(notificationForUser, position);
-                                _showProgressLoading(false);
-                            }
-                        }, 1000);
+                        if (end == (resultsSize - 1)) {
+                           reloadDataFormLocal();
+                        }
                     } else {
                         showNodata();
                     }
@@ -771,5 +775,13 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
                 LaoSchoolShared.goBackToLoginPage(context);
             }
         });
+    }
+
+    public static void reloadDataFormLocal() {
+        int position = viewPage.getCurrentItem();
+        Log.d(TAG, "reloadDataFormLocal() position = " + position);
+        List<Message> notificationForUser = accessNotification.getListNotificationForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, (position == 0) ? 1 : 0);
+        NotificationList notifragment = ((NotificationPagerAdapter) (viewPage.getAdapter())).getFragment(position);
+        notifragment._setListNotification(notificationForUser, position);
     }
 }
