@@ -83,6 +83,8 @@
             android:singleLine="true"
             android:layout_toLeftOf="@+id/imgDownloadImage"
             android:layout_toStartOf="@+id/imgDownloadImage"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:textSize="14sp" />
 
         <ImageView

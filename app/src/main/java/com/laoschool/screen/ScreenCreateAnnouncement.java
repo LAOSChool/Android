@@ -138,7 +138,7 @@ public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecy
             //set layout manager
             CustomGridLayoutManager customGridLayoutManager = new CustomGridLayoutManager(context);
             mReclerViewImageSeleted.setLayoutManager(customGridLayoutManager);
-
+            Activity activity=getActivity();
             listImageSelectedAdapter = new ListImageSelectedAdapter(context, files);
             mReclerViewImageSeleted.setAdapter(listImageSelectedAdapter);
             return view;
