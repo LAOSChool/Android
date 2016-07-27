@@ -63,6 +63,8 @@ public class LaoSchoolShared {
     public static final int SELECT_PHOTO = 100;
     public static final int SELECT_CAMERA = 101;
     public static final long LOADING_TIME = 1500;
+    public static final int READ_1 = 1;
+    public static final int UNREAD_0 = 0;
     public static User myProfile;
     public static Class selectedClass;
     public static final String SHARED_PREFERENCES_TAG = "com.laoshcool.app";
