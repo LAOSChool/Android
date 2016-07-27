@@ -791,7 +791,8 @@ public class DataAccessImpl implements DataAccessInterface {
                         Log.d("Service/getAttReason()", response);
                         try {
                             JSONObject mainObject = new JSONObject(response);
-                            JSONArray listAttReason = mainObject.getJSONArray("list");
+                            JSONObject obj1 = mainObject.getJSONObject("messageObject");
+                            JSONArray listAttReason = obj1.getJSONArray("list");
                             List<AttendanceReason> datas = new ArrayList<AttendanceReason>();
                             for(int i = 0; i < listAttReason.length(); i++) {
                                 AttendanceReason attendanceReason =

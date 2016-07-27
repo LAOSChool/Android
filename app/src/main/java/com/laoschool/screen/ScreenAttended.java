@@ -474,7 +474,7 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                 WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
                 lp.copyFrom(dialog.getWindow().getAttributes());
                 lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-                int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 480, getResources().getDisplayMetrics());
+                int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 380, getResources().getDisplayMetrics());
                 lp.height = height;
 //                lp.dimAmount = 1.0f;
                 dialog.getWindow().setAttributes(lp);

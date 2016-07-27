@@ -1,6 +1,8 @@
 package com.laoschool.adapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,8 +15,11 @@ import android.widget.TextView;
 import com.laoschool.R;
 import com.laoschool.entities.AttendanceReason;
 import com.laoschool.screen.view.AttendanceTableAbsent;
+import com.laoschool.screen.view.Languages;
+import com.laoschool.shared.LaoSchoolShared;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Tran An on 7/4/2016.
@@ -71,7 +76,14 @@ public class ListAttendanceReasonAdapter extends RecyclerView.Adapter<ListAttend
 
         AttendanceReason attendanceReason = mDataset.get(position);
 
-        txvReason.setText(attendanceReason.getLval());
+        SharedPreferences prefs = context.getSharedPreferences(
+                LaoSchoolShared.SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
+        String language = prefs.getString(Languages.PREFERENCES_NAME, null);
+        if (language != null && language.equals(Languages.LANGUAGE_LAOS))
+            txvReason.setText(attendanceReason.getLval());
+        else
+            txvReason.setText(attendanceReason.getSval());
+
         if(position == 0)
             txvReason.setTextColor(context.getResources().getColor(R.color.colorAttendanceNoReason));
 

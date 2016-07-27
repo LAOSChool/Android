@@ -21,6 +21,8 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -62,6 +64,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
     private CheckBox cbSendSms;
     private CheckBox cbImportant;
     private EditText txtMessageContent;
+    private ImageView btnListContentSample;
 
     TextView txtMessageTo;
 
@@ -117,7 +120,22 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                 else
                     txtMessageTo.setText(context.getString(R.string.SCCreateMessage_TitleAllStudentsAttendance));
                 txtMessageContent.setText(defaultText);
+                btnListContentSample.setVisibility(View.VISIBLE);
+                btnListContentSample.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                    PopupMenu popup = new PopupMenu(context, btnListContentSample);
+                    //Inflating the Popup using xml file
+//                    popup.getMenuInflater().inflate(R.menu.menu_popup_request_attendance, popup.getMenu());
+                        popup.getMenu().add("Item 1");
+                        popup.getMenu().add("Item 2");
+                        popup.getMenu().add("Item 3");
+                        popup.getMenu().add("Item 4");
+                    popup.show();
+                    }
+                });
             } else {
+                btnListContentSample.setVisibility(View.GONE);
                 if (listStudents.isEmpty())
                     getListStudents();
             }
@@ -182,6 +200,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
         cbImportant = (CheckBox) view.findViewById(R.id.cbImportant);
         txtMessageContent = (EditText) view.findViewById(R.id.txtMessageContent);
         txtMessageTo = (TextView) view.findViewById(R.id.txtConversionMessageTo);
+        btnListContentSample = (ImageView) view.findViewById(R.id.btnListContentSample);
 
         RelativeLayout btnStudentPicker = (RelativeLayout) view.findViewById(R.id.btnStudentPicker);
         RelativeLayout btnSmsCheck = (RelativeLayout) view.findViewById(R.id.btnSmsCheck);
@@ -577,6 +596,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
             txtMessageTo.setText(context.getString(R.string.SCCommon_Class) + " " + LaoSchoolShared.selectedClass.getTitle());
             if(tableStudents != null)
                 tableStudents.reset();
+            btnListContentSample.setVisibility(View.GONE);
         } else {
             txtMessageTitleStudent.getText().clear();
             txtMessageContentStudent.getText().clear();

@@ -2,83 +2,82 @@
 <resources>
     <!--Login screen-->
     <string name="SCCommon_AppName">ໂຮງຮຽນລາວ</string>
-    <string name="SCCommon_UserName">ຊື່ຜູ້ໃຊ້</string>
-    <string name="SCCommon_Password">ລະຫັດຜ່ານ</string>
+    <string name="SCCommon_UserName">ຊື່​ຜູ້​ນຳ​ໃຊ້</string>
+    <string name="SCCommon_Password">ລະ​ຫັດ​ຜ່ານ</string>
     <string name="SCLogin_Login">ເຂົ້າ​ສູ່​ລະ​ບົບ</string>
-    <string name="SCCommon_Language">ພາສາການປ່ຽນແປງ</string>
-    <string name="SCLogin_ForgotPass">ລະຫັດຜ່ານລືມ?</string>
-    <string name="SCCommon_Help">ຊ່ວຍເຫຼືອ</string>
-    <string name="SCCommon_Submit">ສົ່ງ</string>
-    <string name="SCForgotPass_PhoneNumber">ເບີ​ໂທລະ​ສັບ</string>
-    <string name="SCForgotPass_Text1">ກະລຸນາໃສ່ຊື່ຜູ້ໃຊ້ແລະເບີໂທລະສັບທີ່ຖືກລົງທະບຽນສໍາລັບການບັນຊີນີ້ຂອງທ່ານ.</string>
-    <string name="SCForgotPass_Text2">(ຖ້າຫາກວ່າທ່ານບໍ່ຈື່ຊື່ຜູ້ໃຊ້ແລະຈໍານວນໂທລະສັບຂອງທ່ານ, ກະລຸນາຕິດຕໍ່ກັບ admin ຂອງໂຮງຮຽນ.)</string>
+    <string name="SCCommon_Language">ປ່່ຽນ​ພາ​ສາ</string>
+    <string name="SCLogin_ForgotPass">ລືມ​ລະ​ຫັດ​ຜ່ານ</string>
+    <string name="SCCommon_Help">ຊ່ວຍ​ເຫຼືອ</string>
+    <string name="SCCommon_Submit">ຍື່ນ</string>
+    <string name="SCForgotPass_PhoneNumber">ເບີ​ໂທ</string>
+    <string name="SCForgotPass_Text1">ກະ​ລຸ​ນາ​ພິມ​ຊື່​ຜູ້​ນຳ​ໃຊ້ ແລະ ເບີ​ໂທ ທີ່​ໄດ້ລົງ​ທະ​ບຽນ​ສຳ​ລັບ​ບັນ​ຊີ​ນີ້.</string>
+    <string name="SCForgotPass_Text2">(ຫາກ​ທ່ານ​ຈື້ ​ຊື່​ຜູ້​ນຳ​ໃຊ້ ແລະ ເບີ​ໂທ ບໍ່​ໄດ້, ກະ​ລຸ​ນາ​ຕິດ​ຕໍ່​ທາງໂຮງ​ຮຽນ)</string>
     <string name="SCForgotPass_Title">ລະຫັດຜ່ານລືມ?</string>
-    <string name="SCCommon_Announcements">ປະກາດ</string>
-    <string name="SCCommon_Attendance">ຜູ້ເຂົ້າຮ່ວມ</string>
+    <string name="SCCommon_Announcements">ປະ​ກາດ</string>
+    <string name="SCCommon_Attendance">ເຊັກ​ລາຍ​ຊື່​ນັກ​ນ​ຮຽນ​ຂາດ</string>
     <string name="SCCommon_ChangePassword">ປ່ຽນ​ລະ​ຫັດ​ຜ່ານ</string>
-    <string name="SCCommon_ExamResults">ຜົນການສອບເສັງ</string>
+    <string name="SCCommon_ExamResults">ຄະ​ແນນ</string>
     <string name="SCCommon_FinalResults">ຜົນສຸດທ້າຍ</string>
     <string name="SCCommon_Home">ຫນ້າທໍາອິດ</string>
     <string name="SCCommon_ListTeacher">ຄູອາຈານບັນຊີລາຍຊື່</string>
     <string name="SCCommon_Logout">ອອກ​ຈາກ​ລະ​ບົບ</string>
-    <string name="SCCommon_Message">ຂໍ້ຄວາມ</string>
-    <string name="SCCommon_More">ເພີ່ມເຕີມ</string>
-    <string name="SCCommon_SchoolInfomation">ຂໍ້ມູນໂຮງຮຽນ</string>
-    <string name="SCCommon_TimeTable">ຕາຕະລາງໃຊ້ເວລາ</string>
+    <string name="SCCommon_Message">ຂໍ້​ຄວາມ</string>
+    <string name="SCCommon_More">ອື່ນໆ</string>
+    <string name="SCCommon_SchoolInfomation">ຂໍ້​ມູນ​ທາງ​ໂຮງ​ຮຽນ</string>
+    <string name="SCCommon_TimeTable">ຕາ​ຕະ​ລາງ​ຮຽນ</string>
     <string name="SCCommon_Inbox">ກັບຂ້າພະເຈົ້າ</string>
-    <string name="SCCommon_Search">ຄົ້ນຫາ</string>
+    <string name="SCCommon_Search">ຄົ້ນ​ຫ​າ</string>
     <string name="SCCommon_Send">ສົ່ງ</string>
-    <string name="SCCommon_Unread">ຍັງບໍ່ໄດ້ອ່ານ</string>
+    <string name="SCCommon_Unread">ຍັງ​ບໍ່​ອ່ານ</string>
     <string name="SCCreateMessage_Content">ເນື້ອໃນ</string>
-    <string name="SCCreateMessage_CreateMessage">ສ້າງຂໍ້ຄວາມ</string>
+    <string name="SCCreateMessage_CreateMessage">ຂໍ້​ຄວາມ​ໃໝ່</string>
     <string name="SCCreateMessage_Important">ທີ່ສໍາຄັນ</string>
     <string name="SCCreateMessage_SMS">SMS</string>
-    <string name="SCCreateMessage_To">ການ</string>
-    <string name="SCCommon_Cancel">ຍົກເລີກການ</string>
-    <string name="SCCommon_Class">ລະດັບ</string>
-    <string name="SCCommon_Done">ເຮັດ</string>
+    <string name="SCCreateMessage_To">ເຖິງ</string>
+    <string name="SCCommon_Cancel">ຍົກ​ເລີກ</string>
+    <string name="SCCommon_Class">ຫ້ອງ</string>
+    <string name="SCCommon_Done">ແລ້ວ</string>
     <string name="SCCreateMessage_Subject">ເລື່ອງ</string>
-    <string name="SCAttendance_Absent">ທີ່ບໍ່ຍູ່ </string>
-    <string name="SCAttendance_AbsentCreate">ເມື່ອບໍ່ມີຂອງທ່ານ</string>
-    <string name="SCAttendance_AbsentReason">ເຫດຜົນສໍາລັບການບໍ່ມີ</string>
-    <string name="SCAttendance_Excused">ການຍົກເວັ້ນ</string>
-    <string name="SCAttendance_Fulldays">ມື້ເຕັມ</string>
-    <string name="SCAttendance_ListStudents">ນັກສຶກສາບັນຊີລາຍການ</string>
-    <string name="SCAttendance_NoExcused">ບໍ່ມີຂໍ້ແກ້ຕົວ</string>
-    <string name="SCAttendance_Sessions">ກອງປະຊຸມ</string>
-    <string name="SCAttendance_Subjects">ຫົວຂໍ້ໃດຫນຶ່ງ</string>
-    <string name="SCCommon_No">ບໍ່ມີ</string>
-    <string name="SCCommon_Yes">ມີ</string>
+    <string name="SCAttendance_Absent">ຂາດ </string>
+    <string name="SCAttendance_AbsentCreate">ໃບລາ​ພັກ​</string>
+    <string name="SCAttendance_AbsentReason">ມີ​ເຫດ​ຜົນ</string>
+    <string name="SCAttendance_Excused">ອະ​ນຸ​ຍາດ</string>
+    <string name="SCAttendance_Fulldays">ໝົດ​ມື້</string>
+    <string name="SCAttendance_ListStudents">ລາຍ​ຊື່​ນັກ​ຮຽນ</string>
+    <string name="SCAttendance_NoExcused">ບໍ່​ມີ​ເຫດ​ຜົນ</string>
+    <string name="SCAttendance_Sessions">ຊ​ົ່ວ​ໂມງ</string>
+    <string name="SCAttendance_Subjects">ຊ​ົ່ວ​ໂມງ</string>
+    <string name="SCCommon_No">ບໍ່</string>
+    <string name="SCCommon_Yes">ແມ່ນີ</string>
     <string name="SCAttendance_NoReason">ບໍ່​ມີ​ເຫດ​ຜົນ</string>
-    <string name="SCCommon_Term">ໄລຍະ</string>
+    <string name="SCCommon_Term">ພາກ​ຮຽນ</string>
     <string name="SCCommon_Years">ປີ</string>
     <string name="SCCommon_Profile">ຂໍ້ມູນສ່ວນຕົວ</string>
     <string name="SCCommon_Loading">ກໍາລັງໂຫລດ</string>
     <string name="SCCommon_NoInternet">ບໍ່ມີການເຊື່ອມຕໍ່ອິນເຕີເນັດ</string>
     <string name="SCCommon_PleaseWait">ກະ​ລຸ​ນາ​ລໍ​ຖ້າ</string>
     <string name="SCCommon_Sending">ສົ່ງ</string>
-    <string name="SCCreateMessage_EmptyMessage">ບໍ່ສາມາດສົ່ງຂໍ້ຄວາມເປົ່າ</string>
-    <string name="SCCreateMessage_SendFail">ສົ່ງຂໍ້ຄວາມລົ້ມເຫລວ</string>
-    <string name="SCCreateMessage_SendNoOne">ພົບວ່າບໍ່ມີຫນຶ່ງກັບຂໍ້ຄວາມສົ່ງ</string>
+    <string name="SCCreateMessage_EmptyMessage">ກະ​ລຸ​ນາ​ໃສ່​ຜູ້​ຮັບ ແລະ ເນື້ອ​ໃນ</string>
+    <string name="SCCreateMessage_SendFail">ເກີດຂໍ້​ຜິດ​ພາດ​ໃນການ​ສົ່ງຂໍ້​ຄວາມ. ກະ​ລຸ​ນາ​ລອງໃໝ່​.</string>
+    <string name="SCCreateMessage_SendNoOne">ກະ​ລຸ​ນາ​ໃສ່​ຜູ້​ຮັບ ແລະ ເນື້ອ​ໃນ</string>
     <string name="SCCreateMessage_SendSuccessful">ຂໍ້ຄວາມຖືກສົ່ງໄປແລ້ວ</string>
-    <string name="SCAttendance_ChoseSubjects">ເລືອກເລື່ອງ</string>
+    <string name="SCAttendance_ChoseSubjects">ເລືອກ​ຊົ່ວ​ໂມງ​</string>
     <string name="SCAttendance_NoAbsent">ບໍ່ມີຂາດ</string>
     <string name="SCAttendance_NotValid">ວັນບໍ່ແມ່ນບໍ່ຖືກຕ້ອງ</string>
-    <string name="SCAttendance_SendFail">ສົ່ງບໍ່ເຊັ່ນການແລກປ່ຽນ</string>
+    <string name="SCAttendance_SendFail">ເກີດຂໍ້​ຜິດ​ພາດ​ໃນ​ການສົ່ງ​. ກະ​ລຸ​ນາ​ລອງໃໝ່​.</string>
     <string name="SCCommon_Reload">ໂຫລດ</string>
     <string name="SCCommon_UnknowError">ຄວາມຜິດພາດຢ່າງຫນຶ່ງທີ່ເກີດ</string>
     <string name="SCFinalResult_NoYearSelected">ບໍ່ມີການຄັດເລືອກປີ</string>
-    <string name="SCFinalResult_SelectedYear">ປີທີ່ເລືອກ</string>
+    <string name="SCFinalResult_SelectedYear">ເລືອກ​ປີ​ຮຽນ</string>
     <string name="SCFinalResult_TabToSelectedYear">ແຖບປີເລືອກ</string>
     <string name="SCCommon_NoData">ບໍ່ມີຂໍ້ມູນທີ່ພົບ</string>
     <string name="SCChangePass_ConfirmPass">ຢືນຢັນລະຫັດຜ່ານໃຫມ່ຂອງທ່ານ:</string>
     <string name="SCChangePass_NewPass">ກະລຸນາໃສ່ລະຫັດຜ່ານໃຫມ່ຂອງທ່ານ:</string>
     <string name="SCChangePass_OldPass">ກະລຸນາໃສ່ລະຫັດຜ່ານຂອງທ່ານ:</string>
-    <string name="SCForgotPass_PhoneNumberNotMatch">ຫມາຍເລກໂທລະສັບບໍ່ມີຄໍາວ່າດ້ວຍຊື່ຜູ້ໃຊ້</string>
-    <string name="SCForgotPass_ResetPassSuccess">ລະຫັດຜ່ານຂອງທ່ານໄດ້ຮັບການປັບ</string>
-    <string name="SCForgotPass_UserNameNotExist">ຊື່ຜູ້ໃຊ້ບໍ່ມີ</string>
+    <string name="SCForgotPass_UserNameNotExist">ຊື່​ຜູ້​ນຳ​ໃຊ້ ແລະ ເບີ​ໂທ ບໍ່ຖືກ​ຕ້ອງ</string>
+    <string name="SCForgotPass_ResetPassSuccess">ລະ​ບົບ​ຈະ​ສົ່ງລະ​ຫັດ​ຜ່ານ​ໄປໃຫ້​ທ່ານທາງ SMS</string>
     <string name="SCLogin_WrongUsernameOrPass">ຊື່ຜູ້ໃຊ້ຫລືລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ</string>
-    <string name="SCAttendance_CancelAbsentConfirm">ທ່ານມີແນ່ໃຈວ່າເພື່ອຍົກເລີກການບໍ່ນີ້?</string>
+    <string name="SCAttendance_CancelAbsentConfirm">ຍົກ​ເລີກການໝາຍ​ຂາດນີ້. ທ່າ​ນ​ແນ່​ໃຈ​ບໍ?</string>
     <string name="SCAttendance_NeedChoseSubject">ເລືອກຫົວຂໍ້ເປັນຄັ້ງທໍາອິດ</string>
     <string name="SCAttendance_TeacherCreate">ສ້າງຂາດ</string>
     <string name="SCCommon_Close">ປິດ</string>
@@ -94,7 +93,7 @@
     <string name="SCreateAnnouncement_HintMessageSubject">ກະລຸນາໃສ່ຊື່!</string>
     <string name="SCCommon_Error">ຜິດ​ພາດ</string>
     <string name="SCCommon_ClassInfo">ຂໍ້ມູນລະດັບ</string>
-    <string name="SCExamResults_SelectSubject">ເລື​ອກ​ຫົວ​ຂໍ້</string>
+    <string name="SCExamResults_SelectSubject">ເລື​ອກ​ວິ​ຊາ</string>
     <string name="SCExamResults_CancelInputExam">ທ່່ານ​ຈ​ະ​ຍົກ​ເລີກ​ບໍ?</string>
     <string name="SCExamResults_SelectScoreType">ເລືື​ອກ​ປະ​ເພດ​ຄະ​ແນນ</string>
 
@@ -106,7 +105,7 @@
 
     <string name="SCExamResults_msg_check_submit_score">ກະ​ລຸ​ນາ​ກວດ​ຄືນ​ອີກ​ຄັ້ງ ກ່ອນ​ທີ່​ທ່ານ​ຈະ​ເຂົ້າ​ຂໍ້​ມູນຄະ​ແນນ</string>
     <string name="SCExamResults_msg_err_submit_score">ມີ​ຂໍ້​ຜິດ​ພາດໃນ​ການ​ເຂົ້າ​ຄະ​ແນນ​. ກະ​ລຸ​ນາ​ລອງໃໝ່​ອີກ​ຄັ້ງ.</string>
-    <string name="SCExamResults_msg_you_do_not_complete_filling_scores">ທ່ານ​ຍັງ​ໃສ່​ຄະ​ແນນບໍ່​ສຳ​ເລັດ. ກົດໃສ່ ​"ເຂົາ​ຂໍ້​ມຸນ​" ດຽວ​ນີ້.</string>
+    <string name="SCExamResults_msg_you_do_not_complete_filling_scores">ໃສ່​ຄະ​ແນນຍັງບໍ່​ແລ້ວ. ບັນ​ທຶກ​ເລີຍ​ບໍ?</string>
 
     <string name="SCExamResults_AddScore">ໃສ່​ຄະ​ແນນ</string>
     <string name="SCCommon_Successfully">ສຳ​ເລັດ</string>
@@ -116,17 +115,17 @@
     <string name="SCExamResults_msg_no_select_exam_type">ການຄັດເລືອກປະເພດການສອບເສັງ</string>
 
 
-    <string name="SCSchedule_Mon">ຈັນ</string>
-    <string name="SCSchedule_Tue">ວັນອັງຄານ</string>
-    <string name="SCSchedule_Wed">ວັນພຸດ</string>
-    <string name="SCSchedule_Thu">ວັນພະຫັດ</string>
-    <string name="SCSchedule_Fri">ສຸກ</string>
-    <string name="SCSchedule_Sat">ວັນເສົາ</string>
-    <string name="SCSchedule_Sun">ວັນອາທິດ</string>
+    <string name="SCSchedule_Mon">ວັນ​ຈັນ</string>
+    <string name="SCSchedule_Tue">ວັັນ​ອັງຄານ</string>
+    <string name="SCSchedule_Wed">ວັນ​ພຸດ</string>
+    <string name="SCSchedule_Thu">ວັນ​ພະ​ຫັດ</string>
+    <string name="SCSchedule_Fri">ວັນ​ສຸກ</string>
+    <string name="SCSchedule_Sat">ວັນ​ເສົາ</string>
+    <string name="SCSchedule_Sun">ວັນ​ອາ​ທິດ</string>
 
-    <string name="SCSchedule_Morning">ໃນຕອນເຊົ້າ</string>
-    <string name="SCSchedule_Afternoon">ຕອນບ່າຍ</string>
-    <string name="SCSchedule_Evening">ຕອນແລງ</string>
+    <string name="SCSchedule_Morning">ຕອນ​ເຊົ້​າ</string>
+    <string name="SCSchedule_Afternoon">ຕອນ​ບ່າຍ</string>
+    <string name="SCSchedule_Evening">ຕອນ​ແລງ</string>
 
     <string name="SCCommon_ServerError">ເຊີບເວີຜິດພາດ</string>
     <string name="SCShedule_NoSession">ບໍ່ມີກອງປະຊຸມ</string>
@@ -135,27 +134,27 @@
     <string name="SCProfile_address">ທີ່ຢູ່</string>
     <string name="SCProfile_parrent_name">ຊື່ຂອງພໍ່ແມ່</string>
     <string name="SCProfile_SendMessage">ສົ່ງ​ຂໍ້​ຄວາມ</string>
-    <string name="SCCreateAnnocement_AttachFile">ຄັດຕິດເອກະສານ</string>
+    <string name="SCCreateAnnocement_AttachFile">Files ຮູບ​ຖ່​າຍ</string>
     <string name="SCCommon_Create">ສ້າງ</string>
-    <string name="SCCommon_err_msg_network_disconnect">ການເຊື່ອມ​ຕໍ່​ໃສ່​ເຊີ​ເວີ​ລົ້ມ​ເຫຼວ. ກະ​ລຸ​ນາ​ລອງໃໝ່​ອີກ​ຄັ້ງ.</string>
+    <string name="SCCommon_err_msg_network_disconnect">ການເຊື່ອມ​ຕໍ່​ຫາເຊີ​ເວີ​ລົ້ມ​ເຫຼວ. ກະ​ລຸ​ນາ​ລອງໃໝ່​.</string>
 
     <string name="SCCreateMessage_err_msg_input_message_title">ກະລຸນາໃສ່ຊື່</string>
     <string name="SCCreateMessage_err_msg_input_message_conten">ກະ​ລຸ​ນາ​ໃສ່​ເນື້ອ​ໃນ</string>
     <string name="SCCreateMessage_err_msg_create_message">ມີ​ຂໍ້​ຜິດ​ພາດ​ໃນ​ການ​ສົ່ງ SMS ເກີດ​ຂຶ້ນ. ກະ​ລຸ​ນາ​ລອງໃໝ່​ອີກ​ຄັ້ງ.</string>
 
-    <string name="SCCreateAnnocement_err_msg_limit_img_seleted">ຈໍາກັດ 5 ຮູບພາບ</string>
+    <string name="SCCreateAnnocement_err_msg_limit_img_seleted">ຈຳນວຍ files ເກີນກຳ​ນົດ. ​ສາມາດອັບໄດ້ແມ່ນ 5 files.</string>
     <string name="SCCreateAnnocement_err_msg_download_image_fails">ຮູບພາບດາວໂຫຼດເອກະສານບໍ່ສາມາດ</string>
     <string name="SCCreateAnnocement_SaveImage">ຊ່ວຍປະຢັດຮູບພາບ</string>
     <string name="SCCreateAnnocement_hint_write_caption_message">ກະລຸນາຂຽນຄໍາອະທິບາຍພາບ</string>
-    <string name="SCCreateAnnocement_msg_confirm_sent_notication">ສົ່ງ​ປະ​ກາດ​ນີ້ເຖິງຫ້ອງ </string>
+    <string name="SCCreateAnnocement_msg_confirm_sent_notication">ສົ່ງ​ປະ​ກາດ​ນີ້ເຖິງຫ້ອງ. ທ່ານ​ແນ່​ໃຈ​ແລ້ວບໍ? </string>
     <string name="SCCommon_reload_application" >ຄໍາຮ້ອງສະຫມັກໃຫມ່</string>
-    <string name="SCCommon_re_login_application" >ບັນ​ຊີ​ນີ້​ໄດ້​ຖືກ​ນຳ​ໃຊ້​ຢູ່​ອຸ​ປະ​ກອ​ນອື່​ນ​ແລ້ວ. ກະ​ລຸ​ນາ​ເຂົ້າ​ໃໝ່.</string>
+    <string name="SCCommon_re_login_application" >ບັນ​ຊີ​ນີ້​​ໄດ້ໃຊ້​ຢູ່​ອຸ​ປະ​ກອ​ນອື່​ນ​ແລ້ວ. ກະ​ລຸ​ນາລົງ​ຊື່ເຂົ້າໃຊ້​ໃໝ່.</string>
     <string name="SCAnnocements_NoAnnocement">ບໍ່ມີປະກາດ</string>
     <string name="SCFinalExamResults_Absents">ເມື່ອບໍ່ມີ:</string>
     <string name="SCExamResults_Input">ການປ້ອນຂໍ້ມູນ</string>
-    <string name="SCFinalExamResults_Morality">ສົມບັດສິນ:</string>
+    <string name="SCFinalExamResults_Morality">ຄຸນ​ສົມ​ບັດ:</string>
     <string name="SCFinalExamResults_Passed">ຜ່ານການ</string>
-    <string name="SCFinalExamResults_TeacherComment">ຄວາມຄິດເຫັນຄູ:</string>
+    <string name="SCFinalExamResults_TeacherComment">ຄ​ຳເຫັນ​ຂອງ​ອາ​ຈານ:</string>
     <string name="SCFinalExamResults_avg_of_term1">ພາກ​ຮຽນ I</string>
     <string name="SCFinalExamResults_avg_of_year">ປີ:</string>
     <string name="SCFinalExamResults_avg_of_term2">ພາກ​ຮຽນ II</string>
@@ -180,13 +179,13 @@
     <string name="SCExanResults_test_grad_III">ເສັງ​ຈົບມໍ 7</string>
 
     <string name="SCCreateAnnocement_TakePhoto">ຖ່າຍ​ຮູບ</string>
-    <string name="SCCreateAnnocement_ChooseFromLibrary">ເລືອກຈາກຫ້ອງສະຫມຸດ</string>
+    <string name="SCCreateAnnocement_ChooseFromLibrary">Files ຢູ່ຄັງ​ຮູບອື່ນ</string>
 
-    <string name="SCExanResults_Average">ສະເລ່ຍ</string>
-    <string name="SCExanResults_Grade">ຮຽນ</string>
-    <string name="SCExanResults_Rank">ອັນດັບ</string>
+    <string name="SCExanResults_Average">ສະ​ເລ່ຍ:</string>
+    <string name="SCExanResults_Grade">ເກດ:</string>
+    <string name="SCExanResults_Rank">ອັນ​ດັບ:</string>
 
-    <string name="SCCommon_Ranking">ຈັດລຽງລໍາດັບ</string>
+    <string name="SCCommon_Ranking">​ຈັດ​ອັນ​ດັບ</string>
     <string name="SCCreateAnnocement_NewAnouncement">ປະ​ກາດ​ໃໝ່</string>
 
 </resources>

@@ -269,7 +269,10 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
                 @Override
                 public void onFailure(String message) {
                     Bitmap icon;
-                    if(student.getGender().equals("male"))
+                    if(student.getGender() == null)
+                        icon = BitmapFactory.decodeResource(context.getResources(),
+                                R.drawable.ic_account_circle_black_36dp);
+                    else if(student.getGender().equals("male"))
                         icon = BitmapFactory.decodeResource(context.getResources(),
                                 R.drawable.ic_male);
                     else

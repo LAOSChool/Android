@@ -127,7 +127,7 @@ public class ScreenFogotPassword extends Fragment {
                         if(message.contains("sso_id"))
                             Toast.makeText(thiz.getActivity(), R.string.SCForgotPass_UserNameNotExist, Toast.LENGTH_SHORT).show();
                         else if(message.contains("phone"))
-                            Toast.makeText(thiz.getActivity(), R.string.SCForgotPass_PhoneNumberNotMatch, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(thiz.getActivity(), R.string.SCForgotPass_UserNameNotExist, Toast.LENGTH_SHORT).show();
                         else
                             Toast.makeText(thiz.getActivity(), R.string.SCCommon_UnknowError, Toast.LENGTH_SHORT).show();
                     }
