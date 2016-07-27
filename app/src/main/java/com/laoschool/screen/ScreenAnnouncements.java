@@ -295,7 +295,6 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     }
 
     private static void _initPageData() {
-
         List<Message> notificationForUserInbox = accessNotification.getListNotificationForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
         List<Message> notificationForUserUnread = accessNotification.getListNotificationForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 0);
         notificationPagerAdapter = new NotificationPagerAdapter(fr, notificationForUserInbox, notificationForUserUnread);
@@ -782,13 +781,18 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     public static void reloadDataFormLocal() {
         //int position = viewPage.getCurrentItem();
         //Log.d(TAG, "reloadDataFormLocal() position = " + position);
-        List<Message> notificationInbox = accessNotification.getListNotificationForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, LaoSchoolShared.READ_1);
-        NotificationList notiInBox = ((NotificationPagerAdapter) (viewPage.getAdapter())).getFragment(TAB_INBOX_0);
-        notiInBox._setListNotification(notificationInbox, TAB_INBOX_0);
+        if (viewPage.getAdapter() != null) {
+            List<Message> notificationInbox = accessNotification.getListNotificationForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, LaoSchoolShared.READ_1);
+            NotificationList notiInBox = ((NotificationPagerAdapter) (viewPage.getAdapter())).getFragment(TAB_INBOX_0);
+            notiInBox._setListNotification(notificationInbox, TAB_INBOX_0);
 
-        //
-        List<Message> notificationUnread = accessNotification.getListNotificationForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, LaoSchoolShared.UNREAD_0);
-        NotificationList notiUnread = ((NotificationPagerAdapter) (viewPage.getAdapter())).getFragment(TAB_UNREAD_1);
-        notiUnread._setListNotification(notificationUnread, TAB_UNREAD_1);
+            //
+            List<Message> notificationUnread = accessNotification.getListNotificationForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, LaoSchoolShared.UNREAD_0);
+            NotificationList notiUnread = ((NotificationPagerAdapter) (viewPage.getAdapter())).getFragment(TAB_UNREAD_1);
+            notiUnread._setListNotification(notificationUnread, TAB_UNREAD_1);
+        } else {
+            _showProgressLoading(false);
+            _initPageData();
+        }
     }
 }
