@@ -196,7 +196,11 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
         txtMessageContent.setHint(R.string.SCCreateMessage_Content);
 
         LaoSchoolShared.selectedClass = LaoSchoolShared.myProfile.getEclass();
-        txtMessageTo.setText(context.getString(R.string.SCCommon_Class) + " " + LaoSchoolShared.selectedClass.getTitle());
+        try {
+            txtMessageTo.setText(context.getString(R.string.SCCommon_Class) + " " + LaoSchoolShared.selectedClass.getTitle());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
         btnStudentPicker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -215,7 +219,11 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                                 sendTo = sendTo + student.getFullname() + ", ";
                             }
                             if (selectedStudents.size() == listStudents.size())
-                                txtMessageTo.setText(context.getString(R.string.SCCommon_Class) + " " + LaoSchoolShared.selectedClass.getTitle());
+                                try {
+                                    txtMessageTo.setText(context.getString(R.string.SCCommon_Class) + " " + LaoSchoolShared.selectedClass.getTitle());
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
                             else
                                 txtMessageTo.setText(sendTo);
                         }
@@ -435,7 +443,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                 public void onSuccess(Message result) {
                     result.setIs_read(1);
                     //Save local
-                    dataAccessMessage.addMessage(result);
+                   // dataAccessMessage.addMessage(result);
                     _resetForm();
 
                     if (iScreenCreateMessage != null) {

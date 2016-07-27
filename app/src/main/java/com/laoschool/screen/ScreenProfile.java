@@ -24,6 +24,8 @@ import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.tools.CircularNetworkImageView;
 import com.laoschool.view.FragmentLifecycle;
 
+import java.util.List;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -42,9 +44,10 @@ public class ScreenProfile extends Fragment implements FragmentLifecycle {
     int fromPosition = -1;
     User user;
     MenuItem itemSendMessage;
+    private List<User> userList;
 
     interface IProfile {
-        void sendMessage(User user);
+        void sendMessage(List<User> userList, User user);
     }
 
     private IProfile iProfile;
@@ -132,6 +135,7 @@ public class ScreenProfile extends Fragment implements FragmentLifecycle {
 
     private void fillProfile() {
         user = activity.selectedStudent;
+        userList=activity.selectedUserList;
         if (user != null) {
             Toast.makeText(activity, user.getFullname(), Toast.LENGTH_SHORT).show();
             lbUserName.setText(user.getFullname());
@@ -165,7 +169,7 @@ public class ScreenProfile extends Fragment implements FragmentLifecycle {
         int id = item.getItemId();
         switch (id) {
             case R.id.action_send_message:
-                iProfile.sendMessage(user);
+                iProfile.sendMessage(userList,user);
                 return true;
         }
         return super.onOptionsItemSelected(item);

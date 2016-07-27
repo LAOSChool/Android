@@ -80,7 +80,7 @@ public class ListStudentOfClassAdapter extends RecyclerView.Adapter<ListStudentO
                     @Override
                     public void onClick(View v) {
                         //Toast.makeText(context, title, Toast.LENGTH_SHORT).show();
-                        screenListStudent.iScreenListStudentOfClass.gotoDetailsStudent(user);
+                        screenListStudent.iScreenListStudentOfClass.gotoDetailsStudent(userList,user);
 
                     }
                 });

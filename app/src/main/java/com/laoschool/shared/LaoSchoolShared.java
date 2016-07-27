@@ -63,6 +63,8 @@ public class LaoSchoolShared {
     public static final int SELECT_PHOTO = 100;
     public static final int SELECT_CAMERA = 101;
     public static final long LOADING_TIME = 1500;
+    public static final int READ_1 = 1;
+    public static final int UNREAD_0 = 0;
     public static User myProfile;
     public static Class selectedClass;
     public static final String SHARED_PREFERENCES_TAG = "com.laoshcool.app";
@@ -190,6 +192,7 @@ public class LaoSchoolShared {
             inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus()
                     .getWindowToken(), 0);
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -272,6 +275,7 @@ public class LaoSchoolShared {
         message.setType(cursor.getInt(Message.MessageColumns.COLUMN_NAME_TYPE_INDEX_21));
         message.setTask_id(cursor.getInt(Message.MessageColumns.COLUMN_NAME_TASK_ID_INDEX_22));
         message.setFrm_user_photo(cursor.getString(Message.MessageColumns.COLUMN_NAME_FRM_USER_PHOTO_INDEX_23));
+        message.setTo_user_photo(cursor.getString(Message.MessageColumns.COLUMN_NAME_TO_USER_PHOTO_INDEX_24));
         //message.setFile_url(cursor.getString(Message.MessageColumns.COLUMN_NAME_FILE_URL_INDEX_22));
         //Log.d(TAG,message.toString());
         return message;

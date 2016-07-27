@@ -44,6 +44,12 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
     private int containerId;
     private String currentRole;
     private boolean checkConn;
+    private TextView txtUserName;
+    private TextView txtSchoolName;
+    private TextView txtClassName;
+    private TextView txvProfile;
+    private TextView txtStudentName;
+    private TextView txtTerm;
 
 
     public interface IScreenMore {
@@ -69,7 +75,6 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
     }
 
     public IScreenMore iScreenMore;
-
 
 
     @Override
@@ -109,7 +114,7 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
 
         protected Bitmap doInBackground(String... args) {
             try {
-                Bitmap bitmapp = BitmapFactory.decodeStream((InputStream)new URL(args[0]).getContent());
+                Bitmap bitmapp = BitmapFactory.decodeStream((InputStream) new URL(args[0]).getContent());
                 return bitmapp;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -118,7 +123,7 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
         }
 
         protected void onPostExecute(Bitmap result) {
-            if(result != null)
+            if (result != null)
                 bmImage.setImageBitmap(result);
             else
                 Log.i("ScreenMore", "Can't not load user image");
@@ -131,15 +136,15 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
             View view = inflater.inflate(R.layout.screen_more_student, container, false);
             //
             LinearLayout mDetaislUser = (LinearLayout) view.findViewById(R.id.mDetaislUser);
-            TextView txtStudentName = (TextView) view.findViewById(R.id.txtUserNameScreenMoreStudent);
-            TextView txtSchoolName = (TextView) view.findViewById(R.id.txtSchoolNameScreenMoreStudent);
-            TextView txtTerm = (TextView) view.findViewById(R.id.txtTermScreenMoreStudent);
+            txtStudentName = (TextView) view.findViewById(R.id.txtUserNameScreenMoreStudent);
+            txtSchoolName = (TextView) view.findViewById(R.id.txtSchoolNameScreenMoreStudent);
+            txtTerm = (TextView) view.findViewById(R.id.txtTermScreenMoreStudent);
             RecyclerView mRecylerViewFunctionMore = (RecyclerView) view.findViewById(R.id.mRecylerViewFunctionMore);
             ImageView userImage = (ImageView) view.findViewById(R.id.userImage);
             ImageView schoolImage = (ImageView) view.findViewById(R.id.schoolImage);
             ImageView termImage = (ImageView) view.findViewById(R.id.termImage);
             ImageView imgEditProfile = (ImageView) view.findViewById(R.id.imgEditProfile);
-            TextView txvProfile = (TextView) view.findViewById(R.id.txvProfile);
+            txvProfile = (TextView) view.findViewById(R.id.txvProfile);
 
             int color = Color.parseColor("#808080");
             int color2 = Color.parseColor("#424242");
@@ -159,16 +164,8 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
 //                }
 //            });
 
-            txvProfile.setText(R.string.SCCommon_Profile);
-            txtStudentName.setText(LaoSchoolShared.myProfile.getFullname() + " - " + context.getString(R.string.SCCommon_Class) + " " + LaoSchoolShared.myProfile.getEclass().getTitle());
-            txtSchoolName.setText(LaoSchoolShared.myProfile.getSchoolName());
-            try {
-                String split[] = LaoSchoolShared.myProfile.getEclass().getYears().split("-");
-                String years = context.getString(R.string.SCCommon_Years) + ": " + split[0] + " - " + split[1];
-                txtTerm.setText(years);
-            } catch (Exception e) {
-                txtTerm.setText(context.getString(R.string.SCCommon_Years));
-            }
+
+            fillUserDetailsStudent();
 
             //init adapte
             List<String> more_student = Arrays.asList(getResources().getStringArray(R.array.more_student));
@@ -184,16 +181,31 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
         }
     }
 
+    private void fillUserDetailsStudent() {
+        try {
+            txvProfile.setText(R.string.SCCommon_Profile);
+            txtStudentName.setText(LaoSchoolShared.myProfile.getFullname() + " - " + context.getString(R.string.SCCommon_Class) + " " + LaoSchoolShared.myProfile.getEclass().getTitle());
+            txtSchoolName.setText(LaoSchoolShared.myProfile.getSchoolName());
+            String split[] = LaoSchoolShared.myProfile.getEclass().getYears().split("-");
+            String years = context.getString(R.string.SCCommon_Years) + ": " + split[0] + " - " + split[1];
+            txtTerm.setText(years);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG,"fillUserDetailsStudent() -message:"+e.getMessage());
+        }
+
+    }
+
     private View _defineSrceenMoreTeacher(LayoutInflater inflater, ViewGroup container) {
         try {
             View view = inflater.inflate(R.layout.screen_more_teacher, container, false);
             //
             LinearLayout mDetaislUser = (LinearLayout) view.findViewById(R.id.mDetaislUser);
-            TextView txtUserName = (TextView) view.findViewById(R.id.txtUserNameScreenMoreTeacher);
-            TextView txtSchoolName = (TextView) view.findViewById(R.id.txtSchoolNameScreenMoreTeacher);
-            TextView txtClassName = (TextView) view.findViewById(R.id.txtContactPhoneScreenMoreTeacher);
+            txtUserName = (TextView) view.findViewById(R.id.txtUserNameScreenMoreTeacher);
+            txtSchoolName = (TextView) view.findViewById(R.id.txtSchoolNameScreenMoreTeacher);
+            txtClassName = (TextView) view.findViewById(R.id.txtContactPhoneScreenMoreTeacher);
             RecyclerView mRecylerViewFunctionMore = (RecyclerView) view.findViewById(R.id.mRecylerViewFunctionMore);
-            TextView txvProfile = (TextView) view.findViewById(R.id.txvProfile);
+            txvProfile = (TextView) view.findViewById(R.id.txvProfile);
 
             Typeface roboto = Typeface.createFromAsset(context.getAssets(),
                     "font/Roboto-Regular.ttf"); //use this.getAssets if you are calling from an Activity
@@ -208,10 +220,7 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
                 }
             });
 
-            txtUserName.setText(LaoSchoolShared.myProfile.getFullname());
-            txtSchoolName.setText(LaoSchoolShared.myProfile.getSchoolName());
-            txvProfile.setText(R.string.SCCommon_Profile);
-            txtClassName.setText(context.getString(R.string.SCCommon_Class)+ " " + LaoSchoolShared.myProfile.getEclass().getTitle());
+            fillUserDetailsTeacher();
 
             //init adapte
             final List<String> more_teacher = Arrays.asList(getResources().getStringArray(R.array.more_teacher));
@@ -224,6 +233,18 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
             return view;
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    private void fillUserDetailsTeacher() {
+        try {
+            txtUserName.setText(LaoSchoolShared.myProfile.getFullname());
+            txtSchoolName.setText(LaoSchoolShared.myProfile.getSchoolName());
+            txvProfile.setText(R.string.SCCommon_Profile);
+            txtClassName.setText(context.getString(R.string.SCCommon_Class) + " " + LaoSchoolShared.myProfile.getEclass().getTitle());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG,"fillUserDetailsTeacher() -message:"+e.getMessage());
         }
     }
 

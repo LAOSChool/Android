@@ -52,7 +52,7 @@ public class ScreenListStudent extends Fragment implements FragmentLifecycle, Se
 
 
     public interface IScreenListStudentOfClass {
-        void gotoDetailsStudent(User user);
+        void gotoDetailsStudent(List<User> userList, User user);
     }
 
     public IScreenListStudentOfClass iScreenListStudentOfClass;
@@ -91,39 +91,47 @@ public class ScreenListStudent extends Fragment implements FragmentLifecycle, Se
         View.OnClickListener reloadDataClick = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int classId = LaoSchoolShared.myProfile.getEclass().getId();
-                getStudentOfClass(classId);
+                getStudentOfClass();
             }
         };
         mError.findViewById(R.id.mReloadData).setOnClickListener(reloadDataClick);
         mNoData.findViewById(R.id.mReloadData).setOnClickListener(reloadDataClick);
     }
 
-    private void getStudentOfClass(int classId) {
-        showProcessLoading(true);
-        LaoSchoolSingleton.getInstance().getDataAccessService().getUsers(classId, LaoSchoolShared.ROLE_STUDENT, "", -1, new AsyncCallback<List<User>>() {
-            @Override
-            public void onSuccess(List<User> result) {
-                if (result.size() > 0) {
-                    fillData(result);
-                    showProcessLoading(false);
-                } else {
-                    showNoData();
+    private void getStudentOfClass() {
+        try {
+            int classId = LaoSchoolShared.myProfile.getEclass().getId();
+            showProcessLoading(true);
+            LaoSchoolSingleton.getInstance().getDataAccessService().getUsers(classId, LaoSchoolShared.ROLE_STUDENT, "", -1, new AsyncCallback<List<User>>() {
+                @Override
+                public void onSuccess(List<User> result) {
+                    if (itemSearch != null) {
+                        itemSearch.setVisible(true);
+                    }
+                    if (result.size() > 0) {
+                        fillData(result);
+                        showProcessLoading(false);
+                    } else {
+                        showNoData();
+                    }
                 }
-            }
 
 
-            @Override
-            public void onFailure(String message) {
-                showError();
-            }
+                @Override
+                public void onFailure(String message) {
+                    showError();
+                }
 
-            @Override
-            public void onAuthFail(String message) {
-                Log.e(TAG, "getStudentOfClass().onAuthFail() -message:" + message);
-                LaoSchoolShared.goBackToLoginPage(context);
-            }
-        });
+                @Override
+                public void onAuthFail(String message) {
+                    Log.e(TAG, "getStudentOfClass().onAuthFail() -message:" + message);
+                    LaoSchoolShared.goBackToLoginPage(context);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError();
+        }
     }
 
     private void showError() {
@@ -131,6 +139,9 @@ public class ScreenListStudent extends Fragment implements FragmentLifecycle, Se
         mListStudent.setVisibility(View.GONE);
         mError.setVisibility(View.VISIBLE);
         mNoData.setVisibility(View.GONE);
+        if (itemSearch != null) {
+            itemSearch.setVisible(false);
+        }
     }
 
     private void showNoData() {
@@ -228,8 +239,7 @@ public class ScreenListStudent extends Fragment implements FragmentLifecycle, Se
         super.onViewCreated(view, savedInstanceState);
 
         if (getUserVisibleHint()) {
-            int classId = LaoSchoolShared.myProfile.getEclass().getId();
-            getStudentOfClass(classId);
+            getStudentOfClass();
         }
     }
 

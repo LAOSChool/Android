@@ -36,7 +36,6 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
-import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.adapter.ExamResultsAdapter;
@@ -121,7 +120,7 @@ public class ScreenExamResults extends Fragment
     static View mProgress;
     static FrameLayout mError;
     static FrameLayout mNoData;
-    private ObservableRecyclerView mResultListStudentBySuject;
+    private RecyclerView mResultListStudentBySuject;
     private int subjectIdSeleted = 0;
     private Dialog dialogSelectdSubject;
     ProgressDialog progressDialog;
@@ -380,49 +379,56 @@ public class ScreenExamResults extends Fragment
     private void _getMyExamResult(final int positon) {
         if (positon == -1)
             showProgressLoading(true);
+        try {
 
-        int filter_class_id = LaoSchoolShared.myProfile.getEclass().getId();
-        LaoSchoolSingleton.getInstance().getDataAccessService().getMyExamResults(filter_class_id, new AsyncCallback<List<ExamResult>>() {
-            @Override
-            public void onSuccess(List<ExamResult> result) {
-                if (result.size() > 0) {
-                    if (result != null) {
-                        Log.d(TAG, "getMyExamResults(" + positon + ")/onSuccess() -results size:" + result.size());
-                        _setDataforPageSemester(result, positon);
-                        showProgressLoading(false);
-                        alreadyExecuted = true;
 
+            int filter_class_id = LaoSchoolShared.myProfile.getEclass().getId();
+            LaoSchoolSingleton.getInstance().getDataAccessService().getMyExamResults(filter_class_id, new AsyncCallback<List<ExamResult>>() {
+                @Override
+                public void onSuccess(List<ExamResult> result) {
+                    if (result.size() > 0) {
+                        if (result != null) {
+                            Log.d(TAG, "getMyExamResults(" + positon + ")/onSuccess() -results size:" + result.size());
+                            _setDataforPageSemester(result, positon);
+                            showProgressLoading(false);
+                            alreadyExecuted = true;
+
+                        } else {
+                            Log.d(TAG, "getMyExamResults(" + positon + ")/onAuthFail() message:NUll");
+                            showProgressLoading(false);
+                            showNoData();
+                            alreadyExecuted = true;
+                        }
                     } else {
-                        Log.d(TAG, "getMyExamResults(" + positon + ")/onAuthFail() message:NUll");
+                        Log.d(TAG, "getMyExamResults(" + positon + ")/onAuthFail() message:Size==0");
                         showProgressLoading(false);
                         showNoData();
                         alreadyExecuted = true;
                     }
-                } else {
-                    Log.d(TAG, "getMyExamResults(" + positon + ")/onAuthFail() message:Size==0");
+
+                }
+
+                @Override
+                public void onFailure(String message) {
+                    Log.e(TAG, "getMyExamResults(" + positon + ")/onFailure() message:" + message);
                     showProgressLoading(false);
-                    showNoData();
+                    showError();
                     alreadyExecuted = true;
                 }
 
-            }
-
-            @Override
-            public void onFailure(String message) {
-                Log.e(TAG, "getMyExamResults(" + positon + ")/onFailure() message:" + message);
-                showProgressLoading(false);
-                showError();
-                alreadyExecuted = true;
-            }
-
-            @Override
-            public void onAuthFail(String message) {
-                Log.e(TAG, "getMyExamResults(" + positon + ")/onAuthFail() message:" + message);
-                LaoSchoolShared.goBackToLoginPage(context);
-                showProgressLoading(false);
-                alreadyExecuted = true;
-            }
-        });
+                @Override
+                public void onAuthFail(String message) {
+                    Log.e(TAG, "getMyExamResults(" + positon + ")/onAuthFail() message:" + message);
+                    LaoSchoolShared.goBackToLoginPage(context);
+                    showProgressLoading(false);
+                    alreadyExecuted = true;
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            showProgressLoading(false);
+            showError();
+        }
     }
 
 
@@ -547,7 +553,7 @@ public class ScreenExamResults extends Fragment
         txtClassAndTermName = (TextView) view.findViewById(R.id.txtClassAndTermName);
         mSugesstionSelectedSubject = view.findViewById(R.id.mSugesstionSelectedSubject);
         mListExam = view.findViewById(R.id.mListExam);
-        mResultListStudentBySuject = (ObservableRecyclerView) view.findViewById(R.id.mListExamResults);
+        mResultListStudentBySuject = (RecyclerView) view.findViewById(R.id.mListExamResults);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 1);
         mResultListStudentBySuject.setLayoutManager(gridLayoutManager);
 
@@ -602,51 +608,71 @@ public class ScreenExamResults extends Fragment
     }
 
     private void fillDataForTeacher() {
-        String className = LaoSchoolShared.myProfile.getEclass().getTitle();
-        String termName = String.valueOf(context.getString(R.string.SCCommon_Term) + " " + LaoSchoolShared.myProfile.getEclass().getTerm());
-        String year = String.valueOf(LaoSchoolShared.myProfile.getEclass().getYears());
+        try {
+            String className = LaoSchoolShared.myProfile.getEclass().getTitle();
+            String termName = String.valueOf(context.getString(R.string.SCCommon_Term) + " " + LaoSchoolShared.myProfile.getEclass().getTerm());
+            String year = String.valueOf(LaoSchoolShared.myProfile.getEclass().getYears());
 
-        txtClassAndTermName.setText(className + " | " + year + "   " + termName);
+            txtClassAndTermName.setText(className + " | " + year + "   " + termName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         getFilterSubject();
     }
 
 
     //get subject for filter mard score
     private void getFilterSubject() {
-        Log.d(TAG, "getFilterSubject()");
-        showProgressLoading(true);
-        int classId = LaoSchoolShared.myProfile.getEclass().getId();
-        LaoSchoolSingleton.getInstance().getDataAccessService().getListSubjectbyClassId(classId, new AsyncCallback<List<Master>>() {
-            @Override
-            public void onSuccess(List<Master> result) {
-                listSubject = result;
-                Log.d(TAG, "getFilterSubject().onSuccess() -results size:" + result.size());
+        try {
+            Log.d(TAG, "getFilterSubject()");
+            showProgressLoading(true);
+            int classId = LaoSchoolShared.myProfile.getEclass().getId();
+            LaoSchoolSingleton.getInstance().getDataAccessService().getListSubjectbyClassId(classId, new AsyncCallback<List<Master>>() {
+                @Override
+                public void onSuccess(List<Master> result) {
+                    listSubject = result;
+                    Log.d(TAG, "getFilterSubject().onSuccess() -results size:" + result.size());
 //                int subjectId = result.get(0).getId();
 //                selectedSubjectId = subjectId;
 //                String subjectName = result.get(0).getSval();
 //                getExamResultsbySubject(false, subjectId);
 //                lbSubjectSeleted.setText(subjectName);
 //                fillInformationClass(subjectName);
-                handlerSelectedSubject(result);
-                alreadyExecuted = true;
-                showProgressLoading(false);
+                    handlerSelectedSubject(result);
+                    alreadyExecuted = true;
+                    showProgressLoading(false);
+                }
+
+
+                @Override
+                public void onFailure(String message) {
+                    Log.e(TAG, "getFilterSubject().onFailure() -message:" + message);
+                    showError();
+                }
+
+                @Override
+                public void onAuthFail(String message) {
+                    Log.e(TAG, "getFilterSubject().onAuthFail() -message:" + message);
+                    LaoSchoolShared.goBackToLoginPage(context);
+                }
+
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            mError.setVisibility(View.VISIBLE);
+            mProgress.setVisibility(View.GONE);
+            mNoData.setVisibility(View.GONE);
+            mSugesstionSelectedSubject.setVisibility(View.GONE);
+            mListExam.setVisibility(View.GONE);
+            appFilterBar.setVisibility(View.GONE);
+
+            if (currentRole.equals(LaoSchoolShared.ROLE_STUDENT)) {
+                mExamResultsStudent.setVisibility(View.GONE);
             }
-
-
-            @Override
-            public void onFailure(String message) {
-                Log.e(TAG, "getFilterSubject().onFailure() -message:" + message);
-                showError();
+            if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
+                mContainer.setVisibility(View.GONE);
             }
-
-            @Override
-            public void onAuthFail(String message) {
-                Log.e(TAG, "getFilterSubject().onAuthFail() -message:" + message);
-                LaoSchoolShared.goBackToLoginPage(context);
-            }
-
-        });
-
+        }
         mError.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -781,7 +807,7 @@ public class ScreenExamResults extends Fragment
         });
     }
 
-    private void fillDataForListResultFilter(int subjectId, ObservableRecyclerView mResultListStudentBySuject, List<ExamResult> result) {
+    private void fillDataForListResultFilter(int subjectId, RecyclerView mResultListStudentBySuject, List<ExamResult> result) {
         Collections.sort(result);
         examResultsAdapter = new ExamResultsAdapter(this, subjectId, result);
         mResultListStudentBySuject.setAdapter(examResultsAdapter);

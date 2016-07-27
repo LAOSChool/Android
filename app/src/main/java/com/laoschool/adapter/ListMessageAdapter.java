@@ -111,7 +111,7 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 if (LaoSchoolShared.myProfile != null) {
 
                     if (LaoSchoolShared.myProfile.getId() == message.getFrom_usr_id()) {
-                        txbSender.setText("from: me");
+                        txbSender.setText(message.getTo_user_name());
                         txbSender.setTextColor(context.getResources().getColor(R.color.colorRead));
                         txbTitle.setTextColor(context.getResources().getColor(R.color.colorRead));
                         txtDateSend.setTextColor(context.getResources().getColor(R.color.colorRead));
@@ -143,11 +143,12 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                             view.setBackgroundColor(context.getResources().getColor(R.color.color_bg_read));
                         }
                     }
-                    if (message.getFrm_user_photo() != null) {
-                        LaoSchoolSingleton.getInstance().getImageLoader().get(message.getFrm_user_photo(), ImageLoader.getImageListener(imgUserAvata,
+                    String photo=(LaoSchoolShared.myProfile.getId() == message.getTo_usr_id())?message.getFrm_user_photo():message.getTo_user_photo();
+                    if (photo != null) {
+                        LaoSchoolSingleton.getInstance().getImageLoader().get(photo, ImageLoader.getImageListener(imgUserAvata,
                                 R.drawable.ic_account_circle_black_36dp, android.R.drawable
                                         .ic_dialog_alert));
-                        imgUserAvata.setImageUrl(message.getFrm_user_photo(), LaoSchoolSingleton.getInstance().getImageLoader());
+                        imgUserAvata.setImageUrl(photo, LaoSchoolSingleton.getInstance().getImageLoader());
                     } else {
                         imgUserAvata.setDefaultImageResId(R.drawable.ic_account_circle_black_36dp);
                     }

@@ -131,6 +131,7 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
 
     public interface IScreenAttended {
         void gotoCreateAttendanceFormScreenAttendance();
+
         void goToCreateMessagefromScreenAttendance(List<User> students, List<User> selectedStudents, String defaultText);
     }
 
@@ -139,10 +140,10 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
     protected void getAttendances() {
         isLoad = true;
         ringProgressDialog = new ProgressDialog(thiz.getContext());
-        if(attendancesRefreshLayout != null && attendancesRefreshLayout.isRefreshing() == false)
+        if (attendancesRefreshLayout != null && attendancesRefreshLayout.isRefreshing() == false)
             ringProgressDialog = ringProgressDialog.show(this.getActivity(),
-                    thiz.getContext().getString(R.string.SCCommon_PleaseWait)+ " ...",
-                    thiz.getContext().getString(R.string.SCCommon_Loading)+ " ...", true);
+                    thiz.getContext().getString(R.string.SCCommon_PleaseWait) + " ...",
+                    thiz.getContext().getString(R.string.SCCommon_Loading) + " ...", true);
         service.getMyAttendances("", "", new AsyncCallback<List<Attendance>>() {
             @Override
             public void onSuccess(List<Attendance> result) {
@@ -151,13 +152,12 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                 attendanceList.clear();
                 groupAttendances.clear();
 
-                if(!result.isEmpty()) {
+                if (!result.isEmpty()) {
                     attendanceList.addAll(result);
                     containerView.setVisibility(View.VISIBLE);
                     emptyView.setVisibility(View.GONE);
                     setViewData();
-                }
-                else {
+                } else {
                     containerView.setVisibility(View.GONE);
                     emptyView.setVisibility(View.VISIBLE);
                 }
@@ -185,14 +185,14 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
 
     protected void getAttendanceRollup(int class_id, String date) {
         final ProgressDialog ringProgressDialog = ProgressDialog.show(this.getActivity(),
-                thiz.getContext().getString(R.string.SCCommon_PleaseWait)+ " ...",
-                thiz.getContext().getString(R.string.SCCommon_Sending)+ " ...", true);
+                thiz.getContext().getString(R.string.SCCommon_PleaseWait) + " ...",
+                thiz.getContext().getString(R.string.SCCommon_Sending) + " ...", true);
         service.rollupAttendance(class_id, date, new AsyncCallback<AttendanceRollup>() {
             @Override
             public void onSuccess(AttendanceRollup result) {
                 ringProgressDialog.dismiss();
                 attendanceRollup = result;
-                if(mAdapterTeacherAttendance == null) {
+                if (mAdapterTeacherAttendance == null) {
                     mAdapterTeacherAttendance = new ListAttendanceTableAdapter(iScreenAttended, result.getStudents(), null, null, thiz.getContext(), txtAttendanceDate.getText().toString());
                     tableStudentView.setAdapter(mAdapterTeacherAttendance);
                 } else
@@ -219,16 +219,16 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
         int totalExcused2 = 0;
         int totalNoExcused2 = 0;
 
-        for(Attendance attendance: attendanceList) {
+        for (Attendance attendance : attendanceList) {
             boolean onGroupe = false;
-            for(GroupAttendance groupAttendance: groupAttendances) {
-                if(attendance.getAtt_dt().equals(groupAttendance.getAtt_dt())) {
+            for (GroupAttendance groupAttendance : groupAttendances) {
+                if (attendance.getAtt_dt().equals(groupAttendance.getAtt_dt())) {
                     groupAttendance.getAttendances().add(attendance);
                     onGroupe = true;
                     break;
                 }
             }
-            if(onGroupe == false) {
+            if (onGroupe == false) {
                 GroupAttendance groupAttendance = new GroupAttendance();
                 groupAttendance.getAttendances().add(attendance);
                 groupAttendance.setAtt_dt(attendance.getAtt_dt());
@@ -236,17 +236,17 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
             }
         }
 
-        for(GroupAttendance groupAttendance: groupAttendances) {
-            if(groupAttendance.getAttendances().size() == 1) {
+        for (GroupAttendance groupAttendance : groupAttendances) {
+            if (groupAttendance.getAttendances().size() == 1) {
                 totalFullday++;
-                if(groupAttendance.getAttendances().get(0).getExcused() == 1)
+                if (groupAttendance.getAttendances().get(0).getExcused() == 1)
                     totalExcused1++;
                 else
                     totalNoExcused1++;
             } else {
-                for(Attendance attendance: groupAttendance.getAttendances()) {
+                for (Attendance attendance : groupAttendance.getAttendances()) {
                     totalSession++;
-                    if(attendance.getExcused() == 1)
+                    if (attendance.getExcused() == 1)
                         totalExcused2++;
                     else
                         totalNoExcused2++;
@@ -254,14 +254,14 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
             }
         }
 
-        txbTotalFullday.setText(thiz.getContext().getString(R.string.SCAttendance_Fulldays)+ " (" + totalFullday + ")");
+        txbTotalFullday.setText(thiz.getContext().getString(R.string.SCAttendance_Fulldays) + " (" + totalFullday + ")");
         txbTotalExcused1.setText(totalExcused1 + "");
         txbTotalNoExcused1.setText(totalNoExcused1 + "");
-        txbTotalSession.setText(thiz.getContext().getString(R.string.SCAttendance_Sessions)+ " (" + totalSession + ")");
+        txbTotalSession.setText(thiz.getContext().getString(R.string.SCAttendance_Sessions) + " (" + totalSession + ")");
         txbTotalExcused2.setText(totalExcused2 + "");
         txbTotalNoExcused2.setText(totalNoExcused2 + "");
 
-        if(mAdapter == null) {
+        if (mAdapter == null) {
             ListAttendancesAdapter mAdapter = new ListAttendancesAdapter(groupAttendances, thiz.getContext());
             groupAttendancesView.setAdapter(mAdapter);
         } else
@@ -389,13 +389,17 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
         SimpleDateFormat sdf = new SimpleDateFormat("dd - MM - yyyy");
         final String currentDateandTime = sdf.format(new Date());
         txtAttendanceDate.setText(currentDateandTime);
-        txtClassName.setText(thiz.getContext().getString(R.string.SCCommon_Class)+ " "+ LaoSchoolShared.selectedClass.getTitle());
+        try {
+            txtClassName.setText(thiz.getContext().getString(R.string.SCCommon_Class) + " " + LaoSchoolShared.selectedClass.getTitle());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         txtSession.setText(R.string.SCAttendance_ChoseSubjects);
         txvListStudent.setText(R.string.SCAttendance_ListStudents);
         SharedPreferences prefs = thiz.getActivity().getSharedPreferences(
                 LaoSchoolShared.SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
         String language = prefs.getString(Languages.PREFERENCES_NAME, null);
-        if(language != null && language.equals(Languages.LANGUAGE_LAOS)) {
+        if (language != null && language.equals(Languages.LANGUAGE_LAOS)) {
             txvListStudent.setTextSize(13);
         } else {
             txvListStudent.setTextSize(14);
@@ -417,27 +421,26 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                     int mYear = mcurrentDate.get(Calendar.YEAR);
                     int mMonth = mcurrentDate.get(Calendar.MONTH);
                     int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
-                    DatePickerDialog mDatePicker=new DatePickerDialog(thiz.getContext(), new DatePickerDialog.OnDateSetListener() {
+                    DatePickerDialog mDatePicker = new DatePickerDialog(thiz.getContext(), new DatePickerDialog.OnDateSetListener() {
                         public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
                             // TODO Auto-generated method stub
                             String formatDate;
                             String sendDate;
-                            if(selectedmonth < 9) {
+                            if (selectedmonth < 9) {
                                 formatDate = selectedday + " - 0" + (selectedmonth + 1) + " - " + selectedyear;
                                 sendDate = selectedyear + "-0" + (selectedmonth + 1) + "-" + selectedday;
-                            }
-                            else {
+                            } else {
                                 formatDate = selectedday + " - " + (selectedmonth + 1) + " - " + selectedyear;
                                 sendDate = selectedyear + "-" + (selectedmonth + 1) + "-" + selectedday;
                             }
-                            if(!formatDate.equals(txtAttendanceDate.getText().toString())) {
+                            if (!formatDate.equals(txtAttendanceDate.getText().toString())) {
                                 txtAttendanceDate.setText(formatDate);
                                 txtSession.setText(R.string.SCAttendance_ChoseSubjects);
                                 edtSearch.getText().clear();
                                 getAttendanceRollup(LaoSchoolShared.selectedClass.getId(), sendDate);
                             }
                         }
-                    },mYear, mMonth, mDay);
+                    }, mYear, mMonth, mDay);
                     mDatePicker.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
                     mDatePicker.setTitle(R.string.SCAttendance_SelectDate);
                     mDatePicker.show();
@@ -455,11 +458,11 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                     @Override
                     public void onSelectSubject(TimeTable timeTable) {
                         selectedTimetable = timeTable;
-                        txtSession.setText(thiz.getContext().getString(R.string.SCAttendance_Sessions)+ " "+ (attendanceRollup.getTimetables().indexOf(timeTable)+1)+ " - "+ timeTable.getSubject_Name());
+                        txtSession.setText(thiz.getContext().getString(R.string.SCAttendance_Sessions) + " " + (attendanceRollup.getTimetables().indexOf(timeTable) + 1) + " - " + timeTable.getSubject_Name());
 //                        formHeader.setVisibility(View.GONE);
 //                        btnScrolldown.setVisibility(View.VISIBLE);
                         txtClassN.setText(txtClassName.getText());
-                        txtSubjectN.setText(thiz.getContext().getString(R.string.SCAttendance_Subjects)+ " "+ timeTable.getSubject_Name());
+                        txtSubjectN.setText(thiz.getContext().getString(R.string.SCAttendance_Subjects) + " " + timeTable.getSubject_Name());
                         dialog.dismiss();
                         mAdapterTeacherAttendance.swap(attendanceRollup.getStudents(), attendanceRollup.getAttendances(), timeTable, txtAttendanceDate.getText().toString());
                         tableStudentView.smoothScrollToPosition(0);
@@ -498,7 +501,7 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                     public void onPresentClick(User student) {
                         dialog.dismiss();
                         int index = attendanceRollup.getStudents().indexOf(student);
-                        if(index != attendanceRollup.getStudents().size()-1) {
+                        if (index != attendanceRollup.getStudents().size() - 1) {
                             attendanceStart.setStudent(attendanceRollup.getStudents().get(index + 1));
                             new Handler().postDelayed(new Runnable() {
 
@@ -507,8 +510,7 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                                     dialog.show();
                                 }
                             }, 300);
-                        }
-                        else {
+                        } else {
                             btnStartAttendance.setVisibility(View.GONE);
 //                            mAdapterTeacherAttendance.swap();
 
@@ -521,7 +523,7 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                         }
                     }
                 });
-                dialog.setView(attendanceStart.getView(txtClassName.getText()+ " - Tiet "+ selectedTimetable.getSubject_Name()));
+                dialog.setView(attendanceStart.getView(txtClassName.getText() + " - Tiet " + selectedTimetable.getSubject_Name()));
                 attendanceStart.setStudent(attendanceRollup.getStudents().get(0));
                 dialog.show();
             }
@@ -535,8 +537,8 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                 final int DRAWABLE_RIGHT = 2;
                 final int DRAWABLE_BOTTOM = 3;
 
-                if(event.getAction() == MotionEvent.ACTION_UP) {
-                    if((event.getRawX() - 30) <= (edtSearch.getCompoundDrawables()[DRAWABLE_LEFT].getBounds().width())) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if ((event.getRawX() - 30) <= (edtSearch.getCompoundDrawables()[DRAWABLE_LEFT].getBounds().width())) {
                         edtSearch.getText().clear();
                         formHeader.setVisibility(View.VISIBLE);
                         formHeader.requestFocus();
@@ -564,14 +566,14 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 //                 Log.i("edtSearch", "key press!");
-                if(!edtSearch.getText().toString().isEmpty())
+                if (!edtSearch.getText().toString().isEmpty())
                     edtSearch.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_close_black_24dp, 0, 0, 0);
                 else
                     edtSearch.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_search_black_24dp, 0, 0, 0);
 
                 List<User> findUsers = new ArrayList<User>();
-                for(User student: attendanceRollup.getStudents()) {
-                    if(student.getFullname().toLowerCase().contains(edtSearch.getText().toString()))
+                for (User student : attendanceRollup.getStudents()) {
+                    if (student.getFullname().toLowerCase().contains(edtSearch.getText().toString()))
                         findUsers.add(student);
                 }
                 mAdapterTeacherAttendance.swap(findUsers, attendanceRollup.getAttendances(), selectedTimetable, txtAttendanceDate.getText().toString());
@@ -641,9 +643,10 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
         return view;
     }
 
-    private void refreshContent(){
+    private void refreshContent() {
         new Handler().postDelayed(new Runnable() {
-            @Override public void run() {
+            @Override
+            public void run() {
                 getAttendances();
             }
         }, 500);
@@ -666,7 +669,7 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 //        if(currentRole.equals(LaoSchoolShared.ROLE_STUDENT))
-            inflater.inflate(R.menu.menu_screen_attendance, menu);
+        inflater.inflate(R.menu.menu_screen_attendance, menu);
     }
 
     @Override
@@ -674,11 +677,11 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
         int id = item.getItemId();
         switch (id) {
             case R.id.action_request_attendance:
-                if(currentRole.equals(LaoSchoolShared.ROLE_STUDENT))
+                if (currentRole.equals(LaoSchoolShared.ROLE_STUDENT))
                     iScreenAttended.gotoCreateAttendanceFormScreenAttendance();
                 else {
-                    if(selectedTimetable != null) {
-                        if(attendanceRollup != null) {
+                    if (selectedTimetable != null) {
+                        if (attendanceRollup != null) {
                             List<User> selectedStudents = new ArrayList<>();
                             selectedStudents.addAll(attendanceRollup.getStudents());
                             for (User student : attendanceRollup.getStudents()) {
@@ -691,13 +694,12 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                             }
                             String defaultText = "* " + thiz.getContext().getString(R.string.SCCommon_Date) + " " +
                                     txtAttendanceDate.getText().toString() + " * " + "\r\n \r\n" +
-                                    thiz.getContext().getString(R.string.SCAttendance_Subjects)+ " " + selectedTimetable.getSubject_Name() + ", \r\n \r\n" +
+                                    thiz.getContext().getString(R.string.SCAttendance_Subjects) + " " + selectedTimetable.getSubject_Name() + ", \r\n \r\n" +
                                     thiz.getContext().getString(R.string.SCAttendance_DefaultMessage1);
                             iScreenAttended.goToCreateMessagefromScreenAttendance(attendanceRollup.getStudents(), selectedStudents, defaultText);
                         } else
                             Toast.makeText(thiz.getContext(), thiz.getContext().getString(R.string.SCCommon_UnknowError), Toast.LENGTH_SHORT).show();
-                    }
-                    else
+                    } else
                         Toast.makeText(thiz.getContext(), thiz.getContext().getString(R.string.SCAttendance_NeedChoseSubject), Toast.LENGTH_SHORT).show();
                 }
                 return true;
@@ -722,13 +724,17 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
     @Override
     public void onResumeFragment() {
         if (!isLoad && getUserVisibleHint()) {
-            if(currentRole.equals(LaoSchoolShared.ROLE_STUDENT))
+            if (currentRole.equals(LaoSchoolShared.ROLE_STUDENT))
                 getAttendances();
             else {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 final String currentDateandTime = sdf.format(new Date());
-                if(attendanceRollup == null)
-                    getAttendanceRollup(LaoSchoolShared.selectedClass.getId(), currentDateandTime);
+                if (attendanceRollup == null)
+                    try {
+                        getAttendanceRollup(LaoSchoolShared.selectedClass.getId(), currentDateandTime);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
             }
         }
     }

@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "780024994508",
-    "firebase_url": "https://laoschooltest.firebaseio.com",
-    "project_id": "laoschooltest",
-    "storage_bucket": "laoschooltest.appspot.com"
+    "project_number": "375753356855",
+    "firebase_url": "https://laoschool-ba8d4.firebaseio.com",
+    "project_id": "laoschool-ba8d4",
+    "storage_bucket": "laoschool-ba8d4.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:780024994508:android:05460f6e7342a286",
+        "mobilesdk_app_id": "1:375753356855:android:05460f6e7342a286",
         "android_client_info": {
           "package_name": "com.laoschool"
         }
       },
       "oauth_client": [
         {
-          "client_id": "780024994508-rk42rb982hltefrasuufs3sbpi653vb7.apps.googleusercontent.com",
+          "client_id": "375753356855-hb1jspa76tkdtva8kr8eioso4pc9b4vh.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCgO-In0DVn6ClC8fKAuL1S0ZnylOi5qH8"
+          "current_key": "AIzaSyB1-OzZ9f-Rz-bk6kLzQMv1IdEHrolrmJk"
         }
       ],
       "services": {
