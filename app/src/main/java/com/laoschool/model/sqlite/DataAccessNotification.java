@@ -45,6 +45,30 @@ public class DataAccessNotification {
     }
 
     // Getting messages Count
+    public static int getNotificationCountForUserId(int userId) {
+        int count = 0;
+        try {
+            String selectbyIDQuery = "SELECT COUNT(" + Message.MessageColumns.COLUMN_NAME_ID + ") " +
+                    "FROM " + Message.MessageColumns.TABLE_NAME
+                    + " WHERE " + Message.MessageColumns.COLUMN_NAME_TO_USR_ID + " = " + userId
+                    + " AND " + Message.MessageColumns.COLUMN_NAME_TYPE + " = 0";
+            SQLiteDatabase db = databaseHandler.getReadableDatabase();
+
+            //query for cursor
+            Cursor cursor = db.rawQuery(selectbyIDQuery, null);
+            if (cursor.moveToFirst()) {
+                if (cursor.getCount() > 0)
+                    do {
+                        count = cursor.getInt(0);
+                    } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
+    // Getting messages Count
     public static int getNotificationCount(int isRead) {
         int count = 0;
         try {
@@ -216,4 +240,27 @@ public class DataAccessNotification {
         }
         return messages;
     }
+
+    public static int getMaxNotificationID(int userID) {
+        int count = 0;
+        try {
+            String selectbyIDQuery = "SELECT MAX(" + Message.MessageColumns.COLUMN_NAME_ID + ") FROM " + Message.MessageColumns.TABLE_NAME
+                    + " WHERE ( " + Message.MessageColumns.COLUMN_NAME_TO_USR_ID + " = " + userID
+                    + " AND " + Message.MessageColumns.COLUMN_NAME_TYPE + " = " + 1;
+            SQLiteDatabase db = databaseHandler.getReadableDatabase();
+            Log.d(TAG, selectbyIDQuery);
+            //query for cursor
+            Cursor cursor = db.rawQuery(selectbyIDQuery, null);
+            if (cursor.moveToFirst()) {
+                if (cursor.getCount() > 0)
+                    do {
+                        count = cursor.getInt(0);
+                    } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
 }

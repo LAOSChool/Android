@@ -147,10 +147,11 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                int countLocal = accessNotification.getNotificationCount();
-                Log.d(TAG, "_defineData():count notification in Local=" + countLocal);
+                int userId = LaoSchoolShared.myProfile.getId();
+                int countLocal = accessNotification.getNotificationCountForUserId(userId);
+                Log.d(TAG, "_defineData():getNotificationCountForUserId(" + userId + ")=" + countLocal);
                 if (countLocal > 0) {
-                    getDataFormLocal();
+                    getNewNotification();
                 } else {
                     getDataFormServer();
                 }
@@ -160,6 +161,45 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
             }
         }, LaoSchoolShared.LOADING_TIME);
         onErrorNodata();
+    }
+
+    private void getNewNotification() {
+        final int form_id = DataAccessNotification.getMaxNotificationID(LaoSchoolShared.myProfile.getId());
+        service.getNotification(form_id, new AsyncCallback<List<Message>>() {
+            @Override
+            public void onSuccess(final List<Message> result) {
+                try {
+                    if (result != null) {
+                        int resultsSize = result.size();
+                        int end = 0;
+                        for (int i = 0; i < resultsSize; i++) {
+                            Message message = result.get(i);
+                            accessNotification.addOrUpdateNotification(message);
+                            end = i;
+                        }
+                        if (end == (resultsSize - 1)) {
+                            getDataFormLocal();
+                        }
+                    } else {
+                        showNodata();
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "getNewNotification()/getNotification(" + form_id + ") Exception=" + e.getMessage());
+                    showError();
+                }
+            }
+
+            @Override
+            public void onFailure(String message) {
+                Log.e(TAG, "getDataFormServer()/getNotification(" + form_id + ") onFailure=" + message);
+                showError();
+            }
+
+            @Override
+            public void onAuthFail(String message) {
+                LaoSchoolShared.goBackToLoginPage(context);
+            }
+        });
     }
 
     private void onErrorNodata() {
