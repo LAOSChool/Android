@@ -55,6 +55,7 @@ public class DataAccessMessage {
         values.put(Message.MessageColumns.COLUMN_NAME_SCHOOL_NAME, message.getSchoolName());
         values.put(Message.MessageColumns.COLUMN_NAME_MESSAGE_TYPE, message.getMessageType());
         values.put(Message.MessageColumns.COLUMN_NAME_FRM_USER_PHOTO, message.getFrm_user_photo());
+        values.put(Message.MessageColumns.COLUMN_NAME_TO_USER_PHOTO, message.getTo_user_photo());
         values.put(Message.MessageColumns.COLUMN_NAME_TYPE, 0);
 
         // Inserting Row
@@ -157,12 +158,36 @@ public class DataAccessMessage {
         List<Message> messages = new ArrayList<>();
         try {
             //String sisRead = (isRead == 0) ? " AND " + Message.MessageColumns.COLUMN_NAME_IS_READ + " = " + isRead : "";
-            String selectbyIDQuery =
-                    "SELECT * FROM " + Message.MessageColumns.TABLE_NAME + "\n"
-                            + " WHERE " + columName + " = " + userID + "\n"
-                            + " AND " + Message.MessageColumns.COLUMN_NAME_TYPE + " = " + 0 + "\n"
-                            + ((isRead == 0) ? " AND " + Message.MessageColumns.COLUMN_NAME_IS_READ + " = " + isRead : "")
-                            + " ORDER BY " + Message.MessageColumns.COLUMN_NAME_ID + " DESC LIMIT " + limit + " OFFSET " + offset;
+            String selectbyIDQuery = "";
+            if (columName.equals(Message.MessageColumns.COLUMN_NAME_TO_USR_ID)) {
+                if (isRead == 0) {
+                    selectbyIDQuery =
+                            "SELECT * FROM " + Message.MessageColumns.TABLE_NAME + "\n"
+                                    + " WHERE " + Message.MessageColumns.COLUMN_NAME_TO_USR_ID + " = " + userID + "\n"
+                                    + " AND " + Message.MessageColumns.COLUMN_NAME_TYPE + " = " + 0 + "\n"
+                                    + " AND " + Message.MessageColumns.COLUMN_NAME_IS_READ + " = " + 0
+                                    + " ORDER BY " + Message.MessageColumns.COLUMN_NAME_ID + " DESC LIMIT " + limit + " OFFSET " + offset;
+                } else {
+                    selectbyIDQuery =
+                            "SELECT * FROM " + Message.MessageColumns.TABLE_NAME + "\n"
+                                    + " WHERE " + Message.MessageColumns.COLUMN_NAME_TO_USR_ID + " = " + userID + "\n"
+                                    + " AND " + Message.MessageColumns.COLUMN_NAME_TYPE + " = " + 0 + "\n"
+                                    + " ORDER BY " + Message.MessageColumns.COLUMN_NAME_ID + " DESC LIMIT " + limit + " OFFSET " + offset;
+                }
+            } else if (columName.equals(Message.MessageColumns.COLUMN_NAME_FROM_USR_ID)) {
+                selectbyIDQuery =
+                        "SELECT * FROM " + Message.MessageColumns.TABLE_NAME + "\n"
+                                + " WHERE " + Message.MessageColumns.COLUMN_NAME_FROM_USR_ID + " = " + userID + "\n"
+                                + " AND " + Message.MessageColumns.COLUMN_NAME_TYPE + " = " + 0 + "\n"
+                                + " ORDER BY " + Message.MessageColumns.COLUMN_NAME_ID + " DESC LIMIT " + limit + " OFFSET " + offset;
+            } else {
+                selectbyIDQuery =
+                        "SELECT * FROM " + Message.MessageColumns.TABLE_NAME + "\n"
+                                + " WHERE " + columName + " = " + userID + "\n"
+                                + " AND " + Message.MessageColumns.COLUMN_NAME_TYPE + " = " + 0 + "\n"
+                                + ((isRead == 0) ? " AND " + Message.MessageColumns.COLUMN_NAME_IS_READ + " = " + isRead : "")
+                                + " ORDER BY " + Message.MessageColumns.COLUMN_NAME_ID + " DESC LIMIT " + limit + " OFFSET " + offset;
+            }
 
             Log.d(TAG, "getListMessagesForUser(" + userID + "):query =" + selectbyIDQuery);
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff">
@@ -35,7 +35,6 @@
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="70dp"
-                    android:text="Class 5A2"
                     android:textColor="@android:color/black"
                     android:textSize="16sp" />
 
@@ -137,6 +136,7 @@
                 android:id="@+id/mReclerViewImageSeleted"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#ffffff" />
+                android:background="#ffffff"
+                android:nestedScrollingEnabled="true" />
         </LinearLayout>
-</ScrollView>
+</android.support.v4.widget.NestedScrollView>

@@ -249,28 +249,33 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
     }
 
     private void getTimeTable() {
-        int classId = LaoSchoolShared.myProfile.getEclass().getId();
-        _showProgressLoadingStudent(true);
-        LaoSchoolSingleton.getInstance().getDataAccessService().getTimeTables(classId, new AsyncCallback<List<TimeTable>>() {
-            @Override
-            public void onSuccess(List<TimeTable> result) {
-                if (result.size() > 0) {
-                    _defineTimeTableStudent(result);
-                } else {
-                    _showNoData();
+        try {
+            int classId = LaoSchoolShared.myProfile.getEclass().getId();
+            _showProgressLoadingStudent(true);
+            LaoSchoolSingleton.getInstance().getDataAccessService().getTimeTables(classId, new AsyncCallback<List<TimeTable>>() {
+                @Override
+                public void onSuccess(List<TimeTable> result) {
+                    if (result.size() > 0) {
+                        _defineTimeTableStudent(result);
+                    } else {
+                        _showNoData();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(String message) {
-                _showError();
-            }
+                @Override
+                public void onFailure(String message) {
+                    _showError();
+                }
 
-            @Override
-            public void onAuthFail(String message) {
-                LaoSchoolShared.goBackToLoginPage(getActivity());
-            }
-        });
+                @Override
+                public void onAuthFail(String message) {
+                    LaoSchoolShared.goBackToLoginPage(getActivity());
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            _showError();
+        }
     }
 
 

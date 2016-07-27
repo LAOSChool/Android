@@ -1,8 +1,10 @@
 package com.laoschool.screen.view;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -10,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,12 +36,13 @@ import java.util.Date;
  * Created by Hue on 6/9/2016.
  */
 @SuppressLint("ValidFragment")
-public class DialogInputExamResultsForStudent extends DialogFragment {
+public class DialogInputExamResultsForStudent extends DialogFragment implements View.OnClickListener {
     public static final String TAG = DialogInputExamResultsForStudent.class.getSimpleName();
     private final ExamResult examResult;
     private final int subjectId;
     private final int position;
     private final int termId;
+    private InputMethodManager imm;
     private ScreenExamResults screenExamResults;
 
     public DialogInputExamResultsForStudent(ScreenExamResults screenExamResults, int subjectId, int termId, int position, ExamResult examResult) {
@@ -46,6 +51,14 @@ public class DialogInputExamResultsForStudent extends DialogFragment {
         this.termId = termId;
         this.position = position;
         this.screenExamResults = screenExamResults;
+
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        imm = (InputMethodManager) getActivity()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
     @Nullable
@@ -55,7 +68,7 @@ public class DialogInputExamResultsForStudent extends DialogFragment {
         final Dialog dialog = getDialog();
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setStyle(DialogFragment.STYLE_NORMAL, android.R.style.TextAppearance_Theme_Dialog);
-
+        View mainDialog = view.findViewById(R.id.mainDialog);
         TextView lbStudentName = (TextView) view.findViewById(R.id.txbTitleDialog);
         TextView lbNickName = (TextView) view.findViewById(R.id.lbNickName);
         ImageView imgCloseDialog = (ImageView) view.findViewById(R.id.imgCloseDialog);
@@ -133,7 +146,41 @@ public class DialogInputExamResultsForStudent extends DialogFragment {
                 dialog.dismiss();
             }
         });
+        txtScoreOfExam.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+        txtNoticeOfExam.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                txtScoreOfExam.clearFocus();
+                txtNoticeOfExam.clearFocus();
+                //imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        });
+
         return view;
+    }
+
+    private void hideKeyboard(View v) {
+        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+    }
+
+    private void hideSoftKeyBoard(EditText editText) {
+        //editText.setInputType(0);
+        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
     private void inputExamResults(ExamResult examResult) {
@@ -212,5 +259,10 @@ public class DialogInputExamResultsForStudent extends DialogFragment {
             e.printStackTrace();
         }
         return jsonObject.toString();
+    }
+
+    @Override
+    public void onClick(View view) {
+
     }
 }

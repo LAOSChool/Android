@@ -76,7 +76,6 @@
 
     <string-array name="dayNames">
         <item>@string/SCSchedule_Mon</item>
-        <item>@string/SCSchedule_Mon</item>
         <item>@string/SCSchedule_Tue</item>
         <item>@string/SCSchedule_Wed</item>
         <item>@string/SCSchedule_Thu</item>

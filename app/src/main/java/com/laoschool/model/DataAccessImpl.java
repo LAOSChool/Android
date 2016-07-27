@@ -43,8 +43,10 @@ import com.laoschool.shared.LaoSchoolShared;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MIME;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,6 +58,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -79,11 +82,11 @@ public class DataAccessImpl implements DataAccessInterface {
 
     private static String api_key = "TEST_API_KEY";
 
-    //Lab02
+//    Lab02
 //    final String LOGIN_HOST = "https://192.168.0.202:9443/laoschoolws/";
 //    final String HOST = "https://192.168.0.202:9443/laoschoolws/api/";
 
-    //VDC
+    //    //VDC
     final String LOGIN_HOST = "https://222.255.29.25:8443/laoschoolws/";
     final String HOST = "https://222.255.29.25:8443/laoschoolws/api/";
 
@@ -374,7 +377,7 @@ public class DataAccessImpl implements DataAccessInterface {
                             // HTTP Status Code: 409 Unauthorized Oo
                             Log.e("Service/gUserProfile()", "error status code " + networkResponse.statusCode);
                             callback.onAuthFail(error.toString());
-                        } else if(networkResponse != null) {
+                        } else if (networkResponse != null) {
                             Log.e("Service/gUserProfile()", new String(networkResponse.data));
                             callback.onFailure(new String(networkResponse.data));
                         } else {
@@ -794,7 +797,7 @@ public class DataAccessImpl implements DataAccessInterface {
                             JSONObject obj1 = mainObject.getJSONObject("messageObject");
                             JSONArray listAttReason = obj1.getJSONArray("list");
                             List<AttendanceReason> datas = new ArrayList<AttendanceReason>();
-                            for(int i = 0; i < listAttReason.length(); i++) {
+                            for (int i = 0; i < listAttReason.length(); i++) {
                                 AttendanceReason attendanceReason =
                                         AttendanceReason.fromJson(listAttReason.getJSONObject(i).toString());
                                 datas.add(attendanceReason);
@@ -814,7 +817,7 @@ public class DataAccessImpl implements DataAccessInterface {
                             // HTTP Status Code: 409 Unauthorized Oo
                             Log.e("Service/getAttReason()", "error status code " + networkResponse.statusCode);
                             callback.onAuthFail(error.toString());
-                        } else if(networkResponse != null) {
+                        } else if (networkResponse != null) {
                             Log.e("Service/getAttReason()", new String(networkResponse.data));
                         } else {
                             Log.e("Service/getAttReason()", error.toString());
@@ -1212,7 +1215,7 @@ public class DataAccessImpl implements DataAccessInterface {
                             // HTTP Status Code: 409 Unauthorized Oo
                             Log.e("Service/createMessage()", "error status code " + networkResponse.statusCode);
                             callback.onAuthFail(error.toString());
-                        } else if(networkResponse != null) {
+                        } else if (networkResponse != null) {
                             Log.e("Service/createMessage()", new String(networkResponse.data));
                             callback.onFailure(new String(networkResponse.data));
                         } else {
@@ -1437,7 +1440,7 @@ public class DataAccessImpl implements DataAccessInterface {
         ImageLoader imageLoader = LaoSchoolSingleton.getInstance().getImageLoader();
 
         // If you are using normal ImageView
-        if(url != null) {
+        if (url != null) {
             imageLoader.get(url, new ImageLoader.ImageListener() {
                 @Override
                 public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
@@ -1470,23 +1473,31 @@ public class DataAccessImpl implements DataAccessInterface {
         try {
             HttpEntity entity = null;
             MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
+            ContentType contentType = ContentType.create("text/plain", Charset.forName("UTF-8"));
             for (int i = 0; i < message.getNotifyImages().size(); i++) {
                 Image image = message.getNotifyImages().get(i);
                 entityBuilder.addBinaryBody("file", (resizedFilebyPath(image.getLocal_file_url())));
 
                 if (image.getCaption() != null) {
-                    byte ptext[] = image.getCaption().getBytes();
-                    String caption_utf8 = new String(ptext, "UTF-8");
-                    entityBuilder.addPart("caption", new StringBody(caption_utf8, ContentType.TEXT_PLAIN));
+                    // byte ptext[] = image.getCaption().getBytes();
+                    // String caption_utf8 = new String(ptext, Charset.forName("UTF-8"));
+                    // entityBuilder.addPart("caption", new StringBody(caption_utf8, ContentType.TEXT_PLAIN));
+                    entityBuilder.addTextBody("caption", image.getCaption(), contentType);
                 } else {
-                    entityBuilder.addPart("caption", new StringBody("No caption", ContentType.TEXT_PLAIN));
+                    // entityBuilder.addPart("caption", new StringBody("No caption", ContentType.TEXT_PLAIN));
+                    entityBuilder.addTextBody("caption", "No caption", contentType);
                 }
 
                 entityBuilder.addPart("order", new StringBody(String.valueOf(i + 1), ContentType.TEXT_PLAIN));
             }
             String content = createNotificationJson(message);
+            //String content_utf8 = new String(content.getBytes(Charset.forName("ISO-8859-1")), Charset.forName("UTF-8"));
+            //entityBuilder.addPart("json_in_string", new StringBody(content, ContentType.APPLICATION_JSON));
 
-            entityBuilder.addPart("json_in_string", new StringBody(content, ContentType.TEXT_PLAIN));
+            entityBuilder.addTextBody("json_in_string", content, contentType);
+            //Charset chars = Charset.forName("UTF-8");
+            //entityBuilder.setCharset(chars);
+
             entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
             entity = entityBuilder.build();
 
@@ -1532,6 +1543,7 @@ public class DataAccessImpl implements DataAccessInterface {
                         } catch (IOException e) {
                             VolleyLog.e("IOException writing to ByteArrayOutputStream");
                         }
+
                         return bos.toByteArray();
                     }
                     return null;

@@ -189,22 +189,19 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
 
     private static void _getDataFormServer(final int position) {
         Log.d(TAG, "_getDataFormServer() position=" + position);
+        if (position == -1) {
+            initDataMessage();
+            return;
+        }
         int form_id = DataAccessMessage.getMaxMessagesID(LaoSchoolShared.myProfile.getId());
-
         final String classID = "";
         final String fromUserID = ((position == 2) ? String.valueOf(LaoSchoolShared.myProfile.getId()) : "");
         final String fromDate = "";
-        final String toUserID = ((position == 0 || position == 1) ? String.valueOf(LaoSchoolShared.myProfile.getId()) : "");
+        final String toUserID = ((position < 2) ? String.valueOf(LaoSchoolShared.myProfile.getId()) : "");
         final String toDate = "";
         final String channel = "";
         final String status = "";
         final String fromID = ((form_id > 0) ? String.valueOf(form_id) : "");
-        Log.d(TAG, "_getDataFormServer()):\n" +
-                "getMessagesFormServer(classID=" + classID + "\n" +
-                ",fromUserID=" + fromUserID + ",fromDate=" + fromDate + "\n" +
-                ",toUserID=" + toUserID + ",toDate=" + toDate + "\n" +
-                ",channel=" + channel + ",status=" + status + "\n" +
-                ",fromID=" + fromID + ")");
         service.getMessages(
                 classID//classID
                 , fromUserID//from user ID
@@ -233,12 +230,131 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
 
                     @Override
                     public void onFailure(String message) {
-                        Log.e(TAG, "NotificationList:setOnRefreshListener():\n" +
-                                "getMessagesFormServer(classID=" + classID + "\n" +
-                                ",fromUserID=" + fromUserID + ",fromDate=" + fromDate + "\n" +
-                                ",toUserID=" + toUserID + ",toDate=" + toDate + "\n" +
-                                ",channel=" + channel + ",status=" + status + "\n" +
-                                ",fromID=" + fromID + ")/onFailure():" + message);
+                        Log.e(TAG, "onFailure():" + message);
+                    }
+
+                    @Override
+                    public void onAuthFail(String message) {
+                        LaoSchoolShared.goBackToLoginPage(context);
+                    }
+                });
+    }
+
+    public void updateDataMessage(final int position) {
+        Log.d(TAG, "updateDataMessage() position=" + position);
+        if (position == -1) {
+            initDataMessage();
+            return;
+        }
+        int form_id = DataAccessMessage.getMaxMessagesID(LaoSchoolShared.myProfile.getId());
+        final String classID = "";
+        final String fromUserID = ((position == 2) ? String.valueOf(LaoSchoolShared.myProfile.getId()) : "");
+        final String fromDate = "";
+        final String toUserID = ((position < 2) ? String.valueOf(LaoSchoolShared.myProfile.getId()) : "");
+        final String toDate = "";
+        final String channel = "";
+        final String status = "";
+        final String fromID = ((form_id > 0) ? String.valueOf(form_id) : "");
+        service.getMessages(
+                classID//classID
+                , fromUserID//from user ID
+                , fromDate//from date
+                , toDate//to date
+                , toUserID//to user ID
+                , channel//channel
+                , status//status
+                , fromID//from id
+                , new AsyncCallback<List<Message>>() {
+                    @Override
+                    public void onSuccess(final List<Message> result) {
+                        try {
+                            int sizeResults = result.size();
+                            Log.d(TAG, "updateDataMessage()):" +
+                                    "onSuccess() Results size=" + sizeResults);
+                            int end = 0;
+                            for (int i = 0; i < sizeResults; i++) {
+                                Message message = result.get(i);
+                                dataAccessMessage.addOrUpdateMessage(message);
+                                end = i;
+                            }
+                            if (end == (sizeResults - 1)) {
+                                MessagesPager messagesPager = ((MessagesPagerAdapter) (pager.getAdapter())).getFragment(pager.getCurrentItem());
+                                switch (pager.getCurrentItem()) {
+                                    case 0:
+                                        List<Message> messagesForUserInbox = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
+                                        messagesPager.setListMessage(messagesForUserInbox, 0, true);
+                                        break;
+                                    case 1:
+                                        List<Message> messagesForUserUnread = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 0);
+                                        messagesPager.setListMessage(messagesForUserUnread, 1, true);
+                                        break;
+                                    case 2:
+                                        List<Message> messagesFormUser = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
+                                        messagesPager.setListMessage(messagesFormUser, 2, true);
+                                        break;
+                                }
+                            }
+                        } catch (Exception e) {
+                            Log.d(TAG, "updateDataMessage() onSuccess Exception=" + e.getMessage());
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(String message) {
+                        Log.e(TAG, "onFailure():" + message);
+                    }
+
+                    @Override
+                    public void onAuthFail(String message) {
+                        LaoSchoolShared.goBackToLoginPage(context);
+                    }
+                });
+    }
+
+    private static void initDataMessage() {
+        final String userID = String.valueOf(LaoSchoolShared.myProfile.getId());
+        service.getMessages("", "", "", "", userID, "", "", ""
+                , new AsyncCallback<List<Message>>() {
+                    @Override
+                    public void onSuccess(final List<Message> result) {
+                        try {
+                            for (Message message : result) {
+                                dataAccessMessage.addOrUpdateMessage(message);
+                            }
+                            service.getMessages("", userID, "", "", "", "", "", "", new AsyncCallback<List<Message>>() {
+                                @Override
+                                public void onSuccess(final List<Message> result) {
+                                    try {
+                                        for (Message message : result) {
+                                            dataAccessMessage.addOrUpdateMessage(message);
+                                        }
+                                        _getDataFormLocal(-1);
+                                    } catch (Exception e) {
+                                        Log.d(TAG, "_getDataFormServer() onSuccess Exception=" + e.getMessage());
+                                    }
+
+                                }
+
+                                @Override
+                                public void onFailure(String message) {
+                                    Log.e(TAG, "onFailure():" + message);
+                                }
+
+                                @Override
+                                public void onAuthFail(String message) {
+                                    LaoSchoolShared.goBackToLoginPage(context);
+                                }
+                            });
+                        } catch (Exception e) {
+                            Log.d(TAG, "_getDataFormServer() onSuccess Exception=" + e.getMessage());
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(String message) {
+                        Log.e(TAG, "onFailure():" + message);
                     }
 
                     @Override
@@ -312,6 +428,8 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
                     case 2:
                         List<Message> messagesFormUser = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
                         notifragment.setListMessage(messagesFormUser, 2, true);
+
+
                         break;
                 }
             }
@@ -527,21 +645,9 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
 
     public void reloadDataAfterCreateMessages() {
         try {
-            MessagesPager messagesPager = ((MessagesPagerAdapter) (pager.getAdapter())).getFragment(pager.getCurrentItem());
-            switch (pager.getCurrentItem()) {
-                case 0:
-                    List<Message> messagesForUserInbox = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
-                    messagesPager.setListMessage(messagesForUserInbox, 0, true);
-                    break;
-                case 1:
-                    List<Message> messagesForUserUnread = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 0);
-                    messagesPager.setListMessage(messagesForUserUnread, 1, true);
-                    break;
-                case 2:
-                    List<Message> messagesFormUser = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
-                    messagesPager.setListMessage(messagesFormUser, 2, true);
-                    break;
-            }
+//            updateDataMessage(0);
+//            updateDataMessage(1);
+            updateDataMessage(2);
         } catch (Exception e) {
             Log.e(TAG, "reloadDataAfterCreateMessages() -exception:" + e.getMessage());
         }
@@ -551,11 +657,11 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         Log.d(TAG, "setUserVisibleHint() -isVisibleToUser:" + isVisibleToUser);
         super.setUserVisibleHint(isVisibleToUser);
-        try {
-            if (!alreadyExecuted && isVisibleToUser)
-                _defineData();
-        } catch (Exception e) {
-            Log.e(TAG, "setUserVisibleHint() -exception:" + e.getMessage());
-        }
+//        try {
+//            if (!alreadyExecuted && isVisibleToUser)
+//                _defineData();
+//        } catch (Exception e) {
+//            Log.e(TAG, "setUserVisibleHint() -exception:" + e.getMessage());
+//        }
     }
 }
