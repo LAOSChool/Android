@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.laoschool.R;
 import com.laoschool.LaoSchoolSingleton;
@@ -84,6 +85,7 @@ public class HomeActivity extends AppCompatActivity implements
     private Animation animShow, animHide;
     private int clickPressBack = 0;
     public List<User> selectedUserList;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
 
     public enum DisplayButtonHome {
@@ -176,6 +178,12 @@ public class HomeActivity extends AppCompatActivity implements
 
         }
         Log.d(TAG, "current_token:" + FirebaseInstanceId.getInstance().getToken());
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        mFirebaseAnalytics.setUserId("");
+        Bundle bundle = new Bundle();
+        bundle.putString("visitScreen", TAG);
+        mFirebaseAnalytics.logEvent("visitScreen", bundle);
     }
 
     private void getUserProfile() {
