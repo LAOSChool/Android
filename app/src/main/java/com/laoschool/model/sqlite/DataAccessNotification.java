@@ -101,8 +101,8 @@ public class DataAccessNotification {
                             + Message.MessageColumns.COLUMN_NAME_TYPE + " = " + 1 + "\n"
                             + ((isRead == 0) ? " AND " + Message.MessageColumns.COLUMN_NAME_IS_READ + " = " + isRead : "")
                             + " AND "
-                            + "(" + Message.MessageColumns.COLUMN_NAME_TO_USR_ID + " = " + userID
-                            + " OR " + Message.MessageColumns.COLUMN_NAME_CLASS_ID + " = " + LaoSchoolShared.myProfile.getEclass().getId() + ")"
+                            + "" + Message.MessageColumns.COLUMN_NAME_TO_USR_ID + " = " + userID
+                           // + " OR " + Message.MessageColumns.COLUMN_NAME_CLASS_ID + " = " + LaoSchoolShared.myProfile.getEclass().getId() + ")"
                             + " ORDER BY " + Message.MessageColumns.COLUMN_NAME_ID + " DESC LIMIT " + offset + "," + limit;
 
             Log.d(TAG, "getListNotificationForUser(" + userID + "):query =" + selectbyIDQuery);
@@ -219,7 +219,7 @@ public class DataAccessNotification {
                     + Message.MessageColumns.COLUMN_NAME_TO_USR_ID + " = " + toUserId +
                     ((isRead == 0) ? " AND " + Message.MessageColumns.COLUMN_NAME_IS_READ + " = " + isRead : "") +
                     " AND " + Message.MessageColumns.COLUMN_NAME_TYPE + " = " + 1 +
-                    " AND " + "messages.content LIKE '%" + query + "%'";
+                    " AND " + Message.MessageColumns.COLUMN_NAME_TITLE + " LIKE '%" + query + "%'";
             Log.d(TAG, "searchNotificationInbox() -query:" + like_query);
             SQLiteDatabase db = databaseHandler.getReadableDatabase();
 
@@ -245,7 +245,7 @@ public class DataAccessNotification {
         int count = 0;
         try {
             String selectbyIDQuery = "SELECT MAX(" + Message.MessageColumns.COLUMN_NAME_ID + ") FROM " + Message.MessageColumns.TABLE_NAME
-                    + " WHERE ( " + Message.MessageColumns.COLUMN_NAME_TO_USR_ID + " = " + userID
+                    + " WHERE " + Message.MessageColumns.COLUMN_NAME_TO_USR_ID + " = " + userID
                     + " AND " + Message.MessageColumns.COLUMN_NAME_TYPE + " = " + 1;
             SQLiteDatabase db = databaseHandler.getReadableDatabase();
             Log.d(TAG, selectbyIDQuery);
@@ -262,5 +262,4 @@ public class DataAccessNotification {
         }
         return count;
     }
-
 }
