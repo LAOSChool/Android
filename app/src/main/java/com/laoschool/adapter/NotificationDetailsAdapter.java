@@ -98,7 +98,7 @@ public class NotificationDetailsAdapter extends RecyclerView.Adapter<Notificatio
 
                 txtTilteNotificationDetails.setText(notification.getTitle());
                 txtContentNotificationDetails.setText(notification.getContent());
-                txtDateNotificationDetails.setText(LaoSchoolShared.formatDate(notification.getSent_dt(), 1));
+                txtDateNotificationDetails.setText(LaoSchoolShared.formatDate(notification.getSent_dt(), 2));
 
                 if (notification.getImp_flg() == 1) {
                     imgPiorityNotificationDetails.setColorFilter(
