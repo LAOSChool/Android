@@ -138,7 +138,7 @@ public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecy
             //set layout manager
             CustomGridLayoutManager customGridLayoutManager = new CustomGridLayoutManager(context);
             mReclerViewImageSeleted.setLayoutManager(customGridLayoutManager);
-            Activity activity=getActivity();
+            Activity activity = getActivity();
             listImageSelectedAdapter = new ListImageSelectedAdapter(context, files);
             mReclerViewImageSeleted.setAdapter(listImageSelectedAdapter);
             return view;
@@ -310,6 +310,7 @@ public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecy
     private void _createNotification(Message message) {
         try {
             final ProgressDialog progressDialog = new ProgressDialog(context);
+            progressDialog.setTitle(context.getString(R.string.SCCommon_PleaseWait));
             progressDialog.setMessage(getString(R.string.SCCommon_Create));
             progressDialog.show();
             LaoSchoolSingleton.getInstance().getDataAccessService().createNotification(message, new AsyncCallback<Message>() {
@@ -317,8 +318,12 @@ public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecy
                 public void onSuccess(Message result) {
                     progressDialog.dismiss();
                     Log.d(TAG, result.toString());
-                    String alert = getString(R.string.SCCommon_Successfully);
-                    _showAlertMessage(alert);
+//                    String alert = getString(R.string.SCCommon_Successfully);
+//                    _showAlertMessage(alert);
+                    _resetForm();
+                    if (mListener != null) {
+                        mListener._goBackAnnocements();
+                    }
                 }
 
                 @Override
@@ -347,10 +352,10 @@ public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecy
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 _resetForm();
-                dialogInterface.dismiss();
                 if (mListener != null) {
                     mListener._goBackAnnocements();
                 }
+                dialogInterface.dismiss();
             }
         });
         Dialog dialog = builder.create();

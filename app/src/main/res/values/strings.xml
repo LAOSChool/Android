@@ -1,24 +1,24 @@
 <resources>
     <!--Common screen-->
-    <string name="SCCommon_AppName" translatable="false">LAOSchool</string>
+    <string name="SCCommon_AppName" >LAOSchool</string>
     <string name="SCCommon_Help">Help</string>
     <string name="SCCommon_UserName">Username</string>
     <string name="SCCommon_Password">Password</string>
     <string name="SCCommon_Submit">Submit</string>
     <string name="SCCommon_Language" >Language</string>
-    <string name="SCCommon_Home" translatable="false">Home</string>
+    <string name="SCCommon_Home" >Home</string>
     <string name="SCCommon_Message">Message</string>
     <string name="SCCommon_Announcements">Announcements</string>
     <string name="SCCommon_ExamResults">Scores</string>
     <string name="SCCommon_Attendance">Attendance</string>
     <string name="SCCommon_More">More</string>
     <string name="SCCommon_SchoolInfomation">School information</string>
-    <string name="SCCommon_FinalResults" translatable="false">Final results</string>
+    <string name="SCCommon_FinalResults" >Final results</string>
     <string name="SCCommon_TimeTable">Timetable</string>
-    <string name="SCCommon_ListTeacher" translatable="false">List teacher</string>
+    <string name="SCCommon_ListTeacher" >List teacher</string>
     <string name="SCCommon_ChangePassword" >Change password</string>
     <string name="SCCommon_Logout">Logout</string>
-    <string name="SCCommon_Inbox" translatable="false">Inbox</string>
+    <string name="SCCommon_Inbox" >Inbox</string>
     <string name="SCCommon_Unread">Unread</string>
     <string name="SCCommon_Send">Send</string>
     <string name="SCCommon_Search">Search</string>
@@ -28,29 +28,29 @@
     <string name="SCCommon_Yes">Yes</string>
     <string name="SCCommon_No">No</string>
     <string name="SCCommon_Term">Term</string>
-    <string name="SCCommon_Years" translatable="false">Years</string>
-    <string name="SCCommon_Profile" translatable="false">Profile</string>
-    <string name="SCCommon_PleaseWait" translatable="false">Please wait</string>
-    <string name="SCCommon_Loading" translatable="false">Loading</string>
-    <string name="SCCommon_Sending" translatable="false">Sending</string>
-    <string name="SCCommon_NoInternet" translatable="false">No internet connection</string>
-    <string name="SCCommon_UnknowError" translatable="false">Some error occur</string>
-    <string name="SCCommon_Reload" translatable="false">Reload</string>
-    <string name="SCCommon_NoData" translatable="false">No data found</string>
+    <string name="SCCommon_Years">Years</string>
+    <string name="SCCommon_Profile" >Profile</string>
+    <string name="SCCommon_PleaseWait" >Please wait</string>
+    <string name="SCCommon_Loading" >Loading</string>
+    <string name="SCCommon_Sending" >Sending</string>
+    <string name="SCCommon_NoInternet" >No internet connection</string>
+    <string name="SCCommon_UnknowError" >Some error occur</string>
+    <string name="SCCommon_Reload" >Reload</string>
+    <string name="SCCommon_NoData" >No data found</string>
     <string name="SCCommon_Close">Close</string>
-    <string name="SCCommon_Date" translatable="false">Date</string>
+    <string name="SCCommon_Date" >Date</string>
     <string name="SCCommon_Error">Error</string>
-    <string name="SCCommon_ClassInfo" translatable="false">Class information</string>
+    <string name="SCCommon_ClassInfo" >Class information</string>
     <string name="SCCommon_Successfully">Successfully</string>
     <string name="SCCommon_err_msg_network_disconnect">Failed to connect to server. Please try again</string>
 
     <!--Login screen-->
     <string name="SCLogin_Login">Login</string>
     <string name="SCLogin_ForgotPass">Forgotten password?</string>
-    <string name="SCLogin_WrongUsernameOrPass" translatable="false">Wrong username or password</string>
+    <string name="SCLogin_WrongUsernameOrPass">Wrong username or password</string>
 
     <!--ForgotPass screen-->
-    <string name="SCForgotPass_Title" translatable="false">Forgotten password?</string>
+    <string name="SCForgotPass_Title">Forgotten password?</string>
     <string name="SCForgotPass_Text1">Please enter your username and the phone number that is being registered for this account.</string>
     <string name="SCForgotPass_Text2">(If you do not remember your username and the phone number, please contact with school\'s admin.)</string>
     <string name="SCForgotPass_PhoneNumber">Phone number</string>
@@ -61,25 +61,25 @@
     <string name="SCCreateMessage_CreateMessage">New message</string>
     <string name="SCCreateMessage_To">To</string>
     <string name="SCCreateMessage_SMS">SMS</string>
-    <string name="SCCreateMessage_Important" translatable="false">Important</string>
-    <string name="SCCreateMessage_Content" translatable="false">Content</string>
-    <string name="SCCreateMessage_Subject" translatable="false">Subject</string>
-    <string name="SCCreateMessage_SendSuccessful" translatable="false">Message has been sent</string>
+    <string name="SCCreateMessage_Important" >Important</string>
+    <string name="SCCreateMessage_Content" >Content</string>
+    <string name="SCCreateMessage_Subject">Subject</string>
+    <string name="SCCreateMessage_SendSuccessful" >Message has been sent</string>
     <string name="SCCreateMessage_SendFail">There was an error while sending message. Please try again</string>
     <string name="SCCreateMessage_SendNoOne" >Please enter recipient and content!</string>
     <string name="SCCreateMessage_EmptyMessage" >Please enter recipient and content!</string>
-    <string name="SCCreateMessage_TitleAllStudentsAttendance" translatable="false">All students attendant</string>
-    <string name="SCCreateMessage_CannotGetStudentsList" translatable="false">Can\'t get students list</string>
-    <string name="SCCreateMessage_err_msg_input_message_title" translatable="false">Please enter title</string>
-    <string name="SCCreateMessage_err_msg_input_message_conten" translatable="false">Please enter content!</string>
-    <string name="SCCreateMessage_err_msg_create_message" translatable="false">There was an error while sending message. Please try again</string>
+    <string name="SCCreateMessage_TitleAllStudentsAttendance">All students attendant</string>
+    <string name="SCCreateMessage_CannotGetStudentsList">Can\'t get students list</string>
+    <string name="SCCreateMessage_err_msg_input_message_title">Please enter title</string>
+    <string name="SCCreateMessage_err_msg_input_message_conten">Please enter content!</string>
+    <string name="SCCreateMessage_err_msg_create_message">There was an error while sending message. Please try again</string>
 
     <!--Attendance screen-->
     <string name="SCAttendance_Subjects">Period</string>
     <string name="SCAttendance_ChoseSubjects">Select a period</string>
     <string name="SCAttendance_ListStudents">Students list</string>
     <string name="SCAttendance_Absent">Absent</string>
-    <string name="SCAttendance_Inform" translatable="false">Inform</string>
+    <string name="SCAttendance_Inform">Inform</string>
     <string name="SCAttendance_Fulldays">Full day</string>
     <string name="SCAttendance_Sessions">Periods</string>
     <string name="SCAttendance_Excused">Permitted</string>
@@ -87,25 +87,25 @@
     <string name="SCAttendance_NoReason">No reason</string>
     <string name="SCAttendance_AbsentCreate">Absence request</string>
     <string name="SCAttendance_AbsentReason">Reason</string>
-    <string name="SCAttendance_NotValid" translatable="false">Absent date is not valid</string>
+    <string name="SCAttendance_NotValid">Absent date is not valid</string>
     <string name="SCAttendance_SendFail">There was an error while sending request. Please try again.</string>
-    <string name="SCAttendance_NoAbsent" translatable="false">No Absent</string>
-    <string name="SCAttendance_NeedChoseSubject" translatable="false">Chose a subject first</string>
+    <string name="SCAttendance_NoAbsent">No Absent</string>
+    <string name="SCAttendance_NeedChoseSubject">Chose a subject first</string>
     <string name="SCAttendance_CancelAbsentConfirm">Cancel this attendance checking result. Are you sure?</string>
-    <string name="SCAttendance_TeacherCreate" translatable="false">Create Absent</string>
-    <string name="SCAttendance_DefaultMessage1" translatable="false">LaoSchool announced this student has in the class.</string>
-    <string name="SCAttendance_DefaultMessage2" translatable="false">LaoSchool announced this student is absent.</string>
-    <string name="SCAttendance_SelectDate" translatable="false">Select Date</string>
+    <string name="SCAttendance_TeacherCreate">Create Absent</string>
+    <string name="SCAttendance_DefaultMessage1">LaoSchool announced this student has in the class.</string>
+    <string name="SCAttendance_DefaultMessage2">LaoSchool announced this student is absent.</string>
+    <string name="SCAttendance_SelectDate">Select Date</string>
 
     <!--ChangePass screen-->
-    <string name="SCChangePass_OldPass" translatable="false">Please re-enter your password:</string>
-    <string name="SCChangePass_NewPass" translatable="false">Enter your new password:</string>
-    <string name="SCChangePass_ConfirmPass" translatable="false">Confirm your new password:</string>
+    <string name="SCChangePass_OldPass">Please re-enter your password:</string>
+    <string name="SCChangePass_NewPass">Enter your new password:</string>
+    <string name="SCChangePass_ConfirmPass">Confirm your new password:</string>
 
     <!--FinalResult screen-->
-    <string name="SCFinalResult_NoYearSelected" translatable="false">No year selected</string>
+    <string name="SCFinalResult_NoYearSelected">No year selected</string>
     <string name="SCFinalResult_SelectedYear">Select a school year</string>
-    <string name="SCFinalResult_TabToSelectedYear" translatable="false">Tab to selected year</string>
+    <string name="SCFinalResult_TabToSelectedYear">Tab to selected year</string>
 
     <!--InputExam screen-->
     <string name="SCExamResults_AddScore" >Add scores</string>
@@ -118,23 +118,23 @@
     <string name="SCExamResults_Score">Score</string>
     <string name="SCExamResults_Comment">Comment</string>
 
-    <string name="SCExamResults_msg_err_submit_score" translatable="false">There was an error while submitting score. Please try again</string>
-    <string name="SCExamResults_msg_check_submit_score" translatable="false">Please double check information before you submit scores. Are you sure?</string>
+    <string name="SCExamResults_msg_err_submit_score">There was an error while submitting score. Please try again</string>
+    <string name="SCExamResults_msg_check_submit_score">Please double check information before you submit scores. Are you sure?</string>
     <string name="SCExamResults_msg_you_do_not_complete_filling_scores">You do not complete filling scores. Submit now?</string>
 
     <string name="SCExamResults_CancelInputExam">Are you sure you want to cancel?</string>
 
-    <string name="SCExamResults_msg_no_selected_subject" translatable="false">No select subject</string>
-    <string name="SCExamResults_touch_here_to_select" translatable="false">Touch here to select</string>
-    <string name="SCExamResults_msg_no_select_exam_type" translatable="false">No select exam type</string>
+    <string name="SCExamResults_msg_no_selected_subject">No select subject</string>
+    <string name="SCExamResults_touch_here_to_select">Touch here to select</string>
+    <string name="SCExamResults_msg_no_select_exam_type">No select exam type</string>
 
 
     <string name="subject_exam" translatable="false">Subject</string>
 
 
     <!--create annocement screen-->
-    <string name="SCreateAnnouncement_HintMessageSubject" translatable="false">Please enter title!</string>
-    <string name="SCreateAnnouncement_HintMessageContent" translatable="false">Please enter content!</string>
+    <string name="SCreateAnnouncement_HintMessageSubject">Please enter title!</string>
+    <string name="SCreateAnnouncement_HintMessageContent">Please enter content!</string>
     <!-- schedule screen-->
     <string name="SCSchedule_Mon" >Mon</string>
     <string name="SCSchedule_Tue" >Tue</string>
@@ -150,10 +150,10 @@
 
 
     <!-- profile screen-->
-    <string name="SCProfile_basic_infomation" translatable="false">Basic Information</string>
-    <string name="SCProfile_parent_details" translatable="false">Parent details</string>
-    <string name="SCProfile_address" translatable="false">Address</string>
-    <string name="SCProfile_parrent_name" translatable="false">Parent name</string>
+    <string name="SCProfile_basic_infomation">Basic Information</string>
+    <string name="SCProfile_parent_details">Parent details</string>
+    <string name="SCProfile_address">Address</string>
+    <string name="SCProfile_parrent_name">Parent name</string>
 
     <string name="row_line" translatable="false">line</string>
     <string name="row_sub_header" translatable="false">sub header</string>
@@ -162,61 +162,61 @@
     <string name="SCCreateAnnocement_AttachFile">Camera</string>
     <string name="SCCreateAnnocement_err_msg_limit_img_seleted">You have reached to the limitation. Only allow 5 photos</string>
     <string name="title_activity_preview_image" translatable="false"></string>
-    <string name="SCCreateAnnocement_err_msg_download_image_fails" translatable="false">Download file image fails</string>
-    <string name="SCCreateAnnocement_SaveImage" translatable="false">Save image</string>
-    <string name="SCCreateAnnocement_hint_write_caption_message" translatable="false">Please write caption image</string>
+    <string name="SCCreateAnnocement_err_msg_download_image_fails">Download file image fails</string>
+    <string name="SCCreateAnnocement_SaveImage">Save image</string>
+    <string name="SCCreateAnnocement_hint_write_caption_message">Please write caption image</string>
     <string name="SCCreateAnnocement_msg_confirm_sent_notication">Send this announcement to class. Are you sure? </string>
 
     <string name="SCCommon_re_login_application">This account was being logged in by other device. Please re-login.</string>
-    <string name="SCCommon_ServerError" translatable="false">Server error !!!</string>
-    <string name="SCCommon_reload_application" translatable="false">Reload application</string>
+    <string name="SCCommon_ServerError">Server error !!!</string>
+    <string name="SCCommon_reload_application">Reload application</string>
 
-    <string name="SCMessage_NoMessage" translatable="false">No messages.</string>
-    <string name="SCAnnocements_NoAnnocement" translatable="false">No Announcements</string>
+    <string name="SCMessage_NoMessage">No messages.</string>
+    <string name="SCAnnocements_NoAnnocement">No Announcements</string>
 
 
     <string name="sub_header_student_name" translatable="false">Name</string>
     <string name="sub_header_score" translatable="false">Score</string>
 
 
-    <string name="SCFinalExamResults_Passed" translatable="false">Passed</string>
+    <string name="SCFinalExamResults_Passed">Passed</string>
     <string name="SCFinalExamResults_Morality" >Morality:</string>
-    <string name="SCFinalExamResults_Absents" translatable="false">Absents:</string>
+    <string name="SCFinalExamResults_Absents">Absents:</string>
     <string name="SCFinalExamResults_TeacherComment" >Teacher\'s comment:</string>
-    <string name="SCFinalExamResults_avg_of_term1" translatable="false">Term I :</string>
-    <string name="SCFinalExamResults_avg_of_term2" translatable="false">Term II :</string>
-    <string name="SCFinalExamResults_avg_of_year" translatable="false">Years</string>
+    <string name="SCFinalExamResults_avg_of_term1">Term I :</string>
+    <string name="SCFinalExamResults_avg_of_term2">Term II :</string>
+    <string name="SCFinalExamResults_avg_of_year">Years</string>
 
-    <string name="SCExanResults_month_9" translatable="false">Sep</string>
-    <string name="SCExanResults_month_10" translatable="false">Otc</string>
-    <string name="SCExanResults_month_11" translatable="false">Nov</string>
-    <string name="SCExanResults_month_12" translatable="false">Dec</string>
-    <string name="SCExanResults_avg_m1" translatable="false">Avg m1</string>
-    <string name="SCExanResults_test_term1" translatable="false">Test term 1</string>
-    <string name="SCExanResults_avg_term1" translatable="false">Avg term1</string>
-    <string name="SCExanResults_month_2" translatable="false">Fer</string>
-    <string name="SCExanResults_month_3" translatable="false">Mar</string>
-    <string name="SCExanResults_month_4" translatable="false">Apr</string>
-    <string name="SCExanResults_month_5" translatable="false">May</string>
-    <string name="SCExanResults_avg_m2" translatable="false">Avg m2</string>
-    <string name="SCExanResults_test_term2" translatable="false">Test term 2</string>
-    <string name="SCExanResults_avg_term2" translatable="false">Avg term 2</string>
-    <string name="SCExanResults_avg_year" translatable="false">Avg year</string>
-    <string name="SCExanResults_retest" translatable="false">Retest</string>
-    <string name="SCExanResults_test_grad_II" translatable="false">Test grad</string>
-    <string name="SCExanResults_test_grad_III" translatable="false">Test grad</string>
+    <string name="SCExanResults_month_9">Sep</string>
+    <string name="SCExanResults_month_10">Otc</string>
+    <string name="SCExanResults_month_11">Nov</string>
+    <string name="SCExanResults_month_12">Dec</string>
+    <string name="SCExanResults_avg_m1">Avg m1</string>
+    <string name="SCExanResults_test_term1">Test term 1</string>
+    <string name="SCExanResults_avg_term1">Avg term1</string>
+    <string name="SCExanResults_month_2">Fer</string>
+    <string name="SCExanResults_month_3">Mar</string>
+    <string name="SCExanResults_month_4">Apr</string>
+    <string name="SCExanResults_month_5">May</string>
+    <string name="SCExanResults_avg_m2">Avg m2</string>
+    <string name="SCExanResults_test_term2">Test term 2</string>
+    <string name="SCExanResults_avg_term2">Avg term 2</string>
+    <string name="SCExanResults_avg_year">Avg year</string>
+    <string name="SCExanResults_retest">Retest</string>
+    <string name="SCExanResults_test_grad_II">Test grad</string>
+    <string name="SCExanResults_test_grad_III">Test grad</string>
 
     <string name="SCExanResults_Average">Average:</string>
     <string name="SCExanResults_Grade">Grade:</string>
     <string name="SCExanResults_Rank" >Rank:</string>
 
     <string name="SCCommon_Ok">Ok</string>
-    <string name="SCShedule_NoSession" translatable="false">No session</string>
-    <string name="SCProfile_SendMessage" translatable="false">Send message</string>
-    <string name="SCCommon_Create" translatable="false">Create</string>
-    <string name="SCExamResults_Input" translatable="false">Input</string>
+    <string name="SCShedule_NoSession">No session</string>
+    <string name="SCProfile_SendMessage">Send message</string>
+    <string name="SCCommon_Create">Create</string>
+    <string name="SCExamResults_Input">Input</string>
 
-    <string name="SCCreateAnnocement_TakePhoto" translatable="false">Take Photo</string>
+    <string name="SCCreateAnnocement_TakePhoto">Take Photo</string>
     <string name="SCCreateAnnocement_ChooseFromLibrary">Photo library</string>
 
     <string name="SCCommon_Ranking" >Ranking</string>
@@ -233,4 +233,6 @@
     <string name="title_screen_forgot_pasword" translatable="false">Forgot password</string>
     <string name="title_screen_announcement_details" translatable="false"></string>
     <string name="title_screen_message_details" translatable="false"></string>
+    <string name="SCForgotPass_PhoneNumberNotMatch" translatable="false">Phone number not match</string>
+
 </resources>

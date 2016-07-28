@@ -779,8 +779,8 @@ public class HomeActivity extends AppCompatActivity implements
 
         if (editor.commit()) {
             //clear cache data
-            DataAccessMessage.deleteTable();
-            DataAccessImage.deleteTable();
+//            DataAccessMessage.deleteTable();
+//            DataAccessImage.deleteTable();
 
             Intent intent = new Intent(this, ScreenLogin.class);
             startActivity(intent);
