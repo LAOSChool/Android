@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.laoschool.R;
 import com.laoschool.adapter.ListMessageAdapter;
 import com.laoschool.screen.pager.MessagesPager;
@@ -516,6 +517,13 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         this.thiz = this;
         this.context = getActivity();
         this.fr = getFragmentManager();
+
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        Bundle bundle = new Bundle();
+        bundle.putString("ScreenMesssage", TAG);
+        mFirebaseAnalytics.logEvent("ScreenMesssage", bundle);
+
+
     }
 
 
