@@ -8,8 +8,8 @@
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center">
-
+        android:layout_gravity="center"
+        android:visibility="gone">
         <android.support.v7.widget.RecyclerView
             android:id="@+id/mListNotification"
             android:layout_width="match_parent"
@@ -17,12 +17,42 @@
             android:background="#E0E0E0"></android.support.v7.widget.RecyclerView>
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <TextView
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/SCAnnocements_NoAnnocement"
-        android:id="@+id/lbNoNotification"
         android:layout_gravity="center"
-        android:visibility="gone"
-        android:textSize="20sp"/>
+        android:id="@+id/mNoNotification">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/SCAnnocements_NoAnnocement"
+            android:id="@+id/lbNoNotification"
+            android:layout_gravity="center"
+            android:textSize="20sp"
+            android:textColor="@color/colorAccent" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/mReloadData">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imgReloadData"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_replay_black_36dp"
+                android:layout_marginTop="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/SCCommon_Reload"
+                android:id="@+id/textView19"
+                android:layout_gravity="center_horizontal" />
+        </LinearLayout>
+
+    </LinearLayout>
 </FrameLayout>

@@ -75,7 +75,9 @@ public class DataAccessNotification {
             String selectbyIDQuery = "SELECT COUNT(" + Message.MessageColumns.COLUMN_NAME_ID + ") " +
                     "FROM " + Message.MessageColumns.TABLE_NAME
                     + " WHERE " + Message.MessageColumns.COLUMN_NAME_TYPE + " = 1"
+                    + " AND " + Message.MessageColumns.COLUMN_NAME_TO_USR_ID + " = " + LaoSchoolShared.myProfile.getId()
                     + ((isRead == 0) ? " AND " + Message.MessageColumns.COLUMN_NAME_IS_READ + " = " + isRead : "");
+            Log.d(TAG, "getNotificationCount() query=" + selectbyIDQuery);
             SQLiteDatabase db = databaseHandler.getReadableDatabase();
 
             //query for cursor
@@ -86,6 +88,7 @@ public class DataAccessNotification {
                         count = cursor.getInt(0);
                     } while (cursor.moveToNext());
             }
+            Log.d(TAG, "getNotificationCount() query=" + selectbyIDQuery + " -results=" + count);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -102,11 +105,9 @@ public class DataAccessNotification {
                             + ((isRead == 0) ? " AND " + Message.MessageColumns.COLUMN_NAME_IS_READ + " = " + isRead : "")
                             + " AND "
                             + "" + Message.MessageColumns.COLUMN_NAME_TO_USR_ID + " = " + userID
-                           // + " OR " + Message.MessageColumns.COLUMN_NAME_CLASS_ID + " = " + LaoSchoolShared.myProfile.getEclass().getId() + ")"
+                            // + " OR " + Message.MessageColumns.COLUMN_NAME_CLASS_ID + " = " + LaoSchoolShared.myProfile.getEclass().getId() + ")"
                             + " ORDER BY " + Message.MessageColumns.COLUMN_NAME_ID + " DESC LIMIT " + offset + "," + limit;
-
-            Log.d(TAG, "getListNotificationForUser(" + userID + "):query =" + selectbyIDQuery);
-
+            
             SQLiteDatabase db = databaseHandler.getReadableDatabase();
 
             //query for cursor
