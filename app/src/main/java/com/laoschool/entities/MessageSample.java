@@ -5,16 +5,16 @@ import com.google.gson.Gson;
 /**
  * Created by Tran An on 7/4/2016.
  */
-public class AttendanceReason {
+public class MessageSample {
 
     int id;
     String sval;
     String lval;
 
-    public AttendanceReason() {
+    public MessageSample() {
     }
 
-    public AttendanceReason(int id, String sval, String lval) {
+    public MessageSample(int id, String sval, String lval) {
         this.id = id;
         this.sval = sval;
         this.lval = lval;
@@ -50,9 +50,9 @@ public class AttendanceReason {
         return jsonString;
     }
 
-    public static AttendanceReason fromJson(String jsonString) {
+    public static MessageSample fromJson(String jsonString) {
         Gson gson = new Gson();
-        AttendanceReason attendanceReason = gson.fromJson(jsonString, AttendanceReason.class);
-        return attendanceReason;
+        MessageSample messageSample = gson.fromJson(jsonString, MessageSample.class);
+        return messageSample;
     }
 }

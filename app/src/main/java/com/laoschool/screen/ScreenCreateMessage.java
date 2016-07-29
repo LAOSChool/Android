@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -32,11 +33,13 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.entities.Message;
+import com.laoschool.entities.MessageSample;
 import com.laoschool.entities.User;
 import com.laoschool.model.AsyncCallback;
 import com.laoschool.model.DataAccessImpl;
 import com.laoschool.model.DataAccessInterface;
 import com.laoschool.model.sqlite.DataAccessMessage;
+import com.laoschool.screen.view.Languages;
 import com.laoschool.screen.view.TableStudents;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
@@ -76,6 +79,9 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
     List<User> listStudents = new ArrayList<>();
     List<User> selectedStudents = new ArrayList<>();
 
+    List<MessageSample> list_att_reason = new ArrayList<>();
+    List<MessageSample> list_std_reason = new ArrayList<>();
+
     public void setTestMessage(String testMessage) {
         this.testMessage = testMessage;
     }
@@ -100,40 +106,180 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
         }
     }
 
-    public void presetData(List<User> students, List<User> selectedStudents, String defaultText) {
+    void getMessageSample() {
+        if(list_att_reason.isEmpty()) {
+            LaoSchoolSingleton.getInstance().getDataAccessService().getAttMss(new AsyncCallback<List<MessageSample>>() {
+                @Override
+                public void onSuccess(List<MessageSample> result) {
+                    list_att_reason.addAll(result);
+                }
+
+                @Override
+                public void onFailure(String message) {
+
+                }
+
+                @Override
+                public void onAuthFail(String message) {
+
+                }
+            });
+        }
+        if(list_std_reason.isEmpty()) {
+            LaoSchoolSingleton.getInstance().getDataAccessService().getStdMss(new AsyncCallback<List<MessageSample>>() {
+                @Override
+                public void onSuccess(List<MessageSample> result) {
+                    list_std_reason.addAll(result);
+                }
+
+                @Override
+                public void onFailure(String message) {
+
+                }
+
+                @Override
+                public void onAuthFail(String message) {
+
+                }
+            });
+        }
+    }
+
+    public void presetData(List<User> students, List<User> selectedStudents, final String defaultText) {
         if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
             if (students != null) {
+                getMessageSample();
                 listStudents.clear();
                 this.selectedStudents.clear();
                 listStudents.addAll(students);
                 this.selectedStudents.addAll(selectedStudents);
-                cbSendSms.setChecked(true);
+//                cbSendSms.setChecked(true);
                 String sendTo = "";
                 for (User student : selectedStudents) {
                     sendTo = sendTo + student.getFullname() + ", ";
                 }
-                if (selectedStudents.size() == listStudents.size())
+
+                if (selectedStudents.size() == listStudents.size()) {
                     txtMessageTo.setText(context.getString(R.string.SCCommon_Class) + " " + LaoSchoolShared.selectedClass.getTitle());
+                    txtMessageContent.setText(defaultText + context.getString(R.string.SCAttendance_DefaultMessage1));
+                }
                 else if(selectedStudents.size() == 1) {
                     txtMessageTo.setText(selectedStudents.get(0).getFullname());
+                    txtMessageContent.setText(defaultText + context.getString(R.string.SCAttendance_DefaultMessage2));
                 }
-                else
+                else {
                     txtMessageTo.setText(context.getString(R.string.SCCreateMessage_TitleAllStudentsAttendance));
-                txtMessageContent.setText(defaultText);
+                    txtMessageContent.setText(defaultText + context.getString(R.string.SCAttendance_DefaultMessage1));
+                }
+
                 btnListContentSample.setVisibility(View.VISIBLE);
-                btnListContentSample.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                    PopupMenu popup = new PopupMenu(context, btnListContentSample);
-                    //Inflating the Popup using xml file
-//                    popup.getMenuInflater().inflate(R.menu.menu_popup_request_attendance, popup.getMenu());
-                        popup.getMenu().add("Item 1");
-                        popup.getMenu().add("Item 2");
-                        popup.getMenu().add("Item 3");
-                        popup.getMenu().add("Item 4");
-                    popup.show();
-                    }
-                });
+                if(selectedStudents.size() != 1) {
+                    btnListContentSample.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            final PopupMenu popup = new PopupMenu(context, btnListContentSample);
+                            if (list_att_reason.isEmpty()) {
+                                LaoSchoolSingleton.getInstance().getDataAccessService().getAttMss(new AsyncCallback<List<MessageSample>>() {
+                                    @Override
+                                    public void onSuccess(List<MessageSample> result) {
+                                        list_att_reason.addAll(result);
+                                        for (MessageSample messageSample : list_att_reason) {
+                                            SharedPreferences prefs = context.getSharedPreferences(
+                                                    LaoSchoolShared.SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
+                                            String language = prefs.getString(Languages.PREFERENCES_NAME, null);
+                                            if (language != null && language.equals(Languages.LANGUAGE_LAOS))
+                                                popup.getMenu().add(messageSample.getLval());
+                                            else
+                                                popup.getMenu().add(messageSample.getSval());
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(String message) {
+
+                                    }
+
+                                    @Override
+                                    public void onAuthFail(String message) {
+
+                                    }
+                                });
+                            } else {
+                                for (MessageSample messageSample : list_att_reason) {
+                                    SharedPreferences prefs = context.getSharedPreferences(
+                                            LaoSchoolShared.SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
+                                    String language = prefs.getString(Languages.PREFERENCES_NAME, null);
+                                    if (language != null && language.equals(Languages.LANGUAGE_LAOS))
+                                        popup.getMenu().add(messageSample.getLval());
+                                    else
+                                        popup.getMenu().add(messageSample.getSval());
+                                }
+                            }
+
+                            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                                @Override
+                                public boolean onMenuItemClick(MenuItem menuItem) {
+                                    txtMessageContent.setText(defaultText + menuItem.getTitle());
+                                    return false;
+                                }
+                            });
+                            popup.show();
+                        }
+                    });
+                } else {
+                    btnListContentSample.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            final PopupMenu popup = new PopupMenu(context, btnListContentSample);
+                            if (list_att_reason.isEmpty()) {
+                                LaoSchoolSingleton.getInstance().getDataAccessService().getStdMss(new AsyncCallback<List<MessageSample>>() {
+                                    @Override
+                                    public void onSuccess(List<MessageSample> result) {
+                                        list_std_reason.addAll(result);
+                                        for (MessageSample messageSample : list_std_reason) {
+                                            SharedPreferences prefs = context.getSharedPreferences(
+                                                    LaoSchoolShared.SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
+                                            String language = prefs.getString(Languages.PREFERENCES_NAME, null);
+                                            if (language != null && language.equals(Languages.LANGUAGE_LAOS))
+                                                popup.getMenu().add(messageSample.getLval());
+                                            else
+                                                popup.getMenu().add(messageSample.getSval());
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(String message) {
+
+                                    }
+
+                                    @Override
+                                    public void onAuthFail(String message) {
+
+                                    }
+                                });
+                            } else {
+                                for (MessageSample messageSample : list_std_reason) {
+                                    SharedPreferences prefs = context.getSharedPreferences(
+                                            LaoSchoolShared.SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
+                                    String language = prefs.getString(Languages.PREFERENCES_NAME, null);
+                                    if (language != null && language.equals(Languages.LANGUAGE_LAOS))
+                                        popup.getMenu().add(messageSample.getLval());
+                                    else
+                                        popup.getMenu().add(messageSample.getSval());
+                                }
+                            }
+
+                            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                                @Override
+                                public boolean onMenuItemClick(MenuItem menuItem) {
+                                    txtMessageContent.setText(defaultText + menuItem.getTitle());
+                                    return false;
+                                }
+                            });
+                            popup.show();
+                        }
+                    });
+                }
             } else {
                 btnListContentSample.setVisibility(View.GONE);
                 if (listStudents.isEmpty())

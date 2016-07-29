@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -19,7 +20,7 @@ import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.adapter.ListAttendanceReasonAdapter;
 import com.laoschool.entities.Attendance;
-import com.laoschool.entities.AttendanceReason;
+import com.laoschool.entities.MessageSample;
 import com.laoschool.entities.TimeTable;
 import com.laoschool.entities.User;
 import com.laoschool.model.AsyncCallback;
@@ -41,7 +42,7 @@ public class AttendanceTableAbsent extends View {
 
     RecyclerView tableAttReasonView;
     ListAttendanceReasonAdapter mAdapter;
-    List<AttendanceReason> attendanceReasons = new ArrayList<>();
+    List<MessageSample> messageSamples = new ArrayList<>();
 
     ScrollView scrollView;
     LinearLayout linearContent;
@@ -156,12 +157,13 @@ public class AttendanceTableAbsent extends View {
         edtOtherReason.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                selectedIndex = attendanceReasons.size();
-                mAdapter.swap(attendanceReasons, selectedIndex);
+                selectedIndex = messageSamples.size();
+                mAdapter.swap(messageSamples, selectedIndex);
+                int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 120, getResources().getDisplayMetrics());
+                int margin_height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60, getResources().getDisplayMetrics());
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT, 400);
-
-                layoutParams.setMargins(0, 0, 0, 140);
+                        LinearLayout.LayoutParams.MATCH_PARENT, height);
+                layoutParams.setMargins(0, 0, 0, margin_height);
                 scrollView.setLayoutParams(layoutParams);
                 return false;
             }
@@ -184,13 +186,13 @@ public class AttendanceTableAbsent extends View {
                 attendance.setState(1);
                 if(selectedIndex == 0)
                     attendance.setExcused(0);
-                else if(selectedIndex == attendanceReasons.size()) {
+                else if(selectedIndex == messageSamples.size()) {
                     attendance.setExcused(1);
                     attendance.setNotice(edtOtherReason.getText().toString());
                 }
                 else {
                     attendance.setExcused(1);
-                    attendance.setNotice(attendanceReasons.get(selectedIndex).getSval());
+                    attendance.setNotice(messageSamples.get(selectedIndex).getSval());
                 }
 //                switch (selected) {
 //                    case 1:
@@ -254,22 +256,22 @@ public class AttendanceTableAbsent extends View {
         return view;
     }
 
-    public void setListAttendanceReason(List<AttendanceReason> listAttendanceReason) {
-        attendanceReasons.clear();
-        attendanceReasons.addAll(listAttendanceReason);
-        mAdapter = new ListAttendanceReasonAdapter(thiz, attendanceReasons, selectedIndex, context);
+    public void setListAttendanceReason(List<MessageSample> listMessageSample) {
+        messageSamples.clear();
+        messageSamples.addAll(listMessageSample);
+        mAdapter = new ListAttendanceReasonAdapter(thiz, messageSamples, selectedIndex, context);
         tableAttReasonView.setAdapter(mAdapter);
     }
 
     public void setReasonSelected(int index) {
         selectedIndex = index;
-        mAdapter.swap(attendanceReasons, selectedIndex);
+        mAdapter.swap(messageSamples, selectedIndex);
+        int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 330, getResources().getDisplayMetrics());
+        int margin_height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, getResources().getDisplayMetrics());
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, 690);
-
-        layoutParams.setMargins(0, 0, 0, 140);
+                LinearLayout.LayoutParams.MATCH_PARENT, height);
+        layoutParams.setMargins(0, 0, 0, margin_height);
         scrollView.setLayoutParams(layoutParams);
-
         InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(linearContent.getWindowToken(), 0);
         linearContent.requestFocus();

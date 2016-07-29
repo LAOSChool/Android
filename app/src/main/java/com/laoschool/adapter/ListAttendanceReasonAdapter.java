@@ -2,7 +2,6 @@ package com.laoschool.adapter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,13 +12,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.laoschool.R;
-import com.laoschool.entities.AttendanceReason;
+import com.laoschool.entities.MessageSample;
 import com.laoschool.screen.view.AttendanceTableAbsent;
 import com.laoschool.screen.view.Languages;
 import com.laoschool.shared.LaoSchoolShared;
 
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by Tran An on 7/4/2016.
@@ -27,7 +25,7 @@ import java.util.Locale;
 public class ListAttendanceReasonAdapter extends RecyclerView.Adapter<ListAttendanceReasonAdapter.ViewHolder> {
 
     private AttendanceTableAbsent attendanceTableAbsent;
-    private List<AttendanceReason> mDataset;
+    private List<MessageSample> mDataset;
     private int selectedIndex;
     private Context context;
 
@@ -44,7 +42,7 @@ public class ListAttendanceReasonAdapter extends RecyclerView.Adapter<ListAttend
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public ListAttendanceReasonAdapter(AttendanceTableAbsent attendanceTableAbsent, List<AttendanceReason> myDataset, int selectedIndex, Context context) {
+    public ListAttendanceReasonAdapter(AttendanceTableAbsent attendanceTableAbsent, List<MessageSample> myDataset, int selectedIndex, Context context) {
         this.attendanceTableAbsent = attendanceTableAbsent;
         mDataset = myDataset;
         this.selectedIndex = selectedIndex;
@@ -74,15 +72,15 @@ public class ListAttendanceReasonAdapter extends RecyclerView.Adapter<ListAttend
 
         imgReasonCheck.setColorFilter(Color.parseColor("#0099cc"));
 
-        AttendanceReason attendanceReason = mDataset.get(position);
+        MessageSample messageSample = mDataset.get(position);
 
         SharedPreferences prefs = context.getSharedPreferences(
                 LaoSchoolShared.SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
         String language = prefs.getString(Languages.PREFERENCES_NAME, null);
         if (language != null && language.equals(Languages.LANGUAGE_LAOS))
-            txvReason.setText(attendanceReason.getLval());
+            txvReason.setText(messageSample.getLval());
         else
-            txvReason.setText(attendanceReason.getSval());
+            txvReason.setText(messageSample.getSval());
 
         if(position == 0)
             txvReason.setTextColor(context.getResources().getColor(R.color.colorAttendanceNoReason));
@@ -106,7 +104,7 @@ public class ListAttendanceReasonAdapter extends RecyclerView.Adapter<ListAttend
         return mDataset.size();
     }
 
-    public void swap(List<AttendanceReason> myDataset, int selectedIndex){
+    public void swap(List<MessageSample> myDataset, int selectedIndex){
         mDataset = myDataset;
         this.selectedIndex = selectedIndex;
         notifyDataSetChanged();

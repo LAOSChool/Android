@@ -694,8 +694,7 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                             }
                             String defaultText = "* " + thiz.getContext().getString(R.string.SCCommon_Date) + " " +
                                     txtAttendanceDate.getText().toString() + " * " + "\r\n \r\n" +
-                                    thiz.getContext().getString(R.string.SCAttendance_Subjects) + " " + selectedTimetable.getSubject_Name() + ", \r\n \r\n" +
-                                    thiz.getContext().getString(R.string.SCAttendance_DefaultMessage1);
+                                    thiz.getContext().getString(R.string.SCAttendance_Subjects) + " " + selectedTimetable.getSubject_Name() + ", \r\n \r\n";
                             iScreenAttended.goToCreateMessagefromScreenAttendance(attendanceRollup.getStudents(), selectedStudents, defaultText);
                         } else
                             Toast.makeText(thiz.getContext(), thiz.getContext().getString(R.string.SCCommon_UnknowError), Toast.LENGTH_SHORT).show();

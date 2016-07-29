@@ -93,8 +93,8 @@
     <string name="SCAttendance_NeedChoseSubject" translatable="false">Chose a subject first</string>
     <string name="SCAttendance_CancelAbsentConfirm">Cancel this attendance checking result. Are you sure?</string>
     <string name="SCAttendance_TeacherCreate" translatable="false">Create Absent</string>
-    <string name="SCAttendance_DefaultMessage1" translatable="false">LaoSchool announced this student has in the class.</string>
-    <string name="SCAttendance_DefaultMessage2" translatable="false">LaoSchool announced this student is absent.</string>
+    <string name="SCAttendance_DefaultMessage1" >Students are learning in class.</string>
+    <string name="SCAttendance_DefaultMessage2" >Got sick and asked for permission to go home.</string>
     <string name="SCAttendance_SelectDate" translatable="false">Select Date</string>
 
     <!--ChangePass screen-->

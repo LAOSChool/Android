@@ -21,7 +21,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.entities.Attendance;
-import com.laoschool.entities.AttendanceReason;
+import com.laoschool.entities.MessageSample;
 import com.laoschool.entities.AttendanceRollup;
 import com.laoschool.entities.Class;
 import com.laoschool.entities.ExamResult;
@@ -43,10 +43,8 @@ import com.laoschool.shared.LaoSchoolShared;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MIME;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,8 +62,6 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateException;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -784,9 +780,9 @@ public class DataAccessImpl implements DataAccessInterface {
     }
 
     @Override
-    public void getAttendanceReason(final AsyncCallback<List<AttendanceReason>> callback) {
+    public void getAttendanceReason(final AsyncCallback<List<MessageSample>> callback) {
         // Request a string response from the provided URL.
-        String url = HOST + "sys/sys_att_reason";
+        String url = HOST + "sys/sys_late_reason";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url.trim(),
                 new Response.Listener<String>() {
                     @Override
@@ -796,11 +792,11 @@ public class DataAccessImpl implements DataAccessInterface {
                             JSONObject mainObject = new JSONObject(response);
                             JSONObject obj1 = mainObject.getJSONObject("messageObject");
                             JSONArray listAttReason = obj1.getJSONArray("list");
-                            List<AttendanceReason> datas = new ArrayList<AttendanceReason>();
+                            List<MessageSample> datas = new ArrayList<MessageSample>();
                             for (int i = 0; i < listAttReason.length(); i++) {
-                                AttendanceReason attendanceReason =
-                                        AttendanceReason.fromJson(listAttReason.getJSONObject(i).toString());
-                                datas.add(attendanceReason);
+                                MessageSample messageSample =
+                                        MessageSample.fromJson(listAttReason.getJSONObject(i).toString());
+                                datas.add(messageSample);
                             }
                             callback.onSuccess(datas);
                         } catch (JSONException e) {
@@ -821,6 +817,116 @@ public class DataAccessImpl implements DataAccessInterface {
                             Log.e("Service/getAttReason()", new String(networkResponse.data));
                         } else {
                             Log.e("Service/getAttReason()", error.toString());
+                            callback.onFailure(error.toString());
+                        }
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", getAuthKey());
+                return params;
+            }
+        };
+
+        mRequestQueue.add(stringRequest);
+    }
+
+    @Override
+    public void getAttMss(final AsyncCallback<List<MessageSample>> callback) {
+        // Request a string response from the provided URL.
+        String url = HOST + "sys/sys_att_msg";
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url.trim(),
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("Service/getAttMss()", response);
+                        try {
+                            JSONObject mainObject = new JSONObject(response);
+                            JSONObject obj1 = mainObject.getJSONObject("messageObject");
+                            JSONArray listAttReason = obj1.getJSONArray("list");
+                            List<MessageSample> datas = new ArrayList<MessageSample>();
+                            for (int i = 0; i < listAttReason.length(); i++) {
+                                MessageSample messageSample =
+                                        MessageSample.fromJson(listAttReason.getJSONObject(i).toString());
+                                datas.add(messageSample);
+                            }
+                            callback.onSuccess(datas);
+                        } catch (JSONException e) {
+                            Log.d("Service/getAttMss()", "Can not parse json object data");
+                            callback.onFailure(e.toString());
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && networkResponse.statusCode == 409) {
+                            // HTTP Status Code: 409 Unauthorized Oo
+                            Log.e("Service/getAttMss()", "error status code " + networkResponse.statusCode);
+                            callback.onAuthFail(error.toString());
+                        } else if (networkResponse != null) {
+                            Log.e("Service/getAttMss()", new String(networkResponse.data));
+                        } else {
+                            Log.e("Service/getAttMss()", error.toString());
+                            callback.onFailure(error.toString());
+                        }
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", getAuthKey());
+                return params;
+            }
+        };
+
+        mRequestQueue.add(stringRequest);
+    }
+
+    @Override
+    public void getStdMss(final AsyncCallback<List<MessageSample>> callback) {
+        // Request a string response from the provided URL.
+        String url = HOST + "sys/sys_std_msg";
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url.trim(),
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("Service/getStdMss()", response);
+                        try {
+                            JSONObject mainObject = new JSONObject(response);
+                            JSONObject obj1 = mainObject.getJSONObject("messageObject");
+                            JSONArray listAttReason = obj1.getJSONArray("list");
+                            List<MessageSample> datas = new ArrayList<MessageSample>();
+                            for (int i = 0; i < listAttReason.length(); i++) {
+                                MessageSample messageSample =
+                                        MessageSample.fromJson(listAttReason.getJSONObject(i).toString());
+                                datas.add(messageSample);
+                            }
+                            callback.onSuccess(datas);
+                        } catch (JSONException e) {
+                            Log.d("Service/getStdMss()", "Can not parse json object data");
+                            callback.onFailure(e.toString());
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && networkResponse.statusCode == 409) {
+                            // HTTP Status Code: 409 Unauthorized Oo
+                            Log.e("Service/getStdMss()", "error status code " + networkResponse.statusCode);
+                            callback.onAuthFail(error.toString());
+                        } else if (networkResponse != null) {
+                            Log.e("Service/getStdMss()", new String(networkResponse.data));
+                        } else {
+                            Log.e("Service/getStdMss()", error.toString());
                             callback.onFailure(error.toString());
                         }
                     }

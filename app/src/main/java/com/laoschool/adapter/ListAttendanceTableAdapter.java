@@ -1,6 +1,5 @@
 package com.laoschool.adapter;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
@@ -10,7 +9,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -24,7 +22,7 @@ import android.widget.Toast;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.entities.Attendance;
-import com.laoschool.entities.AttendanceReason;
+import com.laoschool.entities.MessageSample;
 import com.laoschool.entities.TimeTable;
 import com.laoschool.entities.User;
 import com.laoschool.model.AsyncCallback;
@@ -34,7 +32,6 @@ import com.laoschool.shared.LaoSchoolShared;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by Tran An on 6/2/2016.
@@ -49,7 +46,7 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
 
     private ScreenAttended.IScreenAttended iScreenAttended;
 
-    List<AttendanceReason> attendanceReasons = new ArrayList<>();
+    List<MessageSample> messageSamples = new ArrayList<>();
 
     boolean showdata = false;
 
@@ -177,15 +174,15 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
                             }
                         });
                         dialog.setView(attendanceTableAbsent.getView());
-                        if (!attendanceReasons.isEmpty()) {
-                            attendanceTableAbsent.setListAttendanceReason(attendanceReasons);
+                        if (!messageSamples.isEmpty()) {
+                            attendanceTableAbsent.setListAttendanceReason(messageSamples);
                             dialog.show();
                         } else {
-                            LaoSchoolSingleton.getInstance().getDataAccessService().getAttendanceReason(new AsyncCallback<List<AttendanceReason>>() {
+                            LaoSchoolSingleton.getInstance().getDataAccessService().getAttendanceReason(new AsyncCallback<List<MessageSample>>() {
                                 @Override
-                                public void onSuccess(List<AttendanceReason> result) {
-                                    attendanceReasons.addAll(result);
-                                    attendanceTableAbsent.setListAttendanceReason(attendanceReasons);
+                                public void onSuccess(List<MessageSample> result) {
+                                    messageSamples.addAll(result);
+                                    attendanceTableAbsent.setListAttendanceReason(messageSamples);
                                     dialog.show();
                                 }
 
@@ -237,8 +234,7 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
                     selectedStudents.add(student);
                     String defaultText = "* " + context.getString(R.string.SCCommon_Date) + " " +
                             date + " * " + "\r\n \r\n" +
-                            context.getString(R.string.SCAttendance_Subjects) + " " + timeTable.getSubject_Name() + ", \r\n \r\n" +
-                            context.getString(R.string.SCAttendance_DefaultMessage2);
+                            context.getString(R.string.SCAttendance_Subjects) + " " + timeTable.getSubject_Name() + ", \r\n \r\n";
                     iScreenAttended.goToCreateMessagefromScreenAttendance(mDataset, selectedStudents, defaultText);
                 } else
                     Toast.makeText(context, context.getString(R.string.SCAttendance_NeedChoseSubject), Toast.LENGTH_SHORT).show();

@@ -84,9 +84,9 @@
     <string name="SCCreateMessage_CannotGetStudentsList">ບໍ່ສາມາດໄດ້ຮັບບັນຊີລາຍຊື່ນັກສຶກສາ</string>
     <string name="SCCreateMessage_TitleAllStudentsAttendance">ທັງຫມົດນັກຮຽນເຂົ້າຮ່ວມ</string>
     <string name="SCCommon_Date">ວັນທີ່ສະຫມັກ</string>
-    <string name="SCAttendance_DefaultMessage1">ໂຮງຮຽນລາວປະກາດນັກສຶກສານີ້ມີໃນຫ້ອງຮຽນໄດ້.</string>
+    <string name="SCAttendance_DefaultMessage1">ເຂົ້າ​ຫ້ອງ​ປົກ​ກະ​ຕິ</string>
     <string name="SCAttendance_SelectDate">ເລືອກວັນທີ່</string>
-    <string name="SCAttendance_DefaultMessage2">ໂຮງຮຽນລາວປະກາດນັກສຶກສານີ້ແມ່ນບໍ່.</string>
+    <string name="SCAttendance_DefaultMessage2">ຄອບ​ເມື່ອ - ບໍ່​ສ​ະ​ບາຍ</string>
     <string name="SCAttendance_Inform">ແຈ້ງ</string>
     <string name="SCCommon_Ok">ຕົກ​ລົງ</string>
     <string name="SCreateAnnouncement_HintMessageContent">ກະ​ລຸ​ນາ​ໃສ່​ເນື້ອ​ໃນ</string>
