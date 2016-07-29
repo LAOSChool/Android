@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.laoschool.R;
 import com.laoschool.adapter.RecyclerViewScreenMoreAdapter;
 import com.laoschool.shared.LaoSchoolShared;
@@ -191,7 +192,7 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
             txtTerm.setText(years);
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG,"fillUserDetailsStudent() -message:"+e.getMessage());
+            Log.e(TAG, "fillUserDetailsStudent() -message:" + e.getMessage());
         }
 
     }
@@ -244,7 +245,7 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
             txtClassName.setText(context.getString(R.string.SCCommon_Class) + " " + LaoSchoolShared.myProfile.getEclass().getTitle());
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG,"fillUserDetailsTeacher() -message:"+e.getMessage());
+            Log.e(TAG, "fillUserDetailsTeacher() -message:" + e.getMessage());
         }
     }
 
@@ -264,6 +265,11 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
             Log.d(TAG, "-Container Id:" + containerId);
             Log.d(TAG, "-Role:" + currentRole);
         }
+
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        Bundle bundle = new Bundle();
+        bundle.putString("ScreenMore", TAG);
+        mFirebaseAnalytics.logEvent("ScreenMore", bundle);
     }
 
     @Override

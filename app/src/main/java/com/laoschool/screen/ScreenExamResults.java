@@ -36,6 +36,7 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.adapter.ExamResultsAdapter;
@@ -151,6 +152,11 @@ public class ScreenExamResults extends Fragment
         activity = (HomeActivity) getActivity();
         mActionBar = activity.getSupportActionBar();
         progressDialog = new ProgressDialog(context);
+
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        Bundle bundle = new Bundle();
+        bundle.putString("ScreenScrore", TAG);
+        mFirebaseAnalytics.logEvent("ScreenScrore", bundle);
     }
 
     @Override

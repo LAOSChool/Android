@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.laoschool.R;
 import com.laoschool.adapter.ListMessageAdapter;
 import com.laoschool.screen.pager.MessagesPager;
@@ -171,16 +172,71 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                int countLocal = dataAccessMessage.getMessagesCount();
-                Log.d(TAG, "_defineData():count message in Local=" + countLocal);
+                 int userId = LaoSchoolShared.myProfile.getId();
+                int countLocal = dataAccessMessage.getMessagesCountForUserId(userId);
+                Log.d(TAG, "_defineData()/getMessagesCountForUserId(" + userId + ")=" + countLocal);
                 if (countLocal > 0) {
-                    _getDataFormLocal();
+                    getNewMessages();
+//                    _getDataFormLocal();
                 } else {
                     _getDataFormServer();
                 }
                 alreadyExecuted = true;
             }
         }, LaoSchoolShared.LOADING_TIME);
+    }
+
+    private void getNewMessages() {
+        final String userID = String.valueOf(LaoSchoolShared.myProfile.getId());
+        final int form_id = DataAccessMessage.getMaxMessagesID(LaoSchoolShared.myProfile.getId());
+        service.getMessages("", "", "", "", userID, "", "", String.valueOf(form_id)
+                , new AsyncCallback<List<Message>>() {
+                    @Override
+                    public void onSuccess(final List<Message> result) {
+                        try {
+                            for (Message message : result) {
+                                dataAccessMessage.addOrUpdateMessage(message);
+                            }
+                            service.getMessages("", userID, "", "", "", "", "", String.valueOf(form_id), new AsyncCallback<List<Message>>() {
+                                @Override
+                                public void onSuccess(final List<Message> result) {
+                                    try {
+                                        for (Message message : result) {
+                                            dataAccessMessage.addOrUpdateMessage(message);
+                                        }
+                                        _getDataFormLocal(-1);
+                                    } catch (Exception e) {
+                                        Log.d(TAG, "_getDataFormServer() onSuccess Exception=" + e.getMessage());
+                                    }
+
+                                }
+
+                                @Override
+                                public void onFailure(String message) {
+                                    Log.e(TAG, "onFailure():" + message);
+                                }
+
+                                @Override
+                                public void onAuthFail(String message) {
+                                    LaoSchoolShared.goBackToLoginPage(context);
+                                }
+                            });
+                        } catch (Exception e) {
+                            Log.d(TAG, "_getDataFormServer() onSuccess Exception=" + e.getMessage());
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(String message) {
+                        Log.e(TAG, "onFailure():" + message);
+                    }
+
+                    @Override
+                    public void onAuthFail(String message) {
+                        LaoSchoolShared.goBackToLoginPage(context);
+                    }
+                });
     }
 
     private void _getDataFormServer() {
@@ -461,6 +517,13 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         this.thiz = this;
         this.context = getActivity();
         this.fr = getFragmentManager();
+
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        Bundle bundle = new Bundle();
+        bundle.putString("ScreenMesssage", TAG);
+        mFirebaseAnalytics.logEvent("ScreenMesssage", bundle);
+
+
     }
 
 

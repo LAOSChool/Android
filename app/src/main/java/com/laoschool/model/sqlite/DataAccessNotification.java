@@ -45,13 +45,13 @@ public class DataAccessNotification {
     }
 
     // Getting messages Count
-    public static int getNotificationCount(int isRead) {
+    public static int getNotificationCountForUserId(int userId) {
         int count = 0;
         try {
             String selectbyIDQuery = "SELECT COUNT(" + Message.MessageColumns.COLUMN_NAME_ID + ") " +
                     "FROM " + Message.MessageColumns.TABLE_NAME
-                    + " WHERE " + Message.MessageColumns.COLUMN_NAME_TYPE + " = 1"
-                    + ((isRead == 0) ? " AND " + Message.MessageColumns.COLUMN_NAME_IS_READ + " = " + isRead : "");
+                    + " WHERE " + Message.MessageColumns.COLUMN_NAME_TO_USR_ID + " = " + userId
+                    + " AND " + Message.MessageColumns.COLUMN_NAME_TYPE + " = 0";
             SQLiteDatabase db = databaseHandler.getReadableDatabase();
 
             //query for cursor
@@ -68,6 +68,33 @@ public class DataAccessNotification {
         return count;
     }
 
+    // Getting messages Count
+    public static int getNotificationCount(int isRead) {
+        int count = 0;
+        try {
+            String selectbyIDQuery = "SELECT COUNT(" + Message.MessageColumns.COLUMN_NAME_ID + ") " +
+                    "FROM " + Message.MessageColumns.TABLE_NAME
+                    + " WHERE " + Message.MessageColumns.COLUMN_NAME_TYPE + " = 1"
+                    + " AND " + Message.MessageColumns.COLUMN_NAME_TO_USR_ID + " = " + LaoSchoolShared.myProfile.getId()
+                    + ((isRead == 0) ? " AND " + Message.MessageColumns.COLUMN_NAME_IS_READ + " = " + isRead : "");
+            Log.d(TAG, "getNotificationCount() query=" + selectbyIDQuery);
+            SQLiteDatabase db = databaseHandler.getReadableDatabase();
+
+            //query for cursor
+            Cursor cursor = db.rawQuery(selectbyIDQuery, null);
+            if (cursor.moveToFirst()) {
+                if (cursor.getCount() > 0)
+                    do {
+                        count = cursor.getInt(0);
+                    } while (cursor.moveToNext());
+            }
+            Log.d(TAG, "getNotificationCount() query=" + selectbyIDQuery + " -results=" + count);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
     public static List<Message> getListNotificationForUser(String columName, int userID, int limit, int offset, int isRead) {
         List<Message> messages = new ArrayList<>();
         try {
@@ -77,12 +104,10 @@ public class DataAccessNotification {
                             + Message.MessageColumns.COLUMN_NAME_TYPE + " = " + 1 + "\n"
                             + ((isRead == 0) ? " AND " + Message.MessageColumns.COLUMN_NAME_IS_READ + " = " + isRead : "")
                             + " AND "
-                            + "(" + Message.MessageColumns.COLUMN_NAME_TO_USR_ID + " = " + userID
-                            + " OR " + Message.MessageColumns.COLUMN_NAME_CLASS_ID + " = " + LaoSchoolShared.myProfile.getEclass().getId() + ")"
+                            + "" + Message.MessageColumns.COLUMN_NAME_TO_USR_ID + " = " + userID
+                            // + " OR " + Message.MessageColumns.COLUMN_NAME_CLASS_ID + " = " + LaoSchoolShared.myProfile.getEclass().getId() + ")"
                             + " ORDER BY " + Message.MessageColumns.COLUMN_NAME_ID + " DESC LIMIT " + offset + "," + limit;
-
-            Log.d(TAG, "getListNotificationForUser(" + userID + "):query =" + selectbyIDQuery);
-
+            
             SQLiteDatabase db = databaseHandler.getReadableDatabase();
 
             //query for cursor
@@ -195,7 +220,7 @@ public class DataAccessNotification {
                     + Message.MessageColumns.COLUMN_NAME_TO_USR_ID + " = " + toUserId +
                     ((isRead == 0) ? " AND " + Message.MessageColumns.COLUMN_NAME_IS_READ + " = " + isRead : "") +
                     " AND " + Message.MessageColumns.COLUMN_NAME_TYPE + " = " + 1 +
-                    " AND " + "messages.content LIKE '%" + query + "%'";
+                    " AND " + Message.MessageColumns.COLUMN_NAME_TITLE + " LIKE '%" + query + "%'";
             Log.d(TAG, "searchNotificationInbox() -query:" + like_query);
             SQLiteDatabase db = databaseHandler.getReadableDatabase();
 
@@ -215,5 +240,27 @@ public class DataAccessNotification {
             e.printStackTrace();
         }
         return messages;
+    }
+
+    public static int getMaxNotificationID(int userID) {
+        int count = 0;
+        try {
+            String selectbyIDQuery = "SELECT MAX(" + Message.MessageColumns.COLUMN_NAME_ID + ") FROM " + Message.MessageColumns.TABLE_NAME
+                    + " WHERE " + Message.MessageColumns.COLUMN_NAME_TO_USR_ID + " = " + userID
+                    + " AND " + Message.MessageColumns.COLUMN_NAME_TYPE + " = " + 1;
+            SQLiteDatabase db = databaseHandler.getReadableDatabase();
+            Log.d(TAG, selectbyIDQuery);
+            //query for cursor
+            Cursor cursor = db.rawQuery(selectbyIDQuery, null);
+            if (cursor.moveToFirst()) {
+                if (cursor.getCount() > 0)
+                    do {
+                        count = cursor.getInt(0);
+                    } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
     }
 }

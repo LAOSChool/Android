@@ -34,6 +34,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.laoschool.R;
 import com.laoschool.adapter.ListAttendanceTableAdapter;
 import com.laoschool.adapter.ListAttendancesAdapter;
@@ -662,6 +663,10 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
             currentRole = getArguments().getString(LaoSchoolShared.CURRENT_ROLE);
             Log.d(getString(R.string.SCCommon_Attendance), "-Container Id:" + containerId);
         }
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        Bundle bundle = new Bundle();
+        bundle.putString("ScreenAttendance", "ScreenAttendance");
+        mFirebaseAnalytics.logEvent("ScreenAttendance", bundle);
 
 //        getAttendances();
     }
