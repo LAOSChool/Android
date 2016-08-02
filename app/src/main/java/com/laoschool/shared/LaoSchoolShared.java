@@ -98,6 +98,7 @@ public class LaoSchoolShared {
     public static final String ROLE_STUDENT = "STUDENT";
     public static final String ROLE = "role";
     private static final String TAG = LaoSchoolShared.class.getSimpleName();
+    public static String deviceId = null;
 
     public static String makeFragmentTag(int containerViewId, long id) {
         return "android:switcher:" + containerViewId + ":" + id;
