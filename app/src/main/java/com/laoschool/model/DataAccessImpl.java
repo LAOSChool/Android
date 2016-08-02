@@ -76,7 +76,7 @@ public class DataAccessImpl implements DataAccessInterface {
     private RequestQueue mRequestQueue;
     private static Context mCtx;
 
-    private static String api_key = "TEST_API_KEY";
+    public static String api_key = "TEST_API_KEY";
 
 //    Lab02
 //    final String LOGIN_HOST = "https://192.168.0.202:9443/laoschoolws/";
@@ -181,7 +181,6 @@ public class DataAccessImpl implements DataAccessInterface {
     public void login(final String sso_id, final String password, final AsyncCallback<String> callback) {
         // Request a string response from the provided URL.
         String url = LOGIN_HOST + "login";
-
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -2338,5 +2337,50 @@ public class DataAccessImpl implements DataAccessInterface {
             }
         };
         mRequestQueue.add(jsonArrayRequest);
+    }
+
+    @Override
+    public void saveToken(final String token, final AsyncCallback<String> callback) {
+        // Request a string response from the provided URL.
+        String url = HOST + "tokens";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("Service/saveToken()", response);
+
+                        callback.onSuccess(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && networkResponse.statusCode == 409) {
+                            // HTTP Status Code: 409 Unauthorized Oo
+                            Log.e("Service/saveToken()", "error status code " + networkResponse.statusCode);
+                            callback.onAuthFail(error.toString());
+                        } else if (networkResponse != null) {
+                            Log.e("Service/saveToken()", new String(networkResponse.data));
+                            callback.onFailure(new String(networkResponse.data));
+                        } else {
+                            Log.e("Service/saveToken()", error.toString());
+                            callback.onFailure(error.toString());
+                        }
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", getAuthKey());
+                params.put("token", token);
+                return params;
+            }
+        };
+
+        mRequestQueue.add(stringRequest);
+
     }
 }

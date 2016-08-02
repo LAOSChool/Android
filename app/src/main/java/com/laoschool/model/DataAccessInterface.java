@@ -321,5 +321,7 @@ public interface DataAccessInterface {
 
     public void getMyRanking(AsyncCallback<StudentRanking> callback);
 
+    public void saveToken(String token, AsyncCallback<String> callback);
+
 
 }
