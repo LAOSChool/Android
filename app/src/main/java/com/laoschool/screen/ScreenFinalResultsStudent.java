@@ -32,6 +32,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 
@@ -56,7 +57,7 @@ import java.util.List;
 public class ScreenFinalResultsStudent extends Fragment implements FragmentLifecycle {
 
 
-    private static final String TAG = ScreenFinalResultsStudent.class.getSimpleName();
+    private static final String TAG = "ScreenFinalResults";
     private Context context;
     private String currentRole;
     private int containerId;
@@ -89,6 +90,7 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
     private MenuItem itemRefersh;
 
     private Animation animShow, animHide;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     public ScreenFinalResultsStudent() {
         // Required empty public constructor
@@ -107,6 +109,11 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
         HomeActivity activity = (HomeActivity) getActivity();
         mActionBar = activity.getSupportActionBar();
         initAnimation();
+
+        //Log fire base analytic
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        Bundle bundle = new Bundle();
+        mFirebaseAnalytics.logEvent(TAG, bundle);
     }
 
     @Override
