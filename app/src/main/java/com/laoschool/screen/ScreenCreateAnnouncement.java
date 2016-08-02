@@ -333,7 +333,7 @@ public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecy
                         mListener._goBackAnnocements();
                     }
                     Bundle bundle = new Bundle();
-                    bundle.putString(SENT_ANNOUCEMENT, LaoSchoolShared.SUCCESS);
+                    bundle.putString(SENT_ANNOUCEMENT, LaoSchoolShared.FA_SUCCESS);
                     mFirebaseAnalytics.logEvent(TAG, bundle);
                 }
 
@@ -345,7 +345,7 @@ public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecy
                     _showAlertMessage(alert);
 
                     Bundle bundle = new Bundle();
-                    bundle.putString("SENT_ANNOUCEMENT", LaoSchoolShared.FAILURE);
+                    bundle.putString("SENT_ANNOUCEMENT", LaoSchoolShared.FA_FAILURE);
                     mFirebaseAnalytics.logEvent(TAG, bundle);
                 }
 
