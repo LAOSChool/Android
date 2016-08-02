@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.laoschool.R;
 import com.laoschool.adapter.NotificationDetailsAdapter;
 import com.laoschool.entities.Message;
@@ -25,13 +26,14 @@ import com.laoschool.view.FragmentLifecycle;
 public class ScreenAnnouncementsDetails extends Fragment implements FragmentLifecycle {
 
 
-    private static final String TAG = "S_AnnouncementsDetails";
+    private static final String TAG = ScreenAnnouncementsDetails.class.getSimpleName();
     private int containerId;
 
 
     private RecyclerView mReclerViewListImageNotification;
     private Context context;
     private String currentRole;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     public ScreenAnnouncementsDetails() {
     }
@@ -43,9 +45,14 @@ public class ScreenAnnouncementsDetails extends Fragment implements FragmentLife
         if (getArguments() != null) {
             containerId = getArguments().getInt(LaoSchoolShared.CONTAINER_ID);
             currentRole = getArguments().getString(LaoSchoolShared.CURRENT_ROLE);
-            Log.d(getString(R.string.title_screen_announcement_details), "-Container Id:" + containerId);
+            Log.d(TAG, "-Container Id:" + containerId);
         }
         this.context = getActivity();
+
+        //Log fire base analytic
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        Bundle bundle = new Bundle();
+        mFirebaseAnalytics.logEvent(TAG, bundle);
     }
 
     @Override
@@ -84,6 +91,11 @@ public class ScreenAnnouncementsDetails extends Fragment implements FragmentLife
             ScreenAnnouncements screenAnnouncements = (ScreenAnnouncements) ((HomeActivity) getActivity()).getSupportFragmentManager().findFragmentByTag(tag);
             if (screenAnnouncements != null) {
                 final Message notification = screenAnnouncements.getNotification();
+                
+                //Log fire base analytic
+                Bundle bundle = new Bundle();
+                bundle.putString("view_annoucement_id", String.valueOf(notification.getId()));
+                mFirebaseAnalytics.logEvent(TAG, bundle);
 
                 //set Title Notification
                 ((HomeActivity) getActivity()).getSupportActionBar().setTitle(notification.getTitle());
