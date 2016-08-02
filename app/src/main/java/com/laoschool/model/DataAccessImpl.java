@@ -2342,7 +2342,7 @@ public class DataAccessImpl implements DataAccessInterface {
     @Override
     public void saveToken(final String token, final AsyncCallback<String> callback) {
         // Request a string response from the provided URL.
-        String url = HOST + "tokens";
+        String url = HOST + "tokens/save";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
