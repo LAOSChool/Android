@@ -14,6 +14,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -62,7 +63,7 @@ import java.util.Map;
  */
 public class ScreenExamResults extends Fragment
         implements FragmentLifecycle {
-    public static final String TAG = ScreenExamResults.class.getSimpleName();
+    public static final String TAG = "ScreenScore";
     private static FragmentManager fr;
     private ScreenExamResults screenExamResults;
     private int containerId;
@@ -93,6 +94,7 @@ public class ScreenExamResults extends Fragment
     //   private EditText txtSearch;
 
     private AppBarStateChangeListener.State appBarState = AppBarStateChangeListener.State.EXPANDED;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
 
     public ScreenExamResults() {
@@ -153,10 +155,9 @@ public class ScreenExamResults extends Fragment
         mActionBar = activity.getSupportActionBar();
         progressDialog = new ProgressDialog(context);
 
-        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
         Bundle bundle = new Bundle();
-        bundle.putString("ScreenScrore", TAG);
-        mFirebaseAnalytics.logEvent("ScreenScrore", bundle);
+        mFirebaseAnalytics.logEvent(TAG, bundle);
     }
 
     @Override
@@ -438,7 +439,7 @@ public class ScreenExamResults extends Fragment
     }
 
 
-    private static void _setDataforPageSemester(List<ExamResult> result, int positon) {
+    private void _setDataforPageSemester(List<ExamResult> result, int positon) {
         Log.d(TAG, "_setDataforPageSemester() positon=" + positon);
         HashMap<Integer, String> hashterms = new LinkedHashMap<Integer, String>();
         Map<Integer, ArrayList<ExamResult>> mapTermExam = new HashMap<>();
@@ -474,6 +475,36 @@ public class ScreenExamResults extends Fragment
 
         if (positon > -1)
             mViewPageStudent.setCurrentItem(positon);
+
+        mViewPageStudent.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                Bundle bundle = new Bundle();
+                switch (position) {
+                    case 0:
+                        bundle.putString(LaoSchoolShared.FA_SCREEN_DISPLAY, "Exam results term I");
+                        break;
+                    case 1:
+                        bundle.putString(LaoSchoolShared.FA_SCREEN_DISPLAY, "Exam results term II");
+                        break;
+                    case 2:
+                        bundle.putString(LaoSchoolShared.FA_SCREEN_DISPLAY, "Ranking");
+                        break;
+
+                }
+                mFirebaseAnalytics.logEvent(TAG, bundle);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     private void _definePageSemesterStudent() {
