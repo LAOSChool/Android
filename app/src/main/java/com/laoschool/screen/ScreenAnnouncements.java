@@ -50,7 +50,7 @@ import static com.laoschool.screen.ScreenAnnouncements.NotificationList.refeshNo
  * A simple {@link Fragment} subclass.
  */
 public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
-    private static final String TAG = "ScreenAnnouncements";
+    private static final String TAG = ScreenAnnouncements.class.getSimpleName();
     private static final int TAB_INBOX_0 = 0;
     private static final int TAB_UNREAD_1 = 1;
     private static ScreenAnnouncements thiz;
@@ -85,6 +85,7 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
     private RecyclerView mSearchResults;
     private SearchView mSearch;
     private boolean onSearch = false;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
 
     public Message getNotification() {
@@ -141,10 +142,9 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
         this.service = LaoSchoolSingleton.getInstance().getDataAccessService();
         this.fr = getFragmentManager();
 
-        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
         Bundle bundle = new Bundle();
-        bundle.putString("ScreenAnnoucement", TAG);
-        mFirebaseAnalytics.logEvent("ScreenAnnoucement", bundle);
+        mFirebaseAnalytics.logEvent(TAG, bundle);
 
 
     }
@@ -535,6 +535,12 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
                     List<Message> notificationList = DataAccessNotification.searchNotificationInbox(LaoSchoolShared.myProfile.getId(), finalIsRead, newText);
                     ListNotificationAdapter listNotiAdapter = new ListNotificationAdapter(thiz, mSearchResults, currentPosition, notificationList);
                     mSearchResults.setAdapter(listNotiAdapter);
+
+                    if (newText.length()>5){
+                        Bundle bundle = new Bundle();
+                        bundle.putString(LaoSchoolShared.FA_QUERY_TEXT,newText);
+                        mFirebaseAnalytics.logEvent(TAG, bundle);
+                    }
                 }
                 return true;
             }
