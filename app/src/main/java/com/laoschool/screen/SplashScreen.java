@@ -7,12 +7,15 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.entities.User;
 import com.laoschool.model.AsyncCallback;
+import com.laoschool.model.DataAccessImpl;
+import com.laoschool.model.sqlite.DataAccessMessage;
 import com.laoschool.screen.login.ScreenLogin;
 import com.laoschool.screen.view.Languages;
 import com.laoschool.shared.LaoSchoolShared;
@@ -63,6 +66,12 @@ public class SplashScreen extends Activity {
         super.onCreate(savedInstanceState);
         setLanguage();
         setContentView(R.layout.splash_screen);
+
+        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        LaoSchoolShared.deviceId = telephonyManager.getDeviceId();
+        DataAccessImpl.api_key = LaoSchoolShared.deviceId;
+
+        Log.d(TAG, "LaoSchoolShared.deviceId:" + LaoSchoolShared.deviceId);
         thiz = this;
         new Handler().postDelayed(new Runnable() {
             /*
