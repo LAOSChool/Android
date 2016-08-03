@@ -69,6 +69,7 @@ public class LaoSchoolShared {
     public static final String FA_FAILURE = "failure";
     public static final String FA_QUERY_TEXT = "query_text";
     public static final String FA_SCREEN_DISPLAY = "screen_display";
+    public static final String FA_CURRENT_ROLE = "current_role";
     public static User myProfile;
     public static Class selectedClass;
     public static final String SHARED_PREFERENCES_TAG = "com.laoshcool.app";
