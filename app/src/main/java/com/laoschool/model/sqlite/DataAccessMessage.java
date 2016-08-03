@@ -21,7 +21,7 @@ public class DataAccessMessage {
 
     // Adding new message
     public static void addMessage(Message message) {
-        Log.d("CRUDMEssage", "message:" + message.toJson());
+        //Log.d(TAG, "message:" + message.toJson());
         SQLiteDatabase db = databaseHandler.getWritableDatabase();
         ContentValues values = new ContentValues();
 
@@ -61,7 +61,7 @@ public class DataAccessMessage {
         // Inserting Row
         db.insert(Message.MessageColumns.TABLE_NAME, null, values);
         db.close(); // Closing database connection
-        Log.d(TAG, "addMessage:success");
+        Log.d(TAG, "-add " + message.toJson() + " : Success");
     }
 
 
@@ -93,10 +93,10 @@ public class DataAccessMessage {
         int count = 0;
         try {
             String selectbyIDQuery = "SELECT COUNT(" + Message.MessageColumns.COLUMN_NAME_CLIENT_ID + ") "
-                    + " FROM " +  Message.MessageColumns.TABLE_NAME
+                    + " FROM " + Message.MessageColumns.TABLE_NAME
                     + " WHERE " + Message.MessageColumns.COLUMN_NAME_TO_USR_ID + " = " + userId
-                    + " OR " +    Message.MessageColumns.COLUMN_NAME_FROM_USR_ID + " = " + userId
-                    + " AND " +   Message.MessageColumns.COLUMN_NAME_TYPE + " = 0";
+                    + " OR " + Message.MessageColumns.COLUMN_NAME_FROM_USR_ID + " = " + userId
+                    + " AND " + Message.MessageColumns.COLUMN_NAME_TYPE + " = 0";
             SQLiteDatabase db = databaseHandler.getReadableDatabase();
 
             //query for cursor
@@ -188,34 +188,34 @@ public class DataAccessMessage {
             if (columName.equals(Message.MessageColumns.COLUMN_NAME_TO_USR_ID)) {
                 if (isRead == 0) {
                     selectbyIDQuery =
-                            "SELECT * FROM " + Message.MessageColumns.TABLE_NAME + "\n"
-                                    + " WHERE " + Message.MessageColumns.COLUMN_NAME_TO_USR_ID + " = " + userID + "\n"
-                                    + " AND " + Message.MessageColumns.COLUMN_NAME_TYPE + " = " + 0 + "\n"
+                            "SELECT * FROM " + Message.MessageColumns.TABLE_NAME
+                                    + " WHERE " + Message.MessageColumns.COLUMN_NAME_TO_USR_ID + " = " + userID
+                                    + " AND " + Message.MessageColumns.COLUMN_NAME_TYPE + " = " + 0
                                     + " AND " + Message.MessageColumns.COLUMN_NAME_IS_READ + " = " + 0
                                     + " ORDER BY " + Message.MessageColumns.COLUMN_NAME_ID + " DESC LIMIT " + limit + " OFFSET " + offset;
                 } else {
                     selectbyIDQuery =
-                            "SELECT * FROM " + Message.MessageColumns.TABLE_NAME + "\n"
-                                    + " WHERE " + Message.MessageColumns.COLUMN_NAME_TO_USR_ID + " = " + userID + "\n"
-                                    + " AND " + Message.MessageColumns.COLUMN_NAME_TYPE + " = " + 0 + "\n"
+                            "SELECT * FROM " + Message.MessageColumns.TABLE_NAME
+                                    + " WHERE " + Message.MessageColumns.COLUMN_NAME_TO_USR_ID + " = " + userID
+                                    + " AND " + Message.MessageColumns.COLUMN_NAME_TYPE + " = " + 0
                                     + " ORDER BY " + Message.MessageColumns.COLUMN_NAME_ID + " DESC LIMIT " + limit + " OFFSET " + offset;
                 }
             } else if (columName.equals(Message.MessageColumns.COLUMN_NAME_FROM_USR_ID)) {
                 selectbyIDQuery =
-                        "SELECT * FROM " + Message.MessageColumns.TABLE_NAME + "\n"
-                                + " WHERE " + Message.MessageColumns.COLUMN_NAME_FROM_USR_ID + " = " + userID + "\n"
-                                + " AND " + Message.MessageColumns.COLUMN_NAME_TYPE + " = " + 0 + "\n"
+                        "SELECT * FROM " + Message.MessageColumns.TABLE_NAME
+                                + " WHERE " + Message.MessageColumns.COLUMN_NAME_FROM_USR_ID + " = " + userID
+                                + " AND " + Message.MessageColumns.COLUMN_NAME_TYPE + " = " + 0
                                 + " ORDER BY " + Message.MessageColumns.COLUMN_NAME_ID + " DESC LIMIT " + limit + " OFFSET " + offset;
             } else {
                 selectbyIDQuery =
-                        "SELECT * FROM " + Message.MessageColumns.TABLE_NAME + "\n"
-                                + " WHERE " + columName + " = " + userID + "\n"
-                                + " AND " + Message.MessageColumns.COLUMN_NAME_TYPE + " = " + 0 + "\n"
+                        "SELECT * FROM " + Message.MessageColumns.TABLE_NAME
+                                + " WHERE " + columName + " = " + userID
+                                + " AND " + Message.MessageColumns.COLUMN_NAME_TYPE + " = " + 0
                                 + ((isRead == 0) ? " AND " + Message.MessageColumns.COLUMN_NAME_IS_READ + " = " + isRead : "")
                                 + " ORDER BY " + Message.MessageColumns.COLUMN_NAME_ID + " DESC LIMIT " + limit + " OFFSET " + offset;
             }
 
-            Log.d(TAG, "getListMessagesForUser(" + userID + "):query =" + selectbyIDQuery);
+            //Log.d(TAG, "getListMessagesForUser(" + userID + "):query =" + selectbyIDQuery);
 
             SQLiteDatabase db = databaseHandler.getReadableDatabase();
 
@@ -228,7 +228,7 @@ public class DataAccessMessage {
                         messages.add(message);
                     } while (cursor.moveToNext());
             }
-            Log.d(TAG, "getListMessagesForUser(" + userID + "):Result size =" + messages.size());
+            Log.d(TAG, "getListMessagesForUser(" + userID + ") - query =" + selectbyIDQuery + " - Result size =" + messages.size());
         } catch (Exception e) {
             Log.d(TAG, "getListMessagesForUser(" + userID + "):Exception message =" + e.getMessage());
             e.printStackTrace();
@@ -311,7 +311,7 @@ public class DataAccessMessage {
         try {
             String selectbyIDQuery = "SELECT MAX(" + Message.MessageColumns.COLUMN_NAME_ID + ") FROM " + Message.MessageColumns.TABLE_NAME
                     + " WHERE ( " + Message.MessageColumns.COLUMN_NAME_TO_USR_ID + " = " + userID +
-                    " OR " + Message.MessageColumns.COLUMN_NAME_FROM_USR_ID + " = " + userID + " )\n"
+                    " OR " + Message.MessageColumns.COLUMN_NAME_FROM_USR_ID + " = " + userID + " )"
                     + " AND " + Message.MessageColumns.COLUMN_NAME_TYPE + " = " + 0;
             SQLiteDatabase db = databaseHandler.getReadableDatabase();
             Log.d(TAG, selectbyIDQuery);
@@ -323,6 +323,7 @@ public class DataAccessMessage {
                         count = cursor.getInt(0);
                     } while (cursor.moveToNext());
             }
+            Log.d(TAG, "getMaxMessagesID(" + userID + ") -query=" + selectbyIDQuery + " - Max ID=" + count);
         } catch (Exception e) {
             e.printStackTrace();
         }
