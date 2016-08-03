@@ -235,6 +235,12 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         isLoading = false;
     }
 
+    public void swapData(List<Message> messages) {
+        this.messageList.clear();
+        this.messageList.addAll(messages);
+        notifyDataSetChanged();
+    }
+
     public class ListMessageAdapterViewHolder extends RecyclerView.ViewHolder {
         View view;
         int viewType;

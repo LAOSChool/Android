@@ -1,6 +1,7 @@
 package com.laoschool.screen;
 
 import android.app.AlertDialog;
+import android.app.Application;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -44,6 +45,7 @@ import com.laoschool.adapter.LaoSchoolPagerAdapter;
 import com.laoschool.entities.Message;
 import com.laoschool.entities.User;
 import com.laoschool.model.AsyncCallback;
+import com.laoschool.model.DataAccessImpl;
 import com.laoschool.model.DataAccessInterface;
 import com.laoschool.model.sqlite.DataAccessImage;
 import com.laoschool.model.sqlite.DataAccessMessage;
@@ -177,13 +179,33 @@ public class HomeActivity extends AppCompatActivity implements
             }
 
         }
-        Log.d(TAG, "current_token:" + FirebaseInstanceId.getInstance().getToken());
+        String token = FirebaseInstanceId.getInstance().getToken();
+        Log.d(TAG, "current_token:" + token);
+        saveToken(token);
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        mFirebaseAnalytics.setUserId("");
         Bundle bundle = new Bundle();
-        bundle.putString("visitScreen", TAG);
-        mFirebaseAnalytics.logEvent("visitScreen", bundle);
+        bundle.putString(LaoSchoolShared.FA_CURRENT_ROLE, currentRole);
+        mFirebaseAnalytics.logEvent(getString(R.string.SCCommon_AppName), new Bundle());
+    }
+
+    private void saveToken(String token) {
+        DataAccessImpl.getInstance(this).saveToken(token, new AsyncCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                Log.d(TAG, "Save token sucess:" + result);
+            }
+
+            @Override
+            public void onFailure(String message) {
+                Log.d(TAG, "onFailure()/Save token fail:" + message);
+            }
+
+            @Override
+            public void onAuthFail(String message) {
+                Log.d(TAG, "onAuthFail()/Save token fail :" + message);
+            }
+        });
     }
 
     private void getUserProfile() {
@@ -752,7 +774,7 @@ public class HomeActivity extends AppCompatActivity implements
         _gotoPage(LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
         String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
         ScreenCreateMessage screenCreateMessage = (ScreenCreateMessage) getSupportFragmentManager().findFragmentByTag(tag);
-        screenCreateMessage.presetData(students, selectedStudents, defaultText);
+        screenCreateMessage.presetData(selectedStudents, selectedStudents, defaultText);
     }
 
     @Override
@@ -829,20 +851,24 @@ public class HomeActivity extends AppCompatActivity implements
 
     @Override
     public void goBackToMessage() {
+        String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
+        ScreenMessage screenMessage = (ScreenMessage) getSupportFragmentManager().findFragmentByTag(tag);
+
         if (beforePosition == LaoSchoolShared.POSITION_SCREEN_MESSAGE_0) {
             //back to tab message
             _gotoPage(LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
+            screenMessage.reloadSentPager();
         } else if (beforePosition == LaoSchoolShared.POSITION_SCREEN_PROFILE_13) {
             //back to tab message
             beforePosition = LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5;
             _gotoPage(LaoSchoolShared.POSITION_SCREEN_PROFILE_13);
+            screenMessage.reloadSentPager();
         } else {
             //back to tab attender
             _gotoPage(LaoSchoolShared.POSITION_SCREEN_ATTENDED_3);
+            screenMessage.reloadDataAfterCreateMessages();
         }
-        String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
-        ScreenMessage screenMessage = (ScreenMessage) getSupportFragmentManager().findFragmentByTag(tag);
-        screenMessage.reloadDataAfterCreateMessages();
+
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
     }
 

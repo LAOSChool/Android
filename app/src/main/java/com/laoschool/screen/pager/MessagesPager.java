@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -40,6 +41,7 @@ public class MessagesPager extends Fragment {
     SwipeRefreshLayout mSwipeRefreshLayout;
     TextView lbNoMessage;
     private List<Message> messages;
+    private ListMessageAdapter listMessageAdapter;
 
     public MessagesPager() {
     }
@@ -71,6 +73,7 @@ public class MessagesPager extends Fragment {
         lbNoMessage = (TextView) view.findViewById(R.id.lbNoMessage);
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
         mRecyclerListMessage = (RecyclerView) view.findViewById(R.id.mRecyclerListMessage);
+        mRecyclerListMessage.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
         //set adapter
         mRecyclerListMessage.setLayoutManager(linearLayoutManager);
@@ -138,11 +141,15 @@ public class MessagesPager extends Fragment {
                     public void onSuccess(final List<Message> result) {
                         try {
                             int sizeResults = result.size();
-                            Log.d(TAG, "getMessagesFormServer() onSuccess() -results size=" + sizeResults);
-                            for (Message message : result) {
-                                DataAccessMessage.addOrUpdateMessage(message);
+                            if (sizeResults > 0) {
+                                Log.d(TAG, "getMessagesFormServer() onSuccess() -results size=" + sizeResults);
+                                for (Message message : result) {
+                                    DataAccessMessage.addOrUpdateMessage(message);
+                                }
+                                swapData();
+                            } else {
+                                Log.d(TAG, "getMessagesFormServer() onSuccess() -Nothing to change");
                             }
-                            swapData();
                         } catch (Exception e) {
                             Log.e(TAG, "getMessagesFormServer() onSuccess() -exception=" + e.getMessage());
                         }
@@ -189,36 +196,9 @@ public class MessagesPager extends Fragment {
                 lbNoMessage.setVisibility(View.VISIBLE);
                 mSwipeRefreshLayout.setVisibility(View.GONE);
             }
-            final ListMessageAdapter listMessageAdapter = new ListMessageAdapter(mRecyclerListMessage, screenMessage, messages, position);
-            listMessageAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
-                                                         @Override
-                                                         public void onLoadMore() {
-                                                             int countMessageFormLocal = 0;
-                                                             if (position == 0) {
-                                                                 countMessageFormLocal = DataAccessMessage.getMessagesCountFormUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId());
-                                                             } else if (position == 1) {
-                                                                 countMessageFormLocal = DataAccessMessage.getMessagesCountFormUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 0);
-                                                             } else if (position == 2) {
-                                                                 countMessageFormLocal = DataAccessMessage.getMessagesCountFormUser(Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId());
-                                                             }
-                                                             if (messages != null) {
-                                                                 if (messages.size() < countMessageFormLocal) {
-                                                                     Log.d(TAG, "onLoadMore()");
-                                                                     messages.add(null);
-                                                                     listMessageAdapter.notifyItemInserted(messages.size() - 1);
-                                                                     loadMoreData(messages, listMessageAdapter, position);
-                                                                 } else {
-                                                                     Log.d(TAG, "onLoadMore() -message: no message load !!!");
-                                                                 }
-                                                             } else {
-                                                                 Log.d(TAG, "onLoadMore() -message: null");
-                                                             }
+            listMessageAdapter = new ListMessageAdapter(mRecyclerListMessage, screenMessage, messages, position);
+            handlerOnLoadMore(position, messages);
 
-
-                                                         }
-                                                     }
-
-            );
             if (!swapData)
                 mRecyclerListMessage.setAdapter(listMessageAdapter);
             else
@@ -263,6 +243,52 @@ public class MessagesPager extends Fragment {
                 listMessageAdapter.setLoaded();
             }
         }, 2000);
+    }
+
+    public void reloadData(int position, final List<Message> messages) {
+        if (listMessageAdapter != null) {
+            Log.d(TAG, "adpter not null");
+            listMessageAdapter.swapData(messages);
+        } else {
+            Log.d(TAG, "adpter  null");
+            listMessageAdapter = new ListMessageAdapter(mRecyclerListMessage, screenMessage, messages, position);
+            mRecyclerListMessage.setAdapter(listMessageAdapter);
+
+            handlerOnLoadMore(position, messages);
+
+        }
+    }
+
+    private void handlerOnLoadMore(final int position, final List<Message> messages) {
+        listMessageAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
+                                                     @Override
+                                                     public void onLoadMore() {
+                                                         int countMessageFormLocal = 0;
+                                                         if (position == 0) {
+                                                             countMessageFormLocal = DataAccessMessage.getMessagesCountFormUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId());
+                                                         } else if (position == 1) {
+                                                             countMessageFormLocal = DataAccessMessage.getMessagesCountFormUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 0);
+                                                         } else if (position == 2) {
+                                                             countMessageFormLocal = DataAccessMessage.getMessagesCountFormUser(Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId());
+                                                         }
+                                                         if (messages != null) {
+                                                             if (messages.size() < countMessageFormLocal) {
+                                                                 Log.d(TAG, "onLoadMore()");
+                                                                 messages.add(null);
+                                                                 listMessageAdapter.notifyItemInserted(messages.size() - 1);
+                                                                 loadMoreData(messages, listMessageAdapter, position);
+                                                             } else {
+                                                                 Log.d(TAG, "onLoadMore() -message: no message load !!!");
+                                                             }
+                                                         } else {
+                                                             Log.d(TAG, "onLoadMore() -message: null");
+                                                         }
+
+
+                                                     }
+                                                 }
+
+        );
     }
 
 }
