@@ -69,7 +69,8 @@ public class HomeActivity extends AppCompatActivity implements
         ScreenInputExamResultsStudent.IScreenInputExamResults,
         IScreenCreateAnnouncement,
         ScreenListStudent.IScreenListStudentOfClass,
-        IProfile {
+        IProfile,
+        ScreenRequestAttendance.IScreenRequestAttendance {
     private static final String TAG = HomeActivity.class.getSimpleName();
 
     private TabHost mTabHost;
@@ -88,6 +89,7 @@ public class HomeActivity extends AppCompatActivity implements
     private int clickPressBack = 0;
     public List<User> selectedUserList;
     private FirebaseAnalytics mFirebaseAnalytics;
+    public boolean onChange = false;
 
 
     public enum DisplayButtonHome {
@@ -312,6 +314,7 @@ public class HomeActivity extends AppCompatActivity implements
         this.mViewPager.addOnPageChangeListener(this);
 
         mViewPager.setAllowedSwipeDirection(SwipeDirection.none);
+        // mViewPager.setOffscreenPageLimit(4);
 
         getSupportActionBar().setTitle(R.string.SCCommon_Message);
     }
@@ -968,5 +971,20 @@ public class HomeActivity extends AppCompatActivity implements
         screenCreateMessage.presetData(userList, Arrays.asList(selectedStudent), "");
     }
 
+    @Override
+    public void goBacktoAttendance() {
+        beforePosition = LaoSchoolShared.POSITION_SCREEN_REQUEST_ATTENDANCE_17;
+        _gotoPage(LaoSchoolShared.POSITION_SCREEN_ATTENDED_3);
+
+        String tag_message = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
+        ScreenMessage screenMessage = (ScreenMessage) getSupportFragmentManager().findFragmentByTag(tag_message);
+        if (screenMessage != null) {
+            screenMessage.reloadDataAfterCreateMessages();
+        }
+
+        String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_ATTENDED_3);
+        ScreenAttended screenAttended = (ScreenAttended) getSupportFragmentManager().findFragmentByTag(tag);
+        screenAttended.getAttendances();
+    }
 
 }
