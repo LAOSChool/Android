@@ -400,6 +400,10 @@ public class ScreenAnnouncements extends Fragment implements FragmentLifecycle {
         onExpanSearch();
         onCollapseSearch();
 
+        if (!alreadyExecuted && getUserVisibleHint()) {
+            _defineData();
+        }
+
         return view;
     }
 
