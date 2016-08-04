@@ -973,13 +973,13 @@ public class HomeActivity extends AppCompatActivity implements
 
     @Override
     public void goBacktoAttendance() {
+        String tag_message = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
+        ScreenMessage screenMessage = (ScreenMessage) getSupportFragmentManager().findFragmentByTag(tag_message);
         beforePosition = LaoSchoolShared.POSITION_SCREEN_REQUEST_ATTENDANCE_17;
         _gotoPage(LaoSchoolShared.POSITION_SCREEN_ATTENDED_3);
 
-        String tag_message = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
-        ScreenMessage screenMessage = (ScreenMessage) getSupportFragmentManager().findFragmentByTag(tag_message);
         if (screenMessage != null) {
-            screenMessage.reloadDataAfterCreateMessages();
+            screenMessage.reloadDataAfterRequestAttendane();
         }
 
         String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_ATTENDED_3);

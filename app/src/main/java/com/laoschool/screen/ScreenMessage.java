@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -21,14 +20,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.adapter.ListMessageAdapter;
-import com.laoschool.listener.OnLoadMoreListener;
 import com.laoschool.screen.pager.MessagesPager;
 import com.laoschool.adapter.MessagesPagerAdapter;
 import com.laoschool.entities.Message;
@@ -49,6 +45,9 @@ import java.util.List;
 public class ScreenMessage extends Fragment implements FragmentLifecycle {
 
     private static final String TAG = ScreenMessage.class.getSimpleName();
+    private static final int TAB_INBOX_0 = 0;
+    private static final int TAB_UNREAD_1 = 1;
+    private static final int TAB_SENT_2 = 2;
     private static Context context;
     private int containerId;
     private static DataAccessInterface service;
@@ -73,6 +72,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
     private View mExspanSearch;
 
     boolean reloadDataAfterCreateMessages = false;
+    private boolean reloadDataAfterRequestAttendane = false;
 
     private boolean onSearch = false;
     private FirebaseAnalytics mFirebaseAnalytics;
@@ -100,20 +100,66 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
             } else {
                 Log.d(TAG, "onResumeFragment() -item Search null");
             }
-        } else {
-
         }
-        Log.d(TAG, "onResumeFragment() -reloadDataAfterCreateMessages:" + reloadDataAfterCreateMessages);
+
         if (getUserVisibleHint() && reloadDataAfterCreateMessages) {
-            _showProgessLoading(true);
-//            new Handler().postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
+            Log.d(TAG, "onResumeFragment() -on Reload Data After Create Messages");
             loadLocalMessageSent();
-//                }
-//            }, 1000);
-
         }
+        if (getUserVisibleHint() && reloadDataAfterRequestAttendane) {
+            Log.d(TAG, "onResumeFragment() -on Reload data After request attendance");
+            resetDataMessageSentPager();
+        }
+    }
+
+    private void resetDataMessageSentPager() {
+        _showProgessLoading(true);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //get message  sent pager
+                int pos = TAB_SENT_2;
+                String tagSendPager = "android:switcher:" + pager.getId() + ":" + pos;
+                Log.d(TAG, "resetDataMessageSentPager() - tagSendPager:" + tagSendPager);
+                MessagesPager messagesPager = (MessagesPager) getFragmentManager().findFragmentByTag(tagSendPager);
+                MessagesPagerAdapter messagesPagerAdapter = ((MessagesPagerAdapter) (pager.getAdapter()));
+
+                int countPager = messagesPagerAdapter.getCount();
+                Log.d(TAG, "resetDataMessageSentPager() - count Pager:" + countPager);
+                if (messagesPagerAdapter.getRegisteredFragment(pos) != null) {
+                    Log.d(TAG, "resetDataMessageSentPager() -page get fragement != null");
+                    if (messagesPager == null) {
+                        messagesPager = messagesPagerAdapter.getRegisteredFragment(pos);
+                    }
+                }
+
+                if (messagesPager != null) {
+                    List<Message> messagesFormUser = queryDataFormPosition(pos);
+                    int size = messagesFormUser.size();
+                    if (size > 0) {
+                        messagesPager.reloadData(pos, messagesFormUser);
+                    }
+                } else {
+                    Log.d(TAG, "resetDataMessageSentPager() - Sent pager null");
+                }
+                _showProgessLoading(false);
+                reloadDataAfterRequestAttendane = false;
+            }
+        }, 1000);
+    }
+
+    private List<Message> queryDataFormPosition(int currentItem) {
+        switch (currentItem) {
+            case TAB_INBOX_0:
+                return dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
+            case TAB_UNREAD_1:
+                return dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 0);
+            case TAB_SENT_2:
+                return dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
+            default:
+                return new ArrayList<>();
+        }
+
     }
 
     public void setRefeshListMessage(boolean refeshListMessage) {
@@ -479,36 +525,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         );
     }
 
-    private void loadLocalMessageSent() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
 
-                String tagSendPager = "android:switcher:" + pager.getId() + ":" + 2;
-                Log.d(TAG, "loadLocalMessageSent() - tagSendPager:" + tagSendPager);
-                MessagesPager messagesPager = (MessagesPager) getFragmentManager().findFragmentByTag(tagSendPager);
-                if (((MessagesPagerAdapter) (pager.getAdapter())).getFragment(2) != null) {
-                    Log.d(TAG, "loadLocalMessageSent() -page get fragement != null");
-                    if (messagesPager == null) {
-                        messagesPager = ((MessagesPagerAdapter) (pager.getAdapter())).getFragment(2);
-                    }
-                }
-
-                if (messagesPager != null) {
-                    List<Message> messagesFormUser = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
-                    int size = messagesFormUser.size();
-                    if (size > 0) {
-                        messagesPager.setListMessage(messagesFormUser, 2, false);
-                    }
-                } else {
-                    Log.d(TAG, "loadLocalMessageSent() - Sent pager null");
-                }
-                _showProgessLoading(false);
-                reloadDataAfterCreateMessages = false;
-            }
-        }, 1000);
-
-    }
 
     private static void initDataMessage() {
         final String userID = String.valueOf(LaoSchoolShared.myProfile.getId());
@@ -595,6 +612,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         else {
             messagesPagerAdapter = new MessagesPagerAdapter(context, fr, thiz, new ArrayList<Message>(), new ArrayList<Message>(), new ArrayList<Message>());
         }
+        pager.setOffscreenPageLimit(3);
         pager.setAdapter(messagesPagerAdapter);
         tabs.setViewPager(pager);
 
@@ -613,7 +631,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
 
             @Override
             public void onPageSelected(int position) {
-                MessagesPager notifragment = ((MessagesPagerAdapter) (pager.getAdapter())).getFragment(position);
+                MessagesPager notifragment = ((MessagesPagerAdapter) (pager.getAdapter())).getRegisteredFragment(position);
                 switch (position) {
                     case 0:
                         List<Message> messagesForUserInbox = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
@@ -637,7 +655,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
 
             }
         };
-        pager.addOnPageChangeListener(onPageNotificationChangeListener);
+        //pager.addOnPageChangeListener(onPageNotificationChangeListener);
     }
 
 
@@ -716,7 +734,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         Log.d(TAG, "expandSearchMessages() -position:" + currentPositon);
         final int userId = LaoSchoolShared.myProfile.getId();
         try {
-            final List<Message> messageList = messagesPagerAdapter.getFragment(pager.getCurrentItem()).getMessages();
+            final List<Message> messageList = messagesPagerAdapter.getRegisteredFragment(pager.getCurrentItem()).getMessages();
             ListMessageAdapter listMessageAdapter = new ListMessageAdapter(mSearchMessageList, thiz, messageList, pager.getCurrentItem());
             mSearchMessageList.setAdapter(listMessageAdapter);
             mSearchMessage.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -910,5 +928,95 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
         }
     }
 
+    public void reloadDataAfterRequestAttendane() {
+        try {
+            int form_id = DataAccessMessage.getMaxMessagesID(LaoSchoolShared.myProfile.getId());
+            final String classID = "";
+            final String fromUserID = String.valueOf(LaoSchoolShared.myProfile.getId());
+            final String fromDate = "";
+            final String toUserID = "";
+            final String toDate = "";
+            final String channel = "";
+            final String status = "";
+            final String fromID = ((form_id > 0) ? String.valueOf(form_id) : "");
+            service.getMessages(
+                    classID//classID
+                    , fromUserID//from user ID
+                    , fromDate//from date
+                    , toDate//to date
+                    , toUserID//to user ID
+                    , channel//channel
+                    , status//status
+                    , fromID//from id
+                    , new AsyncCallback<List<Message>>() {
+                        @Override
+                        public void onSuccess(final List<Message> result) {
+                            try {
+                                int sizeResults = result.size();
+                                if (sizeResults > 0) {
+                                    Log.d(TAG, "reloadDataAfterRequestAttendane()/onSuccess() Results size=" + sizeResults);
+                                    for (int i = 0; i < sizeResults; i++) {
+                                        Message message = result.get(i);
+                                        dataAccessMessage.addOrUpdateMessage(message);
+                                    }
+                                } else {
+                                    Log.d(TAG, "reloadDataAfterRequestAttendane()/onSuccess() - Nothing to change");
+                                }
+                            } catch (Exception e) {
+                                Log.d(TAG, "reloadDataAfterRequestAttendane()/onSuccess() - Exception=" + e.getMessage());
+                            }
+
+                        }
+
+                        @Override
+                        public void onFailure(String message) {
+                            _showProgessLoading(false);
+                            Log.e(TAG, "onFailure():" + message);
+                        }
+
+                        @Override
+                        public void onAuthFail(String message) {
+                            _showProgessLoading(false);
+                            LaoSchoolShared.goBackToLoginPage(context);
+                        }
+                    }
+
+            );
+            reloadDataAfterRequestAttendane = true;
+        } catch (Exception e) {
+            Log.e(TAG, "reloadDataAfterRequestAttendane() -exception:" + e.getMessage());
+        }
+    }
+    private void loadLocalMessageSent() {
+        _showProgessLoading(true);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                String tagSendPager = "android:switcher:" + pager.getId() + ":" + 2;
+                Log.d(TAG, "loadLocalMessageSent() - tagSendPager:" + tagSendPager);
+                MessagesPager messagesPager = (MessagesPager) getFragmentManager().findFragmentByTag(tagSendPager);
+                if (((MessagesPagerAdapter) (pager.getAdapter())).getRegisteredFragment(2) != null) {
+                    Log.d(TAG, "loadLocalMessageSent() -page get fragement != null");
+                    if (messagesPager == null) {
+                        messagesPager = ((MessagesPagerAdapter) (pager.getAdapter())).getRegisteredFragment(2);
+                    }
+                }
+
+                if (messagesPager != null) {
+                    List<Message> messagesFormUser = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
+                    int size = messagesFormUser.size();
+                    if (size > 0) {
+                        messagesPager.reloadData(2,messagesFormUser);
+                    }
+                } else {
+                    Log.d(TAG, "loadLocalMessageSent() - Sent pager null");
+                }
+                _showProgessLoading(false);
+                reloadDataAfterCreateMessages = false;
+            }
+        }, 2000);
+
+    }
 
 }

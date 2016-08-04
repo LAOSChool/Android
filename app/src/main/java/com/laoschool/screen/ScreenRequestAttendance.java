@@ -220,7 +220,7 @@ public class ScreenRequestAttendance extends Fragment implements FragmentLifecyc
                                 //scrAttended.getAttendances();
                                 //homeActivity._gotoPage(LaoSchoolShared.POSITION_SCREEN_ATTENDED_3);
                             }
-                        }, 500);
+                        }, 1000);
                     }
 
                 }
