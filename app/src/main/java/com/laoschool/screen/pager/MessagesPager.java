@@ -73,7 +73,7 @@ public class MessagesPager extends Fragment {
         //lbNoMessage = (TextView) view.findViewById(R.id.lbNoMessage);
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
         mRecyclerListMessage = (RecyclerView) view.findViewById(R.id.mRecyclerListMessage);
-        mRecyclerListMessage.setHasFixedSize(true);
+        //mRecyclerListMessage.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
         //set adapter
         mRecyclerListMessage.setLayoutManager(linearLayoutManager);
