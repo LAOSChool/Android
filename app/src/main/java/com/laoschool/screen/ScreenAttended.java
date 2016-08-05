@@ -153,15 +153,20 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                 attendanceList.clear();
                 groupAttendances.clear();
 
-                if (!result.isEmpty()) {
-                    attendanceList.addAll(result);
-                    containerView.setVisibility(View.VISIBLE);
-                    emptyView.setVisibility(View.GONE);
-                    setViewData();
-                } else {
-                    containerView.setVisibility(View.GONE);
-                    emptyView.setVisibility(View.VISIBLE);
-                }
+//                if (!result.isEmpty()) {
+//                    attendanceList.addAll(result);
+//                    containerView.setVisibility(View.VISIBLE);
+//                    emptyView.setVisibility(View.GONE);
+//                    setViewData();
+//                } else {
+//                    containerView.setVisibility(View.GONE);
+//                    emptyView.setVisibility(View.VISIBLE);
+//                }
+
+                attendanceList.addAll(result);
+                containerView.setVisibility(View.VISIBLE);
+                emptyView.setVisibility(View.GONE);
+                setViewData();
 
 //                if (currentPage != null)
 //                    currentPage.setData(attendanceList);
