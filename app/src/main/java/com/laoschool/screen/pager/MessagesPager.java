@@ -247,15 +247,13 @@ public class MessagesPager extends Fragment {
 
     public void reloadData(int position, final List<Message> messages) {
         if (listMessageAdapter != null) {
-            Log.d(TAG, "adpter not null");
+            Log.d(TAG, "reloadData() - adapter not null,swap data");
             listMessageAdapter.swapData(messages);
         } else {
-            Log.d(TAG, "adpter  null");
+            Log.d(TAG, "reloadData() - adapter null,new adapter");
             listMessageAdapter = new ListMessageAdapter(mRecyclerListMessage, screenMessage, messages, position);
             mRecyclerListMessage.setAdapter(listMessageAdapter);
-
             handlerOnLoadMore(position, messages);
-
         }
     }
 

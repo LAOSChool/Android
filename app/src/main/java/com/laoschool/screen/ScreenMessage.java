@@ -71,8 +71,8 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
     private MenuItem itemSearch;
     private View mExspanSearch;
 
-    boolean reloadDataAfterCreateMessages = false;
-    private boolean reloadDataAfterRequestAttendane = false;
+    private static boolean reloadDataAfterCreateMessages = false;
+    private static boolean reloadDataAfterRequestAttendane = false;
 
     private boolean onSearch = false;
     private FirebaseAnalytics mFirebaseAnalytics;
@@ -526,7 +526,6 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
     }
 
 
-
     private static void initDataMessage() {
         final String userID = String.valueOf(LaoSchoolShared.myProfile.getId());
         service.getMessages("", "", "", "", userID, "", "", ""
@@ -631,22 +630,24 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
 
             @Override
             public void onPageSelected(int position) {
-                MessagesPager notifragment = ((MessagesPagerAdapter) (pager.getAdapter())).getRegisteredFragment(position);
-                switch (position) {
-                    case 0:
-                        List<Message> messagesForUserInbox = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
-                        notifragment.setListMessage(messagesForUserInbox, 0, true);
-                        break;
-                    case 1:
-                        List<Message> messagesForUserUnread = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 0);
-                        notifragment.setListMessage(messagesForUserUnread, 1, true);
-                        break;
-                    case 2:
-                        List<Message> messagesFormUser = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
-                        notifragment.setListMessage(messagesFormUser, 2, true);
-
-
-                        break;
+                if (!reloadDataAfterCreateMessages & !reloadDataAfterRequestAttendane) {
+                    MessagesPager notifragment = ((MessagesPagerAdapter) (pager.getAdapter())).getRegisteredFragment(position);
+                    switch (position) {
+                        case TAB_INBOX_0:
+                            List<Message> messagesForUserInbox = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
+                            notifragment.reloadData(TAB_INBOX_0, messagesForUserInbox);
+                            break;
+                        case TAB_UNREAD_1:
+                            List<Message> messagesForUserUnread = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_TO_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 0);
+                            //notifragment.setListMessage(messagesForUserUnread, 1, true);
+                            notifragment.reloadData(TAB_UNREAD_1, messagesForUserUnread);
+                            break;
+//                        case TAB_SENT_2:
+//                            List<Message> messagesFormUser = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
+//                            //notifragment.setListMessage(messagesForUserUnread, 1, true);
+//                            notifragment.reloadData(TAB_SENT_2, messagesFormUser);
+//                            break;
+                    }
                 }
             }
 
@@ -655,7 +656,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
 
             }
         };
-        //pager.addOnPageChangeListener(onPageNotificationChangeListener);
+        pager.addOnPageChangeListener(onPageNotificationChangeListener);
     }
 
 
@@ -987,6 +988,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
             Log.e(TAG, "reloadDataAfterRequestAttendane() -exception:" + e.getMessage());
         }
     }
+
     private void loadLocalMessageSent() {
         _showProgessLoading(true);
         new Handler().postDelayed(new Runnable() {
@@ -1007,7 +1009,7 @@ public class ScreenMessage extends Fragment implements FragmentLifecycle {
                     List<Message> messagesFormUser = dataAccessMessage.getListMessagesForUser(Message.MessageColumns.COLUMN_NAME_FROM_USR_ID, LaoSchoolShared.myProfile.getId(), 30, 0, 1);
                     int size = messagesFormUser.size();
                     if (size > 0) {
-                        messagesPager.reloadData(2,messagesFormUser);
+                        messagesPager.reloadData(2, messagesFormUser);
                     }
                 } else {
                     Log.d(TAG, "loadLocalMessageSent() - Sent pager null");

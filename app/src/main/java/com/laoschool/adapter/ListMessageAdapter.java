@@ -23,6 +23,7 @@ import com.laoschool.model.sqlite.DataAccessMessage;
 import com.laoschool.screen.ScreenMessage;
 import com.laoschool.shared.LaoSchoolShared;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,7 +32,7 @@ import java.util.List;
 public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = "Adp_ListMessage";
     private final int positionPage;
-    List<Message> messageList;
+    List<Message> messageList = new ArrayList<>();
     ScreenMessage screenMessage;
     private Context context;
 
@@ -50,8 +51,9 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
 
     public ListMessageAdapter(RecyclerView mRecyclerView, ScreenMessage screenMessage, List<Message> messageList, int positionPage) {
-        this.messageList = messageList;
         this.screenMessage = screenMessage;
+        this.messageList = new ArrayList<>();
+        this.messageList.addAll(messageList);
         this.context = screenMessage.getActivity();
         this.mRecyclerView = mRecyclerView;
         this.positionPage = positionPage;
@@ -143,7 +145,7 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                             view.setBackgroundColor(context.getResources().getColor(R.color.color_bg_read));
                         }
                     }
-                    String photo=(LaoSchoolShared.myProfile.getId() == message.getTo_usr_id())?message.getFrm_user_photo():message.getTo_user_photo();
+                    String photo = (LaoSchoolShared.myProfile.getId() == message.getTo_usr_id()) ? message.getFrm_user_photo() : message.getTo_user_photo();
                     if (photo != null) {
                         LaoSchoolSingleton.getInstance().getImageLoader().get(photo, ImageLoader.getImageListener(imgUserAvata,
                                 R.drawable.ic_account_circle_black_36dp, android.R.drawable
@@ -223,7 +225,7 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public int getItemCount() {
-        return messageList == null ? 0 : messageList.size();
+        return messageList.size();
     }
 
     @Override
@@ -236,8 +238,12 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     public void swapData(List<Message> messages) {
-        this.messageList.clear();
-        this.messageList.addAll(messages);
+        if (messageList != null) {
+            messageList.clear();
+            messageList.addAll(messages);
+        } else {
+            messageList = messages;
+        }
         notifyDataSetChanged();
     }
 
