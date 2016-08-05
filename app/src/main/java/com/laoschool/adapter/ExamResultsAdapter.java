@@ -145,7 +145,7 @@ public class ExamResultsAdapter extends RecyclerView.Adapter<ExamResultsAdapter.
             examResults.addAll(origin_examResults);
         } else {
             for (ExamResult examResult : origin_examResults) {
-                String studentName =  examResult.getStudent_name();
+                String studentName = examResult.getStudent_name();
                 if (charText.length() != 0 && studentName.toLowerCase(Locale.getDefault()).contains(charText)) {
                     examResults.add(examResult);
                 }
@@ -166,7 +166,7 @@ public class ExamResultsAdapter extends RecyclerView.Adapter<ExamResultsAdapter.
             this.context = context;
             this.examResult = examResult;
             this.termId = termId;
-            if (termId == 1) {
+            if (termId == 2) {
                 str_score.add(examResult.getM1());
                 str_score.add(examResult.getM2());
                 str_score.add(examResult.getM3());
@@ -175,8 +175,8 @@ public class ExamResultsAdapter extends RecyclerView.Adapter<ExamResultsAdapter.
 
                 str_score.add(examResult.getM6());
                 str_score.add(examResult.getM7());
-                str_score_name.addAll(Arrays.asList(context.getResources().getStringArray(R.array.exam_name_term_1)));
-            } else {
+                str_score_name.addAll(Arrays.asList(context.getResources().getStringArray(R.array.exam_name_term_2)));
+            } else if (termId == 1) {
                 str_score.add(examResult.getM8());
                 str_score.add(examResult.getM9());
                 str_score.add(examResult.getM10());
@@ -187,7 +187,7 @@ public class ExamResultsAdapter extends RecyclerView.Adapter<ExamResultsAdapter.
                 str_score.add(examResult.getM14());
                 str_score.add(examResult.getM15());
 
-                str_score_name.addAll(Arrays.asList(context.getResources().getStringArray(R.array.exam_name_term_2)));
+                str_score_name.addAll(Arrays.asList(context.getResources().getStringArray(R.array.exam_name_term_1)));
             }
         }
 
