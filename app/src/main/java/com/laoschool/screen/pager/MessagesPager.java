@@ -39,7 +39,7 @@ public class MessagesPager extends Fragment {
     private ScreenMessage screenMessage;
     private Context context;
     SwipeRefreshLayout mSwipeRefreshLayout;
-    TextView lbNoMessage;
+    //TextView lbNoMessage;
     private List<Message> messages;
     private ListMessageAdapter listMessageAdapter;
 
@@ -70,7 +70,7 @@ public class MessagesPager extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.view_message_list, container, false);
-        lbNoMessage = (TextView) view.findViewById(R.id.lbNoMessage);
+        //lbNoMessage = (TextView) view.findViewById(R.id.lbNoMessage);
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
         mRecyclerListMessage = (RecyclerView) view.findViewById(R.id.mRecyclerListMessage);
         mRecyclerListMessage.setHasFixedSize(true);
@@ -79,20 +79,20 @@ public class MessagesPager extends Fragment {
         mRecyclerListMessage.setLayoutManager(linearLayoutManager);
         if (messages != null) {
             if (messages.size() > 0) {
-                lbNoMessage.setVisibility(View.GONE);
-                mSwipeRefreshLayout.setVisibility(View.VISIBLE);
+//                lbNoMessage.setVisibility(View.GONE);
+//                mSwipeRefreshLayout.setVisibility(View.VISIBLE);
                 if (screenMessage != null) {
                     setListMessage(messages, position, false);
                     _handlerSwipeReload();
                 }
 
             } else {
-                lbNoMessage.setVisibility(View.VISIBLE);
-                mSwipeRefreshLayout.setVisibility(View.GONE);
+//                lbNoMessage.setVisibility(View.VISIBLE);
+//                mSwipeRefreshLayout.setVisibility(View.GONE);
             }
         } else {
-            lbNoMessage.setVisibility(View.VISIBLE);
-            mSwipeRefreshLayout.setVisibility(View.GONE);
+//            lbNoMessage.setVisibility(View.VISIBLE);
+//            mSwipeRefreshLayout.setVisibility(View.GONE);
         }
 
 
@@ -189,13 +189,6 @@ public class MessagesPager extends Fragment {
 
     public void setListMessage(final List<Message> messages, final int position, boolean swapData) {
         try {
-            if (messages.size() > 0) {
-                lbNoMessage.setVisibility(View.GONE);
-                mSwipeRefreshLayout.setVisibility(View.VISIBLE);
-            } else {
-                lbNoMessage.setVisibility(View.VISIBLE);
-                mSwipeRefreshLayout.setVisibility(View.GONE);
-            }
             listMessageAdapter = new ListMessageAdapter(mRecyclerListMessage, screenMessage, messages, position);
             handlerOnLoadMore(position, messages);
 

@@ -777,7 +777,7 @@ public class HomeActivity extends AppCompatActivity implements
         _gotoPage(LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
         String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
         ScreenCreateMessage screenCreateMessage = (ScreenCreateMessage) getSupportFragmentManager().findFragmentByTag(tag);
-        screenCreateMessage.presetData(selectedStudents, selectedStudents, defaultText);
+        screenCreateMessage.presetData(students, selectedStudents, defaultText);
     }
 
     @Override

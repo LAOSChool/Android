@@ -441,6 +441,8 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                                 getAttendanceRollup(LaoSchoolShared.selectedClass.getId(), sendDate);
                             }
                         }
+
+
                     }, mYear, mMonth, mDay);
                     mDatePicker.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
                     mDatePicker.setTitle(R.string.SCAttendance_SelectDate);
