@@ -105,6 +105,10 @@ public class ScreenListStudent extends Fragment implements FragmentLifecycle, Se
             LaoSchoolSingleton.getInstance().getDataAccessService().getUsers(classId, LaoSchoolShared.ROLE_STUDENT, "", -1, new AsyncCallback<List<User>>() {
                 @Override
                 public void onSuccess(List<User> result) {
+                    if (result == null) {
+                        showError();
+                        return;
+                    }
                     if (itemSearch != null) {
                         itemSearch.setVisible(true);
                     }

@@ -286,7 +286,9 @@ public class DataAccessImpl implements DataAccessInterface {
                     public void onResponse(String response) {
                         Log.d("Service/getUsers()", response);
                         ListUser listUser = ListUser.fromJson(response);
-                        callback.onSuccess(listUser.getList());
+                        if (listUser.getList() != null)
+                            callback.onSuccess(listUser.getList());
+                        else callback.onSuccess(null);
                     }
                 },
                 new Response.ErrorListener() {
