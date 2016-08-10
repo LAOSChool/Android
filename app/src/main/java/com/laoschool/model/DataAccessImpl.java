@@ -353,15 +353,25 @@ public class DataAccessImpl implements DataAccessInterface {
     @Override
     public void getUserProfile(final AsyncCallback<User> callback) {
         // Request a string response from the provided URL.
-        String url = HOST + "users/myprofile";
+        final String url = HOST + "users/myprofile";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         Log.d("Service/gUserProfile()", response);
-                        User user = User.parseFromJson(response);
-                        LaoSchoolShared.selectedClass = user.getEclass();
-                        callback.onSuccess(user);
+                        if (response != null) {
+                            try {
+                                User user = User.parseFromJson(response);
+
+                                LaoSchoolShared.selectedClass = user.getEclass();
+                                callback.onSuccess(user);
+                            } catch (Exception e) {
+                                callback.onAuthFail("");
+                                e.printStackTrace();
+                            }
+                        } else {
+                            callback.onAuthFail("");
+                        }
                     }
                 },
                 new Response.ErrorListener() {
