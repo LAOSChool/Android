@@ -22,6 +22,7 @@ import com.laoschool.model.AsyncCallback;
 import com.laoschool.model.sqlite.DataAccessMessage;
 import com.laoschool.screen.ScreenMessage;
 import com.laoschool.shared.LaoSchoolShared;
+import com.laoschool.tools.CircularNetworkImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -149,7 +150,7 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     if (photo != null) {
                         LaoSchoolSingleton.getInstance().getImageLoader().get(photo, ImageLoader.getImageListener(imgUserAvata,
                                 R.drawable.ic_account_circle_black_36dp, android.R.drawable
-                                        .ic_dialog_alert));
+                                        .ic_dialog_alert), 35, 35, ImageView.ScaleType.FIT_XY);
                         imgUserAvata.setImageUrl(photo, LaoSchoolSingleton.getInstance().getImageLoader());
                     } else {
                         imgUserAvata.setDefaultImageResId(R.drawable.ic_account_circle_black_36dp);
