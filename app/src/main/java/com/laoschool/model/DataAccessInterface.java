@@ -139,7 +139,7 @@ public interface DataAccessInterface {
      * @param attendanceId
      * @param callback
      */
-    public void deleteAttendance(int attendanceId, AsyncCallback<String> callback);
+    public void deleteAttendance(String attendanceId, AsyncCallback<String> callback);
 
     public void getAttendanceReason(AsyncCallback<List<MessageSample>> callback);
 

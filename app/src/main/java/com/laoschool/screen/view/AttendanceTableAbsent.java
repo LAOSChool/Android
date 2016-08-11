@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -174,6 +175,7 @@ public class AttendanceTableAbsent extends View {
             public void onClick(View view) {
                 //Create attendance
                 final Attendance attendance = new Attendance();
+                attendance.setId(null);
                 attendance.setSchool_id(LaoSchoolShared.myProfile.getSchool_id());
                 attendance.setClass_id(LaoSchoolShared.myProfile.getEclass().getId());
                 //Format date
@@ -222,7 +224,7 @@ public class AttendanceTableAbsent extends View {
                     attendance.setSubject(timeTable.getSubject_Name());
                 }
 
-//                Log.i("RequestAttendance", attendance.toJson());
+                Log.i("RequestAttendance", attendance.toJson());
 
                 final ProgressDialog ringProgressDialog = ProgressDialog.show(context,
                         context.getString(R.string.SCCommon_PleaseWait)+ " ...",
