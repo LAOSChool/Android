@@ -744,7 +744,7 @@ public class DataAccessImpl implements DataAccessInterface {
     }
 
     @Override
-    public void deleteAttendance(final int attendanceId, final AsyncCallback<String> callback) {
+    public void deleteAttendance(final String attendanceId, final AsyncCallback<String> callback) {
         // Request a string response from the provided URL.
         String url = HOST + "attendances/delete/" + attendanceId;
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url.trim(),

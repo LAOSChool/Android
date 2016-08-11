@@ -9,7 +9,7 @@ public class Attendance {
 
     static final String Entity_Name = "attendance";
 
-    int id;
+    String id;
 
     int school_id;
 
@@ -44,7 +44,7 @@ public class Attendance {
     public Attendance() {
     }
 
-    public Attendance(int id, int school_id, int class_id, String att_dt, int subject_id, int user_id, String user_name, int absent, int excused, int late, String notice, int chk_user_id) {
+    public Attendance(String id, int school_id, int class_id, String att_dt, int subject_id, int user_id, String user_name, int absent, int excused, int late, String notice, int chk_user_id) {
         this.id = id;
         this.school_id = school_id;
         this.class_id = class_id;
@@ -59,7 +59,7 @@ public class Attendance {
         this.chk_user_id = chk_user_id;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -87,7 +87,7 @@ public class Attendance {
         this.session = session;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
