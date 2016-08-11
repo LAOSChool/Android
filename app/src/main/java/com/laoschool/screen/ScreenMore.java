@@ -155,7 +155,7 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
 
 //            int color = Color.parseColor("#808080");
 //            int color2 = Color.parseColor("#424242");
-          //  userImage.setColorFilter(getResources().getColor(R.color.colorIconOnFragment));
+            //  userImage.setColorFilter(getResources().getColor(R.color.colorIconOnFragment));
             schoolImage.setColorFilter(getResources().getColor(R.color.colorIconOnFragment));
             termImage.setColorFilter(getResources().getColor(R.color.colorIconOnFragment));
             imgEditProfile.setColorFilter(getResources().getColor(R.color.colorIconOnFragment));
@@ -227,12 +227,12 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
 
 
             //Handler goto detaisl
-            mDetaislUser.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    iScreenMore.gotoDetailsUser();
-                }
-            });
+//            mDetaislUser.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    iScreenMore.gotoDetailsUser();
+//                }
+//            });
 
             fillUserDetailsTeacher();
 
