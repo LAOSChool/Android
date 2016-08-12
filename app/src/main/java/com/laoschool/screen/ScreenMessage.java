@@ -45,9 +45,10 @@ import java.util.List;
 public class ScreenMessage extends Fragment implements FragmentLifecycle {
 
     private static final String TAG = ScreenMessage.class.getSimpleName();
-    private static final int TAB_INBOX_0 = 0;
-    private static final int TAB_UNREAD_1 = 1;
-    private static final int TAB_SENT_2 = 2;
+    public static final int TAB_INBOX_0 = 0;
+    public static final int TAB_UNREAD_1 = 1;
+    public static final int TAB_SENT_2 = 2;
+
     private static Context context;
     private int containerId;
     private static DataAccessInterface service;

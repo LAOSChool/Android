@@ -184,7 +184,7 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                             message.setIs_read(1);//Set is read
 
                             //Check pager sent not set Is read
-                            if (positionPage < 2) {
+                            if (positionPage < ScreenMessage.TAB_SENT_2) {
                                 DataAccessMessage.updateMessage(message);
                                 //DataAccessMessage.updateMessageIsRead(message);
                                 _updateStatusMessageToServer(message);
@@ -192,7 +192,7 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
                         }
                         //remove message in UnRead pager
-                        if (positionPage == 1) {
+                        if (positionPage == ScreenMessage.TAB_UNREAD_1) {
                             messageList.remove(position);
                         }
                         notifyDataSetChanged();
