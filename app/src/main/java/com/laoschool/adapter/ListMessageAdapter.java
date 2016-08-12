@@ -178,13 +178,20 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         txtDateSend.setTextColor(context.getResources().getColor(R.color.colorRead));
                         imgGotoDetails.setColorFilter(screenMessage.getActivity().getResources().getColor(R.color.colorRead));
 
-                        if (message.getIs_read() == 0) {
-                            //Update is read
-                            message.setIs_read(1);
-                            DataAccessMessage.updateMessage(message);
-                            _updateStatusMessageToServer(message);
-                        }
                         Log.d(TAG, "Page:" + positionPage);
+
+                        if (message.getIs_read() == 0) {
+                            message.setIs_read(1);//Set is read
+
+                            //Check pager sent not set Is read
+                            if (positionPage < 2) {
+                                DataAccessMessage.updateMessage(message);
+                                //DataAccessMessage.updateMessageIsRead(message);
+                                _updateStatusMessageToServer(message);
+                            }
+
+                        }
+                        //remove message in UnRead pager
                         if (positionPage == 1) {
                             messageList.remove(position);
                         }
@@ -205,11 +212,11 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     }
 
-    private void _updateStatusMessageToServer(Message message) {
+    private void _updateStatusMessageToServer(final Message message) {
         LaoSchoolSingleton.getInstance().getDataAccessService().updateMessageIsRead(message, new AsyncCallback<Message>() {
             @Override
             public void onSuccess(Message result) {
-                Log.d(TAG, "_updateStatusMessageToServer() onSuccess():" + result.getId());
+                Log.d(TAG, "_updateStatusMessageToServer() onSuccess():" + message.toString());
             }
 
             @Override
