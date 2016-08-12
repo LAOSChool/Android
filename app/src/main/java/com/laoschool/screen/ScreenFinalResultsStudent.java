@@ -457,10 +457,10 @@ public class ScreenFinalResultsStudent extends Fragment implements FragmentLifec
         View header = View.inflate(context, R.layout.custom_hearder_dialog, null);
         ImageView imgIcon = ((ImageView) header.findViewById(R.id.imgIcon));
         Drawable drawable = LaoSchoolShared.getDraweble(context, R.drawable.ic_timer_black_24dp);
-        int color = Color.parseColor("#ffffff");
-        drawable.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+//        int color = Color.parseColor("#ffffff");
+//        drawable.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
         imgIcon.setImageDrawable(drawable);
-
+        imgIcon.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
         ((TextView) header.findViewById(R.id.txbTitleDialog)).setText(R.string.SCFinalResult_SelectedYear);
 
         builder.setCustomTitle(header);
