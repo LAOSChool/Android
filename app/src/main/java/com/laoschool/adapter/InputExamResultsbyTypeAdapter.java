@@ -108,7 +108,7 @@ public class InputExamResultsbyTypeAdapter extends RecyclerView.Adapter<InputExa
             String photo = result.getStd_photo();
             if (photo != null) {
                 LaoSchoolSingleton.getInstance().getImageLoader().get(photo, ImageLoader.getImageListener(holder.imgUserAvata,
-                        R.drawable.ic_account_circle_black_36dp, R.drawable.ic_account_circle_black_36dp));
+                        R.drawable.ic_account_circle_black_36dp, R.drawable.ic_account_circle_black_36dp),R.dimen.avata_width,R.dimen.avata_height, ImageView.ScaleType.FIT_XY);
                 holder.imgUserAvata.setImageUrl(photo, LaoSchoolSingleton.getInstance().getImageLoader());
             } else {
                 holder.imgUserAvata.setDefaultImageResId(R.drawable.ic_account_circle_black_36dp);

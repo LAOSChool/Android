@@ -13,6 +13,7 @@
         android:layout_alignParentStart="false"
         android:layout_centerVertical="true"
         android:layout_marginLeft="16dp"
+        android:scaleType="fitXY"
         android:src="@drawable/ic_account_circle_black_36dp" />
 
     <LinearLayout

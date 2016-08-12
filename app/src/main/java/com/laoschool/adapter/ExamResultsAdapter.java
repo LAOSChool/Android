@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
@@ -101,7 +102,7 @@ public class ExamResultsAdapter extends RecyclerView.Adapter<ExamResultsAdapter.
                     String photo = examResult.getStd_photo();
                     if (photo != null) {
                         LaoSchoolSingleton.getInstance().getImageLoader().get(photo, ImageLoader.getImageListener(imgUserAvata,
-                                R.drawable.ic_account_circle_black_36dp, R.drawable.ic_account_circle_black_36dp));
+                                R.drawable.ic_account_circle_black_36dp, R.drawable.ic_account_circle_black_36dp), R.dimen.avata_width, R.dimen.avata_height, ImageView.ScaleType.FIT_XY);
                         imgUserAvata.setImageUrl(photo, LaoSchoolSingleton.getInstance().getImageLoader());
                     } else {
                         imgUserAvata.setDefaultImageResId(R.drawable.ic_account_circle_black_36dp);
