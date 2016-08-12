@@ -2395,4 +2395,58 @@ public class DataAccessImpl implements DataAccessInterface {
         mRequestQueue.add(stringRequest);
 
     }
+
+    @Override
+    public void createMessageOnlyStudent(Message message, final AsyncCallback<Message> callback) {
+        // Request a string response from the provided URL.
+        int classId = LaoSchoolShared.myProfile.getEclass().getId();
+        String url = HOST + "messages/create_ext?filter_class_list=" + classId + "&filter_roles=STUDENT";
+        final String httpPostBody = makeMessagetoJson(message);
+
+//      Log.d("Service/createMessage()", "makeMessagetoJson():" + httpPostBody);
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("S/createMessage()", response);
+                        Message m = Message.messageParsefromJson(response);
+                        callback.onSuccess(m);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && networkResponse.statusCode == 409) {
+                            // HTTP Status Code: 409 Unauthorized Oo
+                            Log.e("Service/createMessage()", "error status code " + networkResponse.statusCode);
+                            callback.onAuthFail(error.toString());
+                        } else if (networkResponse != null) {
+                            Log.e("Service/createMessage()", new String(networkResponse.data));
+                            callback.onFailure(new String(networkResponse.data));
+                        } else {
+                            Log.e("Service/createMessage()", error.toString());
+                            callback.onFailure(error.toString());
+                        }
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", getAuthKey());
+                params.put("Content-Type", "application/json");
+                return params;
+            }
+
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                return httpPostBody.getBytes();
+            }
+        };
+
+        mRequestQueue.add(stringRequest);
+    }
 }
