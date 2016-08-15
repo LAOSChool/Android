@@ -84,7 +84,7 @@ public interface DataAccessInterface {
      * @param newpass
      * @param callback return message status,
      */
-    public void userChangePassword(String user_id, String oldpass, String newpass, AsyncCallback<String> callback);
+    public void userChangePassword(String username, String oldpass, String newpass, AsyncCallback<String> callback);
 
     //----- Attendance -----//
 

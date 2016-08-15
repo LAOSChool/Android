@@ -22,7 +22,7 @@
         android:id="@+id/tab_indicator_title"
         android:layout_gravity="center_horizontal"
         android:singleLine="true"
-        android:textSize="8sp"
+        android:textSize="9dp"
         android:layout_marginTop="4dp"
         android:textColor="@color/text_title_tab_indicator" />
 
