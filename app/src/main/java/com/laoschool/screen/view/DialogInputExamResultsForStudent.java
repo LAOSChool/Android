@@ -93,7 +93,7 @@ public class DialogInputExamResultsForStudent extends DialogFragment implements 
         String photo = examResult.getStd_photo();
         if (photo != null) {
             LaoSchoolSingleton.getInstance().getImageLoader().get(photo, ImageLoader.getImageListener(imgIcon,
-                    R.drawable.ic_account_circle_black_36dp, R.drawable.ic_account_circle_black_36dp));
+                    R.drawable.ic_account_circle_black_36dp, R.drawable.ic_account_circle_black_36dp),R.dimen.avata_width,R.dimen.avata_height, ImageView.ScaleType.FIT_XY);
             imgIcon.setImageUrl(photo, LaoSchoolSingleton.getInstance().getImageLoader());
         } else {
             imgIcon.setDefaultImageResId(R.drawable.ic_account_circle_black_36dp);
