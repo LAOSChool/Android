@@ -145,7 +145,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
         }
     }
 
-    public void presetData(List<User> students, List<User> selectedStudents, final String defaultText) {
+    public void presetData(List<User> students, List<User> selectedStudents, final String defaultText, boolean sampleContent) {
         if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
             if (students != null) {
                 getMessageSample();
@@ -170,8 +170,12 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                     txtMessageContent.setText(defaultText + context.getString(R.string.SCAttendance_DefaultMessage1));
                 }
 
-                btnListContentSample.setVisibility(View.VISIBLE);
-                if (selectedStudents.size() != 1) {
+
+                if(sampleContent)
+                    btnListContentSample.setVisibility(View.VISIBLE);
+                else
+                    btnListContentSample.setVisibility(View.GONE);
+                if(selectedStudents.size() != 1) {
                     btnListContentSample.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {

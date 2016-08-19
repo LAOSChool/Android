@@ -716,7 +716,7 @@ public class HomeActivity extends AppCompatActivity implements
         _gotoPage(LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
         String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
         ScreenCreateMessage screenCreateMessage = (ScreenCreateMessage) getSupportFragmentManager().findFragmentByTag(tag);
-        screenCreateMessage.presetData(null, null, "");
+        screenCreateMessage.presetData(null, null, "", false);
     }
 
     @Override
@@ -777,7 +777,7 @@ public class HomeActivity extends AppCompatActivity implements
         _gotoPage(LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
         String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
         ScreenCreateMessage screenCreateMessage = (ScreenCreateMessage) getSupportFragmentManager().findFragmentByTag(tag);
-        screenCreateMessage.presetData(students, selectedStudents, defaultText);
+        screenCreateMessage.presetData(students, selectedStudents, defaultText, true);
     }
 
     @Override
@@ -968,7 +968,7 @@ public class HomeActivity extends AppCompatActivity implements
         _gotoPage(LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
         String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
         ScreenCreateMessage screenCreateMessage = (ScreenCreateMessage) getSupportFragmentManager().findFragmentByTag(tag);
-        screenCreateMessage.presetData(userList, Arrays.asList(selectedStudent), "");
+        screenCreateMessage.presetData(userList, Arrays.asList(selectedStudent), "", false);
     }
 
     @Override

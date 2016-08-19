@@ -443,6 +443,7 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                                 txtAttendanceDate.setText(formatDate);
                                 txtSession.setText(R.string.SCAttendance_ChoseSubjects);
                                 edtSearch.getText().clear();
+                                selectedTimetable = null;
                                 getAttendanceRollup(LaoSchoolShared.selectedClass.getId(), sendDate);
                             }
                         }
@@ -704,9 +705,62 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                                         break;
                                     }
                             }
-                            String defaultText = "* " + thiz.getContext().getString(R.string.SCCommon_Date) + " " +
+
+                            String defaultText = "";
+                            SharedPreferences prefs = thiz.getContext().getSharedPreferences(
+                                    LaoSchoolShared.SHARED_PREFERENCES_TAG, Context.MODE_PRIVATE);
+                            String language = prefs.getString(Languages.PREFERENCES_NAME, null);
+                            if (language != null && language.equals(Languages.LANGUAGE_LAOS)) {
+                                DateFormat format = new SimpleDateFormat("dd - MM - yyyy", Locale.ENGLISH);
+                                try {
+                                    Date date = format.parse(txtAttendanceDate.getText().toString());
+                                    String day = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(date.getTime());
+                                    switch (day) {
+                                        case "Monday":  day = thiz.getContext().getString(R.string.SCSchedule_Mon);
+                                            break;
+                                        case "Tuesday":  day = thiz.getContext().getString(R.string.SCSchedule_Tue);
+                                            break;
+                                        case "Wednesday":  day = thiz.getContext().getString(R.string.SCSchedule_Wed);
+                                            break;
+                                        case "Thursday":  day = thiz.getContext().getString(R.string.SCSchedule_Thu);
+                                            break;
+                                        case "Friday":  day = thiz.getContext().getString(R.string.SCSchedule_Fri);
+                                            break;
+                                        case "Saturday":  day = thiz.getContext().getString(R.string.SCSchedule_Sat);
+                                            break;
+                                        case "Sunday":  day = thiz.getContext().getString(R.string.SCSchedule_Sun);
+                                            break;
+                                    }
+                                    String header1 = day + ", " + txtAttendanceDate.getText().toString() + "\r\n \r\n";
+                                    String sessionName[] = selectedTimetable.getSession_Name().split("@");
+                                    String header2 = "ຊົ່ວ\u200Bໂມງ\u200Bທີ  "+ sessionName[3]+ " ("+ sessionName[1]+ ")" + "\r\n \r\n";
+                                    String header3 = "ວິ\u200Bຊາ: "+ selectedTimetable.getSubject_Name()+ "\r\n \r\n";
+                                    String header4 = "ອາ\u200Bຈານ: "+ selectedTimetable.getTeacherName()+ "\r\n \r\n";
+                                    defaultText = header1 + header2 + header3 + header4;
+                                } catch (ParseException e) {
+
+                                }
+                            }
+                            else {
+                                DateFormat format = new SimpleDateFormat("dd - MM - yyyy", Locale.ENGLISH);
+                                try {
+                                    Date date = format.parse(txtAttendanceDate.getText().toString());
+                                    String day = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(date.getTime());
+                                    String header1 = day + ", " + txtAttendanceDate.getText().toString() + "\r\n \r\n";
+                                    String sessionName[] = selectedTimetable.getSession_Name().split("@");
+                                    String header2 = "Period "+ sessionName[3]+ " ("+ sessionName[1]+ ")" + "\r\n \r\n";
+                                    String header3 = "Subject: "+ selectedTimetable.getSubject_Name()+ "\r\n \r\n";
+                                    String header4 = "Teacher: "+ selectedTimetable.getTeacherName()+ "\r\n \r\n";
+                                    defaultText = header1 + header2 + header3 + header4;
+                                } catch (ParseException e) {
+
+                                }
+                            }
+
+                           /* String defaultText = "* " + thiz.getContext().getString(R.string.SCCommon_Date) + " " +
                                     txtAttendanceDate.getText().toString() + " * " + "\r\n \r\n" +
-                                    thiz.getContext().getString(R.string.SCAttendance_Subjects) + " " + selectedTimetable.getSubject_Name() + ", \r\n \r\n";
+                                    thiz.getContext().getString(R.string.SCAttendance_Subjects) + " " + selectedTimetable.getSubject_Name() + ", \r\n \r\n";*/
+
                             iScreenAttended.goToCreateMessagefromScreenAttendance(attendanceRollup.getStudents(), selectedStudents, defaultText);
                         } else
                             Toast.makeText(thiz.getContext(), thiz.getContext().getString(R.string.SCCommon_UnknowError), Toast.LENGTH_SHORT).show();
