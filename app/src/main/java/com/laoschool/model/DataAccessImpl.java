@@ -447,7 +447,11 @@ public class DataAccessImpl implements DataAccessInterface {
     }
 
     @Override
-    public void userChangePassword(final String user_id, final String oldpass, final String newpass, final AsyncCallback<String> callback) {
+    public void userChangePassword(final String username, final String oldpass, final String newpass, final AsyncCallback<String> callback) {
+        final String httpPostBody = "{\"username\":\"" + username +"\","
+                + "\"old_pass\":\"" + oldpass + "\","
+                + "\"new_pass\":\"" + newpass + "\"}";
+        Log.i("Service/changePass()", httpPostBody);
         // Request a string response from the provided URL.
         String url = HOST + "users/change_pass";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -492,16 +496,13 @@ public class DataAccessImpl implements DataAccessInterface {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("api_key", api_key);
                 params.put("auth_key", getAuthKey());
+                params.put("Content-Type", "application/json");
                 return params;
             }
 
             @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("username", user_id);
-                params.put("old_pass", oldpass);
-                params.put("new_pass", newpass);
-                return params;
+            public byte[] getBody() throws AuthFailureError {
+                return httpPostBody.getBytes();
             }
         };
 
