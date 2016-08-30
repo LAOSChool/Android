@@ -24,6 +24,8 @@ import com.laoschool.screen.ScreenMessage;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.tools.CircularNetworkImageView;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -156,7 +158,7 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         imgUserAvata.setDefaultImageResId(R.drawable.ic_account_circle_black_36dp);
                     }
 //
-                    txbContent.setText(message.getContent());
+                    txbContent.setText(StringEscapeUtils.unescapeJava(message.getContent()));
                     txbTitle.setText(message.getTitle());
                     txtDateSend.setText(LaoSchoolShared.formatDate(message.getSent_dt(), 0));
 

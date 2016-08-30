@@ -34,6 +34,8 @@ import com.laoschool.model.sqlite.DataAccessMessage;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import java.util.List;
 
 /**
@@ -133,8 +135,8 @@ public class ScreenMessageDetails extends Fragment implements FragmentLifecycle 
                         message.getTo_user_name() :
                         message.getFrom_user_name());
 
-                txtTilteMessageDetails.setText(message.getTitle());
-                txtContentMessageDetails.setText(message.getContent());
+                txtTilteMessageDetails.setText(StringEscapeUtils.unescapeJava(message.getTitle()));
+                txtContentMessageDetails.setText(StringEscapeUtils.unescapeJava(message.getContent()));
                 txtDateMessageDetails.setText(LaoSchoolShared.formatDate(message.getSent_dt(), 2));
                 if (message.getImp_flg() == 0) {
                     imgPiorityMessageDetails.setColorFilter(screenMessage.getActivity().getResources().getColor(R.color.colorPriorityLow));

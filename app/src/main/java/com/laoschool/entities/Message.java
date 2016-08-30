@@ -25,11 +25,11 @@ public class Message implements Parcelable {
 
     int class_id;
 
-    int from_usr_id;
+    int from_user_id;
 
     String from_user_name;
 
-    int to_usr_id;
+    int to_user_id;
 
     String to_user_name;
 
@@ -78,9 +78,9 @@ public class Message implements Parcelable {
         this.id = id;
         this.school_id = school_id;
         this.class_id = class_id;
-        this.from_usr_id = from_usr_id;
+        this.from_user_id = from_usr_id;
         this.from_user_name = from_user_name;
-        this.to_usr_id = to_usr_id;
+        this.to_user_id = to_usr_id;
         this.to_user_name = to_user_name;
         this.content = content;
         this.channel = channel;
@@ -128,19 +128,19 @@ public class Message implements Parcelable {
     }
 
     public int getFrom_usr_id() {
-        return from_usr_id;
+        return from_user_id;
     }
 
     public void setFrom_usr_id(int from_usr_id) {
-        this.from_usr_id = from_usr_id;
+        this.from_user_id = from_usr_id;
     }
 
     public int getTo_usr_id() {
-        return to_usr_id;
+        return to_user_id;
     }
 
     public void setTo_usr_id(int to_usr_id) {
-        this.to_usr_id = to_usr_id;
+        this.to_user_id = to_usr_id;
     }
 
     public String getContent() {
@@ -352,9 +352,9 @@ public class Message implements Parcelable {
         id = in.readInt();
         school_id = in.readInt();
         class_id = in.readInt();
-        from_usr_id = in.readInt();
+        from_user_id = in.readInt();
         from_user_name = in.readString();
-        to_usr_id = in.readInt();
+        to_user_id = in.readInt();
         to_user_name = in.readString();
         content = in.readString();
         channel = in.readInt();
@@ -393,9 +393,9 @@ public class Message implements Parcelable {
         dest.writeInt(id);
         dest.writeInt(school_id);
         dest.writeInt(class_id);
-        dest.writeInt(from_usr_id);
+        dest.writeInt(from_user_id);
         dest.writeString(from_user_name);
-        dest.writeInt(to_usr_id);
+        dest.writeInt(to_user_id);
         dest.writeString(to_user_name);
         dest.writeString(content);
         dest.writeInt(channel);
@@ -446,10 +446,10 @@ public class Message implements Parcelable {
         public static final String COLUMN_NAME_SCHOOL_ID = "school_id";
         public static final String COLUMN_NAME_CLASS_ID = "class_id";
 
-        public static final String COLUMN_NAME_FROM_USR_ID = "from_usr_id";
+        public static final String COLUMN_NAME_FROM_USR_ID = "from_user_id";
         public static final String COLUMN_NAME_FROM_USER_NAME = "from_user_name";
 
-        public static final String COLUMN_NAME_TO_USR_ID = "to_usr_id";
+        public static final String COLUMN_NAME_TO_USR_ID = "to_user_id";
         public static final String COLUMN_NAME_TO_USER_NAME = "to_user_name";
 
         public static final String COLUMN_NAME_CONTENT = "content";
@@ -559,9 +559,9 @@ public class Message implements Parcelable {
                 "id=" + id +
                 ", school_id=" + school_id +
                 ", class_id=" + class_id +
-                ", from_usr_id=" + from_usr_id +
+                ", from_usr_id=" + from_user_id +
                 ", from_user_name='" + from_user_name + '\'' +
-                ", to_usr_id=" + to_usr_id +
+                ", to_usr_id=" + to_user_id +
                 ", to_user_name='" + to_user_name + '\'' +
                 ", content='" + content + '\'' +
                 ", channel=" + channel +
@@ -588,8 +588,8 @@ public class Message implements Parcelable {
                 ", class_id=" + class_id +
                 ", title='" + title +
                 ", content='" + content +
-                ", from_usr_id=" + from_usr_id +
-                ", to_usr_id=" + to_usr_id +
+                ", from_usr_id=" + from_user_id +
+                ", to_usr_id=" + to_user_id +
                 '}';
     }
 

@@ -22,6 +22,8 @@ import com.laoschool.model.sqlite.DataAccessMessage;
 import com.laoschool.screen.ScreenAnnouncements;
 import com.laoschool.shared.LaoSchoolShared;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import java.util.List;
 
 /**
@@ -125,7 +127,7 @@ public class ListNotificationAdapter extends RecyclerView.Adapter<RecyclerView.V
                         imgStar.setColorFilter(context.getResources().getColor(R.color.colorPriorityHigh));
                     }
                     imgUserAvata.setDefaultImageResId(R.drawable.ic_account_circle_black_36dp);
-                    txbContent.setText(message.getContent());
+                    txbContent.setText(StringEscapeUtils.unescapeJava(message.getContent()));
                     txbTitle.setText(message.getTitle());
                     txtDateSend.setText(LaoSchoolShared.formatDate(message.getSent_dt(), 0));
 

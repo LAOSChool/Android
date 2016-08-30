@@ -40,6 +40,7 @@ import com.laoschool.entities.TimeTable;
 import com.laoschool.entities.User;
 import com.laoschool.shared.LaoSchoolShared;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
@@ -56,6 +57,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -448,7 +450,7 @@ public class DataAccessImpl implements DataAccessInterface {
 
     @Override
     public void userChangePassword(final String username, final String oldpass, final String newpass, final AsyncCallback<String> callback) {
-        final String httpPostBody = "{\"username\":\"" + username +"\","
+        final String httpPostBody = "{\"username\":\"" + username + "\","
                 + "\"old_pass\":\"" + oldpass + "\","
                 + "\"new_pass\":\"" + newpass + "\"}";
         Log.i("Service/changePass()", httpPostBody);
@@ -1366,14 +1368,15 @@ public class DataAccessImpl implements DataAccessInterface {
         jsonObject.addProperty("school_id", message.getSchool_id());
         jsonObject.addProperty("class_id", message.getClass_id());
         //jsonObject.addProperty("title", message.getTitle());
-        jsonObject.addProperty("content", message.getContent());
-        jsonObject.addProperty("from_usr_id", message.getFrom_usr_id());
-        jsonObject.addProperty("to_usr_id", message.getTo_usr_id());
+        jsonObject.addProperty("content", StringEscapeUtils.escapeJava(message.getContent()));
+
+        jsonObject.addProperty("from_user_id", message.getFrom_usr_id());
+        jsonObject.addProperty("to_user_id", message.getTo_usr_id());
         if (message.getCc_list() != null && !message.getCc_list().isEmpty())
             jsonObject.addProperty("cc_list", message.getCc_list());
         Gson gson = new Gson();
         String jsonString = gson.toJson(jsonObject);
-        Log.d("", "makeMessagetoJson():" + jsonString);
+        Log.d("makeMessagetoJson()", "JSON:" + jsonString);
         return jsonString;
     }
 
@@ -1724,8 +1727,8 @@ public class DataAccessImpl implements DataAccessInterface {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("school_id", message.getSchool_id());
         jsonObject.addProperty("class_id", message.getClass_id());
-        jsonObject.addProperty("title", String.valueOf(message.getTitle()));
-        jsonObject.addProperty("content", String.valueOf(message.getContent()));
+        jsonObject.addProperty("title", String.valueOf(StringEscapeUtils.escapeJava(message.getTitle())));
+        jsonObject.addProperty("content", String.valueOf(StringEscapeUtils.escapeJava(message.getContent())));
         jsonObject.addProperty("imp_flg", message.getImp_flg());
         jsonObject.addProperty("dest_type", 1);
         Gson gson = new Gson();
