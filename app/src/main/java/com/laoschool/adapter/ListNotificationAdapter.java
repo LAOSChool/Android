@@ -128,7 +128,7 @@ public class ListNotificationAdapter extends RecyclerView.Adapter<RecyclerView.V
                     }
                     imgUserAvata.setDefaultImageResId(R.drawable.ic_account_circle_black_36dp);
                     txbContent.setText(StringEscapeUtils.unescapeJava(message.getContent()));
-                    txbTitle.setText(message.getTitle());
+                    txbTitle.setText(StringEscapeUtils.unescapeJava(message.getTitle()));
                     txtDateSend.setText(LaoSchoolShared.formatDate(message.getSent_dt(), 0));
 
                     view.setOnClickListener(new View.OnClickListener() {
