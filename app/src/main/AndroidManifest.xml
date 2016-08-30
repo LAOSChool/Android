@@ -10,7 +10,7 @@
         android:name=".LaoSchoolApplication"
         android:allowBackup="true"
         android:supportsRtl="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_logo"
         android:label="@string/SCCommon_AppName"
         android:theme="@style/AppTheme">
         <activity
