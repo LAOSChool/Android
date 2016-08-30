@@ -20,6 +20,8 @@ import com.laoschool.entities.Message;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -98,7 +100,7 @@ public class ScreenAnnouncementsDetails extends Fragment implements FragmentLife
                 mFirebaseAnalytics.logEvent(TAG, bundle);
 
                 //set Title Notification
-                ((HomeActivity) getActivity()).getSupportActionBar().setTitle(notification.getTitle());
+                ((HomeActivity) getActivity()).getSupportActionBar().setTitle(StringEscapeUtils.unescapeJava(notification.getTitle()));
 
                 //Log.d(TAG, "Size image:" + notification.getNotifyImages().size());
                 NotificationDetailsAdapter notificationDetailsAdapter = new NotificationDetailsAdapter(getActivity(), notification);

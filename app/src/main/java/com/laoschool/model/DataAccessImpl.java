@@ -1604,7 +1604,7 @@ public class DataAccessImpl implements DataAccessInterface {
                     // byte ptext[] = image.getCaption().getBytes();
                     // String caption_utf8 = new String(ptext, Charset.forName("UTF-8"));
                     // entityBuilder.addPart("caption", new StringBody(caption_utf8, ContentType.TEXT_PLAIN));
-                    entityBuilder.addTextBody("caption", image.getCaption(), contentType);
+                    entityBuilder.addTextBody("caption", StringEscapeUtils.escapeJava(image.getCaption()), contentType);
                 } else {
                     // entityBuilder.addPart("caption", new StringBody("No caption", ContentType.TEXT_PLAIN));
                     entityBuilder.addTextBody("caption", "No caption", contentType);

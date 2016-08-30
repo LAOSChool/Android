@@ -141,7 +141,7 @@ public class NotificationDetailsAdapter extends RecyclerView.Adapter<Notificatio
                 imgDownloadImage.setColorFilter(context.getResources().getColor(R.color.colorDefault));
                 imgPhoto.setColorFilter(context.getResources().getColor(R.color.colorPrimary));
 
-                txtImageCaption.setText(image.getCaption());
+                txtImageCaption.setText(StringEscapeUtils.unescapeJava(image.getCaption()));
                 if (image.getLocal_file_url() == null) {
                     imgDownloadImage.setVisibility(View.VISIBLE);
                     //load image form url
