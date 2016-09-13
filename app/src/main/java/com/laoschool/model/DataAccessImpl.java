@@ -1459,7 +1459,7 @@ public class DataAccessImpl implements DataAccessInterface {
     @Override
     public void getNotification(final AsyncCallback<List<Message>> callback) {
         // Request a string response from the provided URL.
-        String url = HOST + "notifies?filter_class_id=" + LaoSchoolShared.myProfile.getEclass().getId() + "&filter_to_user_id" + LaoSchoolShared.myProfile.getId();
+        String url = HOST + "notifies?filter_to_user_id" + LaoSchoolShared.myProfile.getId();
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url.trim(),
                 new Response.Listener<String>() {
                     @Override
@@ -1506,7 +1506,7 @@ public class DataAccessImpl implements DataAccessInterface {
     @Override
     public void getNotification(int filter_from_id, final AsyncCallback<List<Message>> callback) {
         // Request a string response from the provided URL.
-        String url = HOST + "notifies?filter_class_id=" + LaoSchoolShared.myProfile.getEclass().getId() + "&filter_to_user_id=" + LaoSchoolShared.myProfile.getId() + "&filter_from_id=" + filter_from_id;
+        String url = HOST + "notifies?filter_to_user_id=" + LaoSchoolShared.myProfile.getId() + "&filter_from_id=" + filter_from_id;
         Log.d(TAG, "url:" + url);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url.trim(),
                 new Response.Listener<String>() {
