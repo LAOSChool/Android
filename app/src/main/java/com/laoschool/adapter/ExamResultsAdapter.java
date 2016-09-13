@@ -26,10 +26,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * Created by Hue on 6/30/2016.
@@ -89,6 +87,7 @@ public class ExamResultsAdapter extends RecyclerView.Adapter<ExamResultsAdapter.
                     recyclerView.setLayoutManager(gridLayoutManager);
 
                     int currentTerm = LaoSchoolShared.myProfile.getEclass().getTerm();
+                    Log.d(TAG, "currentTerm:" + currentTerm);
                     EditExamAdapter scoresAdapter = new EditExamAdapter(context, currentTerm, examResult);
                     recyclerView.setAdapter(scoresAdapter);
                     recyclerView.setNestedScrollingEnabled(false);
@@ -157,7 +156,7 @@ public class ExamResultsAdapter extends RecyclerView.Adapter<ExamResultsAdapter.
 
     class EditExamAdapter extends RecyclerView.Adapter<EditExamAdapter.ViewHolder> {
         private final String TAG = EditExamAdapter.class.getSimpleName();
-        private final int termId;
+        private final int mTermId;
         Context context;
         List<String> str_score = new ArrayList<>();
         List<String> str_score_name = new ArrayList<>();
@@ -166,8 +165,8 @@ public class ExamResultsAdapter extends RecyclerView.Adapter<ExamResultsAdapter.
         public EditExamAdapter(Context context, int termId, ExamResult examResult) {
             this.context = context;
             this.examResult = examResult;
-            this.termId = termId;
-            if (termId == 2) {
+            this.mTermId = termId;
+            if (this.mTermId == 2) {
                 str_score.add(examResult.getM1());
                 str_score.add(examResult.getM2());
                 str_score.add(examResult.getM3());
@@ -176,20 +175,23 @@ public class ExamResultsAdapter extends RecyclerView.Adapter<ExamResultsAdapter.
 
                 str_score.add(examResult.getM6());
                 str_score.add(examResult.getM7());
+                str_score.add(examResult.getM15());
                 str_score_name.addAll(Arrays.asList(context.getResources().getStringArray(R.array.exam_name_term_2)));
-            } else if (termId == 1) {
+            } else if (this.mTermId == 1) {
                 str_score.add(examResult.getM8());
                 str_score.add(examResult.getM9());
                 str_score.add(examResult.getM10());
-
                 str_score.add(examResult.getM11());
+
                 str_score.add(examResult.getM12());
                 str_score.add(examResult.getM13());
                 str_score.add(examResult.getM14());
-                str_score.add(examResult.getM15());
+                //str_score.add(examResult.getM15());
 
                 str_score_name.addAll(Arrays.asList(context.getResources().getStringArray(R.array.exam_name_term_1)));
             }
+
+            Log.d(TAG, "Score name:" + str_score_name.size());
         }
 
 
@@ -202,61 +204,70 @@ public class ExamResultsAdapter extends RecyclerView.Adapter<ExamResultsAdapter.
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, final int position) {
-            View view = holder.view;
-            String score = str_score.get(position);
+            try {
+                View view = holder.view;
+                String score = str_score.get(position);
 
-            final TextView lbScoreMonth = ((TextView) (view.findViewById(R.id.lbScoreMonth)));
-            final TextView lbScore = ((TextView) (view.findViewById(R.id.lbScore)));
-            lbScoreMonth.setText(str_score_name.get(position));
-            if (position == 7) {
-                view.setBackgroundResource(R.drawable.bg_score_avg_year);
-            } else if (position == 6) {
-                view.setBackgroundResource(R.drawable.bg_score_avg_term);
-            } else if (position == 5) {
-                view.setBackgroundResource(R.drawable.bg_score_avg_month);
-            } else if (position == 4) {
-                view.setBackgroundResource(R.drawable.bg_score_final);
-            }
-            String sresult = "";
-            String notice = "";
-            String exam_dt = "";
-            if (score != null && !score.trim().isEmpty()) {
-                //{“sresult” = “10”;
+                final TextView lbScoreMonth = ((TextView) (view.findViewById(R.id.lbScoreMonth)));
+                final TextView lbScore = ((TextView) (view.findViewById(R.id.lbScore)));
+                Log.d(TAG, "position:" + position);
+                if (position <= str_score_name.size()) {
+                    lbScoreMonth.setText(str_score_name.get(position));
+                }
+                if (position == 7) {
+                    view.setBackgroundResource(R.drawable.bg_score_avg_year);
+                } else if (position == 6) {
+                    view.setBackgroundResource(R.drawable.bg_score_avg_term);
+                } else if (position == 5) {
+                    view.setBackgroundResource(R.drawable.bg_score_avg_month);
+                } else if (position == 4) {
+                    view.setBackgroundResource(R.drawable.bg_score_final);
+                }
+                String sresult = "";
+                String notice = "";
+                String exam_dt = "";
+                if (score != null && !score.trim().isEmpty()) {
+                    //{“sresult” = “10”;
 //                “notice” = “xxxxxx”;
 //                “exam_dt” = “2016-09-09”}
-                try {
-                    JSONObject scoreObj = new JSONObject(score);
-                    sresult = scoreObj.getString("sresult");
-                    notice = scoreObj.getString("notice");
-                    exam_dt = scoreObj.getString("exam_dt");
-                    lbScore.setText(sresult);
-                    examResult.setSresult(sresult);
-                    examResult.setNotice(notice);
-                    examResult.setExam_dt(exam_dt);
-                } catch (JSONException e) {
-                    lbScore.setText(score);
-                    e.printStackTrace();
-                }
-            } else {
-                lbScore.setText("");
-            }
-            final String finalNotice = notice;
-            final String finalExam_dt = exam_dt;
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    examResult.setSresult(lbScore.getText().toString());
-                    examResult.setExam_name(lbScoreMonth.getText().toString());
-                    examResult.setNotice(finalNotice);
-                    examResult.setExam_dt(finalExam_dt);
-                    if (position < 4 || position == 5) {
-                        DialogInputExamResultsForStudent dialogInputExamResultsForStudent = new DialogInputExamResultsForStudent(screenExamResults, subjectId, termId, position, examResult);
-                        dialogInputExamResultsForStudent.show(screenExamResults.getActivity().getFragmentManager(), DialogInputExamResultsForStudent.TAG);
-                    } else {
-                        _showDetailsExamResults(examResult);
+                    try {
+                        JSONObject scoreObj = new JSONObject(score);
+                        sresult = scoreObj.getString("sresult");
+                        notice = scoreObj.getString("notice");
+                        exam_dt = scoreObj.getString("exam_dt");
+                        lbScore.setText(sresult);
+                        examResult.setSresult(sresult);
+                        examResult.setNotice(notice);
+                        examResult.setExam_dt(exam_dt);
+                    } catch (JSONException e) {
+                        lbScore.setText(score);
+                        e.printStackTrace();
                     }
+                } else {
+                    lbScore.setText("");
                 }
-            });
+                final String finalNotice = notice;
+                final String finalExam_dt = exam_dt;
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        examResult.setSresult(lbScore.getText().toString());
+                        examResult.setExam_name(lbScoreMonth.getText().toString());
+                        examResult.setNotice(finalNotice);
+                        examResult.setExam_dt(finalExam_dt);
+                        if (position < 4 || position == 5) {
+                            DialogInputExamResultsForStudent dialogInputExamResultsForStudent = new DialogInputExamResultsForStudent(screenExamResults, subjectId, mTermId, position, examResult);
+                            dialogInputExamResultsForStudent.show(screenExamResults.getActivity().getFragmentManager(), DialogInputExamResultsForStudent.TAG);
+                        } else {
+                            _showDetailsExamResults(examResult);
+                        }
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                Log.d(TAG, "Rende adapter");
+            }
         }
 
         private void _showDetailsExamResults(ExamResult examResult) {
