@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">@color/colorLaosRed</color>
+    <color name="colorPrimary">#3F52A5</color>
     <!--#3F51B5-->
-    <color name="colorPrimaryDark">#B71C1C</color>
+    <color name="colorPrimaryDark">#3F52A5</color>
     <color name="colorAccent">#2196f3</color>
     <color name="background_home_screen_tab">@android:color/white</color>
     <color name="text_title_tab_indicator">@android:color/darker_gray</color>
@@ -11,13 +11,13 @@
     <color name="color_tab_selected">#ffffff</color>
     <color name="color_tab_unselected">@android:color/white</color>
 
-    <color name="color_text_tab_selected">#ce1126</color>
+    <color name="color_text_tab_selected">@color/colorPrimary</color>
     <color name="color_text_tab_unselected">@color/color_icon_tab_unselected</color>
 
-    <color name="color_icon_tab_selected">#ce1126</color>
+    <color name="color_icon_tab_selected">@color/colorPrimary</color>
     <color name="color_icon_tab_unselected">#424242</color>
 
-    <color name="textColorSubHeader">@color/colorLaosBlue</color>k
+    <color name="textColorSubHeader">@color/colorLaosBlue</color>
     <color name="colorLaosRed">#B71C1C</color>
     <color name="colorLaosRed1">#ce1126</color>
     <color name="colorLaosBlue">#002868</color>
@@ -37,18 +37,18 @@
     <color name="fragmentBackground">#E0E0E0</color>
 
     <color name="black_overlay">#66000000</color>
-
-    <color name="color_bg_un_read">#FFF9C4</color>
-    <color name="color_bg_read">#eeeeee</color>
+    <!--#FFF9C4-->
+    <color name="color_bg_un_read">#E6E6F2</color>
+    <color name="color_bg_read">#FFF</color>
 
     <color name="colorRead">#808080</color>
     <color name="colorUnread">@android:color/black</color>
-    <color name="colorSenderUnread">#2196F3</color>
-    <color name="colorDateUnread">#2196F3</color>
+    <color name="colorSenderUnread">@color/colorPrimary</color>
+    <color name="colorDateUnread">@color/colorPrimary</color>
 
     <color name="colorPriorityHigh">#00A261</color>
     <color name="colorPriorityLow">#808080</color>
-    <color name="colorTitleUnread">#2196F3</color>
+    <color name="colorTitleUnread">@color/colorPrimary</color>
     <color name="colorAttendanceNoReason">#D32F2F</color>
     <color name="colorAttendanceHasReason">#00A261</color>
     <color name="colorIconOnFragment">#757575</color>
@@ -62,9 +62,10 @@
     <color name="colorScoreAvgYear">#B71C1C</color>
     <color name="colorPrimarySearch">#BDBDBD</color>
     <color name="colorPrimaryDarkSearch">#9E9E9E</color>
-    <color name="colorBackgroundFilter">#00A261</color>
+    <color name="colorBackgroundFilter">#8F262A</color>
 
     <color name="colorTextUnSelected">#BDBDBD</color>
+    <color name="colorIndicatorColor">#2196F3</color>
 
 
 </resources>

@@ -17,11 +17,11 @@
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:background="@color/colorLaosRed"
+            android:background="@color/colorPrimary"
             android:textColor="@color/abc_primary_text_disable_only_material_dark"
             app:pstsDividerColor="#ffffff"
 
-            app:pstsIndicatorColor="#7E57C2"
+            app:pstsIndicatorColor="@color/colorIndicatorColor"
             app:pstsIndicatorHeight="3dp"
             app:pstsShouldExpand="true"
             app:pstsTextAllCaps="false" />

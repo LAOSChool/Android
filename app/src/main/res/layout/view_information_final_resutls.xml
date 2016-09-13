@@ -17,7 +17,7 @@
         android:id="@+id/mDataTotalFinalResults"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorAttendanceHasReason"
+        android:background="@color/colorBackgroundFilter"
         android:orientation="vertical">
 
         <RelativeLayout

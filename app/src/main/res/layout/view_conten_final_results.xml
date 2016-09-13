@@ -25,7 +25,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="5dp"
                 android:src="@drawable/ic_timer_black_48dp"
-                android:tint="@color/colorAttendanceHasReason" />
+                android:tint="@color/colorPrimary" />
 
             <TextView
                 android:id="@+id/textView68"

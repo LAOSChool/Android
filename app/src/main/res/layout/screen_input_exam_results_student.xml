@@ -26,13 +26,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|top"
-                android:background="#FF00A261"
+                android:background="@color/colorBackgroundFilter"
                 android:orientation="vertical">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:background="#00A261"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp">
 
@@ -69,7 +68,6 @@
                     android:id="@+id/mSelectedSubject"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
-                    android:background="#00A261"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp">
 
@@ -207,7 +205,7 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_input_white_24dp"
-                android:tint="@color/colorPriorityHigh" />
+                android:tint="@color/colorPrimary" />
 
             <TextView
                 android:id="@+id/textView76"

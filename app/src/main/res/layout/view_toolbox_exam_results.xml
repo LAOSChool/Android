@@ -2,7 +2,7 @@
 <RelativeLayout android:id="@+id/mToolBox"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#00A261"
+    android:background="@color/colorBackgroundFilter"
     android:orientation="vertical"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"

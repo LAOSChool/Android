@@ -7,14 +7,14 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/colorLaosRed"
+        android:background="@color/colorPrimary"
         android:id="@+id/header">
         <ImageButton
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:id="@+id/btnBack"
             android:src="@drawable/ic_arrow_back_white_24dp"
-            android:background="@color/colorLaosRed"
+            android:background="@color/colorPrimary"
             android:layout_alignParentBottom="true"
             android:layout_alignParentTop="true" />
 

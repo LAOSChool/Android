@@ -1,0 +1,35 @@
+Applications Memory Usage (kB):
+Uptime: 48553539 Realtime: 154486227
+
+** MEMINFO in pid 12188 [com.laoschool] **
+                   Pss  Private  Private  Swapped     Heap     Heap     Heap
+                 Total    Dirty    Clean    Dirty     Size    Alloc     Free
+                ------   ------   ------   ------   ------   ------   ------
+  Native Heap     4770     4744        0     3476    11031    11031    15592
+  Dalvik Heap     5942     5776        0    14128    26215    21570     4645
+ Dalvik Other      370      360        0        0                           
+        Stack      204      204        0        0                           
+    Other dev      392      388        4        0                           
+     .so mmap      796      352      164     1512                           
+    .apk mmap      209        0       72        0                           
+    .ttf mmap      394        0      388        0                           
+    .dex mmap      136        0      132        0                           
+    code mmap      715        0      100        0                           
+   image mmap      967      700       80      664                           
+   Other mmap     4441        4     4288        0                           
+     Graphics     8640     8640        0        0                           
+      Unknown      156      156        0       84                           
+        TOTAL    28132    21324     5228    19864    37246    32601    20237
+ 
+ Objects
+               Views:        9         ViewRootImpl:        1
+         AppContexts:        4           Activities:        2
+              Assets:        3        AssetManagers:        3
+       Local Binders:       10        Proxy Binders:       21
+    Death Recipients:        1
+     OpenSSL Sockets:        1
+ 
+ SQL
+         MEMORY_USED:        0
+  PAGECACHE_OVERFLOW:        0          MALLOC_SIZE:        0
+ 

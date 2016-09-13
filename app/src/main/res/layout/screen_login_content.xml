@@ -5,13 +5,13 @@
     android:layout_height="match_parent"
     tools:context="com.laoschool.screen.login.ScreenLoginMain"
     android:id="@+id/container"
-    android:background="@color/colorLaosRed">
+    android:background="@color/colorPrimary">
 
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/scrollView"
-        android:background="@color/colorLaosRed"
+        android:background="@color/colorPrimary"
         android:visibility="gone">
     </ScrollView>
 
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:descendantFocusability="beforeDescendants"
-        android:background="@color/colorLaosRed"
+        android:background="@color/colorPrimary"
         android:paddingTop="0dp"
         android:paddingBottom="80dp"
         android:id="@+id/layoutContent"
@@ -68,7 +68,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 android:clickable="true"
-                android:background="@color/colorLaosRed" />
+                android:background="@color/colorPrimary"
+                android:tint="#FFF" />
         </RelativeLayout>
 
         <EditText
