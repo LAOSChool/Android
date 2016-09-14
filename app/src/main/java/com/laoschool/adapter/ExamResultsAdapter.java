@@ -138,14 +138,13 @@ public class ExamResultsAdapter extends RecyclerView.Adapter<ExamResultsAdapter.
 
 
     public void filter(String charText) {
-
         charText = charText.toLowerCase(Locale.getDefault());
         examResults.clear();
         if (charText.length() == 0) {
             examResults.addAll(origin_examResults);
         } else {
             for (ExamResult examResult : origin_examResults) {
-                String studentName = examResult.getStudent_name();
+                String studentName = examResult.getStd_fullname();
                 if (charText.length() != 0 && studentName.toLowerCase(Locale.getDefault()).contains(charText)) {
                     examResults.add(examResult);
                 }
@@ -166,18 +165,18 @@ public class ExamResultsAdapter extends RecyclerView.Adapter<ExamResultsAdapter.
             this.context = context;
             this.examResult = examResult;
             this.mTermId = termId;
-            if (this.mTermId == 2) {
+            if (this.mTermId == 1) {
                 str_score.add(examResult.getM1());
                 str_score.add(examResult.getM2());
                 str_score.add(examResult.getM3());
                 str_score.add(examResult.getM4());
-                str_score.add(examResult.getM5());
 
+                str_score.add(examResult.getM5());
                 str_score.add(examResult.getM6());
                 str_score.add(examResult.getM7());
-                str_score.add(examResult.getM15());
-                str_score_name.addAll(Arrays.asList(context.getResources().getStringArray(R.array.exam_name_term_2)));
-            } else if (this.mTermId == 1) {
+
+                str_score_name.addAll(Arrays.asList(context.getResources().getStringArray(R.array.exam_name_term_1)));
+            } else if (this.mTermId == 2) {
                 str_score.add(examResult.getM8());
                 str_score.add(examResult.getM9());
                 str_score.add(examResult.getM10());
@@ -186,9 +185,9 @@ public class ExamResultsAdapter extends RecyclerView.Adapter<ExamResultsAdapter.
                 str_score.add(examResult.getM12());
                 str_score.add(examResult.getM13());
                 str_score.add(examResult.getM14());
-                //str_score.add(examResult.getM15());
+                str_score.add(examResult.getM15());
 
-                str_score_name.addAll(Arrays.asList(context.getResources().getStringArray(R.array.exam_name_term_1)));
+                str_score_name.addAll(Arrays.asList(context.getResources().getStringArray(R.array.exam_name_term_2)));
             }
 
             Log.d(TAG, "Score name:" + str_score_name.size());

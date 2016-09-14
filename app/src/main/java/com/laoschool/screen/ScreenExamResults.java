@@ -84,7 +84,7 @@ public class ScreenExamResults extends Fragment
     private View mSugesstionSelectedSubject;
     private MenuItem itemSearch;
     private SearchView mSearch;
-    private ExamResultsAdapter examResultsAdapter;
+    private ExamResultsAdapter mExamResultsAdapter;
     private SearchView mSearchExamResults;
     private AppBarLayout appFilterBar;
     private CollapsingToolbarLayout collapsing;
@@ -95,6 +95,7 @@ public class ScreenExamResults extends Fragment
 
     private AppBarStateChangeListener.State appBarState = AppBarStateChangeListener.State.EXPANDED;
     private FirebaseAnalytics mFirebaseAnalytics;
+    private MenuItem mMenuGotoInputExamResuls;
 
 
     public ScreenExamResults() {
@@ -171,7 +172,11 @@ public class ScreenExamResults extends Fragment
         int id = item.getItemId();
         switch (id) {
             case R.id.action_input_exam_results:
-                iScreenExamResults.gotoScreenInputExamResults();
+                try {
+                    iScreenExamResults.gotoScreenInputExamResults();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 return true;
 
             case R.id.search:
@@ -200,10 +205,13 @@ public class ScreenExamResults extends Fragment
             if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
                 menu.clear();
                 inflater.inflate(R.menu.menu_screen_exam_results_teacher, menu);
+                mMenuGotoInputExamResuls = menu.findItem(R.id.action_input_exam_results);
                 itemSearch = menu.findItem(R.id.search);
                 mSearchExamResults = (SearchView) itemSearch.getActionView();
                 mSearchExamResults.setQueryHint(context.getString(R.string.SCCommon_Search));
                 onExpanCollapseSearch();
+
+                mMenuGotoInputExamResuls.setVisible(true);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -254,8 +262,8 @@ public class ScreenExamResults extends Fragment
             @Override
             public boolean onQueryTextChange(String query) {
                 Log.d(TAG, "query:" + query);
-                if (examResultsAdapter != null) {
-                    examResultsAdapter.filter(query);
+                if (mExamResultsAdapter != null) {
+                    mExamResultsAdapter.filter(query);
                 }
                 return true;
             }
@@ -678,6 +686,7 @@ public class ScreenExamResults extends Fragment
                     handlerSelectedSubject(result);
                     alreadyExecuted = true;
                     showProgressLoading(false);
+                    mMenuGotoInputExamResuls.setVisible(true);
                 }
 
 
@@ -847,8 +856,9 @@ public class ScreenExamResults extends Fragment
 
     private void fillDataForListResultFilter(int subjectId, RecyclerView mResultListStudentBySuject, List<ExamResult> result) {
         Collections.sort(result);
-        examResultsAdapter = new ExamResultsAdapter(this, subjectId, result);
-        mResultListStudentBySuject.setAdapter(examResultsAdapter);
+        mExamResultsAdapter = new ExamResultsAdapter(this, subjectId, result);
+
+        mResultListStudentBySuject.setAdapter(mExamResultsAdapter);
         //hide loading
         showProgressLoading(false);
 
@@ -861,7 +871,7 @@ public class ScreenExamResults extends Fragment
             @Override
             public boolean onQueryTextChange(String query) {
                 Log.d(TAG, "query:" + query);
-                examResultsAdapter.filter(query);
+                mExamResultsAdapter.filter(query);
                 return true;
             }
         });
@@ -956,7 +966,7 @@ public class ScreenExamResults extends Fragment
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
             recyclerView.setLayoutManager(linearLayoutManager);
 
-            //define adapter
+            //define mAdapte
             myExamResultsAdapter = new MyExamResultsAdapter(this, position, f_results);
             recyclerView.setAdapter(myExamResultsAdapter);
 

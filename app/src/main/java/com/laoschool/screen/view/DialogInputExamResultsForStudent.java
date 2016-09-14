@@ -185,7 +185,7 @@ public class DialogInputExamResultsForStudent extends DialogFragment implements 
 
     private void inputExamResults(ExamResult examResult) {
         String score = makeJsonScore(examResult.getSresult(), examResult.getNotice());
-        if (termId == 2) {
+        if (termId == 1) {
             switch (position) {
                 case 0:
                     Log.d(TAG, "inputExamResults() - input term " + termId + " for M1 score:" + score);
@@ -208,7 +208,7 @@ public class DialogInputExamResultsForStudent extends DialogFragment implements 
                     examResult.setM6(score);
                     break;
             }
-        } else if (termId == 1) {
+        } else if (termId == 2) {
             switch (position) {
                 case 0:
                     Log.d(TAG, "inputExamResults() - input term " + termId + " for M8 score:" + score);

@@ -69,12 +69,12 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
     private Dialog dialogSelectedInputTypeDate;
 
     //InputExamResultsAdapter resultsforClassbySubjectAdapter;
-    InputExamResultsbyTypeAdapter adapter;
+    private InputExamResultsbyTypeAdapter mAdapter;
     public int selectedSubjectId = -1;
     public int selectedExamTypeId = -1;
     public boolean onchange = false;
 
-    private List<ExamType> examType = new ArrayList<>();
+    private List<ExamType> mExamTypes = new ArrayList<>();
     private List<ExamResult> examListBySubjectId = new ArrayList<>();
 
     AppBarLayout input_exam_appbar;
@@ -89,6 +89,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
     private MenuItem itemSearch;
     private SearchView mSearch;
     private MenuItem itemSubmit;
+    private ExamType mTypeSelected;
 
 
     interface IScreenInputExamResults {
@@ -225,7 +226,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
                 mExpanSearch.setVisibility(View.VISIBLE);
                 setExpandedAppBar(true, true);
                 //resultsforClassbySubjectAdapter.filter("");
-                adapter.filter("");
+                mAdapter.filter("");
                 ((HomeActivity) getActivity()).cancelSearch();
                 return true;
             }
@@ -243,7 +244,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
             public boolean onQueryTextChange(String query) {
                 if (!query.trim().isEmpty()) {
                     //resultsforClassbySubjectAdapter.filter(query);
-                    adapter.filter(query);
+                    mAdapter.filter(query);
                 }
                 return true;
             }
@@ -305,7 +306,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         LaoSchoolSingleton.getInstance().getDataAccessService().getExamType(classId, new AsyncCallback<List<ExamType>>() {
             @Override
             public void onSuccess(List<ExamType> result) {
-                examType.addAll(result);
+                //mExamTypes.addAll(result);
                 exam_months = new ArrayList<>();
                 List<Integer> integers = new ArrayList<>();
                 for (ExamType examType : result) {
@@ -313,10 +314,11 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
                         exam_months.add(examType.getEx_name());
                         Log.d(TAG, "exam_type:" + examType.toString());
                         integers.add(examType.getId());
+                        mExamTypes.add(examType);
                     }
                 }
                 if (exam_months.size() > 0) {
-                    dialogSelectedInputTypeDate = makeDialogSelectdInputExamType(exam_months, integers);
+                    dialogSelectedInputTypeDate = makeDialogSelectdInputExamType(exam_months, integers, mExamTypes);
                     onSelectedInputExamType();
                 } else {
 
@@ -432,10 +434,10 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 //if (resultsforClassbySubjectAdapter.getInputExamResults().size() > 0) {
-                if (adapter.getInputExamResults().size() > 0) {
-                    Log.d(TAG, "-input type exam size:" + adapter.getInputExamResults().size());
+                if (mAdapter.getInputExamResults().size() > 0) {
+                    Log.d(TAG, "-input type exam size:" + mAdapter.getInputExamResults().size());
                     // List<ExamResult> examResults = resultsforClassbySubjectAdapter.getInputExamResults();
-                    List<ExamResult> examResults = adapter.getInputExamResults();
+                    List<ExamResult> examResults = mAdapter.getInputExamResults();
                     inputExamResults(examResults);
                 } else {
 
@@ -450,7 +452,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
     }
 
     private void inputExamResults(final List<ExamResult> examResults) {
-
+        Log.d(TAG, "type:" + mTypeSelected.toString());
         int teacherId = LaoSchoolShared.myProfile.getId();
         Log.d(TAG, "teacherId:" + teacherId);
         progressDialog.show();
@@ -465,37 +467,73 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
             score.setStudent_id(examResult.getStudent_id());
             score.setSubject_id(examResult.getSubject_id());
 
-            switch (selectedExamTypeId) {
-                case 1:
-                    score.setM1(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
-                    break;
-                case 2:
-                    score.setM2(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
-                    break;
-                case 3:
-                    score.setM3(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
-                    break;
-                case 4:
-                    score.setM4(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
-                    break;
-                case 6:
-                    score.setM6(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
-                    break;
-                case 7:
-                    score.setM7(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
-                    break;
-                case 8:
-                    score.setM8(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
-                    break;
-                case 9:
-                    score.setM9(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
-                    break;
-                case 10:
-                    score.setM10(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
-                    break;
-                case 12:
-                    score.setM12(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
-                    break;
+//            switch (selectedExamTypeId) {
+//                case 1:
+//                    score.setM1(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
+//                    break;
+//                case 2:
+//                    score.setM2(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
+//                    break;
+//                case 3:
+//                    score.setM3(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
+//                    break;
+//                case 4:
+//                    score.setM4(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
+//                    break;
+//                case 6:
+//                    score.setM6(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
+//                    break;
+//                case 7:
+//                    score.setM7(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
+//                    break;
+//                case 8:
+//                    score.setM8(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
+//                    break;
+//                case 9:
+//                    score.setM9(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
+//                    break;
+//                case 10:
+//                    score.setM10(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
+//                    break;
+//                case 12:
+//                    score.setM12(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
+//                    break;
+//            }
+            if (mTypeSelected.getEx_key().equals("m1")) {
+                score.setM1(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
+            } else if (mTypeSelected.getEx_key().equals("m2")) {
+                score.setM2(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
+            } else if (mTypeSelected.getEx_key().equals("m3")) {
+                score.setM3(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
+            } else if (mTypeSelected.getEx_key().equals("m4")) {
+
+                score.setM4(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
+            } else if (mTypeSelected.getEx_key().equals("m5")) {
+                //score.setM5(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
+            } else if (mTypeSelected.getEx_key().equals("m6")) {
+                score.setM6(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
+            } else if (mTypeSelected.getEx_key().equals("m7")) {
+                score.setM7(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
+            } else if (mTypeSelected.getEx_key().equals("m8")) {
+                score.setM8(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
+            } else if (mTypeSelected.getEx_key().equals("m9")) {
+                score.setM9(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
+            } else if (mTypeSelected.getEx_key().equals("m10")) {
+                score.setM10(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
+            } else if (mTypeSelected.getEx_key().equals("m11")) {
+                score.setM11(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
+            } else if (mTypeSelected.getEx_key().equals("m12")) {
+                //score.setM12(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
+            } else if (mTypeSelected.getEx_key().equals("m13")) {
+                score.setM13(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
+            } else if (mTypeSelected.getEx_key().equals("m14")) {
+                //score.setM14(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
+            } else if (mTypeSelected.getEx_key().equals("m15")) {
+                score.setM15(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
+            } else if (mTypeSelected.getEx_key().equals("m16")) {
+                score.setM16(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
+            } else if (mTypeSelected.getEx_key().equals("m17")) {
+//                score.setM17(LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice()));
             }
             listScore.add(score);
         }
@@ -527,6 +565,8 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
 //                progressDialog.dismiss();
 //            }
 //        });
+
+
         LaoSchoolSingleton.getInstance().getDataAccessService().inputBatchExamResults(listScore, new AsyncCallback<String>() {
             @Override
             public void onSuccess(String result) {
@@ -550,7 +590,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
     private void finishInputExamResults() {
         onchange = true;
         // resultsforClassbySubjectAdapter.clearData();
-        adapter.clearData();
+        mAdapter.clearData();
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(R.string.SCCommon_Successfully);
         builder.setPositiveButton(R.string.SCCommon_Ok, new DialogInterface.OnClickListener() {
@@ -578,7 +618,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
                 if (result != null) {
                     //Group data
                     //fillDataExamStudent(groupExamResultbyStudentId(result, selectedExamTypeId), selectedExamTypeId);
-                    fillDataExamStudent2(result, selectedExamTypeId);
+                    fillDataExamStudent2(result, mTypeSelected);
                 } else {
                     Log.d(TAG, "getExamResultsbySubject().onSuccess() message:NUll");
                 }
@@ -604,11 +644,12 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         });
     }
 
-    private void fillDataExamStudent2(List<ExamResult> result, int selectedExamTypeId) {
+    private void fillDataExamStudent2(List<ExamResult> result, ExamType mTypeSelected) {
         //resultsforClassbySubjectAdapter = new InputExamResultsAdapter(getActivity(), context, groupStudentMap, selectedExamTypeId);
+        Log.d(TAG, "Input exam to month: " + mTypeSelected);
         Collections.sort(result);
-        adapter = new InputExamResultsbyTypeAdapter(getActivity(), context, result, selectedExamTypeId);
-        listExamByStudent.setAdapter(adapter);
+        mAdapter = new InputExamResultsbyTypeAdapter(getActivity(), context, result, mTypeSelected);
+        listExamByStudent.setAdapter(mAdapter);
         listExamByStudent.setNestedScrollingEnabled(false);
         onTextChangeTextBoxSearch();
         mExpanSearch.setVisibility(View.VISIBLE);
@@ -633,7 +674,7 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
                     examListBySubjectId.clear();
                     examListBySubjectId.addAll(result);
                     if (selectedExamTypeId > 0) {
-                        fillDataExamStudent2(examListBySubjectId, selectedExamTypeId);
+                        fillDataExamStudent2(examListBySubjectId, mTypeSelected);
                     } else {
                         showSugesstionSelectedExamType();
                     }
@@ -678,29 +719,29 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         });
     }
 
-    private void fillDataDateInputExamResults(List<ExamResult> examResults, List<ExamType> examTypes) {
-        exam_months = new ArrayList<>();
-        List<Integer> integers = new ArrayList<>();
-        for (ExamType examType : examTypes) {
-            if (examType.getEx_type() <= 2) {
-                exam_months.add(examType.getEx_name());
-                Log.d(TAG, "exam_type:" + examType.toString());
-                integers.add(examType.getId());
-            }
-        }
-        if (exam_months.size() > 0) {
-            //
-            dialogSelectedInputTypeDate = makeDialogSelectdInputExamType(examResults, exam_months, integers);
-            mSelectedInputExamType.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    //clearFocus();
-                    view.requestFocus();
-                    dialogSelectedInputTypeDate.show();
-                }
-            });
-        }
-    }
+//    private void fillDataDateInputExamResults(List<ExamResult> examResults, List<ExamType> examTypes) {
+//        exam_months = new ArrayList<>();
+//        List<Integer> exam_type = new ArrayList<>();
+//        for (ExamType mExamTypes : examTypes) {
+//            if (mExamTypes.getEx_type() <= 2) {
+//                exam_months.add(mExamTypes.getEx_name());
+//                Log.d(TAG, "exam_type:" + mExamTypes.toString());
+//                exam_type.add(mExamTypes.getId());
+//            }
+//        }
+//        if (exam_months.size() > 0) {
+//            //
+//            dialogSelectedInputTypeDate = makeDialogSelectdInputExamType(examResults, exam_months, exam_type);
+//            mSelectedInputExamType.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    //clearFocus();
+//                    view.requestFocus();
+//                    dialogSelectedInputTypeDate.show();
+//                }
+//            });
+//        }
+//    }
 
     private void clearFocus() {
         View view = getActivity().getCurrentFocus();
@@ -713,47 +754,47 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
         LaoSchoolShared.hideSoftKeyboard(getActivity());
     }
 
-    private Dialog makeDialogSelectdInputExamType(final List<ExamResult> examResults, final List<String> exam_months, final List<Integer> examTypeIds) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        // builder.setTitle(R.string.title_selected_type_input_exam_results);
-        View header = View.inflate(context, R.layout.custom_hearder_dialog, null);
-        ImageView imgIcon = ((ImageView) header.findViewById(R.id.imgIcon));
-        imgIcon.setImageDrawable(LaoSchoolShared.getDraweble(context, R.drawable.ic_input_white_24dp));
+//    private Dialog makeDialogSelectdInputExamType(final List<ExamResult> examResults, final List<String> exam_months, final List<Integer> examTypeIds) {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//        // builder.setTitle(R.string.title_selected_type_input_exam_results);
+//        View header = View.inflate(context, R.layout.custom_hearder_dialog, null);
+//        ImageView imgIcon = ((ImageView) header.findViewById(R.id.imgIcon));
+//        imgIcon.setImageDrawable(LaoSchoolShared.getDraweble(context, R.drawable.ic_input_white_24dp));
+//
+//        ((TextView) header.findViewById(R.id.txbTitleDialog)).setText("Seleted date");
+//
+//        builder.setCustomTitle(header);
+//        final ListAdapter subjectListAdapter = new ArrayAdapter<String>(context, R.layout.row_selected_subject, exam_months);
+//
+//        builder.setAdapter(subjectListAdapter, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(final DialogInterface dialogInterface, final int position) {
+//                String selected = exam_months.get(position);
+//                selectedExamTypeId = examTypeIds.get(position);
+//                Log.d(TAG, "-selected " + position + " exam type Id:" + selectedExamTypeId);
+//                lbInputDate.setText(selected);
+//                lbInputDate.setTextColor(Color.WHITE);
+//                if (examResults != null) {
+//                    // fillDataExamStudent(groupExamResultbyStudentId(examResults, selectedExamTypeId), selectedExamTypeId);
+//                    fillDataExamStudent2(examListBySubjectId, selectedExamTypeId);
+//                }
+//                enabledSubmitInput();
+//
+//
+//            }
+//        });
+//        final AlertDialog dialog = builder.create();
+//        (header.findViewById(R.id.imgCloseDialog)).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                dialog.dismiss();
+//            }
+//        });
+//        return dialog;
+//    }
 
-        ((TextView) header.findViewById(R.id.txbTitleDialog)).setText("Seleted date");
 
-        builder.setCustomTitle(header);
-        final ListAdapter subjectListAdapter = new ArrayAdapter<String>(context, R.layout.row_selected_subject, exam_months);
-
-        builder.setAdapter(subjectListAdapter, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(final DialogInterface dialogInterface, final int position) {
-                String selected = exam_months.get(position);
-                selectedExamTypeId = examTypeIds.get(position);
-                Log.d(TAG, "-selected " + position + " exam type Id:" + selectedExamTypeId);
-                lbInputDate.setText(selected);
-                lbInputDate.setTextColor(Color.WHITE);
-                if (examResults != null) {
-                    // fillDataExamStudent(groupExamResultbyStudentId(examResults, selectedExamTypeId), selectedExamTypeId);
-                    fillDataExamStudent2(examListBySubjectId, selectedExamTypeId);
-                }
-                enabledSubmitInput();
-
-
-            }
-        });
-        final AlertDialog dialog = builder.create();
-        (header.findViewById(R.id.imgCloseDialog)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-        return dialog;
-    }
-
-
-    private Dialog makeDialogSelectdInputExamType(final List<String> exam_months, final List<Integer> examTypeIds) {
+    private Dialog makeDialogSelectdInputExamType(final List<String> exam_months, final List<Integer> examTypeIds, List<ExamType> examType) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         // builder.setTitle(R.string.title_selected_type_input_exam_results);
         View header = View.inflate(context, R.layout.custom_hearder_dialog, null);
@@ -770,12 +811,13 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
             public void onClick(final DialogInterface dialogInterface, final int position) {
                 String selected = exam_months.get(position);
                 selectedExamTypeId = examTypeIds.get(position);
+                mTypeSelected = mExamTypes.get(position);
                 Log.d(TAG, "-selected " + position + " exam type Id:" + selectedExamTypeId);
                 lbInputDate.setText(selected);
                 lbInputDate.setTextColor(Color.WHITE);
                 if (examListBySubjectId.size() > 0) {
                     //fillDataExamStudent(groupExamResultbyStudentId(examListBySubjectId, selectedExamTypeId), selectedExamTypeId);
-                    fillDataExamStudent2(examListBySubjectId, selectedExamTypeId);
+                    fillDataExamStudent2(examListBySubjectId, mTypeSelected);
                 }
                 enabledSubmitInput();
 
