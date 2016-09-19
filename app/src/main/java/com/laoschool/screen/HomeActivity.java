@@ -348,7 +348,7 @@ public class HomeActivity extends AppCompatActivity implements
         fragments.add(ScreenListStudent.instantiate(containerId, currentRole));
 
         this.mPagerAdapter = new LaoSchoolPagerAdapter(super.getSupportFragmentManager(), fragments);
-        //set adapter and set handler page change
+        //set mAdapte and set handler page change
         this.mViewPager.setAdapter(this.mPagerAdapter);
         //disable swipe
 

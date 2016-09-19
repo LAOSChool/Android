@@ -651,7 +651,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
 
                     //message.setTitle(txtMessageTitleStudent.getText().toString());
                     message.setContent(txtMessageContentStudent.getText().toString());
-                    message.setChannel(cbSendSmsStudent.isChecked() ? 1 : 0);
+                    //message.setChannel(cbSendSmsStudent.isChecked() ? 1 : 0);
 
                     message.setFrom_usr_id(LaoSchoolShared.myProfile.getId());
                     message.setTo_usr_id(LaoSchoolShared.myProfile.getEclass().getHead_teacher_id());
