@@ -28,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.adapter.ListImageSelectedAdapter;
@@ -49,12 +50,13 @@ import java.util.List;
 
 
 public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecycle {
+    private static final String SENT_ANNOUCEMENT = "sent_annoucement";
     private int containerId;
 
     private IScreenCreateAnnouncement mListener;
     private Context context;
     private static DataAccessInterface service;
-    private String TAG = "SCreateAnnouncement";
+    private String TAG = ScreenCreateAnnouncement.class.getSimpleName();
 
     private RecyclerView mReclerViewImageSeleted;
 
@@ -67,6 +69,7 @@ public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecy
     private ImageView imgPrioty;
 
     private ListImageSelectedAdapter listImageSelectedAdapter;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     public interface IScreenCreateAnnouncement {
 
@@ -97,6 +100,11 @@ public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecy
         }
         this.context = getActivity();
         this.service = DataAccessImpl.getInstance(context);
+
+        //
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        Bundle bundle = new Bundle();
+        mFirebaseAnalytics.logEvent(TAG, bundle);
     }
 
     @Override
@@ -324,6 +332,9 @@ public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecy
                     if (mListener != null) {
                         mListener._goBackAnnocements();
                     }
+                    Bundle bundle = new Bundle();
+                    bundle.putString(SENT_ANNOUCEMENT, LaoSchoolShared.FA_SUCCESS);
+                    mFirebaseAnalytics.logEvent(TAG, bundle);
                 }
 
                 @Override
@@ -332,6 +343,10 @@ public class ScreenCreateAnnouncement extends Fragment implements FragmentLifecy
                     Log.e(TAG, message);
                     String alert = getString(R.string.SCCreateMessage_err_msg_create_message);
                     _showAlertMessage(alert);
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString("SENT_ANNOUCEMENT", LaoSchoolShared.FA_FAILURE);
+                    mFirebaseAnalytics.logEvent(TAG, bundle);
                 }
 
                 @Override

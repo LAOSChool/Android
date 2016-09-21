@@ -254,6 +254,7 @@ public class User implements Comparable<User>{
                     Log.w("UserProfile", "term in class is null");
                 }
                 eclass.setYears(eclassObj.getString("years"));
+                eclass.setYear_id(eclassObj.getInt("year_id"));
                 eclass.setStart_dt(eclassObj.getString("start_dt"));
                 eclass.setEnd_dt(eclassObj.getString("end_dt"));
                 eclass.setHead_teacher_id(eclassObj.getInt("head_teacher_id"));

@@ -43,6 +43,7 @@
     <string name="SCCommon_ClassInfo" >Class information</string>
     <string name="SCCommon_Successfully">Successfully</string>
     <string name="SCCommon_err_msg_network_disconnect">Failed to connect to server. Please try again</string>
+    <string name="SCCommon_domain_url" translatable="false">http://itpro.vn</string>
 
     <!--Login screen-->
     <string name="SCLogin_Login">Login</string>
@@ -194,7 +195,7 @@
     <string name="SCExanResults_avg_m1">Avg m1</string>
     <string name="SCExanResults_test_term1">Test term 1</string>
     <string name="SCExanResults_avg_term1">Avg term1</string>
-    <string name="SCExanResults_month_2">Fer</string>
+    <string name="SCExanResults_month_2">Feb</string>
     <string name="SCExanResults_month_3">Mar</string>
     <string name="SCExanResults_month_4">Apr</string>
     <string name="SCExanResults_month_5">May</string>
@@ -234,5 +235,6 @@
     <string name="title_screen_announcement_details" translatable="false"></string>
     <string name="title_screen_message_details" translatable="false"></string>
     <string name="SCForgotPass_PhoneNumberNotMatch" translatable="false">Phone number not match</string>
+
 
 </resources>

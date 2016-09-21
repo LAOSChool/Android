@@ -1,16 +1,23 @@
 package com.laoschool.screen;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -44,6 +51,7 @@ import com.laoschool.adapter.LaoSchoolPagerAdapter;
 import com.laoschool.entities.Message;
 import com.laoschool.entities.User;
 import com.laoschool.model.AsyncCallback;
+import com.laoschool.model.DataAccessImpl;
 import com.laoschool.model.DataAccessInterface;
 import com.laoschool.model.sqlite.DataAccessImage;
 import com.laoschool.model.sqlite.DataAccessMessage;
@@ -67,7 +75,8 @@ public class HomeActivity extends AppCompatActivity implements
         ScreenInputExamResultsStudent.IScreenInputExamResults,
         IScreenCreateAnnouncement,
         ScreenListStudent.IScreenListStudentOfClass,
-        IProfile {
+        IProfile,
+        ScreenRequestAttendance.IScreenRequestAttendance {
     private static final String TAG = HomeActivity.class.getSimpleName();
 
     private TabHost mTabHost;
@@ -86,6 +95,7 @@ public class HomeActivity extends AppCompatActivity implements
     private int clickPressBack = 0;
     public List<User> selectedUserList;
     private FirebaseAnalytics mFirebaseAnalytics;
+    public boolean onChange = false;
 
 
     public enum DisplayButtonHome {
@@ -159,6 +169,41 @@ public class HomeActivity extends AppCompatActivity implements
         }
         initAnimation();
 
+        requestPermissions();
+
+    }
+
+    private void requestPermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    101);
+            // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an
+            // app-defined int constant
+
+            return;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 101: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! do the
+                    // calendar task you need to do.
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+        }
     }
 
     private void _startHome() {
@@ -177,13 +222,33 @@ public class HomeActivity extends AppCompatActivity implements
             }
 
         }
-        Log.d(TAG, "current_token:" + FirebaseInstanceId.getInstance().getToken());
+        String token = FirebaseInstanceId.getInstance().getToken();
+        Log.d(TAG, "current_token:" + token);
+        saveToken(token);
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        mFirebaseAnalytics.setUserId("");
         Bundle bundle = new Bundle();
-        bundle.putString("visitScreen", TAG);
-        mFirebaseAnalytics.logEvent("visitScreen", bundle);
+        bundle.putString(LaoSchoolShared.FA_CURRENT_ROLE, currentRole);
+        mFirebaseAnalytics.logEvent(getString(R.string.SCCommon_AppName), new Bundle());
+    }
+
+    private void saveToken(String token) {
+        DataAccessImpl.getInstance(this).saveToken(token, new AsyncCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                Log.d(TAG, "Save token sucess:" + result);
+            }
+
+            @Override
+            public void onFailure(String message) {
+                Log.d(TAG, "onFailure()/Save token fail:" + message);
+            }
+
+            @Override
+            public void onAuthFail(String message) {
+                Log.d(TAG, "onAuthFail()/Save token fail :" + message);
+            }
+        });
     }
 
     private void getUserProfile() {
@@ -283,13 +348,14 @@ public class HomeActivity extends AppCompatActivity implements
         fragments.add(ScreenListStudent.instantiate(containerId, currentRole));
 
         this.mPagerAdapter = new LaoSchoolPagerAdapter(super.getSupportFragmentManager(), fragments);
-        //set adapter and set handler page change
+        //set mAdapte and set handler page change
         this.mViewPager.setAdapter(this.mPagerAdapter);
         //disable swipe
 
         this.mViewPager.addOnPageChangeListener(this);
 
         mViewPager.setAllowedSwipeDirection(SwipeDirection.none);
+        // mViewPager.setOffscreenPageLimit(4);
 
         getSupportActionBar().setTitle(R.string.SCCommon_Message);
     }
@@ -829,20 +895,24 @@ public class HomeActivity extends AppCompatActivity implements
 
     @Override
     public void goBackToMessage() {
+        String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
+        ScreenMessage screenMessage = (ScreenMessage) getSupportFragmentManager().findFragmentByTag(tag);
+
         if (beforePosition == LaoSchoolShared.POSITION_SCREEN_MESSAGE_0) {
             //back to tab message
             _gotoPage(LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
+            screenMessage.reloadSentPager();
         } else if (beforePosition == LaoSchoolShared.POSITION_SCREEN_PROFILE_13) {
             //back to tab message
             beforePosition = LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5;
             _gotoPage(LaoSchoolShared.POSITION_SCREEN_PROFILE_13);
+            screenMessage.reloadSentPager();
         } else {
             //back to tab attender
             _gotoPage(LaoSchoolShared.POSITION_SCREEN_ATTENDED_3);
+            screenMessage.reloadDataAfterCreateMessages();
         }
-        String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
-        ScreenMessage screenMessage = (ScreenMessage) getSupportFragmentManager().findFragmentByTag(tag);
-        screenMessage.reloadDataAfterCreateMessages();
+
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
     }
 
@@ -942,5 +1012,20 @@ public class HomeActivity extends AppCompatActivity implements
         screenCreateMessage.presetData(userList, Arrays.asList(selectedStudent), "", false);
     }
 
+    @Override
+    public void goBacktoAttendance() {
+        String tag_message = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
+        ScreenMessage screenMessage = (ScreenMessage) getSupportFragmentManager().findFragmentByTag(tag_message);
+        beforePosition = LaoSchoolShared.POSITION_SCREEN_REQUEST_ATTENDANCE_17;
+        _gotoPage(LaoSchoolShared.POSITION_SCREEN_ATTENDED_3);
+
+        if (screenMessage != null) {
+            screenMessage.reloadDataAfterRequestAttendane();
+        }
+
+        String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_ATTENDED_3);
+        ScreenAttended screenAttended = (ScreenAttended) getSupportFragmentManager().findFragmentByTag(tag);
+        screenAttended.getAttendances();
+    }
 
 }

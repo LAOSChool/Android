@@ -23,6 +23,7 @@ import com.android.volley.toolbox.NetworkImageView;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.entities.ExamResult;
+import com.laoschool.entities.ExamType;
 import com.laoschool.shared.LaoSchoolShared;
 
 import org.json.JSONException;
@@ -42,18 +43,21 @@ public class InputExamResultsbyTypeAdapter extends RecyclerView.Adapter<InputExa
     private static final String TAG = InputExamResultsbyTypeAdapter.class.getSimpleName();
     private final Activity activity;
     private final List<ExamResult> examResults;
+    private final ExamType mTypeSelected;
     private Context context;
     private Map<Integer, ExamResult> mapExam = new HashMap<>();
     List<ExamResult> origin_examResults = new ArrayList<>();
-    private int exam_date_input;
+    // private int exam_date_input;
     List<Long> exam_dates;
 
 
-    public InputExamResultsbyTypeAdapter(Activity activity, Context context, List<ExamResult> examResults, int selectedDateInputExamResult) {
+    public InputExamResultsbyTypeAdapter(Activity activity, Context context, List<ExamResult> examResults, ExamType mtype) {
         this.context = context;
         this.activity = activity;
         this.examResults = examResults;
-        this.exam_date_input = selectedDateInputExamResult;
+        this.mTypeSelected = mtype;
+
+        //  this.exam_date_input = 0;
         origin_examResults.addAll(examResults);
     }
 
@@ -73,7 +77,7 @@ public class InputExamResultsbyTypeAdapter extends RecyclerView.Adapter<InputExa
             String sresult = "";
             String notice = "";
             String exam_dt = "";
-            String scoreJson = getScorebyType(result, exam_date_input);
+            String scoreJson = getScorebyType(result, mTypeSelected);
 
             if (scoreJson != null && !scoreJson.trim().isEmpty()) {
                 //{“sresult” = “10”;
@@ -108,7 +112,7 @@ public class InputExamResultsbyTypeAdapter extends RecyclerView.Adapter<InputExa
             String photo = result.getStd_photo();
             if (photo != null) {
                 LaoSchoolSingleton.getInstance().getImageLoader().get(photo, ImageLoader.getImageListener(holder.imgUserAvata,
-                        R.drawable.ic_account_circle_black_36dp, R.drawable.ic_account_circle_black_36dp));
+                        R.drawable.ic_account_circle_black_36dp, R.drawable.ic_account_circle_black_36dp), R.dimen.avata_width, R.dimen.avata_height, ImageView.ScaleType.FIT_XY);
                 holder.imgUserAvata.setImageUrl(photo, LaoSchoolSingleton.getInstance().getImageLoader());
             } else {
                 holder.imgUserAvata.setDefaultImageResId(R.drawable.ic_account_circle_black_36dp);
@@ -181,77 +185,46 @@ public class InputExamResultsbyTypeAdapter extends RecyclerView.Adapter<InputExa
         holder.setIsRecyclable(false);
     }
 
-    private String getScorebyType(ExamResult result, int exam_date_input) {
+    private String getScorebyType(ExamResult result, ExamType exam_date_input) {
+        Log.d(TAG, "Selected ExamType:" + exam_date_input.toString());
         String type = "";
-        switch (exam_date_input) {
-            case 1:
-                type = result.getM1();
-                break;
-            case 2:
-                type = result.getM2();
-                break;
-            case 3:
-                type = result.getM3();
-                break;
-            case 4:
-                type = result.getM4();
-                break;
-            case 6:
-                type = result.getM6();
-                break;
-            case 7:
-                type = result.getM7();
-                break;
-            case 8:
-                type = result.getM8();
-                break;
-            case 9:
-                type = result.getM9();
-                break;
-            case 10:
-                type = result.getM10();
-                break;
-            case 12:
-                type = result.getM12();
-                break;
+        if (exam_date_input.getEx_key().equals("m1")) {
+            type = result.getM1();
+        } else if (exam_date_input.getEx_key().equals("m2")) {
+            type = result.getM2();
+        } else if (exam_date_input.getEx_key().equals("m3")) {
+            type = result.getM3();
+        } else if (exam_date_input.getEx_key().equals("m4")) {
+            type = result.getM4();
+        } else if (exam_date_input.getEx_key().equals("m5")) {
+            type = result.getM5();
+        } else if (exam_date_input.getEx_key().equals("m6")) {
+            type = result.getM6();
+        } else if (exam_date_input.getEx_key().equals("m7")) {
+            type = result.getM7();
+        } else if (exam_date_input.getEx_key().equals("m8")) {
+            type = result.getM8();
+        } else if (exam_date_input.getEx_key().equals("m9")) {
+            type = result.getM9();
+        } else if (exam_date_input.getEx_key().equals("m10")) {
+            type = result.getM10();
+        } else if (exam_date_input.getEx_key().equals("m11")) {
+            type = result.getM11();
+        } else if (exam_date_input.getEx_key().equals("m12")) {
+            type = result.getM12();
+        } else if (exam_date_input.getEx_key().equals("m13")) {
+            type = result.getM13();
+        } else if (exam_date_input.getEx_key().equals("m14")) {
+            type = result.getM14();
+        } else if (exam_date_input.getEx_key().equals("m15")) {
+            type = result.getM15();
+        } else if (exam_date_input.getEx_key().equals("m16")) {
+            type = result.getM16();
+        } else if (exam_date_input.getEx_key().equals("m17")) {
+            type = result.getM17();
         }
-        return type;
-    }
 
-    private ExamResult defineResults(ExamResult examResult) {
-        switch (exam_date_input) {
-            case 1:
-                examResult = parseScore(examResult, examResult.getM1());
-                break;
-            case 2:
-                examResult = parseScore(examResult, examResult.getM2());
-                break;
-            case 3:
-                examResult = parseScore(examResult, examResult.getM3());
-                break;
-            case 4:
-                examResult = parseScore(examResult, examResult.getM4());
-                break;
-            case 6:
-                examResult = parseScore(examResult, examResult.getM6());
-                break;
-            case 7:
-                examResult = parseScore(examResult, examResult.getM7());
-                break;
-            case 8:
-                examResult = parseScore(examResult, examResult.getM8());
-                break;
-            case 9:
-                examResult = parseScore(examResult, examResult.getM9());
-                break;
-            case 10:
-                examResult = parseScore(examResult, examResult.getM10());
-                break;
-            case 12:
-                examResult = parseScore(examResult, examResult.getM12());
-                break;
-        }
-        return examResult;
+        return type;
     }
 
     private ExamResult parseScore(ExamResult examResult, String score) {
@@ -403,7 +376,7 @@ public class InputExamResultsbyTypeAdapter extends RecyclerView.Adapter<InputExa
             examResults.addAll(origin_examResults);
         } else {
             for (ExamResult examResult : origin_examResults) {
-                String studentName = examResult.getStudent_name();
+                String studentName = examResult.getStd_fullname();
                 if (charText.length() != 0 && studentName.toLowerCase(Locale.getDefault()).contains(charText)) {
                     examResults.add(examResult);
                 }

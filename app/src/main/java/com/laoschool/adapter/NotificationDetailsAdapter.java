@@ -27,6 +27,8 @@ import com.laoschool.screen.PreviewImage;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.tools.CustomNetworkImageView;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -96,8 +98,8 @@ public class NotificationDetailsAdapter extends RecyclerView.Adapter<Notificatio
                 imgPiorityNotificationDetails = (ImageView) view.findViewById(R.id.imgPiorityNotificationDetails);
                 imgUserSentNotificationAvata = (ImageView) view.findViewById(R.id.imgUserSentNotificationAvata);
 
-                txtTilteNotificationDetails.setText(notification.getTitle());
-                txtContentNotificationDetails.setText(notification.getContent());
+                txtTilteNotificationDetails.setText(StringEscapeUtils.unescapeJava(notification.getTitle()));
+                txtContentNotificationDetails.setText(StringEscapeUtils.unescapeJava(notification.getContent()));
                 txtDateNotificationDetails.setText(LaoSchoolShared.formatDate(notification.getSent_dt(), 2));
 
                 if (notification.getImp_flg() == 1) {
@@ -139,7 +141,7 @@ public class NotificationDetailsAdapter extends RecyclerView.Adapter<Notificatio
                 imgDownloadImage.setColorFilter(context.getResources().getColor(R.color.colorDefault));
                 imgPhoto.setColorFilter(context.getResources().getColor(R.color.colorPrimary));
 
-                txtImageCaption.setText(image.getCaption());
+                txtImageCaption.setText(StringEscapeUtils.unescapeJava(image.getCaption()));
                 if (image.getLocal_file_url() == null) {
                     imgDownloadImage.setVisibility(View.VISIBLE);
                     //load image form url

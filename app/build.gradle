@@ -10,7 +10,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 24
         versionCode 2
-        versionName "1.1.4.1"
+        versionName "v0.1"
         generatedDensities = []
     }
     buildTypes {
@@ -24,6 +24,18 @@ android {
     }
     repositories {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/NOTICE' // will not include NOTICE file
+        exclude 'META-INF/LICENSE' // will not include LICENSE file
+        // as noted by @Vishnuvathsan you may also need to include
+        // variations on the file name. It depends on your dependencies.
+        // Some other common variations on notice and license file names
+        exclude 'META-INF/notice'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license'
+        exclude 'META-INF/license.txt'
     }
 }
 
@@ -49,9 +61,12 @@ dependencies {
 //    compile 'com.github.ksoichiro:android-observablescrollview:1.6.0'
     compile 'com.daimajia.swipelayout:library:1.2.0@aar'
 
-    compile 'com.google.firebase:firebase-core:9.2.1'
-    compile 'com.google.firebase:firebase-messaging:9.2.1'
+    //Firebase
+    compile 'com.google.firebase:firebase-core:9.4.0'
+    compile 'com.google.firebase:firebase-messaging:9.4.0'
+    compile 'com.google.firebase:firebase-config:9.4.0'
 
-    compile 'com.google.android.gms:play-services-tagmanager:9.2.1'
+    compile 'org.apache.commons:commons-lang3:3.4'
+
 }
 apply plugin: 'com.google.gms.google-services'

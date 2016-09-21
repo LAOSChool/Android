@@ -249,6 +249,14 @@ public interface DataAccessInterface {
     public void createMessage(Message message, AsyncCallback<Message> callback);
 
     /**
+     * Create new Message with only student
+     *
+     * @param message
+     * @param callback return new message,
+     */
+    public void createMessageOnlyStudent(Message message, AsyncCallback<Message> callback);
+
+    /**
      * Modify existing Message
      *
      * @param message
@@ -320,6 +328,8 @@ public interface DataAccessInterface {
     public void inputBatchExamResults(List<ExamResult> examResult, AsyncCallback<String> callback);
 
     public void getMyRanking(AsyncCallback<StudentRanking> callback);
+
+    public void saveToken(String token, AsyncCallback<String> callback);
 
 
 }

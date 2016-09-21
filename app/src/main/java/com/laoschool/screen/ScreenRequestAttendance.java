@@ -2,8 +2,10 @@ package com.laoschool.screen;
 
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -50,6 +52,12 @@ public class ScreenRequestAttendance extends Fragment implements FragmentLifecyc
     String fromDate = "";
     String toDate = "";
 
+    public interface IScreenRequestAttendance {
+        void goBacktoAttendance();
+    }
+
+    private IScreenRequestAttendance iScreenRequestAttendance;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -77,7 +85,7 @@ public class ScreenRequestAttendance extends Fragment implements FragmentLifecyc
         btnOption.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!txvAttDt.getText().toString().contains("to")) {
+                if (!txvAttDt.getText().toString().contains("to")) {
                     //Creating the instance of PopupMenu
                     PopupMenu popup = new PopupMenu(thiz.getContext(), btnOption);
                     //Inflating the Popup using xml file
@@ -91,7 +99,7 @@ public class ScreenRequestAttendance extends Fragment implements FragmentLifecyc
                             return true;
                         }
                     });
-                }  else {
+                } else {
                     fromDate = currentDateandTime;
                     toDate = "";
                     txvAttDt.setText(currentDateandTime);
@@ -106,40 +114,39 @@ public class ScreenRequestAttendance extends Fragment implements FragmentLifecyc
 
     void getDatePicker(final boolean isSendTo) {
         //To show current date in the datepicker
-        Calendar mcurrentDate=Calendar.getInstance();
-        int mYear=mcurrentDate.get(Calendar.YEAR);
-        int mMonth=mcurrentDate.get(Calendar.MONTH);
-        int mDay=mcurrentDate.get(Calendar.DAY_OF_MONTH);
+        Calendar mcurrentDate = Calendar.getInstance();
+        int mYear = mcurrentDate.get(Calendar.YEAR);
+        int mMonth = mcurrentDate.get(Calendar.MONTH);
+        int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
         DatePickerDialog mDatePicker = new DatePickerDialog(thiz.getContext(), new DatePickerDialog.OnDateSetListener() {
             public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
                 // TODO Auto-generated method stub
                 String formatDate;
-                if(selectedmonth < 9)
-                    formatDate = selectedday + " - 0" + (selectedmonth+1) + " - " + selectedyear;
+                if (selectedmonth < 9)
+                    formatDate = selectedday + " - 0" + (selectedmonth + 1) + " - " + selectedyear;
                 else
-                    formatDate = selectedday + " - " + (selectedmonth+1) + " - " + selectedyear;
-                if(!isSendTo) {
+                    formatDate = selectedday + " - " + (selectedmonth + 1) + " - " + selectedyear;
+                if (!isSendTo) {
                     txvAttDt.setText(formatDate);
                     fromDate = formatDate;
                     txvAttDt.setTextSize(18);
                     imgOption.setImageResource(R.drawable.ic_keyboard_arrow_down_black_24dp);
-                }
-                else {
+                } else {
                     toDate = formatDate;
                     imgOption.setImageResource(R.drawable.ic_close_black_24dp);
                     txvAttDt.setText(fromDate + "  to  " + formatDate);
                     txvAttDt.setTextSize(15);
                 }
             }
-        },mYear, mMonth, mDay);
+        }, mYear, mMonth, mDay);
         mDatePicker.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
         mDatePicker.setTitle(R.string.SCAttendance_SelectDate);
         mDatePicker.show();
     }
 
     public static Fragment instantiate(int containerId, String currentRole, HomeActivity activity, ScreenAttended screenAttended) {
-        homeActivity = activity;
-        scrAttended = screenAttended;
+
+        // scrAttended = screenAttended;
         ScreenRequestAttendance fragment = new ScreenRequestAttendance();
         Bundle args = new Bundle();
         args.putInt(LaoSchoolShared.CONTAINER_ID, containerId);
@@ -152,6 +159,7 @@ public class ScreenRequestAttendance extends Fragment implements FragmentLifecyc
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        homeActivity = (HomeActivity) getActivity();
     }
 
     @Override
@@ -172,12 +180,12 @@ public class ScreenRequestAttendance extends Fragment implements FragmentLifecyc
     }
 
     private void submitForm() {
-        if(LaoSchoolShared.myProfile != null) {
+        if (LaoSchoolShared.myProfile != null) {
             final ProgressDialog ringProgressDialog = ProgressDialog.show(this.getActivity(),
-                    thiz.getContext().getString(R.string.SCCommon_PleaseWait)+ " ...",
-                    thiz.getContext().getString(R.string.SCCommon_Sending)+ " ...", true);
+                    thiz.getContext().getString(R.string.SCCommon_PleaseWait) + " ...",
+                    thiz.getContext().getString(R.string.SCCommon_Sending) + " ...", true);
             //Hide soft keyboard
-            InputMethodManager imm = (InputMethodManager)thiz.getActivity().getSystemService(thiz.getContext().INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) thiz.getActivity().getSystemService(thiz.getContext().INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(containerView.getWindowToken(), 0);
             //Create attendance
             Attendance attendance = new Attendance();
@@ -188,12 +196,11 @@ public class ScreenRequestAttendance extends Fragment implements FragmentLifecyc
             String datePickers[] = datePicker.split("-");
             String fromDt = datePickers[2] + "-" + datePickers[1] + "-" + datePickers[0];
             String toDt = "";
-            if(!toDate.equals("")) {
+            if (!toDate.equals("")) {
                 datePicker = toDate.replaceAll(" ", "");
                 String datePickers2[] = datePicker.split("-");
                 toDt = datePickers2[2] + "-" + datePickers2[1] + "-" + datePickers2[0];
-            }
-            else
+            } else
                 toDt = fromDt;
 //          attendance.setAtt_dt(att_dt);
             attendance.setStudent_id(LaoSchoolShared.myProfile.getId());
@@ -204,15 +211,24 @@ public class ScreenRequestAttendance extends Fragment implements FragmentLifecyc
             LaoSchoolSingleton.getInstance().getDataAccessService().requestAttendance(attendance, fromDt, toDt, new AsyncCallback<String>() {
                 @Override
                 public void onSuccess(String result) {
-                    ringProgressDialog.dismiss();
-                    scrAttended.getAttendances();
-                    homeActivity._gotoPage(LaoSchoolShared.POSITION_SCREEN_ATTENDED_3);
+                    if (iScreenRequestAttendance != null) {
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                iScreenRequestAttendance.goBacktoAttendance();
+                                ringProgressDialog.dismiss();
+                                //scrAttended.getAttendances();
+                                //homeActivity._gotoPage(LaoSchoolShared.POSITION_SCREEN_ATTENDED_3);
+                            }
+                        }, 1000);
+                    }
+
                 }
 
                 @Override
                 public void onFailure(String message) {
                     ringProgressDialog.dismiss();
-                    if(message.contains("Attendance already existing"))
+                    if (message.contains("Attendance already existing"))
                         Toast.makeText(thiz.getContext(), thiz.getContext().getString(R.string.SCAttendance_NotValid), Toast.LENGTH_SHORT).show();
                     else
                         Toast.makeText(thiz.getContext(), thiz.getContext().getString(R.string.SCAttendance_SendFail), Toast.LENGTH_SHORT).show();
@@ -224,7 +240,8 @@ public class ScreenRequestAttendance extends Fragment implements FragmentLifecyc
                     LaoSchoolShared.goBackToLoginPage(thiz.getContext());
                 }
             });
-        } else {}
+        } else {
+        }
     }
 
     @Override
@@ -247,5 +264,11 @@ public class ScreenRequestAttendance extends Fragment implements FragmentLifecyc
 //                        txbReason.requestFocus();
 //                    }
 //                });
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        iScreenRequestAttendance = (IScreenRequestAttendance) context;
     }
 }

@@ -1,20 +1,21 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.laoschool.screen.login.ScreenLoginHelp">
-
+    tools:context="com.laoschool.screen.login.ScreenLoginHelp"
+    android:orientation="vertical">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/colorLaosRed"
-        android:id="@+id/header">
+        android:background="@color/colorPrimary"
+        android:id="@+id/header"
+        android:layout_gravity="center_horizontal|top">
         <ImageButton
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:id="@+id/btnBack"
             android:src="@drawable/ic_arrow_back_white_24dp"
-            android:background="@color/colorLaosRed"
+            android:background="@color/colorPrimary"
             android:layout_alignParentBottom="true"
             android:layout_alignParentTop="true" />
 
@@ -29,5 +30,10 @@
             android:layout_marginTop="15dp"
             android:id="@+id/txvTitle" />
    </RelativeLayout>
+    <WebView  xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/webview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center" />
 
-</FrameLayout>
+</LinearLayout>

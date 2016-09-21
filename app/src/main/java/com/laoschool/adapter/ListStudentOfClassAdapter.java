@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
@@ -70,7 +71,8 @@ public class ListStudentOfClassAdapter extends RecyclerView.Adapter<ListStudentO
                 String photo = user.getPhoto();
                 if (photo != null) {
                     LaoSchoolSingleton.getInstance().getImageLoader().get(photo, ImageLoader.getImageListener(row_icon,
-                            R.drawable.ic_account_circle_black_36dp, R.drawable.ic_account_circle_black_36dp));
+                            R.drawable.ic_account_circle_black_36dp, android.R.drawable
+                                    .ic_dialog_alert), 35, 35, ImageView.ScaleType.FIT_XY);
                     row_icon.setImageUrl(photo, LaoSchoolSingleton.getInstance().getImageLoader());
                 } else {
                     row_icon.setDefaultImageResId(R.drawable.ic_account_circle_black_36dp);

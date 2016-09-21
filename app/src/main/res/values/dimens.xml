@@ -12,5 +12,7 @@
     <dimen name="width_height_score_box">30dp</dimen>
     <dimen name="max_height_header">159dp</dimen>
     <dimen name="min_header_final">40dp</dimen>
+    <dimen name="avata_width">35dp</dimen>
+    <dimen name="avata_height">35dp</dimen>
 
 </resources>

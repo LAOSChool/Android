@@ -22,10 +22,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.adapter.RecyclerViewScreenMoreAdapter;
 import com.laoschool.shared.LaoSchoolShared;
+import com.laoschool.tools.CircularNetworkImageView;
 import com.laoschool.view.FragmentLifecycle;
 
 import java.io.InputStream;
@@ -51,6 +55,8 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
     private TextView txvProfile;
     private TextView txtStudentName;
     private TextView txtTerm;
+    private CircularNetworkImageView userImage;
+    private CircularNetworkImageView userImageTeacher;
 
 
     public interface IScreenMore {
@@ -141,21 +147,19 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
             txtSchoolName = (TextView) view.findViewById(R.id.txtSchoolNameScreenMoreStudent);
             txtTerm = (TextView) view.findViewById(R.id.txtTermScreenMoreStudent);
             RecyclerView mRecylerViewFunctionMore = (RecyclerView) view.findViewById(R.id.mRecylerViewFunctionMore);
-            ImageView userImage = (ImageView) view.findViewById(R.id.userImage);
+            userImage = (CircularNetworkImageView) view.findViewById(R.id.userImage);
             ImageView schoolImage = (ImageView) view.findViewById(R.id.schoolImage);
             ImageView termImage = (ImageView) view.findViewById(R.id.termImage);
             ImageView imgEditProfile = (ImageView) view.findViewById(R.id.imgEditProfile);
             txvProfile = (TextView) view.findViewById(R.id.txvProfile);
 
-            int color = Color.parseColor("#808080");
-            int color2 = Color.parseColor("#424242");
-            userImage.setColorFilter(getResources().getColor(R.color.colorIconOnFragment));
+//            int color = Color.parseColor("#808080");
+//            int color2 = Color.parseColor("#424242");
+            //  userImage.setColorFilter(getResources().getColor(R.color.colorIconOnFragment));
             schoolImage.setColorFilter(getResources().getColor(R.color.colorIconOnFragment));
             termImage.setColorFilter(getResources().getColor(R.color.colorIconOnFragment));
             imgEditProfile.setColorFilter(getResources().getColor(R.color.colorIconOnFragment));
 
-            new DownloadImageTask((ImageView) view.findViewById(R.id.userImage))
-                    .execute("http://placehold.it/120x120&text=image1");
 
             //Handler goto detaisl
 //            mDetaislUser.setOnClickListener(new View.OnClickListener() {
@@ -184,6 +188,14 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
 
     private void fillUserDetailsStudent() {
         try {
+            String photo = LaoSchoolShared.myProfile.getPhoto();
+            if (photo != null) {
+                LaoSchoolSingleton.getInstance().getImageLoader().get(photo, ImageLoader.getImageListener(userImage,
+                        R.drawable.ic_account_circle_black_36dp, R.drawable.ic_account_circle_black_36dp));
+                userImage.setImageUrl(photo, LaoSchoolSingleton.getInstance().getImageLoader());
+            } else {
+                userImage.setDefaultImageResId(R.drawable.ic_account_circle_black_36dp);
+            }
             txvProfile.setText(R.string.SCCommon_Profile);
             txtStudentName.setText(LaoSchoolShared.myProfile.getFullname() + " - " + context.getString(R.string.SCCommon_Class) + " " + LaoSchoolShared.myProfile.getEclass().getTitle());
             txtSchoolName.setText(LaoSchoolShared.myProfile.getSchoolName());
@@ -202,6 +214,7 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
             View view = inflater.inflate(R.layout.screen_more_teacher, container, false);
             //
             LinearLayout mDetaislUser = (LinearLayout) view.findViewById(R.id.mDetaislUser);
+            userImageTeacher = (CircularNetworkImageView) view.findViewById(R.id.userImage);
             txtUserName = (TextView) view.findViewById(R.id.txtUserNameScreenMoreTeacher);
             txtSchoolName = (TextView) view.findViewById(R.id.txtSchoolNameScreenMoreTeacher);
             txtClassName = (TextView) view.findViewById(R.id.txtContactPhoneScreenMoreTeacher);
@@ -214,12 +227,12 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
 
 
             //Handler goto detaisl
-            mDetaislUser.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    iScreenMore.gotoDetailsUser();
-                }
-            });
+//            mDetaislUser.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    iScreenMore.gotoDetailsUser();
+//                }
+//            });
 
             fillUserDetailsTeacher();
 
@@ -233,12 +246,21 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
             mRecylerViewFunctionMore.setAdapter(adapter);
             return view;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
 
     private void fillUserDetailsTeacher() {
         try {
+            String photo = LaoSchoolShared.myProfile.getPhoto();
+            if (photo != null) {
+                LaoSchoolSingleton.getInstance().getImageLoader().get(photo, ImageLoader.getImageListener(userImageTeacher,
+                        R.drawable.ic_account_circle_black_36dp, R.drawable.ic_account_circle_black_36dp));
+                userImageTeacher.setImageUrl(photo, LaoSchoolSingleton.getInstance().getImageLoader());
+            } else {
+                userImageTeacher.setDefaultImageResId(R.drawable.ic_account_circle_black_36dp);
+            }
             txtUserName.setText(LaoSchoolShared.myProfile.getFullname());
             txtSchoolName.setText(LaoSchoolShared.myProfile.getSchoolName());
             txvProfile.setText(R.string.SCCommon_Profile);

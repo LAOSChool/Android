@@ -22,6 +22,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.adapter.TimeTablePageAdapter;
@@ -44,7 +45,7 @@ import java.util.Map;
 public class ScreenSchedule extends Fragment implements FragmentLifecycle {
 
 
-    private static final String TAG = "ScreenSchedule";
+    private static final String TAG = "ScreenTimetable";
     private static String CURRENT_ROLE = "current_role";
     private int containerId;
     private String currentRole;
@@ -71,6 +72,7 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
 
 
     private FragmentManager fr;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
 
     public ScreenSchedule() {
@@ -209,6 +211,11 @@ public class ScreenSchedule extends Fragment implements FragmentLifecycle {
             Log.d(TAG, "-Role:" + currentRole);
         }
         this.fr = getActivity().getSupportFragmentManager();
+
+        //Log fire base analytic
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        Bundle bundle = new Bundle();
+        mFirebaseAnalytics.logEvent(TAG, bundle);
     }
 
     @Override

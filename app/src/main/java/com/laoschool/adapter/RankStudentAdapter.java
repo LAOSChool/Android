@@ -2,6 +2,7 @@ package com.laoschool.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import java.util.List;
  * Created by Hue on 7/6/2016.
  */
 public class RankStudentAdapter extends RecyclerView.Adapter<RankStudentAdapter.ViewHolder> {
+    private static final String TAG = RankStudentAdapter.class.getSimpleName();
     List<String> examTypeNames = new ArrayList<>();
     List<Ranking> rankings = new ArrayList<>();
 
@@ -43,12 +45,16 @@ public class RankStudentAdapter extends RecyclerView.Adapter<RankStudentAdapter.
             TextView lbAve = (TextView) view.findViewById(R.id.lbAve);
             TextView lbGrade = (TextView) view.findViewById(R.id.lbGrade);
             TextView lbAllocation = (TextView) view.findViewById(R.id.lbAllocation1);
+//            if (rankings.get(position) != null) {
             txtExamTypeName.setText(examTypeNames.get(position));
             lbAve.setText(rankings.get(position).getAve());
             lbGrade.setText(rankings.get(position).getGrade());
             lbAllocation.setText(rankings.get(position).getAllocation());
+//            }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            Log.d(TAG, "bind ranking");
         }
 
     }

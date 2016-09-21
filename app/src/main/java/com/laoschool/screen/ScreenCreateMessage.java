@@ -107,7 +107,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
     }
 
     void getMessageSample() {
-        if(list_att_reason.isEmpty()) {
+        if (list_att_reason.isEmpty()) {
             LaoSchoolSingleton.getInstance().getDataAccessService().getAttMss(new AsyncCallback<List<MessageSample>>() {
                 @Override
                 public void onSuccess(List<MessageSample> result) {
@@ -125,7 +125,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                 }
             });
         }
-        if(list_std_reason.isEmpty()) {
+        if (list_std_reason.isEmpty()) {
             LaoSchoolSingleton.getInstance().getDataAccessService().getStdMss(new AsyncCallback<List<MessageSample>>() {
                 @Override
                 public void onSuccess(List<MessageSample> result) {
@@ -162,15 +162,14 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                 if (selectedStudents.size() == listStudents.size()) {
                     txtMessageTo.setText(context.getString(R.string.SCCommon_Class) + " " + LaoSchoolShared.selectedClass.getTitle());
                     txtMessageContent.setText(defaultText + context.getString(R.string.SCAttendance_DefaultMessage1));
-                }
-                else if(selectedStudents.size() == 1) {
+                } else if (selectedStudents.size() == 1) {
                     txtMessageTo.setText(selectedStudents.get(0).getFullname());
                     txtMessageContent.setText(defaultText + context.getString(R.string.SCAttendance_DefaultMessage2));
-                }
-                else {
+                } else {
                     txtMessageTo.setText(context.getString(R.string.SCCreateMessage_TitleAllStudentsAttendance));
                     txtMessageContent.setText(defaultText + context.getString(R.string.SCAttendance_DefaultMessage1));
                 }
+
 
                 if(sampleContent)
                     btnListContentSample.setVisibility(View.VISIBLE);
@@ -366,7 +365,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
         LaoSchoolShared.selectedClass = LaoSchoolShared.myProfile.getEclass();
         try {
             txtMessageTo.setText(context.getString(R.string.SCCommon_Class) + " " + LaoSchoolShared.selectedClass.getTitle());
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -389,7 +388,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                             if (selectedStudents.size() == listStudents.size())
                                 try {
                                     txtMessageTo.setText(context.getString(R.string.SCCommon_Class) + " " + LaoSchoolShared.selectedClass.getTitle());
-                                }catch (Exception e){
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             else
@@ -609,9 +608,9 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
             service.createMessage(message, new AsyncCallback<Message>() {
                 @Override
                 public void onSuccess(Message result) {
-                    result.setIs_read(1);
+                    //result.setIs_read(1);
                     //Save local
-                   // dataAccessMessage.addMessage(result);
+                    // dataAccessMessage.addMessage(result);
                     _resetForm();
 
                     if (iScreenCreateMessage != null) {
@@ -652,7 +651,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
 
                     //message.setTitle(txtMessageTitleStudent.getText().toString());
                     message.setContent(txtMessageContentStudent.getText().toString());
-                    message.setChannel(cbSendSmsStudent.isChecked() ? 1 : 0);
+                    //message.setChannel(cbSendSmsStudent.isChecked() ? 1 : 0);
 
                     message.setFrom_usr_id(LaoSchoolShared.myProfile.getId());
                     message.setTo_usr_id(LaoSchoolShared.myProfile.getEclass().getHead_teacher_id());
@@ -668,9 +667,9 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                         @Override
                         public void onSuccess(Message result) {
                             Log.d(TAG, "Message results:" + result.toJson());
-                            result.setIs_read(1);
+                            // result.setIs_read(1);
                             // save local
-                            dataAccessMessage.addMessage(result);
+                            // dataAccessMessage.addMessage(result);
                             _resetForm();
                             new Handler().postDelayed(new Runnable() {
                                 @Override
@@ -751,7 +750,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
             selectedStudents.clear();
             selectedStudents.addAll(listStudents);
             txtMessageTo.setText(context.getString(R.string.SCCommon_Class) + " " + LaoSchoolShared.selectedClass.getTitle());
-            if(tableStudents != null)
+            if (tableStudents != null)
                 tableStudents.reset();
             btnListContentSample.setVisibility(View.GONE);
         } else {

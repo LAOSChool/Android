@@ -1,18 +1,27 @@
 package com.laoschool.screen;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
+import android.support.v4.content.ContextCompat;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.entities.User;
 import com.laoschool.model.AsyncCallback;
+import com.laoschool.model.DataAccessImpl;
+import com.laoschool.model.sqlite.DataAccessMessage;
 import com.laoschool.screen.login.ScreenLogin;
 import com.laoschool.screen.view.Languages;
 import com.laoschool.shared.LaoSchoolShared;
@@ -58,11 +67,23 @@ public class SplashScreen extends Activity {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setLanguage();
         setContentView(R.layout.splash_screen);
+//        if (ContextCompat.checkSelfPermission(this,
+//                Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+//            requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE}, 123);
+//        }
+
+        //TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        LaoSchoolShared.deviceId = Settings.Secure.getString(getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+        DataAccessImpl.api_key = LaoSchoolShared.deviceId;
+
+        Log.d(TAG, "LaoSchoolShared.deviceId:" + LaoSchoolShared.deviceId);
         thiz = this;
         new Handler().postDelayed(new Runnable() {
             /*

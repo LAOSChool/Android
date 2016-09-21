@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:animateLayoutChanges="true"
-            android:background="@color/colorAttendanceHasReason">
+            android:background="@color/colorBackgroundFilter">
 
             <ImageView
                 android:id="@+id/imageView27"

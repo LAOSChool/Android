@@ -93,7 +93,7 @@ public class DialogInputExamResultsForStudent extends DialogFragment implements 
         String photo = examResult.getStd_photo();
         if (photo != null) {
             LaoSchoolSingleton.getInstance().getImageLoader().get(photo, ImageLoader.getImageListener(imgIcon,
-                    R.drawable.ic_account_circle_black_36dp, R.drawable.ic_account_circle_black_36dp));
+                    R.drawable.ic_account_circle_black_36dp, R.drawable.ic_account_circle_black_36dp),R.dimen.avata_width,R.dimen.avata_height, ImageView.ScaleType.FIT_XY);
             imgIcon.setImageUrl(photo, LaoSchoolSingleton.getInstance().getImageLoader());
         } else {
             imgIcon.setDefaultImageResId(R.drawable.ic_account_circle_black_36dp);
@@ -185,40 +185,49 @@ public class DialogInputExamResultsForStudent extends DialogFragment implements 
 
     private void inputExamResults(ExamResult examResult) {
         String score = makeJsonScore(examResult.getSresult(), examResult.getNotice());
-        Log.d(TAG, "inputExamResults() -json score" + score);
         if (termId == 1) {
             switch (position) {
                 case 0:
+                    Log.d(TAG, "inputExamResults() - input term " + termId + " for M1 score:" + score);
                     examResult.setM1(score);
                     break;
                 case 1:
+                    Log.d(TAG, "inputExamResults() - input term " + termId + " for M2 score:" + score);
                     examResult.setM2(score);
                     break;
                 case 2:
+                    Log.d(TAG, "inputExamResults() - input term " + termId + " for M3 score:" + score);
                     examResult.setM3(score);
                     break;
                 case 3:
+                    Log.d(TAG, "inputExamResults() - input term " + termId + " for M4 score:" + score);
                     examResult.setM4(score);
                     break;
                 case 5:
+                    Log.d(TAG, "inputExamResults() - input term " + termId + " for M6 score:" + score);
                     examResult.setM6(score);
                     break;
             }
-        } else {
+        } else if (termId == 2) {
             switch (position) {
                 case 0:
+                    Log.d(TAG, "inputExamResults() - input term " + termId + " for M8 score:" + score);
                     examResult.setM8(score);
                     break;
                 case 1:
+                    Log.d(TAG, "inputExamResults() - input term " + termId + " for M9 score:" + score);
                     examResult.setM9(score);
                     break;
                 case 2:
+                    Log.d(TAG, "inputExamResults() - input term " + termId + " for M10 score:" + score);
                     examResult.setM10(score);
                     break;
                 case 3:
+                    Log.d(TAG, "inputExamResults() - input term " + termId + " for M11 score:" + score);
                     examResult.setM11(score);
                     break;
                 case 5:
+                    Log.d(TAG, "inputExamResults() - input term " + termId + " for M12 score:" + score);
                     examResult.setM12(score);
                     break;
             }

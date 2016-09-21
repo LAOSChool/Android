@@ -22,6 +22,8 @@ import com.laoschool.model.sqlite.DataAccessMessage;
 import com.laoschool.screen.ScreenAnnouncements;
 import com.laoschool.shared.LaoSchoolShared;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import java.util.List;
 
 /**
@@ -101,10 +103,10 @@ public class ListNotificationAdapter extends RecyclerView.Adapter<RecyclerView.V
                     if (message.getIs_read() == 0) {
                         txbTitle.setTextColor(context.getResources().getColor(R.color.colorTitleUnread));
                         txbSender.setTextColor(context.getResources().getColor(R.color.colorRead));
-                        txtDateSend.setTextColor(context.getResources().getColor(R.color.colorUnread));
+                        txtDateSend.setTextColor(context.getResources().getColor(R.color.colorDateUnread));
                         txbSender.setTypeface(null, Typeface.NORMAL);
                         txbTitle.setTypeface(null, Typeface.BOLD);
-                        txtDateSend.setTypeface(null, Typeface.NORMAL);
+                        txtDateSend.setTypeface(null, Typeface.BOLD);
                         imgFlagMessage.setColorFilter(context.getResources().getColor(R.color.colorUnread));
                         view.setBackgroundColor(context.getResources().getColor(R.color.color_bg_un_read));
                     } else {
@@ -125,8 +127,8 @@ public class ListNotificationAdapter extends RecyclerView.Adapter<RecyclerView.V
                         imgStar.setColorFilter(context.getResources().getColor(R.color.colorPriorityHigh));
                     }
                     imgUserAvata.setDefaultImageResId(R.drawable.ic_account_circle_black_36dp);
-                    txbContent.setText(message.getContent());
-                    txbTitle.setText(message.getTitle());
+                    txbContent.setText(StringEscapeUtils.unescapeJava(message.getContent()));
+                    txbTitle.setText(StringEscapeUtils.unescapeJava(message.getTitle()));
                     txtDateSend.setText(LaoSchoolShared.formatDate(message.getSent_dt(), 0));
 
                     view.setOnClickListener(new View.OnClickListener() {

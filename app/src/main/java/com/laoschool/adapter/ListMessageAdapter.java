@@ -22,7 +22,11 @@ import com.laoschool.model.AsyncCallback;
 import com.laoschool.model.sqlite.DataAccessMessage;
 import com.laoschool.screen.ScreenMessage;
 import com.laoschool.shared.LaoSchoolShared;
+import com.laoschool.tools.CircularNetworkImageView;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,7 +35,7 @@ import java.util.List;
 public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = "Adp_ListMessage";
     private final int positionPage;
-    List<Message> messageList;
+    List<Message> messageList = new ArrayList<>();
     ScreenMessage screenMessage;
     private Context context;
 
@@ -50,8 +54,9 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
 
     public ListMessageAdapter(RecyclerView mRecyclerView, ScreenMessage screenMessage, List<Message> messageList, int positionPage) {
-        this.messageList = messageList;
         this.screenMessage = screenMessage;
+        this.messageList = new ArrayList<>();
+        this.messageList.addAll(messageList);
         this.context = screenMessage.getActivity();
         this.mRecyclerView = mRecyclerView;
         this.positionPage = positionPage;
@@ -143,17 +148,17 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                             view.setBackgroundColor(context.getResources().getColor(R.color.color_bg_read));
                         }
                     }
-                    String photo=(LaoSchoolShared.myProfile.getId() == message.getTo_usr_id())?message.getFrm_user_photo():message.getTo_user_photo();
+                    String photo = (LaoSchoolShared.myProfile.getId() == message.getTo_usr_id()) ? message.getFrm_user_photo() : message.getTo_user_photo();
                     if (photo != null) {
                         LaoSchoolSingleton.getInstance().getImageLoader().get(photo, ImageLoader.getImageListener(imgUserAvata,
                                 R.drawable.ic_account_circle_black_36dp, android.R.drawable
-                                        .ic_dialog_alert));
+                                        .ic_dialog_alert), 35, 35, ImageView.ScaleType.FIT_XY);
                         imgUserAvata.setImageUrl(photo, LaoSchoolSingleton.getInstance().getImageLoader());
                     } else {
                         imgUserAvata.setDefaultImageResId(R.drawable.ic_account_circle_black_36dp);
                     }
 //
-                    txbContent.setText(message.getContent());
+                    txbContent.setText(StringEscapeUtils.unescapeJava(message.getContent()));
                     txbTitle.setText(message.getTitle());
                     txtDateSend.setText(LaoSchoolShared.formatDate(message.getSent_dt(), 0));
 
@@ -175,14 +180,21 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         txtDateSend.setTextColor(context.getResources().getColor(R.color.colorRead));
                         imgGotoDetails.setColorFilter(screenMessage.getActivity().getResources().getColor(R.color.colorRead));
 
-                        if (message.getIs_read() == 0) {
-                            //Update is read
-                            message.setIs_read(1);
-                            DataAccessMessage.updateMessage(message);
-                            _updateStatusMessageToServer(message);
-                        }
                         Log.d(TAG, "Page:" + positionPage);
-                        if (positionPage == 1) {
+
+                        if (message.getIs_read() == 0) {
+                            message.setIs_read(1);//Set is read
+
+                            //Check pager sent not set Is read
+                            if (positionPage < ScreenMessage.TAB_SENT_2) {
+                                DataAccessMessage.updateMessage(message);
+                                //DataAccessMessage.updateMessageIsRead(message);
+                                _updateStatusMessageToServer(message);
+                            }
+
+                        }
+                        //remove message in UnRead pager
+                        if (positionPage == ScreenMessage.TAB_UNREAD_1) {
                             messageList.remove(position);
                         }
                         notifyDataSetChanged();
@@ -202,11 +214,11 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     }
 
-    private void _updateStatusMessageToServer(Message message) {
+    private void _updateStatusMessageToServer(final Message message) {
         LaoSchoolSingleton.getInstance().getDataAccessService().updateMessageIsRead(message, new AsyncCallback<Message>() {
             @Override
             public void onSuccess(Message result) {
-                Log.d(TAG, "_updateStatusMessageToServer() onSuccess():" + result.getId());
+                Log.d(TAG, "_updateStatusMessageToServer() onSuccess():" + message.toString());
             }
 
             @Override
@@ -223,7 +235,7 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public int getItemCount() {
-        return messageList == null ? 0 : messageList.size();
+        return messageList.size();
     }
 
     @Override
@@ -233,6 +245,16 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public void setLoaded() {
         isLoading = false;
+    }
+
+    public void swapData(List<Message> messages) {
+        if (messageList != null) {
+            messageList.clear();
+            messageList.addAll(messages);
+        } else {
+            messageList = messages;
+        }
+        notifyDataSetChanged();
     }
 
     public class ListMessageAdapterViewHolder extends RecyclerView.ViewHolder {

@@ -40,6 +40,7 @@ import com.laoschool.entities.TimeTable;
 import com.laoschool.entities.User;
 import com.laoschool.shared.LaoSchoolShared;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
@@ -56,6 +57,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -76,7 +78,7 @@ public class DataAccessImpl implements DataAccessInterface {
     private RequestQueue mRequestQueue;
     private static Context mCtx;
 
-    private static String api_key = "TEST_API_KEY";
+    public static String api_key = "TEST_API_KEY";
 
 //    Lab02
 //    final String LOGIN_HOST = "https://192.168.0.202:9443/laoschoolws/";
@@ -181,7 +183,6 @@ public class DataAccessImpl implements DataAccessInterface {
     public void login(final String sso_id, final String password, final AsyncCallback<String> callback) {
         // Request a string response from the provided URL.
         String url = LOGIN_HOST + "login";
-
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -287,7 +288,9 @@ public class DataAccessImpl implements DataAccessInterface {
                     public void onResponse(String response) {
                         Log.d("Service/getUsers()", response);
                         ListUser listUser = ListUser.fromJson(response);
-                        callback.onSuccess(listUser.getList());
+                        if (listUser.getList() != null)
+                            callback.onSuccess(listUser.getList());
+                        else callback.onSuccess(null);
                     }
                 },
                 new Response.ErrorListener() {
@@ -354,15 +357,25 @@ public class DataAccessImpl implements DataAccessInterface {
     @Override
     public void getUserProfile(final AsyncCallback<User> callback) {
         // Request a string response from the provided URL.
-        String url = HOST + "users/myprofile";
+        final String url = HOST + "users/myprofile";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         Log.d("Service/gUserProfile()", response);
-                        User user = User.parseFromJson(response);
-                        LaoSchoolShared.selectedClass = user.getEclass();
-                        callback.onSuccess(user);
+                        if (response != null) {
+                            try {
+                                User user = User.parseFromJson(response);
+
+                                LaoSchoolShared.selectedClass = user.getEclass();
+                                callback.onSuccess(user);
+                            } catch (Exception e) {
+                                callback.onAuthFail("");
+                                e.printStackTrace();
+                            }
+                        } else {
+                            callback.onAuthFail("");
+                        }
                     }
                 },
                 new Response.ErrorListener() {
@@ -437,7 +450,7 @@ public class DataAccessImpl implements DataAccessInterface {
 
     @Override
     public void userChangePassword(final String username, final String oldpass, final String newpass, final AsyncCallback<String> callback) {
-        final String httpPostBody = "{\"username\":\"" + username +"\","
+        final String httpPostBody = "{\"username\":\"" + username + "\","
                 + "\"old_pass\":\"" + oldpass + "\","
                 + "\"new_pass\":\"" + newpass + "\"}";
         Log.i("Service/changePass()", httpPostBody);
@@ -1355,14 +1368,15 @@ public class DataAccessImpl implements DataAccessInterface {
         jsonObject.addProperty("school_id", message.getSchool_id());
         jsonObject.addProperty("class_id", message.getClass_id());
         //jsonObject.addProperty("title", message.getTitle());
-        jsonObject.addProperty("content", message.getContent());
-        jsonObject.addProperty("from_usr_id", message.getFrom_usr_id());
-        jsonObject.addProperty("to_usr_id", message.getTo_usr_id());
+        jsonObject.addProperty("content", StringEscapeUtils.escapeJava(message.getContent()));
+
+        jsonObject.addProperty("from_user_id", message.getFrom_usr_id());
+        jsonObject.addProperty("to_user_id", message.getTo_usr_id());
         if (message.getCc_list() != null && !message.getCc_list().isEmpty())
             jsonObject.addProperty("cc_list", message.getCc_list());
         Gson gson = new Gson();
         String jsonString = gson.toJson(jsonObject);
-        Log.d("", "makeMessagetoJson():" + jsonString);
+        Log.d("makeMessagetoJson()", "JSON:" + jsonString);
         return jsonString;
     }
 
@@ -1445,7 +1459,7 @@ public class DataAccessImpl implements DataAccessInterface {
     @Override
     public void getNotification(final AsyncCallback<List<Message>> callback) {
         // Request a string response from the provided URL.
-        String url = HOST + "notifies?filter_class_id=" + LaoSchoolShared.myProfile.getEclass().getId() + "&filter_to_user_id" + LaoSchoolShared.myProfile.getId();
+        String url = HOST + "notifies?filter_to_user_id" + LaoSchoolShared.myProfile.getId();
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url.trim(),
                 new Response.Listener<String>() {
                     @Override
@@ -1492,7 +1506,7 @@ public class DataAccessImpl implements DataAccessInterface {
     @Override
     public void getNotification(int filter_from_id, final AsyncCallback<List<Message>> callback) {
         // Request a string response from the provided URL.
-        String url = HOST + "notifies?filter_class_id=" + LaoSchoolShared.myProfile.getEclass().getId() + "&filter_to_user_id=" + LaoSchoolShared.myProfile.getId() + "&filter_from_id=" + filter_from_id;
+        String url = HOST + "notifies?filter_to_user_id=" + LaoSchoolShared.myProfile.getId() + "&filter_from_id=" + filter_from_id;
         Log.d(TAG, "url:" + url);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url.trim(),
                 new Response.Listener<String>() {
@@ -1590,7 +1604,7 @@ public class DataAccessImpl implements DataAccessInterface {
                     // byte ptext[] = image.getCaption().getBytes();
                     // String caption_utf8 = new String(ptext, Charset.forName("UTF-8"));
                     // entityBuilder.addPart("caption", new StringBody(caption_utf8, ContentType.TEXT_PLAIN));
-                    entityBuilder.addTextBody("caption", image.getCaption(), contentType);
+                    entityBuilder.addTextBody("caption", StringEscapeUtils.escapeJava(image.getCaption()), contentType);
                 } else {
                     // entityBuilder.addPart("caption", new StringBody("No caption", ContentType.TEXT_PLAIN));
                     entityBuilder.addTextBody("caption", "No caption", contentType);
@@ -1713,8 +1727,8 @@ public class DataAccessImpl implements DataAccessInterface {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("school_id", message.getSchool_id());
         jsonObject.addProperty("class_id", message.getClass_id());
-        jsonObject.addProperty("title", String.valueOf(message.getTitle()));
-        jsonObject.addProperty("content", String.valueOf(message.getContent()));
+        jsonObject.addProperty("title", String.valueOf(StringEscapeUtils.escapeJava(message.getTitle())));
+        jsonObject.addProperty("content", String.valueOf(StringEscapeUtils.escapeJava(message.getContent())));
         jsonObject.addProperty("imp_flg", message.getImp_flg());
         jsonObject.addProperty("dest_type", 1);
         Gson gson = new Gson();
@@ -2293,7 +2307,7 @@ public class DataAccessImpl implements DataAccessInterface {
 
     @Override
     public void getMyRanking(final AsyncCallback<StudentRanking> callback) {
-        String url = HOST + "exam_results/ranks?filter_class_id=" + LaoSchoolShared.myProfile.getEclass().getId() + "&filter_year_id=1&filter_student_id=" + LaoSchoolShared.myProfile.getId();
+        String url = HOST + "exam_results/ranks?filter_class_id=" + LaoSchoolShared.myProfile.getEclass().getId() + "&filter_year_id=" + LaoSchoolShared.myProfile.getEclass().getYear_id() + "&filter_student_id=" + LaoSchoolShared.myProfile.getId();
         JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -2339,5 +2353,104 @@ public class DataAccessImpl implements DataAccessInterface {
             }
         };
         mRequestQueue.add(jsonArrayRequest);
+    }
+
+    @Override
+    public void saveToken(final String token, final AsyncCallback<String> callback) {
+        // Request a string response from the provided URL.
+        String url = HOST + "tokens/save";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("Service/saveToken()", response);
+
+                        callback.onSuccess(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && networkResponse.statusCode == 409) {
+                            // HTTP Status Code: 409 Unauthorized Oo
+                            Log.e("Service/saveToken()", "error status code " + networkResponse.statusCode);
+                            callback.onAuthFail(error.toString());
+                        } else if (networkResponse != null) {
+                            Log.e("Service/saveToken()", new String(networkResponse.data));
+                            callback.onFailure(new String(networkResponse.data));
+                        } else {
+                            Log.e("Service/saveToken()", error.toString());
+                            callback.onFailure(error.toString());
+                        }
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", getAuthKey());
+                params.put("token", token);
+                return params;
+            }
+        };
+
+        mRequestQueue.add(stringRequest);
+
+    }
+
+    @Override
+    public void createMessageOnlyStudent(Message message, final AsyncCallback<Message> callback) {
+        // Request a string response from the provided URL.
+        int classId = LaoSchoolShared.myProfile.getEclass().getId();
+        String url = HOST + "messages/create_ext?filter_class_list=" + classId + "&filter_roles=STUDENT";
+        final String httpPostBody = makeMessagetoJson(message);
+
+//      Log.d("Service/createMessage()", "makeMessagetoJson():" + httpPostBody);
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("S/createMessage()", response);
+                        Message m = Message.messageParsefromJson(response);
+                        callback.onSuccess(m);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && networkResponse.statusCode == 409) {
+                            // HTTP Status Code: 409 Unauthorized Oo
+                            Log.e("Service/createMessage()", "error status code " + networkResponse.statusCode);
+                            callback.onAuthFail(error.toString());
+                        } else if (networkResponse != null) {
+                            Log.e("Service/createMessage()", new String(networkResponse.data));
+                            callback.onFailure(new String(networkResponse.data));
+                        } else {
+                            Log.e("Service/createMessage()", error.toString());
+                            callback.onFailure(error.toString());
+                        }
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", api_key);
+                params.put("auth_key", getAuthKey());
+                params.put("Content-Type", "application/json");
+                return params;
+            }
+
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                return httpPostBody.getBytes();
+            }
+        };
+
+        mRequestQueue.add(stringRequest);
     }
 }

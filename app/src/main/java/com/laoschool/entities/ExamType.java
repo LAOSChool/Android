@@ -17,6 +17,20 @@ public class ExamType {
 //            "ex_name": "Normal exam",
 //            "cls_levels": "--ALL--"
 //    }
+
+    //    {
+//        "id": 170,
+//            "school_id": 10,
+//            "term_val": 2,
+//            "ex_month": 0,
+//            "ex_type": 7,
+//            "ex_name": "Grade Test",
+//            "cls_levels": ".4.7.",
+//            "ex_displayname": "Grade Test",
+//            "ex_key": "m17",
+//            "min": 0,
+//            "max": 10
+//    }
     int id;
     int school_id;
     int term_val;
@@ -24,8 +38,9 @@ public class ExamType {
     int ex_type;
     String ex_name;
     String cls_levels;
+    String ex_key;
 
-    public ExamType(int id, int school_id, int term_val, int ex_month, int ex_type, String ex_name, String cls_levels) {
+    public ExamType(int id, int school_id, int term_val, int ex_month, int ex_type, String ex_name, String cls_levels, String ex_key) {
         this.id = id;
         this.school_id = school_id;
         this.term_val = term_val;
@@ -33,6 +48,8 @@ public class ExamType {
         this.ex_type = ex_type;
         this.ex_name = ex_name;
         this.cls_levels = cls_levels;
+        this.ex_key = ex_key;
+
     }
 
     public int getId() {
@@ -91,6 +108,14 @@ public class ExamType {
         this.cls_levels = cls_levels;
     }
 
+    public String getEx_key() {
+        return ex_key;
+    }
+
+    public void setEx_key(String ex_key) {
+        this.ex_key = ex_key;
+    }
+
     public String toJson() {
         Gson gson = new Gson();
         String jsonString = gson.toJson(this);
@@ -113,6 +138,7 @@ public class ExamType {
                 ", ex_type=" + ex_type +
                 ", ex_name='" + ex_name + '\'' +
                 ", cls_levels='" + cls_levels + '\'' +
+                ", ex_key='" + ex_key + '\'' +
                 '}';
     }
 }

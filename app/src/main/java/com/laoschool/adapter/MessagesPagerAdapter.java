@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.util.SparseArray;
 import android.view.ViewGroup;
 
 import com.laoschool.R;
@@ -18,7 +20,7 @@ import java.util.Map;
 /**
  * Created by Hue on 5/19/2016.
  */
-public class MessagesPagerAdapter extends FragmentPagerAdapter {
+public class MessagesPagerAdapter extends FragmentStatePagerAdapter {
     protected static final String TAG = MessagesPagerAdapter.class.getSimpleName();
     private static final int POSITION_TO_USER_ID = 0;
     private static final int POSITION_TO_USER_ID_UNREAD = 1;
@@ -30,6 +32,8 @@ public class MessagesPagerAdapter extends FragmentPagerAdapter {
     private List<Message> messagesFormUser;
     private ScreenMessage screenMessage;
     private Context context;
+
+    SparseArray<MessagesPager> registeredFragments = new SparseArray<MessagesPager>();
 
     public MessagesPagerAdapter(Context context, FragmentManager fr, ScreenMessage screenMessage, List<Message> messagesForUserInbox, List<Message> messagesToUserUnread, List<Message> messagesFormUser) {
         super(fr);
@@ -72,27 +76,53 @@ public class MessagesPagerAdapter extends FragmentPagerAdapter {
         }
     }
 
-    public int getItemPosition(Object object) {
-        return POSITION_NONE;
-    }
-
-    @Override
-    public Object instantiateItem(ViewGroup container, int position) {
-        Object obj = super.instantiateItem(container, position);
-        if (obj instanceof Fragment) {
-            // record the fragment tag here.
-            Fragment f = (Fragment) obj;
-            String tag = f.getTag();
-            mFragmentTags.put(position, tag);
-        }
-        return obj;
-    }
+    //    @Override
+//    public int getItemPosition(Object object) {
+//        if (object instanceof MessagesPager) {
+//            ((MessagesPager)object).updateView();
+//        }
+//        return super.getItemPosition(object);
+//    }
+//    @Override
+//    public int getItemPosition(Object object) {
+//        // POSITION_NONE makes it possible to reload the PagerAdapter
+//        return POSITION_NONE;
+//    }
+//
+//    @Override
+//    public Object instantiateItem(ViewGroup container, int position) {
+//        Object obj = super.instantiateItem(container, position);
+//        if (obj instanceof Fragment) {
+//            // record the fragment tag here.
+//            Fragment f = (Fragment) obj;
+//            String tag = f.getTag();
+//            mFragmentTags.put(position, tag);
+//        }
+//        return obj;
+//    }
 
     public MessagesPager getFragment(int position) {
         String tag = mFragmentTags.get(position);
         if (tag == null)
             return null;
         return (MessagesPager) mFragmentManager.findFragmentByTag(tag);
+    }
+
+    @Override
+    public Object instantiateItem(ViewGroup container, int position) {
+        MessagesPager fragment = (MessagesPager) super.instantiateItem(container, position);
+        registeredFragments.put(position, fragment);
+        return fragment;
+    }
+
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        registeredFragments.remove(position);
+        super.destroyItem(container, position, object);
+    }
+
+    public MessagesPager getRegisteredFragment(int position) {
+        return registeredFragments.get(position);
     }
 
 }

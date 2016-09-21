@@ -152,7 +152,7 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_library_books_black_24dp"
-                android:tint="@color/colorPriorityHigh" />
+                android:tint="@color/colorPrimary" />
 
             <TextView
                 android:id="@+id/textView69"

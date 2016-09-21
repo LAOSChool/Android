@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -144,7 +145,7 @@ public class ScreenProfile extends Fragment implements FragmentLifecycle {
             String photo = user.getPhoto();
             if (photo != null) {
                 LaoSchoolSingleton.getInstance().getImageLoader().get(photo, ImageLoader.getImageListener(imgAvata,
-                        R.drawable.ic_account_circle_black_36dp, R.drawable.ic_account_circle_black_36dp));
+                        R.drawable.ic_account_circle_black_36dp, R.drawable.ic_account_circle_black_36dp),70,70, ImageView.ScaleType.FIT_XY);
                 imgAvata.setImageUrl(photo, LaoSchoolSingleton.getInstance().getImageLoader());
             } else {
                 imgAvata.setDefaultImageResId(R.drawable.ic_account_circle_black_36dp);

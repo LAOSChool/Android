@@ -65,6 +65,11 @@ public class LaoSchoolShared {
     public static final long LOADING_TIME = 1500;
     public static final int READ_1 = 1;
     public static final int UNREAD_0 = 0;
+    public static final String FA_SUCCESS = "success";
+    public static final String FA_FAILURE = "failure";
+    public static final String FA_QUERY_TEXT = "query_text";
+    public static final String FA_SCREEN_DISPLAY = "screen_display";
+    public static final String FA_CURRENT_ROLE = "current_role";
     public static User myProfile;
     public static Class selectedClass;
     public static final String SHARED_PREFERENCES_TAG = "com.laoshcool.app";
@@ -98,6 +103,7 @@ public class LaoSchoolShared {
     public static final String ROLE_STUDENT = "STUDENT";
     public static final String ROLE = "role";
     private static final String TAG = LaoSchoolShared.class.getSimpleName();
+    public static String deviceId = null;
 
     public static String makeFragmentTag(int containerViewId, long id) {
         return "android:switcher:" + containerViewId + ":" + id;
