@@ -2307,7 +2307,7 @@ public class DataAccessImpl implements DataAccessInterface {
 
     @Override
     public void getMyRanking(final AsyncCallback<StudentRanking> callback) {
-        String url = HOST + "exam_results/ranks?filter_class_id=" + LaoSchoolShared.myProfile.getEclass().getId() + "&filter_year_id=1&filter_student_id=" + LaoSchoolShared.myProfile.getId();
+        String url = HOST + "exam_results/ranks?filter_class_id=" + LaoSchoolShared.myProfile.getEclass().getId() + "&filter_year_id=" + LaoSchoolShared.myProfile.getEclass().getYear_id() + "&filter_student_id=" + LaoSchoolShared.myProfile.getId();
         JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

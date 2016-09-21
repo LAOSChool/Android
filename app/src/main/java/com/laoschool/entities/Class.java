@@ -37,10 +37,12 @@ public class Class {
 
     String headTeacherName;
 
+    int year_id;
+
     public Class() {
     }
 
-    public Class(int id, int school_id, String title, String location, int term, String years, String start_dt, String end_dt, int class_type, int grade_type, int fee, int sts, int head_teacher_id, String headTeacherName) {
+    public Class(int id, int school_id, String title, String location, int term, String years, String start_dt, String end_dt, int class_type, int grade_type, int fee, int sts, int head_teacher_id, String headTeacherName, int year_id) {
         this.id = id;
         this.school_id = school_id;
         this.title = title;
@@ -55,6 +57,7 @@ public class Class {
         this.sts = sts;
         this.head_teacher_id = head_teacher_id;
         this.headTeacherName = headTeacherName;
+        this.year_id = year_id;
     }
 
     public int getId() {
@@ -163,6 +166,14 @@ public class Class {
 
     public void setHeadTeacherName(String headTeacherName) {
         this.headTeacherName = headTeacherName;
+    }
+
+    public int getYear_id() {
+        return year_id;
+    }
+
+    public void setYear_id(int year_id) {
+        this.year_id = year_id;
     }
 
     public String toJson() {
