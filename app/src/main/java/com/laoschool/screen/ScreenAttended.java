@@ -356,10 +356,10 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
         if (currentRole == null)
             return inflater.inflate(R.layout.screen_error_application, container, false);
         else {
-            if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
-                return _defineScreenTeacher(inflater, container);
-            } else {
+            if (currentRole.equals(LaoSchoolShared.ROLE_STUDENT)) {
                 return _defineScreenStudent(inflater, container);
+            } else {
+                return _defineScreenTeacher(inflater, container);
             }
         }
     }

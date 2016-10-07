@@ -146,7 +146,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
     }
 
     public void presetData(List<User> students, List<User> selectedStudents, final String defaultText, boolean sampleContent) {
-        if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
+        if (!currentRole.equals(LaoSchoolShared.ROLE_STUDENT)) {
             if (students != null) {
                 getMessageSample();
                 listStudents.clear();
@@ -333,10 +333,10 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
         if (currentRole == null)
             return inflater.inflate(R.layout.screen_error_application, container, false);
         else {
-            if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
-                return _defineCreateMessageTeacher(inflater, container);
-            } else {
+            if (currentRole.equals(LaoSchoolShared.ROLE_STUDENT)) {
                 return _defineCreateMessageStudent(inflater, container);
+            } else {
+                return _defineCreateMessageTeacher(inflater, container);
             }
         }
     }

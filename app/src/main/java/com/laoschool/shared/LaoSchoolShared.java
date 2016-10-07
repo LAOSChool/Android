@@ -101,6 +101,8 @@ public class LaoSchoolShared {
 
     public static final String ROLE_TEARCHER = "TEACHER";
     public static final String ROLE_STUDENT = "STUDENT";
+    public static final String ROLE_CLS_PRESIDENT = "CLS_PRESIDENT";
+
     public static final String ROLE = "role";
     private static final String TAG = LaoSchoolShared.class.getSimpleName();
     public static String deviceId = null;
