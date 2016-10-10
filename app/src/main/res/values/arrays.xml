@@ -73,6 +73,23 @@
         <item>@string/row_line</item>
     </string-array>
 
+    <string-array name="more_cls_president">
+        <item>@string/SCCommon_SchoolInfomation</item>
+        <item>@string/row_line</item>
+        <!--<item>@string/SCCommon_FinalResults</item>-->
+        <!--<item>@string/row_line</item>-->
+        <item>@string/SCCommon_TimeTable</item>
+        <!--<item>@string/row_line</item>
+        <item>@string/SCCommon_ListTeacher</item>-->
+        <item>@string/row_line</item>
+        <item>@string/SCCommon_ChangePassword</item>
+        <item>@string/row_line</item>
+        <item>@string/SCCommon_Language</item>
+        <item>@string/row_line</item>
+        <item>@string/SCCommon_Logout</item>
+        <item>@string/row_line</item>
+    </string-array>
+
 
     <string-array name="dayNames">
         <item>@string/SCSchedule_Mon</item>

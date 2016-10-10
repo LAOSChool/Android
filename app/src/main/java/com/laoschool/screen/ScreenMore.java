@@ -173,7 +173,12 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
             fillUserDetailsStudent();
 
             //init adapte
-            List<String> more_student = Arrays.asList(getResources().getStringArray(R.array.more_student));
+            List<String> more_student;
+            if (currentRole.equals(LaoSchoolShared.ROLE_CLS_PRESIDENT)) {
+                more_student = Arrays.asList(getResources().getStringArray(R.array.more_cls_president));
+            } else {
+                more_student = Arrays.asList(getResources().getStringArray(R.array.more_student));
+            }
             RecyclerViewScreenMoreAdapter adapter = new RecyclerViewScreenMoreAdapter(this, more_student);
             GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 1);
 
@@ -182,6 +187,7 @@ public class ScreenMore extends Fragment implements FragmentLifecycle {
             mRecylerViewFunctionMore.setAdapter(adapter);
             return view;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
