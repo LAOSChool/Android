@@ -573,7 +573,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
 
     private void _submitForm(String currentRole) {
         LaoSchoolShared.hideSoftKeyboard(getActivity());
-        if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
+        if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER) || currentRole.equals(LaoSchoolShared.ROLE_CLS_PRESIDENT)) {
             if (txtMessageTo.getText().equals("")) {
                 Toast.makeText(context, context.getString(R.string.SCCreateMessage_SendNoOne), Toast.LENGTH_SHORT).show();
                 return;
@@ -582,7 +582,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                 Toast.makeText(context, context.getString(R.string.SCCreateMessage_EmptyMessage), Toast.LENGTH_SHORT).show();
                 return;
             }
-            //Building message
+            //Building messagec
             final Message message = new Message();
             message.setContent(txtMessageContent.getText().toString());
             message.setChannel(cbSendSms.isChecked() ? 1 : 0);
@@ -743,7 +743,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
     }
 
     private void _resetForm() {
-        if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER)) {
+        if (currentRole.equals(LaoSchoolShared.ROLE_TEARCHER) || currentRole.equals(LaoSchoolShared.ROLE_CLS_PRESIDENT)) {
             cbSendSms.setChecked(false);
             cbImportant.setChecked(false);
             txtMessageContent.getText().clear();

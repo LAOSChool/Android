@@ -215,6 +215,7 @@ public class HomeActivity extends AppCompatActivity implements
         // Intialise ViewPager
         intialiseViewPager(currentRole);
 
+
         if (getIntent().getExtras() != null) {
             for (String key : getIntent().getExtras().keySet()) {
                 String value = getIntent().getExtras().getString(key);
@@ -230,6 +231,8 @@ public class HomeActivity extends AppCompatActivity implements
         Bundle bundle = new Bundle();
         bundle.putString(LaoSchoolShared.FA_CURRENT_ROLE, currentRole);
         mFirebaseAnalytics.logEvent(getString(R.string.SCCommon_AppName), new Bundle());
+
+
     }
 
     private void saveToken(String token) {
@@ -277,16 +280,6 @@ public class HomeActivity extends AppCompatActivity implements
         });
     }
 
-    private String _getRoleByInten(Intent intent) {
-        if (intent.getAction().equals(LaoSchoolShared.ROLE_TEARCHER)) {
-            return LaoSchoolShared.ROLE_TEARCHER;
-        } else if (intent.getAction().equals(LaoSchoolShared.ROLE_STUDENT)) {
-            return LaoSchoolShared.ROLE_STUDENT;
-        } else {
-            return LaoSchoolShared.ROLE_STUDENT;
-        }
-    }
-
     /**
      * (non-Javadoc)
      *
@@ -303,6 +296,7 @@ public class HomeActivity extends AppCompatActivity implements
      * @param currentRole
      */
     private void intialiseViewPager(String currentRole) {
+        Log.d(TAG, "role:" + currentRole);
         this.mViewPager = (ViewpagerDisableSwipeLeft) super.findViewById(R.id.viewpager);
         containerId = mViewPager.getId();
 
@@ -350,14 +344,20 @@ public class HomeActivity extends AppCompatActivity implements
         this.mPagerAdapter = new LaoSchoolPagerAdapter(super.getSupportFragmentManager(), fragments);
         //set mAdapte and set handler page change
         this.mViewPager.setAdapter(this.mPagerAdapter);
-        //disable swipe
 
+        if (currentRole.equals(LaoSchoolShared.ROLE_CLS_PRESIDENT)) {
+            mViewPager.setCurrentItem(3);
+        }
+
+        //disable swipe
         this.mViewPager.addOnPageChangeListener(this);
 
         mViewPager.setAllowedSwipeDirection(SwipeDirection.none);
         // mViewPager.setOffscreenPageLimit(4);
 
         getSupportActionBar().setTitle(R.string.SCCommon_Message);
+
+
     }
 
     /**
@@ -373,6 +373,9 @@ public class HomeActivity extends AppCompatActivity implements
         display.getSize(size);
         int widthTabIndicator = (size.x) / 5;
 
+        if (currentRole.equals(LaoSchoolShared.ROLE_CLS_PRESIDENT)) {
+            widthTabIndicator = (size.x) / 2;
+        }
 
         //AddTab message
         TabHost.TabSpec tabSpecMessage = this.mTabHost.newTabSpec(getString(R.string.SCCommon_Message));
@@ -433,10 +436,19 @@ public class HomeActivity extends AppCompatActivity implements
         HomeActivity.AddTab(this, this.mTabHost, tabSpecMore, (tabInfo = new TabInfo(getString(R.string.SCCommon_More), ScreenMore.class, args)));
         this.mapTabInfo.put(tabInfo.tag, tabInfo);
 
+
+        if (currentRole.equals(LaoSchoolShared.ROLE_CLS_PRESIDENT)) {
+            mTabHost.getTabWidget().getChildAt(0).setVisibility(View.GONE);
+            mTabHost.getTabWidget().getChildAt(1).setVisibility(View.GONE);
+            mTabHost.getTabWidget().getChildAt(2).setVisibility(View.GONE);
+        }
+
         //Handler on Tab change
         this.mTabHost.setOnTabChangedListener(this);
         //Remove divider
         mTabHost.getTabWidget().setDividerDrawable(null);
+
+
     }
 
     /**
@@ -901,16 +913,22 @@ public class HomeActivity extends AppCompatActivity implements
         if (beforePosition == LaoSchoolShared.POSITION_SCREEN_MESSAGE_0) {
             //back to tab message
             _gotoPage(LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
-            screenMessage.reloadSentPager();
+            if (!currentRole.equals(LaoSchoolShared.ROLE_CLS_PRESIDENT))
+                screenMessage.reloadSentPager();
         } else if (beforePosition == LaoSchoolShared.POSITION_SCREEN_PROFILE_13) {
             //back to tab message
             beforePosition = LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5;
             _gotoPage(LaoSchoolShared.POSITION_SCREEN_PROFILE_13);
-            screenMessage.reloadSentPager();
+            if (!currentRole.equals(LaoSchoolShared.ROLE_CLS_PRESIDENT))
+                screenMessage.reloadSentPager();
         } else {
             //back to tab attender
             _gotoPage(LaoSchoolShared.POSITION_SCREEN_ATTENDED_3);
-            screenMessage.reloadDataAfterCreateMessages();
+
+            if (!currentRole.equals(LaoSchoolShared.ROLE_CLS_PRESIDENT)) {
+                screenMessage.reloadDataAfterCreateMessages();
+            }
+
         }
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);

@@ -597,6 +597,23 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
             }
         });
 
+
+        if (currentRole.equals(LaoSchoolShared.ROLE_CLS_PRESIDENT))
+            if (!isLoad && getUserVisibleHint()) {
+                if (currentRole.equals(LaoSchoolShared.ROLE_STUDENT))
+                    getAttendances();
+                else {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    final String format = dateFormat.format(new Date());
+                    if (attendanceRollup == null)
+                        try {
+                            getAttendanceRollup(LaoSchoolShared.selectedClass.getId(), format);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                }
+            }
+
         return view;
     }
 
@@ -716,41 +733,47 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                                     Date date = format.parse(txtAttendanceDate.getText().toString());
                                     String day = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(date.getTime());
                                     switch (day) {
-                                        case "Monday":  day = thiz.getContext().getString(R.string.SCSchedule_Mon);
+                                        case "Monday":
+                                            day = thiz.getContext().getString(R.string.SCSchedule_Mon);
                                             break;
-                                        case "Tuesday":  day = thiz.getContext().getString(R.string.SCSchedule_Tue);
+                                        case "Tuesday":
+                                            day = thiz.getContext().getString(R.string.SCSchedule_Tue);
                                             break;
-                                        case "Wednesday":  day = thiz.getContext().getString(R.string.SCSchedule_Wed);
+                                        case "Wednesday":
+                                            day = thiz.getContext().getString(R.string.SCSchedule_Wed);
                                             break;
-                                        case "Thursday":  day = thiz.getContext().getString(R.string.SCSchedule_Thu);
+                                        case "Thursday":
+                                            day = thiz.getContext().getString(R.string.SCSchedule_Thu);
                                             break;
-                                        case "Friday":  day = thiz.getContext().getString(R.string.SCSchedule_Fri);
+                                        case "Friday":
+                                            day = thiz.getContext().getString(R.string.SCSchedule_Fri);
                                             break;
-                                        case "Saturday":  day = thiz.getContext().getString(R.string.SCSchedule_Sat);
+                                        case "Saturday":
+                                            day = thiz.getContext().getString(R.string.SCSchedule_Sat);
                                             break;
-                                        case "Sunday":  day = thiz.getContext().getString(R.string.SCSchedule_Sun);
+                                        case "Sunday":
+                                            day = thiz.getContext().getString(R.string.SCSchedule_Sun);
                                             break;
                                     }
                                     String header1 = day + ", " + txtAttendanceDate.getText().toString() + "\r\n \r\n";
                                     String sessionName[] = selectedTimetable.getSession_Name().split("@");
-                                    String header2 = "ຊົ່ວ\u200Bໂມງ\u200Bທີ  "+ sessionName[3]+ " ("+ sessionName[1]+ ")" + "\r\n \r\n";
-                                    String header3 = "ວິ\u200Bຊາ: "+ selectedTimetable.getSubject_Name()+ "\r\n \r\n";
-                                    String header4 = "ອາ\u200Bຈານ: "+ selectedTimetable.getTeacherName()+ "\r\n \r\n";
+                                    String header2 = "ຊົ່ວ\u200Bໂມງ\u200Bທີ  " + sessionName[3] + " (" + sessionName[1] + ")" + "\r\n \r\n";
+                                    String header3 = "ວິ\u200Bຊາ: " + selectedTimetable.getSubject_Name() + "\r\n \r\n";
+                                    String header4 = "ອາ\u200Bຈານ: " + selectedTimetable.getTeacherName() + "\r\n \r\n";
                                     defaultText = header1 + header2 + header3 + header4;
                                 } catch (ParseException e) {
 
                                 }
-                            }
-                            else {
+                            } else {
                                 DateFormat format = new SimpleDateFormat("dd - MM - yyyy", Locale.ENGLISH);
                                 try {
                                     Date date = format.parse(txtAttendanceDate.getText().toString());
                                     String day = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(date.getTime());
                                     String header1 = day + ", " + txtAttendanceDate.getText().toString() + "\r\n \r\n";
                                     String sessionName[] = selectedTimetable.getSession_Name().split("@");
-                                    String header2 = "Period "+ sessionName[3]+ " ("+ sessionName[1]+ ")" + "\r\n \r\n";
-                                    String header3 = "Subject: "+ selectedTimetable.getSubject_Name()+ "\r\n \r\n";
-                                    String header4 = "Teacher: "+ selectedTimetable.getTeacherName()+ "\r\n \r\n";
+                                    String header2 = "Period " + sessionName[3] + " (" + sessionName[1] + ")" + "\r\n \r\n";
+                                    String header3 = "Subject: " + selectedTimetable.getSubject_Name() + "\r\n \r\n";
+                                    String header4 = "Teacher: " + selectedTimetable.getTeacherName() + "\r\n \r\n";
                                     defaultText = header1 + header2 + header3 + header4;
                                 } catch (ParseException e) {
 
@@ -788,35 +811,27 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
 
     @Override
     public void onResumeFragment() {
-        if (!isLoad && getUserVisibleHint()) {
-            if (currentRole.equals(LaoSchoolShared.ROLE_STUDENT))
-                getAttendances();
-            else {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                final String currentDateandTime = sdf.format(new Date());
-                if (attendanceRollup == null)
-                    try {
-                        getAttendanceRollup(LaoSchoolShared.selectedClass.getId(), currentDateandTime);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+        if (!currentRole.equals(LaoSchoolShared.ROLE_CLS_PRESIDENT))
+            if (!isLoad && getUserVisibleHint()) {
+                if (currentRole.equals(LaoSchoolShared.ROLE_STUDENT))
+                    getAttendances();
+                else {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    final String currentDateandTime = sdf.format(new Date());
+                    if (attendanceRollup == null)
+                        try {
+                            getAttendanceRollup(LaoSchoolShared.selectedClass.getId(), currentDateandTime);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                }
             }
-        }
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        iScreenAttended = (IScreenAttended) activity;
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        iScreenAttended = (IScreenAttended) context;
     }
 
-//    @Override
-//    public void setUserVisibleHint(boolean isVisibleToUser) {
-//        super.setUserVisibleHint(isVisibleToUser);
-//        if (isVisibleToUser) {
-//            if (!alreadyExecuted) {
-//                getAttendances();
-//            }
-//        }
-//    }
 }
