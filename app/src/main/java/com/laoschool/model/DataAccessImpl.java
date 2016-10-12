@@ -1733,8 +1733,21 @@ public class DataAccessImpl implements DataAccessInterface {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("school_id", message.getSchool_id());
         jsonObject.addProperty("class_id", message.getClass_id());
-        jsonObject.addProperty("title", String.valueOf(StringEscapeUtils.escapeJava(message.getTitle())));
-        jsonObject.addProperty("content", String.valueOf(StringEscapeUtils.escapeJava(message.getContent())));
+
+        String title = message.getTitle();
+        title = title.replaceAll("\n","ahdjhf9283298");
+        title = StringEscapeUtils.escapeJava(title);
+        title = title.replaceAll("ahdjhf9283298", "\n");
+        jsonObject.addProperty("title", title);
+        //jsonObject.addProperty("title", String.valueOf(StringEscapeUtils.escapeJava(message.getTitle())));
+
+        String content = message.getContent();
+        content = content.replaceAll("\n","ahdjhf9283298");
+        content = StringEscapeUtils.escapeJava(content);
+        content = content.replaceAll("ahdjhf9283298", "\n");
+        jsonObject.addProperty("content", content);
+        //jsonObject.addProperty("content", String.valueOf(StringEscapeUtils.escapeJava(message.getContent())));
+
         jsonObject.addProperty("imp_flg", message.getImp_flg());
         jsonObject.addProperty("dest_type", 1);
         Gson gson = new Gson();
