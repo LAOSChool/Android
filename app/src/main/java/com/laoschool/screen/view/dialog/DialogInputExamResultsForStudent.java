@@ -1,7 +1,6 @@
-package com.laoschool.screen.view;
+package com.laoschool.screen.view.dialog;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
@@ -93,7 +92,7 @@ public class DialogInputExamResultsForStudent extends DialogFragment implements 
         String photo = examResult.getStd_photo();
         if (photo != null) {
             LaoSchoolSingleton.getInstance().getImageLoader().get(photo, ImageLoader.getImageListener(imgIcon,
-                    R.drawable.ic_account_circle_black_36dp, R.drawable.ic_account_circle_black_36dp),R.dimen.avata_width,R.dimen.avata_height, ImageView.ScaleType.FIT_XY);
+                    R.drawable.ic_account_circle_black_36dp, R.drawable.ic_account_circle_black_36dp), R.dimen.avata_width, R.dimen.avata_height, ImageView.ScaleType.FIT_XY);
             imgIcon.setImageUrl(photo, LaoSchoolSingleton.getInstance().getImageLoader());
         } else {
             imgIcon.setDefaultImageResId(R.drawable.ic_account_circle_black_36dp);
@@ -122,11 +121,16 @@ public class DialogInputExamResultsForStudent extends DialogFragment implements 
                             examResult.setNotice("");
                         }
                         examResult.setTeacher_id(LaoSchoolShared.myProfile.getId());
-                        //Log.d(TAG, "-submit examResult:" + examResult.toJson());
                         inputExamResults(examResult);
                     } else {
                         txtScoreOfExam.setError("Score > 0  and score < 10");
                     }
+                } else {
+                    //set Empty score
+                    examResult.setSresult("");
+                    examResult.setNotice("");
+                    examResult.setTeacher_id(LaoSchoolShared.myProfile.getId());
+                    inputExamResults(examResult);
                 }
 
 

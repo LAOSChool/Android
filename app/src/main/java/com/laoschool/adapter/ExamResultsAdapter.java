@@ -18,7 +18,7 @@ import com.laoschool.LaoSchoolSingleton;
 import com.laoschool.R;
 import com.laoschool.entities.ExamResult;
 import com.laoschool.screen.ScreenExamResults;
-import com.laoschool.screen.view.DialogInputExamResultsForStudent;
+import com.laoschool.screen.view.dialog.DialogInputExamResultsForStudent;
 import com.laoschool.shared.LaoSchoolShared;
 
 import org.json.JSONException;
