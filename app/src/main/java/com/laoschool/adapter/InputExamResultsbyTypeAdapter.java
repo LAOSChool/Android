@@ -142,7 +142,12 @@ public class InputExamResultsbyTypeAdapter extends RecyclerView.Adapter<InputExa
                         }
                         result.setSresult(String.valueOf(exam));
                         mapExam.put(studentId, result);
+                    }else {
+                        //Set Empty
+                        result.setSresult(String.valueOf(""));
+                        mapExam.put(studentId, result);
                     }
+
                 }
             });
             holder.txtInputExamResults.setOnFocusChangeListener(new View.OnFocusChangeListener() {
