@@ -52,6 +52,8 @@ import com.laoschool.screen.widgets.MyEditText;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -755,11 +757,11 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                                             day = thiz.getContext().getString(R.string.SCSchedule_Sun);
                                             break;
                                     }
-                                    String header1 = day + ", " + txtAttendanceDate.getText().toString() + "\r\n \r\n";
+                                    String header1 = day + ", " + txtAttendanceDate.getText().toString() + System.getProperty("line.separator");
                                     String sessionName[] = selectedTimetable.getSession_Name().split("@");
-                                    String header2 = "ຊົ່ວ\u200Bໂມງ\u200Bທີ  " + sessionName[3] + " (" + sessionName[1] + ")" + "\r\n \r\n";
-                                    String header3 = "ວິ\u200Bຊາ: " + selectedTimetable.getSubject_Name() + "\r\n \r\n";
-                                    String header4 = "ອາ\u200Bຈານ: " + selectedTimetable.getTeacherName() + "\r\n \r\n";
+                                    String header2 = thiz.getContext().getString(R.string.SCAttendance_Subjects) + " " + sessionName[3]+ " ("+ sessionName[1]+ ")" + System.getProperty("line.separator");
+                                    String header3 = thiz.getContext().getString(R.string.SCCreateMessage_Subject) + " " + selectedTimetable.getSubject_Name()+ System.getProperty("line.separator");
+                                    String header4 = thiz.getContext().getString(R.string.SCCommon_Teacher) + " " + selectedTimetable.getTeacherName()+ System.getProperty("line.separator") + System.getProperty("line.separator");
                                     defaultText = header1 + header2 + header3 + header4;
                                 } catch (ParseException e) {
 
@@ -769,11 +771,11 @@ public class ScreenAttended extends Fragment implements FragmentLifecycle {
                                 try {
                                     Date date = format.parse(txtAttendanceDate.getText().toString());
                                     String day = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(date.getTime());
-                                    String header1 = day + ", " + txtAttendanceDate.getText().toString() + "\r\n \r\n";
+                                    String header1 = day + ", " + txtAttendanceDate.getText().toString() + System.getProperty("line.separator");
                                     String sessionName[] = selectedTimetable.getSession_Name().split("@");
-                                    String header2 = "Period " + sessionName[3] + " (" + sessionName[1] + ")" + "\r\n \r\n";
-                                    String header3 = "Subject: " + selectedTimetable.getSubject_Name() + "\r\n \r\n";
-                                    String header4 = "Teacher: " + selectedTimetable.getTeacherName() + "\r\n \r\n";
+                                    String header2 = "Period "+ sessionName[3]+ " ("+ sessionName[1]+ ")" + System.getProperty("line.separator");
+                                    String header3 = "Subject: "+ selectedTimetable.getSubject_Name()+ System.getProperty("line.separator");
+                                    String header4 = "Teacher: "+ selectedTimetable.getTeacherName()+ System.getProperty("line.separator")+ System.getProperty("line.separator");
                                     defaultText = header1 + header2 + header3 + header4;
                                 } catch (ParseException e) {
 

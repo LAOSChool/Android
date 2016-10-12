@@ -36,6 +36,7 @@
     <string name="SCCommon_NoInternet" >No internet connection</string>
     <string name="SCCommon_UnknowError" >Some error occur</string>
     <string name="SCCommon_Reload" >Reload</string>
+    <string name="SCCommon_Teacher" >Teacher</string>
     <string name="SCCommon_NoData" >No data found</string>
     <string name="SCCommon_Close">Close</string>
     <string name="SCCommon_Date" >Date</string>

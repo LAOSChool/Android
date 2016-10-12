@@ -265,11 +265,11 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
                                 case "Sunday":  day = context.getString(R.string.SCSchedule_Sun);
                                     break;
                             }
-                            String header1 = day + ", " + date + "\r\n \r\n";
+                            String header1 = day + ", " + date + System.getProperty("line.separator");
                             String sessionName[] = timeTable.getSession_Name().split("@");
-                            String header2 = "ຊົ່ວ\u200Bໂມງ\u200Bທີ  "+ sessionName[3]+ " ("+ sessionName[1]+ ")" + "\r\n \r\n";
-                            String header3 = "ວິ\u200Bຊາ: "+ timeTable.getSubject_Name()+ "\r\n \r\n";
-                            String header4 = "ອາ\u200Bຈານ: "+ timeTable.getTeacherName()+ "\r\n \r\n";
+                            String header2 = context.getString(R.string.SCAttendance_Subjects) + " "+ sessionName[3]+ " ("+ sessionName[1]+ ")" + System.getProperty("line.separator");
+                            String header3 = context.getString(R.string.SCCreateMessage_Subject) + " "+ timeTable.getSubject_Name()+ System.getProperty("line.separator");
+                            String header4 = context.getString(R.string.SCCommon_Teacher) + " "+ timeTable.getTeacherName()+ System.getProperty("line.separator")+ System.getProperty("line.separator");
                             defaultText = header1 + header2 + header3 + header4;
                         } catch (ParseException e) {
 
@@ -280,11 +280,11 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
                         try {
                             Date date1 = format.parse(date);
                             String day = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(date1.getTime());
-                            String header1 = day + ", " + date + "\r\n \r\n";
+                            String header1 = day + ", " + date + System.getProperty("line.separator");
                             String sessionName[] = timeTable.getSession_Name().split("@");
-                            String header2 = "Period "+ sessionName[3]+ " ("+ sessionName[1]+ ")" + "\r\n \r\n";
-                            String header3 = "Subject: "+ timeTable.getSubject_Name()+ "\r\n \r\n";
-                            String header4 = "Teacher: "+ timeTable.getTeacherName()+ "\r\n \r\n";
+                            String header2 = "Period "+ sessionName[3]+ " ("+ sessionName[1]+ ")" + System.getProperty("line.separator");
+                            String header3 = "Subject: "+ timeTable.getSubject_Name()+ System.getProperty("line.separator");
+                            String header4 = "Teacher: "+ timeTable.getTeacherName()+ System.getProperty("line.separator")+ System.getProperty("line.separator");
                             defaultText = header1 + header2 + header3 + header4;
                         } catch (ParseException e) {
 

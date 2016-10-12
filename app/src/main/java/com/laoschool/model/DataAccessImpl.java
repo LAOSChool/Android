@@ -1368,7 +1368,13 @@ public class DataAccessImpl implements DataAccessInterface {
         jsonObject.addProperty("school_id", message.getSchool_id());
         jsonObject.addProperty("class_id", message.getClass_id());
         //jsonObject.addProperty("title", message.getTitle());
-        jsonObject.addProperty("content", StringEscapeUtils.escapeJava(message.getContent()));
+        String content = message.getContent();
+        content = content.replaceAll("\n","ahdjhf9283298");
+        content = StringEscapeUtils.escapeJava(content);
+//        Log.d("Service/messageContent1", content);
+        content = content.replaceAll("ahdjhf9283298", "\n");
+//        Log.d("Service/messageContent2", content);
+        jsonObject.addProperty("content", content);
 
         jsonObject.addProperty("from_user_id", message.getFrom_usr_id());
         jsonObject.addProperty("to_user_id", message.getTo_usr_id());
