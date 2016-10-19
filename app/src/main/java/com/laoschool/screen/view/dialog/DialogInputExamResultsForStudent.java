@@ -188,7 +188,7 @@ public class DialogInputExamResultsForStudent extends DialogFragment implements 
     }
 
     private void inputExamResults(ExamResult examResult) {
-        String score = makeJsonScore(examResult.getSresult(), examResult.getNotice());
+        String score = LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice());
         if (termId == 1) {
             switch (position) {
                 case 0:
@@ -259,20 +259,6 @@ public class DialogInputExamResultsForStudent extends DialogFragment implements 
         });
     }
 
-    private String makeJsonScore(String sresult, String comment) {
-        //{“sresult” = “10”;
-//                “notice” = “xxxxxx”;
-//                “exam_dt” = “2016-09-09”}
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("sresult", sresult);
-            jsonObject.put("notice", comment);
-            jsonObject.put("exam_dt", new Date().toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return jsonObject.toString();
-    }
 
     @Override
     public void onClick(View view) {
