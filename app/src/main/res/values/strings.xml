@@ -1,6 +1,6 @@
 <resources>
     <!--Common screen-->
-    <string name="SCCommon_AppName" >LAOSchool</string>
+    <string name="SCCommon_AppName" >LaoSchool</string>
     <string name="SCCommon_Help">Help</string>
     <string name="SCCommon_UserName">Username</string>
     <string name="SCCommon_Password">Password</string>
