@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -94,6 +95,7 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
         View v = holder.mView;
 
         final TextView txtStudentName = (TextView) v.findViewById(R.id.txtStudentName);
+        final TextView txtNickName = (TextView) v.findViewById(R.id.txtNickName);
         ImageView icDH = (ImageView) v.findViewById(R.id.icDH);
         ImageView icCP = (ImageView) v.findViewById(R.id.icCP);
         ImageView icKP = (ImageView) v.findViewById(R.id.icKP);
@@ -108,7 +110,8 @@ public class ListAttendanceTableAdapter extends RecyclerView.Adapter<ListAttenda
 
         final User student = mDataset.get(position);
 
-        txtStudentName.setText(student.getFullname() + " - " + student.getNickname());
+        txtStudentName.setText(student.getFullname());
+        txtNickName.setText(student.getNickname());
 
 //        Random rand = new Random();;
 //        int randomNum = rand.nextInt((3 - 1) + 1) + 1;
