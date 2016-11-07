@@ -251,7 +251,7 @@ public class DialogInputExamResultsForStudent extends DialogFragment implements 
             public void onSuccess(ExamResult result) {
                 Log.d(TAG, "inputExamResults().onSuccess() -result:" + result.toJson());
                 getDialog().dismiss();
-                screenExamResults.reloadDataAfterInputSingleScore(subjectId);
+                screenExamResults.reloadDataAfterInputSingleScore(subjectId,position);
             }
 
             @Override

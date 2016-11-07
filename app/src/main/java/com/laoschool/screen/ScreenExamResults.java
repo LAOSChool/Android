@@ -47,6 +47,8 @@ import com.laoschool.entities.ExamResult;
 import com.laoschool.entities.Master;
 import com.laoschool.listener.AppBarStateChangeListener;
 import com.laoschool.model.AsyncCallback;
+import com.laoschool.screen.HomeActivity;
+import com.laoschool.screen.ScreenInputExamResultsStudent;
 import com.laoschool.shared.LaoSchoolShared;
 import com.laoschool.view.FragmentLifecycle;
 import com.laoschool.view.ViewpagerDisableSwipeLeft;
@@ -58,9 +60,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class ScreenExamResults extends Fragment
         implements FragmentLifecycle {
     public static final String TAG = "ScreenScore";
@@ -824,7 +824,7 @@ public class ScreenExamResults extends Fragment
                     // Map<Integer, List<ExamResult>> groupStudentMap = groupExamResultbyStudentId(result);
 
                     //_fillDataForListResultFilter(subjectId, mResultListStudentBySuject, new TreeMap<>(groupStudentMap));
-                    fillDataForListResultFilter(subjectId, mResultListStudentBySuject, result);
+                    fillDataForListResultFilter(subjectId, mResultListStudentBySuject, result, -1);
                 } else {
                     Log.d(TAG, "getExamResultsbySubject().onSuccess() message:NUll");
                 }
@@ -854,11 +854,17 @@ public class ScreenExamResults extends Fragment
         });
     }
 
-    private void fillDataForListResultFilter(int subjectId, RecyclerView mResultListStudentBySuject, List<ExamResult> result) {
+    private void fillDataForListResultFilter(int subjectId, RecyclerView mResultListStudentBySuject, List<ExamResult> result, int position) {
+        //sort data
         Collections.sort(result);
-        mExamResultsAdapter = new ExamResultsAdapter(this, subjectId, result);
 
+        mExamResultsAdapter = new ExamResultsAdapter(this, subjectId, result);
         mResultListStudentBySuject.setAdapter(mExamResultsAdapter);
+
+        //move after update
+        if (position > -1) {
+            mResultListStudentBySuject.scrollToPosition(position);
+        }
         //hide loading
         showProgressLoading(false);
 
@@ -920,9 +926,50 @@ public class ScreenExamResults extends Fragment
         super.setUserVisibleHint(isVisibleToUser);
     }
 
-    public void reloadDataAfterInputSingleScore(int subjectId) {
+    public void reloadDataAfterInputSingleScore(final int subjectId, final int position) {
         Log.d(TAG, "reloadDataAfterInputSingleScore() -subjectId:" + subjectId);
-        getExamResultsbySubject(true, subjectId);
+        //getExamResultsbySubject(true, subjectId,position);
+        progressDialog.show();
+        final ProgressDialog finalProgressDialog = progressDialog;
+        LaoSchoolSingleton.getInstance().getDataAccessService().getExamResultsforMark(LaoSchoolShared.myProfile.getEclass().getId(), -1, subjectId, new AsyncCallback<List<ExamResult>>() {
+            @Override
+            public void onSuccess(List<ExamResult> result) {
+                mSugesstionSelectedSubject.setVisibility(View.GONE);
+                mResultListStudentBySuject.setVisibility(View.VISIBLE);
+                mListExam.setVisibility(View.VISIBLE);
+                if (result != null) {
+                    //Group data
+                    // Map<Integer, List<ExamResult>> groupStudentMap = groupExamResultbyStudentId(result);
+
+                    //_fillDataForListResultFilter(subjectId, mResultListStudentBySuject, new TreeMap<>(groupStudentMap));
+                    fillDataForListResultFilter(subjectId, mResultListStudentBySuject, result, position);
+                } else {
+                    Log.d(TAG, "getExamResultsbySubject().onSuccess() message:NUll");
+                }
+                if (finalProgressDialog != null) {
+                    finalProgressDialog.dismiss();
+                }
+                showProgressLoading(false);
+            }
+
+            @Override
+            public void onFailure(String message) {
+                Log.e(TAG, "getExamResultsbySubject().onFailure() message:" + message);
+                if (finalProgressDialog != null)
+                    finalProgressDialog.dismiss();
+                showProgressLoading(false);
+                showError();
+            }
+
+            @Override
+            public void onAuthFail(String message) {
+                Log.e(TAG, "getExamResultsbySubject().onAuthFail() message:" + message);
+                if (finalProgressDialog != null)
+                    finalProgressDialog.dismiss();
+                LaoSchoolShared.goBackToLoginPage(context);
+                showProgressLoading(false);
+            }
+        });
     }
 
     public static class MyExamResultsPager extends Fragment {
