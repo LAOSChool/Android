@@ -311,8 +311,29 @@ public class ScreenInputExamResultsStudent extends Fragment implements FragmentL
                 List<Integer> integers = new ArrayList<>();
                 for (ExamType examType : result) {
                     if (examType.getEx_type() <= 2) {
-                        exam_months.add(examType.getEx_name());
-                        Log.d(TAG, "exam_type:" + examType.toString());
+                        //translate
+                        if ((examType.getEx_name().equals("Sep"))) {
+                            exam_months.add(getString(R.string.SCExanResults_month_9));
+                        } else if ((examType.getEx_name().equals("Oct"))) {
+                            exam_months.add(getString(R.string.SCExanResults_month_10));
+                        } else if ((examType.getEx_name().equals("Nov"))) {
+                            exam_months.add(getString(R.string.SCExanResults_month_11));
+                        } else if ((examType.getEx_name().equals("Dec"))) {
+                            exam_months.add(getString(R.string.SCExanResults_month_12));
+                        } else if ((examType.getEx_name().equals("Test term1"))) {
+                            exam_months.add(getString(R.string.SCExanResults_test_term1));
+                        } else if ((examType.getEx_name().equals("Feb"))) {
+                            exam_months.add(getString(R.string.SCExanResults_month_2));
+                        } else if ((examType.getEx_name().equals("Mar"))) {
+                            exam_months.add(getString(R.string.SCExanResults_month_3));
+                        } else if ((examType.getEx_name().equals("Apr"))) {
+                            exam_months.add(getString(R.string.SCExanResults_month_4));
+                        } else if ((examType.getEx_name().equals("Apr"))) {
+                            exam_months.add(getString(R.string.SCExanResults_month_5));
+                        } else if ((examType.getEx_name().equals("Test term2"))) {
+                            exam_months.add(getString(R.string.SCExanResults_test_term2));
+                        }
+
                         integers.add(examType.getId());
                         mExamTypes.add(examType);
                     }
