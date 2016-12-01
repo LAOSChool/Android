@@ -122,10 +122,16 @@ public class ScreenRequestAttendance extends Fragment implements FragmentLifecyc
             public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
                 // TODO Auto-generated method stub
                 String formatDate;
+
+                String sld = String.valueOf(selectedday);
+                if (selectedday < 10)
+                    sld = "0" + sld;
+
                 if (selectedmonth < 9)
-                    formatDate = selectedday + " - 0" + (selectedmonth + 1) + " - " + selectedyear;
+                    formatDate = sld + " - 0" + (selectedmonth + 1) + " - " + selectedyear;
                 else
-                    formatDate = selectedday + " - " + (selectedmonth + 1) + " - " + selectedyear;
+                    formatDate = sld + " - " + (selectedmonth + 1) + " - " + selectedyear;
+
                 if (!isSendTo) {
                     txvAttDt.setText(formatDate);
                     fromDate = formatDate;
