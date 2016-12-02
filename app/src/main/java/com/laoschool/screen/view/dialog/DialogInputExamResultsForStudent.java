@@ -187,8 +187,16 @@ public class DialogInputExamResultsForStudent extends DialogFragment implements 
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
-    private void inputExamResults(ExamResult examResult) {
-        String score = LaoSchoolShared.makeJsonScore(examResult.getSresult(), examResult.getNotice());
+    private void inputExamResults(ExamResult data) {
+        String score = LaoSchoolShared.makeJsonScore(data.getSresult(), data.getNotice());
+
+        ExamResult examResult = new ExamResult();
+        examResult.setSchool_id(data.getSchool_id());
+        examResult.setClass_id(data.getClass_id());
+        examResult.setStudent_id(data.getStudent_id());
+        examResult.setNotice(data.getNotice());
+        examResult.setSubject_id(data.getSubject_id());
+
         if (termId == 1) {
             switch (position) {
                 case 0:
@@ -243,7 +251,7 @@ public class DialogInputExamResultsForStudent extends DialogFragment implements 
             public void onSuccess(ExamResult result) {
                 Log.d(TAG, "inputExamResults().onSuccess() -result:" + result.toJson());
                 getDialog().dismiss();
-                screenExamResults.reloadDataAfterInputSingleScore(subjectId);
+                screenExamResults.reloadDataAfterInputSingleScore(subjectId,position);
             }
 
             @Override

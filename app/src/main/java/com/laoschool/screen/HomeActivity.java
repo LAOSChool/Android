@@ -346,7 +346,7 @@ public class HomeActivity extends AppCompatActivity implements
         this.mViewPager.setAdapter(this.mPagerAdapter);
 
         if (currentRole.equals(LaoSchoolShared.ROLE_CLS_PRESIDENT)) {
-            mViewPager.setCurrentItem(3);
+            mViewPager.setCurrentItem(0);
         }
 
         //disable swipe
@@ -364,6 +364,8 @@ public class HomeActivity extends AppCompatActivity implements
      * Initialise the Tab Host
      */
     private void initialiseTabHost(Bundle args) {
+        int DIVIDE_TAB_5 = 5;
+        int DIVIDE_TAB_3 = 3;
         this.mTabHost = (TabHost) findViewById(R.id.tabHost);
         mTabHost.setup();
 
@@ -371,10 +373,9 @@ public class HomeActivity extends AppCompatActivity implements
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        int widthTabIndicator = (size.x) / 5;
-
+        int widthTabIndicator = (size.x) / DIVIDE_TAB_5;
         if (currentRole.equals(LaoSchoolShared.ROLE_CLS_PRESIDENT)) {
-            widthTabIndicator = (size.x) / 2;
+            widthTabIndicator = (size.x) / DIVIDE_TAB_3;
         }
 
         //AddTab message
@@ -438,7 +439,7 @@ public class HomeActivity extends AppCompatActivity implements
 
 
         if (currentRole.equals(LaoSchoolShared.ROLE_CLS_PRESIDENT)) {
-            mTabHost.getTabWidget().getChildAt(0).setVisibility(View.GONE);
+            //mTabHost.getTabWidget().getChildAt(0).setVisibility(View.GONE);
             mTabHost.getTabWidget().getChildAt(1).setVisibility(View.GONE);
             mTabHost.getTabWidget().getChildAt(2).setVisibility(View.GONE);
         }
@@ -913,7 +914,7 @@ public class HomeActivity extends AppCompatActivity implements
         if (beforePosition == LaoSchoolShared.POSITION_SCREEN_MESSAGE_0) {
             //back to tab message
             _gotoPage(LaoSchoolShared.POSITION_SCREEN_MESSAGE_0);
-            if (!currentRole.equals(LaoSchoolShared.ROLE_CLS_PRESIDENT))
+            //if (!currentRole.equals(LaoSchoolShared.ROLE_CLS_PRESIDENT))
                 screenMessage.reloadSentPager();
         } else if (beforePosition == LaoSchoolShared.POSITION_SCREEN_PROFILE_13) {
             //back to tab message
@@ -924,10 +925,9 @@ public class HomeActivity extends AppCompatActivity implements
         } else {
             //back to tab attender
             _gotoPage(LaoSchoolShared.POSITION_SCREEN_ATTENDED_3);
-
-            if (!currentRole.equals(LaoSchoolShared.ROLE_CLS_PRESIDENT)) {
+          //  if (!currentRole.equals(LaoSchoolShared.ROLE_CLS_PRESIDENT))
                 screenMessage.reloadDataAfterCreateMessages();
-            }
+
 
         }
 
