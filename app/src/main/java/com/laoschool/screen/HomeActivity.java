@@ -771,6 +771,7 @@ public class HomeActivity extends AppCompatActivity implements
         String tag = LaoSchoolShared.makeFragmentTag(containerId, LaoSchoolShared.POSITION_SCREEN_CREATE_MESSAGE_5);
         ScreenCreateMessage screenCreateMessage = (ScreenCreateMessage) getSupportFragmentManager().findFragmentByTag(tag);
         screenCreateMessage.presetData(null, null, "", false);
+        screenCreateMessage.getTeacher();
     }
 
     @Override

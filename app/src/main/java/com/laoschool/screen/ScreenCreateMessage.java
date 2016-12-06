@@ -76,6 +76,7 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
 
     AlertDialog dialog;
     TableStudents tableStudents;
+    User teacher;
     List<User> listStudents = new ArrayList<>();
     List<User> selectedStudents = new ArrayList<>();
 
@@ -288,6 +289,26 @@ public class ScreenCreateMessage extends Fragment implements FragmentLifecycle {
                     getListStudents();
             }
         }
+    }
+
+    public void getTeacher() {
+        LaoSchoolSingleton.getInstance().getDataAccessService().getUsers(LaoSchoolShared.myProfile.getEclass().getId(), User.USER_ROLE_TEACHER, "", -1, new AsyncCallback<List<User>>() {
+            @Override
+            public void onSuccess(List<User> result) {
+                if(!result.isEmpty())
+                    teacher = result.get(0);
+                listStudents.add(0, teacher);
+                selectedStudents.add(0 , teacher);
+            }
+
+            @Override
+            public void onFailure(String message) {}
+
+            @Override
+            public void onAuthFail(String message) {
+                LaoSchoolShared.goBackToLoginPage(context);
+            }
+        });
     }
 
     void getListStudents() {
