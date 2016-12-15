@@ -78,7 +78,7 @@ public class DataAccessImpl implements DataAccessInterface {
     private RequestQueue mRequestQueue;
     private static Context mCtx;
 
-    public static String api_key = "TEST_API_KEY";
+    public static String api_key = "";
 
 //    Lab02
 //    final String LOGIN_HOST = "https://192.168.0.202:9443/laoschoolws/";
